@@ -98,6 +98,7 @@ d.textContent='خطأ / Error: '+(e.message||'');});
     <div class="st"><div>أفضل نتيجة<b id="mBest">0</b></div><div>أبعد مسافة<b id="mDist">0 م</b></div><div>سمك مجمّع<b id="mFish">0</b></div></div>
     <div class="tg"><label><input type="checkbox" id="sndOn" checked> 🔊 الأصوات</label><label><input type="checkbox" id="vcOn" checked> 🗣 التشجيع بصوت مصري</label></div>
     <small id="mHelp"></small>
+    <small style="opacity:.75;margin-top:2px">الأصوات: OpenGameArt.org (ترخيص CC0)</small>
     <button class="bt" id="go">ابدأ اللعب</button>
   </div>
 </div></div>
@@ -165,6 +166,7 @@ function audioInit(){
       MG=AC.createGain();MG.gain.value=muted?0:.8;MG.connect(comp);comp.connect(AC.destination);
       purrN=purr(AC,MG,AC.currentTime,0,24);ambN=murmur(AC,MG,AC.currentTime,0);}
     if(AC.state==='suspended')AC.resume();
+    loadSamples();
   }catch(e){AC=null;}
 }
 function env(ctx,dest,t,dur,vol,att,hold){const g=ctx.createGain();att=att||.004;g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(vol,t+att);
@@ -236,10 +238,58 @@ const SND={
   purr:(c,d,t)=>{purr(c,d,t,.8,24);return .8;},
   murmur:(c,d,t)=>{murmur(c,d,t,.8);return .8;}
 };
+SND.hiss=(c,d,t)=>{nz(c,d,t,.35,.22,'highpass',4200,3000,.8,.01);return .35;};
+SND.growl=(c,d,t)=>voice(c,d,t,{dur:.5,p:[[0,120],[1,80]],f1:[420,300],f2:[900,600],vol:.8,vib:30,vr:25,breath:.2,hold:.4});
+/* ---- real recordings (OpenGameArt, CC0). Synth versions above remain the fallback when a sample is missing. ---- */
+const SBN=['meow1','meow2','meow3','meow4','meow5','bark1','bark2','bark3','barkburst','growl','purr'];
+const SB={},SBS={},SBT={};let sampleLive=0,purrS=null,lastJR=1,barkI=0,lastBurst=-1e9;
+function loadSamples(){
+  if(!AC||!window.fetch||location.protocol==='file:')return;
+  SBN.forEach(n=>{
+    if(SB[n]||SBS[n]||(SBT[n]||0)>=3)return;SBS[n]=1;
+    fetch('assets/snd/'+n+'.mp3').then(r=>{if(!r.ok)throw new Error('http');return r.arrayBuffer();})
+      .then(ab=>new Promise((ok,no)=>{const p=AC.decodeAudioData(ab,ok,no);if(p&&p.catch)p.catch(no);}))
+      .then(b=>{SB[n]=b;SBS[n]=0;}).catch(()=>{SBS[n]=0;SBT[n]=(SBT[n]||0)+1;});
+  });
+}
+/* play a decoded sample through the master chain; returns true if handled (even if skipped by the voice cap) */
+function sample(n,rate,vol){
+  if(!AC||muted||!SB[n])return false;
+  if(voices>=16)return true;
+  const s=AC.createBufferSource(),g=AC.createGain();s.buffer=SB[n];s.playbackRate.value=rate||1;g.gain.value=vol;
+  s.connect(g);g.connect(MG);voices++;sampleLive++;
+  s.onended=()=>{voices--;sampleLive--;try{s.disconnect();g.disconnect();}catch(e){}};
+  s.start(AC.currentTime+.005);return true;
+}
+function rateRand(lo,hi,last){let r;do{r=lo+Math.random()*(hi-lo);}while(Math.abs(r-last)<.03);return r;}
+function dogsActive(){let n=0;for(const o of obs)if(o.type==='dog'&&!o.dead&&o.x>CX-40)n++;return n;}
+const SMP={
+  jump:()=>{lastJR=rateRand(.92,1.12,lastJR);return sample(['meow1','meow2','meow3'][(Math.random()*3)|0],lastJR,.55);},
+  meow:()=>SMP.jump(),
+  djump:()=>sample(Math.random()<.5?'meow2':'meow4',1.25,.5),
+  milk:()=>{const ok=sample('meow2',1.15,.45);if(ok)playSnd('gulp');return ok;},
+  hit:()=>{const ok=sample('meow3',.8,.6);if(ok)playSnd('hiss');return ok;},
+  over:()=>sample('meow5',1,.55),
+  fanfare:()=>{sample('meow1',1.2,.5);return false;},
+  growl:()=>sample('growl',1,.4),
+  bark:()=>{
+    if(!SB.bark1)return false;
+    const now=performance.now(),near=obs.some(o=>o.type==='dog'&&!o.dead&&o.x<CX+240&&o.x>CX-20);
+    if((dogsActive()>=2||near)&&now-lastBurst>6000&&Math.random()<.4&&SB.barkburst){lastBurst=now;return sample('barkburst',1,.32);}
+    barkI=(barkI+1)%3;return sample('bark'+(barkI+1),.95+Math.random()*.1,.38);
+  }
+};
+function startPurrS(){
+  if(purrS||!SB.purr)return;
+  const s=AC.createBufferSource(),g=AC.createGain();s.buffer=SB.purr;s.loop=true;g.gain.value=0;s.connect(g);g.connect(MG);s.start();
+  purrS={s,g};purrV=-1;purrR=0;
+  if(purrN)purrN.out.gain.setTargetAtTime(0,AC.currentTime,.05);
+}
 const PRIO={hit:1,over:1,fanfare:1,sadMeow:1};
 const HITSND={crate:'knock',bin:'clang',puddle:'splash',dog:'bark',pot:'crash',shards:'crash',laundry:'flap'};
 function playSnd(n,a){
   if(!AC||muted)return;const f=SND[n];if(!f)return;
+  if(SMP[n]&&SMP[n]())return;
   if(voices>=16&&!PRIO[n])return;if(n==='step'&&voices>9)return;
   const dur=f(AC,MG,AC.currentTime+.005,a)||.3;voices++;setTimeout(()=>{voices--;},dur*1000+60);
 }
@@ -247,8 +297,14 @@ function playSnd(n,a){
 function audioTick(){
   if(!AC||!purrN)return;const now=AC.currentTime;
   const run=state==='play'&&!muted&&cat.ground&&!cat.sliding&&!cat.dead&&speed>2;
-  const pv=run?.2:0;if(pv!==purrV){purrV=pv;purrN.out.gain.setTargetAtTime(pv,now,.12);}
-  const pr=Math.round((18+speed*1.3)*2)/2;if(pr!==purrR){purrR=pr;purrN.lfo.frequency.setTargetAtTime(pr,now,.2);}
+  if(!purrS&&SB.purr)startPurrS();
+  if(purrS){
+    const pv=run?.14:0;if(pv!==purrV){purrV=pv;purrS.g.gain.setTargetAtTime(pv,now,.05);}
+    const pr=Math.round(Math.min(1.25,Math.max(.9,.9+(speed-6)/6*.35))*50)/50;if(pr!==purrR){purrR=pr;purrS.s.playbackRate.setTargetAtTime(pr,now,.2);}
+  }else{
+    const pv=run?.2:0;if(pv!==purrV){purrV=pv;purrN.out.gain.setTargetAtTime(pv,now,.12);}
+    const pr=Math.round((18+speed*1.3)*2)/2;if(pr!==purrR){purrR=pr;purrN.lfo.frequency.setTargetAtTime(pr,now,.2);}
+  }
   const av=(!muted&&state!=='pause')?.1:0;if(av!==ambV){ambV=av;ambN.out.gain.setTargetAtTime(av,now,.4);}
   if(state==='play'&&--birdT<=0){birdT=420+Math.random()*480;sfx(Math.random()<.5?'bird':'ding');}
 }
@@ -511,7 +567,7 @@ function step(){
     const o=obs[i];o.t++;
     if(o.dead){o.x+=o.vx-speed;o.y+=o.vy;o.vy+=.7;o.rot+=.3;if(o.y>H+100||o.x<-200)obs.splice(i,1);continue;}
     o.x-=speed;
-    if(o.type==='dog'){o.x-=2.4;if(o.x<W-60&&!o.bark){o.bark=1;sfx('bark');}if(o.bark&&o.t%50===0&&o.x>CX+60)sfx('bark');}
+    if(o.type==='dog'){o.x-=2.4;if(o.x<W-60&&!o.bark){o.bark=1;sfx('bark');}if(o.bark&&o.t%50===0&&o.x>CX+60)sfx('bark');if(!o.grw&&o.x<CX+170&&o.x>CX){o.grw=1;sfx('growl');}}
     if(o.type==='pot'){
       if(o.hang&&o.x<W-140){o.hang=false;o.falling=true;}
       if(o.falling){o.vy+=.55;o.y+=o.vy;if(o.y>=GY-o.h){o.y=GY-o.h;o.falling=false;o.type='shards';o.w=46;o.h=22;o.y=GY-22;sfx('pot');
