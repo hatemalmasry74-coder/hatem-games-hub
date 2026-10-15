@@ -60,7 +60,7 @@ d.textContent='خطأ / Error: '+(e.message||'')+' — حدّث المتصفح �
 <input id="nm" maxlength="14" placeholder="اكتب اسمك هنا" autocomplete="off">
 <label id="lvl">اختر الفصل</label><div id="lv"></div>
 <button id="go">ابدأ اللعب</button>
-<label class="ck"><input type="checkbox" id="vc" checked> التشجيع بصوت عربي (مصري)</label>
+<label class="ck"><input type="checkbox" id="vc" checked> التشجيع بصوت مصري</label>
 <small id="ctl"></small>
 <small>لعبة معجبين غير رسمية وغير تجارية — الشخصيات ملك SEGA / Paramount. يُحفظ تقدمك تلقائيًا على هذا الجهاز.</small>
 </div></div>
@@ -357,30 +357,24 @@ function saveProgress(next){SAVE.reached=Math.max(SAVE.reached||0,Math.min(4,nex
   SAVE.best=Math.max(SAVE.best||0,run.score);writeSave();}
 const unlockedFor=n=>[1,n>=2?1:0,n>=3?1:0,n>=4?1:0];
 /* ---------- Egyptian-Arabic cheering (speech synthesis + subtitles) ---------- */
-let voice=null,voiceOn=SAVE.voice!==false,lastSpeak=0,toast={t:'',n:0},idle=0;
-function pickVoice(){if(!('speechSynthesis' in window))return;const vs=speechSynthesis.getVoices();
-  voice=vs.find(v=>/^ar[-_]EG/i.test(v.lang))||vs.find(v=>/^ar/i.test(v.lang))||null;}
-if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
-const CHEER={
- start:['يلا يا {n}! روبوتنيك مستنيك!','يلا بينا يا {n}، الجري هو حياتنا!','جاهز يا {n}؟ يلا نشوف شغلك!'],
- ring:['الله عليك يا {n}! حلقات كتير!','إيه ده! إنت جامد قوي!','كمّل كمّل، إنت قدّها!'],
- kill:['ضربة معلّم يا {n}!','عاش يا بطل! كده الروبوتات تتفرم!','مفيش حد يقف قدّك يا {n}!'],
- hurt:['خد بالك يا {n}!','أوعى يا {n}، ركّز!'],
- die:['معلش يا {n}، الأبطال بيقعوا وبيقوموا!','ما تخافش، حاول تاني!','ولا يهمّك، إنت تقدر!'],
- cp:['برافو! عدّيت نقطة الحفظ!','عظمة! كمّل يا {n}!'],
- free:['عاش يا {n}! خلّصت صاحبك!','برافو عليك! الفريق كبر!'],
- boss:['ضربة معلّم! كمّل!','إيه الحلاوة دي يا {n}!'],
- half:['كمّل يا {n}، قرّبت تخلّص عليه!'],
- done:['برافو يا {n}! عدّيت الفصل!','عاش يا بطل، فصل جديد!'],
- win:['مبروك يا {n}! إنت أحسن بطل في الدنيا!'],
- idle:['شد حيلك يا {n}!','يلا يا بطل، إحنا معاك!'],
- super:['إيه ده! طاقة خارقة! اجري يا {n}!','سوبر! مفيش حد هيلحقك يا {n}!']};
+let voiceOn=SAVE.voice!==false,lastSpeak=0,toast={t:'',n:0},idle=0;
+/* Egyptian-Arabic cheering: pre-recorded neural voice clips (assets/v/) + subtitles */
+const CHEER={"start": ["يلا يا بطل! روبوتنيك مستنيك!", "يلا بينا! الجري هو حياتنا!", "جاهز؟ يلا نشوف شغلك!"], "ring": ["الله عليك! حلقات كتير!", "إيه ده! إنت جامد قوي!", "كمّل كمّل، إنت قدّها!"], "kill": ["ضربة معلّم!", "عاش يا بطل! كده الروبوتات تتفرم!", "مفيش حد يقف قدّك!"], "hurt": ["خد بالك!", "أوعى، ركّز!"], "die": ["معلش، الأبطال بيقعوا وبيقوموا!", "ما تخافش، حاول تاني!", "ولا يهمّك، إنت تقدر!"], "cp": ["برافو! عدّيت نقطة الحفظ!", "عظمة! كمّل!"], "free": ["عاش! خلّصت صاحبك!", "برافو عليك! الفريق كبر!"], "boss": ["ضربة معلّم! كمّل!", "إيه الحلاوة دي!"], "half": ["كمّل، قرّبت تخلّص عليه!"], "done": ["برافو! عدّيت الفصل!", "عاش يا بطل، فصل جديد!"], "win": ["مبروك! إنت أحسن بطل في الدنيا!"], "idle": ["شد حيلك!", "يلا يا بطل، إحنا معاك!"], "super": ["إيه ده! طاقة خارقة! اجري!", "سوبر! مفيش حد هيلحقك!"]};
+const VNAMES=["حاتم", "أحمد", "محمد", "محمود", "مصطفى", "علي", "عمر", "يوسف", "كريم", "خالد", "إبراهيم", "حسن", "حسين", "عبدالله", "عبدالرحمن", "طارق", "ماجد", "سامي", "وليد", "هشام", "إسلام", "أسامة", "زياد", "آدم", "مازن", "ياسين", "مالك", "سيف", "رامي", "تامر", "عمرو", "شريف", "هيثم", "نادر", "أمير", "بسام", "فادي", "ريم", "سارة", "نور", "منى", "مريم", "فاطمة", "ياسمين", "هدى", "دينا", "لينا", "جنى", "ملك", "سلمى", "حبيبة", "نورهان", "آية", "رنا", "هبة"];
+const normN=x=>(x||'').replace(/[\u064B-\u0652\u0640]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').trim().split(/\s+/)[0];
+const VN_IDX=VNAMES.map(normN);
+const VA=new Audio();VA.preload='auto';
+function unlockVoice(){try{VA.muted=true;VA.src='assets/v/start0.mp3';const pr=VA.play();(pr&&pr.then?pr:Promise.resolve()).then(()=>{VA.pause();VA.muted=false;}).catch(()=>{VA.muted=false;});}catch(e){}}
+function stopVoice(){try{VA.onended=null;VA.pause();}catch(e){}}
 function say(key,force){
-  const arr=CHEER[key];const nm=SAVE.name||'يا بطل';const now=performance.now();
+  const arr=CHEER[key];if(!arr)return;const now=performance.now();
   if(!force&&now-lastSpeak<5000)return;lastSpeak=now;
-  const t=arr[Math.random()*arr.length|0].replace(/\{n\}/g,nm);toast={t,n:170};
-  if(!voiceOn||!('speechSynthesis' in window))return;
-  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=voice?voice.lang:'ar-EG';if(voice)u.voice=voice;u.rate=1.05;u.pitch=1.15;speechSynthesis.speak(u);}catch(e){}}
+  const i=Math.random()*arr.length|0,ni=VN_IDX.indexOf(normN(SAVE.name)),useName=ni>=0&&Math.random()<.6;
+  toast={t:arr[i]+(useName?' يا '+(SAVE.name||'').trim().split(/\s+/)[0]+'!':''),n:170};
+  if(!voiceOn)return;
+  try{stopVoice();VA.muted=false;VA.src='assets/v/'+key+i+'.mp3';
+    if(useName)VA.onended=()=>{VA.onended=null;VA.src='assets/v/n'+ni+'.mp3';VA.play().catch(()=>{});};
+    const pr=VA.play();if(pr&&pr.catch)pr.catch(()=>{});}catch(e){}}
 /* ---------- state ---------- */
 let state='title',lvl=0,L=null,P=null,B=null,cam=0,frame=0,story=null,banner=0,shake=0;
 const run={score:0,lives:5,unlocked:[1,0,0,0],ch:0};
@@ -727,18 +721,18 @@ function buildLevels(){const r=Math.min(4,SAVE.reached||0),box=$('lv');box.inner
     if(i===selLv)b.className='sel';b.onclick=()=>{selLv=i;buildLevels();};box.appendChild(b);}
   $('lvl').style.display=r>0?'block':'none';box.style.display=r>0?'flex':'none';
   $('go').textContent=r>0?'▶ ابدأ من الفصل '+(selLv+1):'ابدأ اللعب';}
-function showMenu(){state='title';try{speechSynthesis.cancel();}catch(e){}
+function showMenu(){state='title';stopVoice();
   $('nm').value=SAVE.name||'';selLv=Math.min(4,SAVE.reached||0);$('vc').checked=voiceOn;
   $('ctl').textContent=isTouch?'الأزرار على الشاشة: ◀ ▶ حركة · قفز · هجوم · تبديل · ☰ قائمة':'الأسهم/WASD حركة · المسافة قفز · X هجوم · ↓ دوران · 1-4 أو Q تبديل · Esc قائمة';
   buildLevels();$('menu').style.display='flex';document.body.classList.add('inmenu');}
 $('go').onclick=()=>{audioInit();const nm=$('nm').value.trim();if(!nm){$('nm').focus();$('nm').style.background='#ffd6d6';$('nm').placeholder='من فضلك اكتب اسمك';return;}
   SAVE.name=nm;voiceOn=$('vc').checked;SAVE.voice=voiceOn;writeSave();$('menu').style.display='none';document.body.classList.remove('inmenu');
   run.score=(SAVE.scores&&SAVE.scores[selLv])||0;run.lives=5;run.unlocked=unlockedFor(selLv);run.ch=0;run.kills=0;
-  beginLevel(selLv);try{if(voiceOn)speechSynthesis.speak(new SpeechSynthesisUtterance(''));}catch(e){}};
+  unlockVoice();beginLevel(selLv);};
 $('nm').addEventListener('keydown',e=>{if(e.key==='Enter')$('go').click();});
 $('nm').addEventListener('input',()=>{$('nm').style.background='#fff';});
-function pauseGame(){if(state!=='play')return;state='pause';for(const k in held)held[k]=false;$('pm').style.display='flex';document.body.classList.add('inmenu');try{speechSynthesis.pause();}catch(e){}}
-function resumeGame(){$('pm').style.display='none';document.body.classList.remove('inmenu');state='play';try{speechSynthesis.resume();}catch(e){}}
+function pauseGame(){if(state!=='play')return;state='pause';for(const k in held)held[k]=false;$('pm').style.display='flex';document.body.classList.add('inmenu');stopVoice();}
+function resumeGame(){$('pm').style.display='none';document.body.classList.remove('inmenu');state='play';}
 $('pr').onclick=resumeGame;
 $('prs').onclick=()=>{$('pm').style.display='none';document.body.classList.remove('inmenu');run.lives=5;run.score=(SAVE.scores&&SAVE.scores[lvl])||0;run.unlocked=unlockedFor(lvl);beginLevel(lvl);};
 $('px').onclick=()=>{$('pm').style.display='none';showMenu();};
