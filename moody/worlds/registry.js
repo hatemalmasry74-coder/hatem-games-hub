@@ -24,5 +24,6 @@
   // engine content + worlds, loaded in this order
   M.load.push('content/meta.js', 'content/art_common.js', 'content/q_tier6.js', 'content/q_tier9.js', 'worlds/home_art.js', 'worlds/home.js');
   M.load.push('content/q_school.js', 'worlds/school_art.js', 'worlds/school_kits.js', 'worlds/school.js');
+  M.load.push('content/q_street.js', 'content/q_market.js', 'worlds/street_kits.js', 'worlds/street_art.js', 'worlds/street.js', 'worlds/market_art.js', 'worlds/market.js');
   M.load.push('content/q_park.js', 'worlds/park_kits.js', 'worlds/park_art.js', 'worlds/park.js', 'content/q_sea.js', 'worlds/sea_art.js', 'worlds/sea.js');
 })();
