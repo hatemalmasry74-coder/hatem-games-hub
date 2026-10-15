@@ -63,12 +63,11 @@ d.textContent='خطأ / Error: '+(e.message||'')+' — حدّث المتصفح �
 <input id="nm" maxlength="14" placeholder="اكتب اسمك هنا" autocomplete="off">
 <label id="lvl">اختر الفصل</label><div id="lv"></div>
 <button id="go">ابدأ اللعب</button>
-<label>صوت التشجيع</label>
-<div id="vsel"><button data-v="v">🧔 صوت رجل</button><button data-v="vf">👩 صوت امرأة</button><button id="vt">🔊 جرّب الصوت</button></div>
+<div id="vsel"><button id="vt">🔊 جرّب الصوت</button></div>
 <small id="vst"></small>
 <label class="ck"><input type="checkbox" id="vc" checked> التشجيع بصوت مصري</label>
 <small id="ctl"></small>
-<small>الإصدار 7 · جمل قصيرة بصوت مصري</small>
+<small>الإصدار 8 · تسجيل بصوت بشري</small>
 <small>لعبة معجبين غير رسمية وغير تجارية — الشخصيات ملك SEGA / Paramount. يُحفظ تقدمك تلقائيًا على هذا الجهاز.</small>
 </div></div>
 <div id="rot">📱↻<br>أدِر جهازك بالعرض (أفقيًا) للعب</div>
@@ -120,7 +119,7 @@ function sfx(n){if(!AC)return;const S=SFX[n],t=AC.currentTime,o=AC.createOscilla
   v.gain.setValueAtTime(.07,t);v.gain.exponentialRampToValueAtTime(.001,t+S[2]);o.start(t);o.stop(t+S[2]);}
 
 /* ---------- image assets (portraits + sprites) ---------- */
-const IMG={};['p_sonic.jpg','p_tails.jpg','p_knuckles.jpg','p_super.jpg','p_silver.jpg','p_amy.jpg'].forEach(n=>{const i=new Image();i.src='assets/'+n+'?v=7';IMG[n.replace(/\.[a-z]+$/,'')]=i;});
+const IMG={};['p_sonic.jpg','p_tails.jpg','p_knuckles.jpg','p_super.jpg','p_silver.jpg','p_amy.jpg'].forEach(n=>{const i=new Image();i.src='assets/'+n+'?v=8';IMG[n.replace(/\.[a-z]+$/,'')]=i;});
 const imgOK=i=>!!(i&&i.complete&&i.naturalWidth>0);
 const PORT=['p_sonic','p_tails','p_knuckles',null];
 let SUPERDRAW=false;
@@ -373,16 +372,16 @@ const unlockedFor=n=>[1,n>=2?1:0,n>=3?1:0,n>=4?1:0];
 let voiceOn=SAVE.voice!==false,lastSpeak=0,toast={t:'',n:0},idle=0;
 /* Egyptian-Arabic cheering: pre-recorded neural voice clips (assets/v/) + subtitles */
 const CHEER={"start": ["يلا يا بطل!", "يلا بينا!", "يلا، صاحبك مستنيك تنقذه!", "يلا نكسر الدنيا!"], "ring": ["هايل!", "إيه ده! حلقات كتير!", "كمل كمل!"], "kill": ["تمام كده!", "هايل!", "برافو عليك!", "ده إنت قدها!"], "hurt": ["خد بالك!", "ركز شوية!"], "die": ["معلش، حاول تاني!", "ولا يهمك، إنت قدها!", "قوم تاني يا بطل!"], "cp": ["برافو! كمل!", "حلو قوي!"], "free": ["عاش! خلصت صاحبك!", "برافو عليك!", "هايل! الفريق كبر!"], "boss": ["ضربة حلوة!", "كمل كمل!", "ده إنت قدها!"], "half": ["قربت تخلص عليه، كمل!"], "done": ["برافو! عديت الفصل!", "هايل يا بطل!"], "win": ["مبروك! إنت أحسن بطل!", "عاش يا بطل!"], "idle": ["شد حيلك!", "يلا يا بطل!", "إنت قدها!"], "super": ["اجري يا بطل!", "سوبر! محدش هيلحقك!"]};
-let VDIR=SAVE.vf?'vf':'v';const vurl=f=>'assets/'+VDIR+'/'+f+'.mp3?v=7';
+let VDIR='v';const vurl=f=>'assets/'+VDIR+'/'+f+'.mp3?v=8';
 const VA=new Audio();VA.preload='auto';
 function unlockVoice(){try{VA.muted=true;VA.src=vurl('start0');const pr=VA.play();(pr&&pr.then?pr:Promise.resolve()).then(()=>{VA.pause();VA.muted=false;}).catch(()=>{VA.muted=false;});}catch(e){}}
 function stopVoice(){try{VA.onended=null;VA.pause();}catch(e){}}
 function say(key,force){
   const arr=CHEER[key];if(!arr)return;const now=performance.now();
   if(!force&&now-lastSpeak<5000)return;lastSpeak=now;
-  const i=Math.random()*arr.length|0;toast={t:arr[i],n:150};
-  if(!voiceOn)return;
-  try{stopVoice();VA.muted=false;VA.src=vurl(key+i);const pr=VA.play();if(pr&&pr.catch)pr.catch(()=>{});}catch(e){}}
+  const i=Math.random()*arr.length|0,sub={t:arr[i],n:150};
+  if(!voiceOn){toast=sub;return;}
+  try{stopVoice();VA.muted=false;VA.src=vurl(key+i);const pr=VA.play();if(pr&&pr.catch)pr.catch(()=>{toast=sub;});}catch(e){toast=sub;}}
 /* ---------- state ---------- */
 let state='title',lvl=0,L=null,P=null,B=null,cam=0,frame=0,story=null,banner=0,shake=0;
 const run={score:0,lives:5,unlocked:[1,0,0,0],ch:0};
@@ -729,15 +728,13 @@ function buildLevels(){const r=Math.min(4,SAVE.reached||0),box=$('lv');box.inner
     if(i===selLv)b.className='sel';b.onclick=()=>{selLv=i;buildLevels();};box.appendChild(b);}
   $('lvl').style.display=r>0?'block':'none';box.style.display=r>0?'flex':'none';
   $('go').textContent=r>0?'▶ ابدأ من الفصل '+(selLv+1):'ابدأ اللعب';}
-function markVoice(){document.querySelectorAll('#vsel button[data-v]').forEach(b=>b.classList.toggle('sel',b.dataset.v===VDIR));}
-document.querySelectorAll('#vsel button[data-v]').forEach(b=>b.onclick=()=>{VDIR=b.dataset.v;SAVE.vf=VDIR==='vf';writeSave();markVoice();$('vt').click();});
 $('vt').onclick=()=>{stopVoice();VA.muted=false;VA.src=vurl('ring2');VA.volume=1;const pr=VA.play();
   const st=$('vst');st.textContent='جارٍ تشغيل عبارة تجريبية…';
-  if(pr&&pr.then)pr.then(()=>{st.textContent='إن سمعت «كمل كمل!» فالصوت يعمل. إن لم تسمع شيئًا: ارفع صوت الجهاز وألغِ وضع الصامت.';}).catch(()=>{st.textContent='تعذّر تشغيل الصوت. اضغط الزر مرة أخرى أو تأكد من إعدادات الصوت في المتصفح.';});};
+  if(pr&&pr.then)pr.then(()=>{st.textContent='إن سمعت صوتك يقول «كمل كمل!» أو ما يشبهها فالصوت يعمل. إن لم تسمع شيئًا: ارفع صوت الجهاز وألغِ وضع الصامت.';}).catch(()=>{st.textContent='تعذّر تشغيل الصوت. اضغط الزر مرة أخرى أو تأكد من إعدادات الصوت في المتصفح.';});};
 function showMenu(){state='title';stopVoice();
   $('nm').value=SAVE.name||'';selLv=Math.min(4,SAVE.reached||0);$('vc').checked=voiceOn;
   $('ctl').textContent=isTouch?'الأزرار على الشاشة: ◀ ▶ حركة · قفز · هجوم · تبديل · ☰ قائمة':'الأسهم/WASD حركة · المسافة قفز · X هجوم · ↓ دوران · 1-4 أو Q تبديل · Esc قائمة';
-  markVoice();$('vst').textContent='';buildLevels();$('menu').style.display='flex';document.body.classList.add('inmenu');}
+  $('vst').textContent='';buildLevels();$('menu').style.display='flex';document.body.classList.add('inmenu');}
 $('go').onclick=()=>{audioInit();const nm=$('nm').value.trim();if(!nm){$('nm').focus();$('nm').style.background='#ffd6d6';$('nm').placeholder='من فضلك اكتب اسمك';return;}
   SAVE.name=nm;voiceOn=$('vc').checked;SAVE.voice=voiceOn;writeSave();$('menu').style.display='none';document.body.classList.remove('inmenu');
   run.score=(SAVE.scores&&SAVE.scores[selLv])||0;run.lives=5;run.unlocked=unlockedFor(selLv);run.ch=0;run.kills=0;
