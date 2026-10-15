@@ -34,7 +34,8 @@ body.inmenu .tb{display:none!important}
 #vsel{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
 #vsel button{font:bold 14px Tahoma,Arial,sans-serif;padding:7px 10px;border-radius:9px;border:2px solid #4b6aa8;background:#14285a;color:#fff}
 #vsel button.sel{background:#ffd23c;color:#111;border-color:#fff}
-#go{width:100%;margin-top:8px;font:bold 24px Tahoma,Arial,sans-serif;padding:11px;border-radius:12px;border:0;background:linear-gradient(#ff5a4a,#c01822);color:#fff}
+#menu .box,#pz .box,#pm .box{touch-action:pan-y;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+#go{position:sticky;bottom:0;z-index:2;box-shadow:0 -8px 12px rgb(8,18,48);width:100%;margin-top:8px;font:bold 24px Tahoma,Arial,sans-serif;padding:11px;border-radius:12px;border:0;background:linear-gradient(#ff5a4a,#c01822);color:#fff}
 #menu .ck{display:flex;align-items:center;justify-content:center;gap:8px;font-size:15px}
 #menu small{display:block;margin-top:8px;color:#9fb4d8;font-size:12px;line-height:1.6}
 #pz{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:13;background:rgba(0,0,0,.65);font-family:Tahoma,Arial,sans-serif;padding:10px}
@@ -53,6 +54,20 @@ body.inmenu .tb{display:none!important}
 #pm button{display:block;width:100%;margin:9px 0;font:bold 20px Tahoma,Arial,sans-serif;padding:12px;border-radius:12px;border:0;color:#fff;background:#1f4aa8}
 #pm #px{background:#a3202a}
 #bmX{right:calc(env(safe-area-inset-right) + 2vmin);top:calc(env(safe-area-inset-top) + 2vmin);width:calc(var(--u)*.55);height:calc(var(--u)*.55);bottom:auto;background:rgba(0,0,0,.35)}
+@media (max-height:520px){
+#menu{padding:4px}
+#menu .box{padding:8px 14px;width:min(96vw,720px);max-height:98vh}
+#menu h1{font-size:26px}#menu h2{font-size:15px;margin:0 0 2px}
+#menu label{margin:4px 0 2px;font-size:13px}
+#nm{font-size:18px;padding:5px}
+#lv{gap:4px;margin:3px 0}#lv button{font-size:12px;padding:5px 7px}
+#vsel button{font-size:12px;padding:5px 8px}
+#go{font-size:19px;padding:8px;margin-top:6px}
+#menu small{font-size:10px;margin-top:3px;line-height:1.4}
+#menu .ck{font-size:12px}
+#pz .box{padding:8px 14px}#pzq{font-size:17px;margin:2px 0 6px}#pzo button{padding:9px 6px;font-size:18px}#pzo button.sm{height:56px}
+#pm .box{padding:10px 16px}#pm button{padding:8px;margin:5px 0;font-size:17px}
+}
 #rot{position:fixed;inset:0;background:#0b1a33;color:#fff;font:bold 22px Tahoma,Arial,sans-serif;display:none;align-items:center;justify-content:center;text-align:center;z-index:20;padding:30px;line-height:1.8}
 </style>
 </head>
@@ -79,13 +94,13 @@ d.textContent='خطأ / Error: '+(e.message||'')+' — حدّث المتصفح �
 <small id="vst"></small>
 <label class="ck"><input type="checkbox" id="vc" checked> التشجيع بصوت مصري</label>
 <small id="ctl"></small>
-<small>الإصدار 10 · تسجيل بصوت بشري</small>
+<small>الإصدار 11 · تسجيل بصوت بشري</small>
 <small>لعبة معجبين غير رسمية وغير تجارية — الشخصيات ملك SEGA / Paramount. يُحفظ تقدمك تلقائيًا على هذا الجهاز.</small>
 </div></div>
 <div id="rot">📱↻<br>أدِر جهازك بالعرض (أفقيًا) للعب</div>
 <script>
 'use strict';
-const BUILD=10;
+const BUILD=11;
 (function(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{if(j.v>BUILD&&!sessionStorage.getItem('rl'+j.v)){sessionStorage.setItem('rl'+j.v,'1');location.replace(location.pathname+'?v='+j.v+'&t='+Date.now());}}).catch(()=>{});}catch(e){}})();
 const W=960,H=540,GR=.6,FONT='Tahoma, Arial, sans-serif';
 const cv=document.getElementById('c'),g=cv.getContext('2d');
@@ -103,7 +118,7 @@ function resize(){
 }
 addEventListener('resize',resize);addEventListener('orientationchange',()=>setTimeout(resize,200));resize();
 ['gesturestart','dblclick','contextmenu'].forEach(e=>document.addEventListener(e,ev=>ev.preventDefault()));
-document.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
+document.addEventListener('touchmove',e=>{if(e.target.closest&&e.target.closest('#menu,#pz,#pm'))return;e.preventDefault();},{passive:false});
 
 /* ---------- input ---------- */
 const held={},once={};
@@ -133,7 +148,7 @@ function sfx(n){if(!AC)return;const S=SFX[n],t=AC.currentTime,o=AC.createOscilla
   v.gain.setValueAtTime(.07,t);v.gain.exponentialRampToValueAtTime(.001,t+S[2]);o.start(t);o.stop(t+S[2]);}
 
 /* ---------- image assets (portraits + sprites) ---------- */
-const IMG={};['p_sonic.jpg','p_tails.jpg','p_knuckles.jpg','p_super.jpg','p_silver.jpg','p_amy.jpg'].forEach(n=>{const i=new Image();i.src='assets/'+n+'?v=10';IMG[n.replace(/\.[a-z]+$/,'')]=i;});
+const IMG={};['p_sonic.jpg','p_tails.jpg','p_knuckles.jpg','p_super.jpg','p_silver.jpg','p_amy.jpg'].forEach(n=>{const i=new Image();i.src='assets/'+n+'?v=11';IMG[n.replace(/\.[a-z]+$/,'')]=i;});
 const imgOK=i=>!!(i&&i.complete&&i.naturalWidth>0);
 const PORT=['p_sonic','p_tails','p_knuckles',null];
 let SUPERDRAW=false;
@@ -414,7 +429,7 @@ const unlockedFor=n=>[1,n>=2?1:0,n>=3?1:0,n>=4?1:0];
 let voiceOn=SAVE.voice!==false,lastSpeak=0,toast={t:'',n:0},idle=0;
 /* Egyptian-Arabic cheering: pre-recorded neural voice clips (assets/v/) + subtitles */
 const CHEER={"start": ["يلا يا بطل!", "يلا بينا!", "يلا، صاحبك مستنيك تنقذه!", "يلا نكسر الدنيا!"], "ring": ["هايل!", "إيه ده! حلقات كتير!", "كمل كمل!"], "kill": ["تمام كده!", "هايل!", "برافو عليك!", "ده إنت قدها!"], "hurt": ["خد بالك!", "ركز شوية!"], "die": ["معلش، حاول تاني!", "ولا يهمك، إنت قدها!", "قوم تاني يا بطل!"], "cp": ["برافو! كمل!", "حلو قوي!"], "free": ["عاش! خلصت صاحبك!", "برافو عليك!", "هايل! الفريق كبر!"], "boss": ["ضربة حلوة!", "كمل كمل!", "ده إنت قدها!"], "half": ["قربت تخلص عليه، كمل!"], "done": ["برافو! عديت الفصل!", "هايل يا بطل!"], "win": ["مبروك! إنت أحسن بطل!", "عاش يا بطل!"], "idle": ["شد حيلك!", "يلا يا بطل!", "إنت قدها!"], "super": ["اجري يا بطل!", "سوبر! محدش هيلحقك!"]};
-let VDIR='v';const vurl=f=>'assets/'+VDIR+'/'+f+'.mp3?v=10';
+let VDIR='v';const vurl=f=>'assets/'+VDIR+'/'+f+'.mp3?v=11';
 const VA=new Audio();VA.preload='auto';
 function unlockVoice(){try{VA.muted=true;VA.src=vurl('start0');const pr=VA.play();(pr&&pr.then?pr:Promise.resolve()).then(()=>{VA.pause();VA.muted=false;}).catch(()=>{VA.muted=false;});}catch(e){}}
 function stopVoice(){try{VA.onended=null;VA.pause();}catch(e){}}
