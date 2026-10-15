@@ -31,14 +31,15 @@ function ui(game,stage,cb){
   modal=document.createElement('div');
   modal.setAttribute('dir','rtl');
   modal.style.cssText='position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.78);font-family:Tahoma,Arial,sans-serif;padding:10px;touch-action:pan-y';
-  modal.innerHTML='<div style="background:#0d1b3d;border:3px solid #ffd23c;border-radius:18px;padding:16px 20px;width:min(94vw,420px);max-height:96vh;overflow:auto;color:#fff;text-align:center;touch-action:pan-y">'
-   +'<div style="font-size:42px">👑</div><h2 style="margin:4px 0;color:#ffd23c;font-size:22px">وصلت للمرحلة '+stage+'!</h2>'
-   +'<p style="margin:6px 0 10px;line-height:1.8;font-size:16px">المراحل 1 إلى '+FREE+' مجانية. لتكمل باقي المراحل فعّل الاشتراك.</p>'
-   +'<input id="hpc" placeholder="اكتب كود التفعيل (HG-XXXX-XXXX)" autocomplete="off" autocapitalize="characters" style="width:100%;padding:10px;font:bold 18px Tahoma,Arial;text-align:center;border-radius:10px;border:2px solid #ffd23c;direction:ltr;box-sizing:border-box">'
-   +'<div id="hpm" style="min-height:24px;margin:8px 0;color:#ffd23c;font-size:15px"></div>'
-   +'<button id="hpa" style="width:100%;padding:11px;font:bold 20px Tahoma,Arial;border:0;border-radius:12px;background:linear-gradient(#ff5a4a,#c01822);color:#fff">تفعيل الاشتراك</button>'
-   +(CONTACT_URL?'<a id="hpw" href="'+CONTACT_URL+'" target="_blank" rel="noopener" style="display:block;margin-top:8px;padding:10px;border-radius:12px;background:#1f8f4a;color:#fff;text-decoration:none;font-weight:bold">'+CONTACT_TEXT+'</a>':'<p style="font-size:13px;color:#9fb4d8;margin:8px 0">'+CONTACT_TEXT+'</p>')
-   +'<button id="hpx" style="width:100%;margin-top:8px;padding:9px;font:bold 16px Tahoma,Arial;border:0;border-radius:10px;background:#3a4968;color:#fff">لاحقًا</button></div>';
+  var short=window.innerHeight<460;
+  modal.innerHTML='<div style="background:#0d1b3d;border:3px solid #ffd23c;border-radius:18px;padding:'+(short?'8px 14px':'16px 20px')+';width:min(94vw,'+(short?'520px':'420px')+');max-height:98vh;overflow:auto;color:#fff;text-align:center;touch-action:pan-y">'
+   +(short?'':'<div style="font-size:42px">👑</div>')+'<h2 style="margin:4px 0;color:#ffd23c;font-size:'+(short?'17px':'22px')+'">👑 وصلت للمرحلة '+stage+'!</h2>'
+   +'<p style="margin:'+(short?'2px 0 6px':'6px 0 10px')+';line-height:1.6;font-size:'+(short?'13px':'16px')+'">المراحل 1 إلى '+FREE+' مجانية. لتكمل باقي المراحل فعّل الاشتراك.</p>'
+   +'<input id="hpc" placeholder="اكتب كود التفعيل (HG-XXXX-XXXX)" autocomplete="off" autocapitalize="characters" style="width:100%;padding:'+(short?'6px':'10px')+';font:bold 18px Tahoma,Arial;text-align:center;border-radius:10px;border:2px solid #ffd23c;direction:ltr;box-sizing:border-box">'
+   +'<div id="hpm" style="min-height:'+(short?'18px':'24px')+';margin:'+(short?'4px':'8px')+' 0;color:#ffd23c;font-size:14px"></div>'
+   +'<button id="hpa" style="width:100%;padding:'+(short?'8px':'11px')+';font:bold '+(short?'17px':'20px')+' Tahoma,Arial;border:0;border-radius:12px;background:linear-gradient(#ff5a4a,#c01822);color:#fff">تفعيل الاشتراك</button>'
+   +(CONTACT_URL?'<a id="hpw" href="'+CONTACT_URL+'" target="_blank" rel="noopener" style="display:block;margin-top:8px;padding:10px;border-radius:12px;background:#1f8f4a;color:#fff;text-decoration:none;font-weight:bold">'+CONTACT_TEXT+'</a>':'<p style="font-size:'+(short?'11px':'13px')+';color:#9fb4d8;margin:'+(short?'4px':'8px')+' 0">'+CONTACT_TEXT+'</p>')
+   +'<button id="hpx" style="width:100%;margin-top:'+(short?'5px':'8px')+';padding:'+(short?'6px':'9px')+';font:bold 15px Tahoma,Arial;border:0;border-radius:10px;background:#3a4968;color:#fff">لاحقًا</button></div>';
   document.body.appendChild(modal);
   var $=function(id){return modal.querySelector('#'+id);};
   function close(ok){if(modal){modal.remove();modal=null;}try{cb&&cb(ok);}catch(e){console.error(e);}}
