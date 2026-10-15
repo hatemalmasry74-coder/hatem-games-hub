@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>مودي وعبودي</title>
+<link rel="stylesheet" href="engine/ui.css?v=1">
+</head>
+<body>
+<script>
+window.addEventListener('error',function(e){var d=document.getElementById('errbox');if(!d){d=document.createElement('div');d.id='errbox';
+d.style.cssText='position:fixed;left:0;right:0;top:0;z-index:99;background:#300;color:#fff;font:14px Arial;padding:10px;direction:ltr';document.body.appendChild(d);}
+d.textContent='خطأ / Error: '+(e.message||'')+' — حدّث المتصفح أو افتح الرابط في Chrome/Safari مباشرة';});
+</script>
+<noscript><div style="color:#fff;padding:20px;font:18px Arial">فعّل JavaScript لتشغيل اللعبة</div></noscript>
+<div id="app"><canvas id="c" width="960" height="540"></canvas><div id="ui"></div></div>
+<div id="rot">أدِر جهازك بالعرض (أفقيًا) للعب<br>↻</div>
+<script src="engine/core.js?v=1"></script>
+<script src="engine/gfx.js?v=1"></script>
+<script src="engine/audio.js?v=1"></script>
+<script src="engine/chars.js?v=1"></script>
+<script src="engine/stage.js?v=1"></script>
+<script src="engine/ui.js?v=1"></script>
+<script src="engine/minigames.js?v=1"></script>
+<script src="engine/ctx.js?v=1"></script>
+<script src="worlds/registry.js?v=1"></script>
+<script src="engine/boot.js?v=1"></script>
+</body>
+</html>
