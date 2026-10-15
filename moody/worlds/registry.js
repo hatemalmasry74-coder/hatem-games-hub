@@ -18,10 +18,11 @@
     { id: 'school', order: 2, title: 'المدرسة', icon: 'w_school', theme: { c1: '#9ed8ff', c2: '#4a8dff' } },
     { id: 'street', order: 3, title: 'الشارع والحي', icon: 'w_street', theme: { c1: '#c9c4ff', c2: '#8a6bd6' } },
     { id: 'market', order: 4, title: 'السوق', icon: 'w_market', theme: { c1: '#ffc0d0', c2: '#ff6f91' } },
-    { id: 'park', order: 5, title: 'الحديقة', icon: 'w_park', theme: { c1: '#b8f0b0', c2: '#5cc96b' } },
+    { id: 'park', order: 5, title: 'الحديقة والنادي', icon: 'w_park', theme: { c1: '#b8f0b0', c2: '#5cc96b' } },
     { id: 'sea', order: 6, title: 'رحلة البحر', icon: 'w_sea', theme: { c1: '#a8f0f0', c2: '#1fb5a6' } }
   ]);
   // engine content + worlds, loaded in this order
   M.load.push('content/meta.js', 'content/art_common.js', 'content/q_tier6.js', 'content/q_tier9.js', 'worlds/home_art.js', 'worlds/home.js');
   M.load.push('content/q_school.js', 'worlds/school_art.js', 'worlds/school_kits.js', 'worlds/school.js');
+  M.load.push('content/q_park.js', 'worlds/park_kits.js', 'worlds/park_art.js', 'worlds/park.js', 'content/q_sea.js', 'worlds/sea_art.js', 'worlds/sea.js');
 })();
