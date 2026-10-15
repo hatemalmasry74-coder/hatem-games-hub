@@ -41,7 +41,8 @@ footer{max-width:980px;margin:26px auto 0;text-align:center;color:#8fa3c8;font-s
 </header>
 
 <div class="pro" id="pro">
-  <span id="ps">👑 الاشتراك: المراحل 1–4 مجانية في كل لعبة، والباقي بالاشتراك.</span>
+  <span id="ps">👑 المراحل 1–4 مجانية في كل لعبة، والباقي بالاشتراك: <b>5 دولار / 30 يومًا</b> لكل الألعاب.</span>
+  <a id="ml" href="#" style="color:#fff;background:#1f8f4a;padding:9px 14px;border-radius:10px;text-decoration:none;font-weight:bold;font-size:15px">✉ اطلب كودك بالبريد</a>
   <input id="pc" placeholder="كود التفعيل HG-XXXX-XXXX" autocomplete="off" autocapitalize="characters">
   <button id="pb">تفعيل</button>
   <div id="pm"></div>
@@ -73,6 +74,7 @@ footer{max-width:980px;margin:26px auto 0;text-align:center;color:#8fa3c8;font-s
     HubPay.activate($('pc').value).then(function(r){$('pm').textContent=r.msg;if(r.ok){$('pc').value='';status();}});
   };
   $('pc').addEventListener('keydown',function(e){if(e.key==='Enter')$('pb').click();});
+  if(window.HubPay){$('ml').href=HubPay.mailto;}
   status();
 })();
 </script>
