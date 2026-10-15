@@ -73,19 +73,19 @@ d.textContent='خطأ / Error: '+(e.message||'')+' — حدّث المتصفح �
 <h1>سونيك</h1><h2>مغامرة الفيلم</h2>
 <label for="nm">اسم اللاعب</label>
 <input id="nm" maxlength="14" placeholder="اكتب اسمك هنا" autocomplete="off">
-<label id="lvl">اختر الفصل</label><div id="lv"></div>
+<label id="lvl">اختر الفصل (⭐ = فصول إضافية: أسلحة وألغاز)</label><div id="lv"></div>
 <button id="go">ابدأ اللعب</button>
 <div id="vsel"><button id="vt">🔊 جرّب الصوت</button></div>
 <small id="vst"></small>
 <label class="ck"><input type="checkbox" id="vc" checked> التشجيع بصوت مصري</label>
 <small id="ctl"></small>
-<small>الإصدار 9 · تسجيل بصوت بشري</small>
+<small>الإصدار 10 · تسجيل بصوت بشري</small>
 <small>لعبة معجبين غير رسمية وغير تجارية — الشخصيات ملك SEGA / Paramount. يُحفظ تقدمك تلقائيًا على هذا الجهاز.</small>
 </div></div>
 <div id="rot">📱↻<br>أدِر جهازك بالعرض (أفقيًا) للعب</div>
 <script>
 'use strict';
-const BUILD=9;
+const BUILD=10;
 (function(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{if(j.v>BUILD&&!sessionStorage.getItem('rl'+j.v)){sessionStorage.setItem('rl'+j.v,'1');location.replace(location.pathname+'?v='+j.v+'&t='+Date.now());}}).catch(()=>{});}catch(e){}})();
 const W=960,H=540,GR=.6,FONT='Tahoma, Arial, sans-serif';
 const cv=document.getElementById('c'),g=cv.getContext('2d');
@@ -133,7 +133,7 @@ function sfx(n){if(!AC)return;const S=SFX[n],t=AC.currentTime,o=AC.createOscilla
   v.gain.setValueAtTime(.07,t);v.gain.exponentialRampToValueAtTime(.001,t+S[2]);o.start(t);o.stop(t+S[2]);}
 
 /* ---------- image assets (portraits + sprites) ---------- */
-const IMG={};['p_sonic.jpg','p_tails.jpg','p_knuckles.jpg','p_super.jpg','p_silver.jpg','p_amy.jpg'].forEach(n=>{const i=new Image();i.src='assets/'+n+'?v=9';IMG[n.replace(/\.[a-z]+$/,'')]=i;});
+const IMG={};['p_sonic.jpg','p_tails.jpg','p_knuckles.jpg','p_super.jpg','p_silver.jpg','p_amy.jpg'].forEach(n=>{const i=new Image();i.src='assets/'+n+'?v=10';IMG[n.replace(/\.[a-z]+$/,'')]=i;});
 const imgOK=i=>!!(i&&i.complete&&i.naturalWidth>0);
 const PORT=['p_sonic','p_tails','p_knuckles',null];
 let SUPERDRAW=false;
@@ -414,7 +414,7 @@ const unlockedFor=n=>[1,n>=2?1:0,n>=3?1:0,n>=4?1:0];
 let voiceOn=SAVE.voice!==false,lastSpeak=0,toast={t:'',n:0},idle=0;
 /* Egyptian-Arabic cheering: pre-recorded neural voice clips (assets/v/) + subtitles */
 const CHEER={"start": ["يلا يا بطل!", "يلا بينا!", "يلا، صاحبك مستنيك تنقذه!", "يلا نكسر الدنيا!"], "ring": ["هايل!", "إيه ده! حلقات كتير!", "كمل كمل!"], "kill": ["تمام كده!", "هايل!", "برافو عليك!", "ده إنت قدها!"], "hurt": ["خد بالك!", "ركز شوية!"], "die": ["معلش، حاول تاني!", "ولا يهمك، إنت قدها!", "قوم تاني يا بطل!"], "cp": ["برافو! كمل!", "حلو قوي!"], "free": ["عاش! خلصت صاحبك!", "برافو عليك!", "هايل! الفريق كبر!"], "boss": ["ضربة حلوة!", "كمل كمل!", "ده إنت قدها!"], "half": ["قربت تخلص عليه، كمل!"], "done": ["برافو! عديت الفصل!", "هايل يا بطل!"], "win": ["مبروك! إنت أحسن بطل!", "عاش يا بطل!"], "idle": ["شد حيلك!", "يلا يا بطل!", "إنت قدها!"], "super": ["اجري يا بطل!", "سوبر! محدش هيلحقك!"]};
-let VDIR='v';const vurl=f=>'assets/'+VDIR+'/'+f+'.mp3?v=9';
+let VDIR='v';const vurl=f=>'assets/'+VDIR+'/'+f+'.mp3?v=10';
 const VA=new Audio();VA.preload='auto';
 function unlockVoice(){try{VA.muted=true;VA.src=vurl('start0');const pr=VA.play();(pr&&pr.then?pr:Promise.resolve()).then(()=>{VA.pause();VA.muted=false;}).catch(()=>{VA.muted=false;});}catch(e){}}
 function stopVoice(){try{VA.onended=null;VA.pause();}catch(e){}}
@@ -789,12 +789,12 @@ function loop(now){
 /* ---------- menu ---------- */
 const $=id=>document.getElementById(id);
 let selLv=0;
-function buildLevels(){const r=Math.min(LV.length-1,SAVE.reached||0),box=$('lv');box.innerHTML='';
-  if(selLv>r)selLv=r;
-  for(let i=0;i<=r;i++){const b=document.createElement('button');b.textContent=(i<r||(SAVE.done&&i===LV.length-1)?'✓ ':'')+(i+1)+'. '+LV[i].name.split(': ')[1];
+function buildLevels(){const rd=SAVE.reached||0,box=$('lv');box.innerHTML='';
+  for(let i=0;i<LV.length;i++){const b=document.createElement('button');
+    b.textContent=((i<rd||(SAVE.done&&i===LV.length-1))?'✓ ':(i>=5?'⭐ ':''))+(i+1)+'. '+LV[i].name.split(': ')[1];
     if(i===selLv)b.className='sel';b.onclick=()=>{selLv=i;buildLevels();};box.appendChild(b);}
-  $('lvl').style.display=r>0?'block':'none';box.style.display=r>0?'flex':'none';
-  $('go').textContent=r>0?'▶ ابدأ من الفصل '+(selLv+1):'ابدأ اللعب';}
+  $('lvl').style.display='block';box.style.display='flex';
+  $('go').textContent=(rd>0||selLv>0)?'▶ ابدأ من الفصل '+(selLv+1):'ابدأ اللعب';}
 $('vt').onclick=()=>{stopVoice();VA.muted=false;VA.src=vurl('ring2');VA.volume=1;const pr=VA.play();
   const st=$('vst');st.textContent='جارٍ تشغيل عبارة تجريبية…';
   if(pr&&pr.then)pr.then(()=>{st.textContent='إن سمعت صوتك يقول «كمل كمل!» أو ما يشبهها فالصوت يعمل. إن لم تسمع شيئًا: ارفع صوت الجهاز وألغِ وضع الصامت.';}).catch(()=>{st.textContent='تعذّر تشغيل الصوت. اضغط الزر مرة أخرى أو تأكد من إعدادات الصوت في المتصفح.';});};
