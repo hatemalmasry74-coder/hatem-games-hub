@@ -7,29 +7,74 @@
 <title>ألعاب حاتم</title>
 <style>
 :root{color-scheme:dark}
-*{box-sizing:border-box}
-body{margin:0;min-height:100vh;background:linear-gradient(160deg,#0b1a33,#241046);color:#fff;font-family:Tahoma,Arial,sans-serif;padding:24px 16px}
-h1{text-align:center;margin:10px 0 4px;font-size:clamp(28px,6vw,44px);color:#ffd23c}
-p.sub{text-align:center;margin:0 0 26px;color:#bfd2f0}
-.grid{max-width:900px;margin:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
-a.card{display:block;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.2);border-radius:16px;padding:18px;text-decoration:none;color:#fff}
-a.card:hover{border-color:#ffd23c;transform:translateY(-2px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100vh;background:radial-gradient(circle at 20% 0%,#2a1a63 0,#0b1a33 55%,#07101f 100%);color:#fff;font-family:Tahoma,Arial,sans-serif;padding:max(18px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) 28px max(14px,env(safe-area-inset-left))}
+header{text-align:center;margin:6px 0 4px}
+h1{margin:6px 0 2px;font-size:clamp(30px,7vw,52px);color:#ffd23c;text-shadow:0 3px 0 #7a4a00,0 0 24px #ffb30055}
+p.sub{margin:0 0 18px;color:#bfd2f0;font-size:clamp(14px,3.4vw,18px)}
+.pro{max-width:980px;margin:0 auto 18px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;background:rgba(255,255,255,.07);border:2px solid rgba(255,210,60,.45);border-radius:16px;padding:10px 14px}
+.pro b{color:#ffd23c}
+.pro input{flex:1 1 200px;min-width:0;padding:10px;font:bold 17px Tahoma,Arial,sans-serif;text-align:center;border-radius:10px;border:2px solid #ffd23c;background:#fff;color:#111;direction:ltr}
+.pro button{padding:10px 18px;font:bold 17px Tahoma,Arial,sans-serif;border:0;border-radius:10px;background:linear-gradient(#ff5a4a,#c01822);color:#fff}
+#pm{width:100%;text-align:center;font-size:14px;color:#ffd23c;min-height:18px}
+.grid{max-width:980px;margin:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px}
+a.card{position:relative;display:block;border-radius:20px;padding:0;overflow:hidden;text-decoration:none;color:#fff;border:2px solid rgba(255,255,255,.22);background:#101a33;transition:transform .15s,border-color .15s}
+a.card:hover,a.card:focus-visible{transform:translateY(-3px);border-color:#ffd23c;outline:none}
+.art{height:120px;display:flex;align-items:center;justify-content:center;font-size:64px;text-shadow:0 4px 14px #0008}
+.card .tx{padding:12px 16px 16px}
 .card h2{margin:0 0 6px;font-size:22px}
-.card span{color:#9fd0ff;font-size:14px;line-height:1.7}
-.soon{opacity:.5;border-style:dashed}
-footer{max-width:900px;margin:30px auto 0;text-align:center;color:#8fa3c8;font-size:12px;line-height:1.8}
+.card span{display:block;color:#cfe0ff;font-size:14px;line-height:1.7}
+.tag{display:inline-block;margin-top:8px;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:bold}
+.free{background:#1f8f4a}.fan{background:#8a5a14}
+.cat .art{background:linear-gradient(135deg,#ffb15c,#e8742a)}
+.fight .art{background:linear-gradient(135deg,#e5262c,#4a0c24)}
+.tuk .art{background:linear-gradient(135deg,#ffd23c,#2a8f4a)}
+.jet .art{background:linear-gradient(135deg,#3d7bff,#0a1a4a)}
+.sonic .art{background:linear-gradient(135deg,#3d7bff,#46b84a)}
+footer{max-width:980px;margin:26px auto 0;text-align:center;color:#8fa3c8;font-size:12px;line-height:1.9}
 </style>
 </head>
 <body>
-<h1>🎮 ألعاب حاتم</h1>
-<p class="sub">العب مباشرة من الموبايل أو الآيباد أو اللاب توب — بدون تحميل</p>
-<div class="grid">
-  <a class="card" href="sonic/?v=12">
-    <h2>🦔 سونيك – مغامرة الفيلم</h2>
-    <span>5 فصول: أنقذ تيلز وناكلز وشادو واهزم الدكتور روبوتنيك. تشجيع بصوت مصري وحفظ للتقدم.</span>
-  </a>
-  <div class="card soon"><h2>🚀 قريبًا</h2><span>لعبة جديدة قيد التجهيز…</span></div>
+<header>
+  <h1>🎮 ألعاب حاتم</h1>
+  <p class="sub">العب مباشرة من الموبايل أو الآيباد أو اللاب توب — بدون تحميل</p>
+</header>
+
+<div class="pro" id="pro">
+  <span id="ps">👑 الاشتراك: المراحل 1–4 مجانية في كل لعبة، والباقي بالاشتراك.</span>
+  <input id="pc" placeholder="كود التفعيل HG-XXXX-XXXX" autocomplete="off" autocapitalize="characters">
+  <button id="pb">تفعيل</button>
+  <div id="pm"></div>
 </div>
-<footer>لعبة سونيك لعبة معجبين غير رسمية وغير تجارية — الشخصيات ملك SEGA / Paramount.</footer>
+
+<div class="grid">
+  <a class="card cat" href="cat/?v=2"><div class="art">🐱</div><div class="tx"><h2>القط الشاطر</h2><span>ميمو القط يجري في حارات مصر: اقفز وانزلق واجمع السمك وتفادى الكلاب. 12 مرحلة.</span><em class="tag free">جديد · شخصية أصلية</em></div></a>
+  <a class="card fight" href="fight/?v=2"><div class="art">🥊</div><div class="tx"><h2>حلبة القتال</h2><span>أربعة مقاتلين وبطولة من 12 مرحلة، أو العب مع صديقك على نفس الجهاز.</span><em class="tag free">جديد · شخصيات أصلية</em></div></a>
+  <a class="card tuk" id="tuk" href="tuktuk/?v=2"><div class="art">🛺</div><div class="tx"><h2>توك توك القاهرة</h2><span>اسوق التوك توك في زحمة المدينة، اجمع الفلوس والزبائن وطوّر مركبتك. 12 مرحلة.</span><em class="tag free">جديد · تصاميم أصلية</em></div></a>
+  <a class="card jet" id="jet" href="jet/?v=2"><div class="art">✈️</div><div class="tx"><h2>الصقر المقاتل</h2><span>طائرة مقاتلة بـ12 مرحلة وزعماء وأسلحة وقدرات خاصة.</span><em class="tag free">جديد · تصاميم أصلية</em></div></a>
+  <a class="card sonic" href="sonic/?v=12"><div class="art">🦔</div><div class="tx"><h2>سونيك – مغامرة الفيلم</h2><span>8 فصول، أنقذ تيلز وناكلز وشادو واهزم روبوتنيك. تشجيع بصوت مصري.</span><em class="tag fan">لعبة معجبين · للتجربة فقط</em></div></a>
+</div>
+
+<footer>
+  لعبة سونيك لعبة معجبين غير رسمية وغير تجارية — الشخصيات ملك SEGA / Paramount، وهي خارج نظام الاشتراك.<br>
+  بقية الألعاب بتصاميم وشخصيات أصلية. يُحفظ تقدمك تلقائيًا على جهازك.
+</footer>
+
+<script src="paywall.js"></script>
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i);};
+  function status(){
+    if(window.HubPay&&HubPay.isPro())$('ps').innerHTML='👑 اشتراكك فعّال: <b>'+HubPay.daysLeft()+'</b> يومًا متبقيًا. استمتع بكل المراحل!';
+  }
+  $('pb').onclick=function(){
+    if(!window.HubPay){$('pm').textContent='تعذّر تحميل نظام الاشتراك';return;}
+    $('pm').textContent='جارٍ التحقق…';
+    HubPay.activate($('pc').value).then(function(r){$('pm').textContent=r.msg;if(r.ok){$('pc').value='';status();}});
+  };
+  $('pc').addEventListener('keydown',function(e){if(e.key==='Enter')$('pb').click();});
+  status();
+})();
+</script>
 </body>
 </html>
