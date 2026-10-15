@@ -109,6 +109,7 @@ d.textContent='خطأ / Error: '+(e.message||'')+' — حدّث المتصفح �
 <section><h3>🔧 التطويرات</h3><div id="ul"></div></section></div>
 <div class="hint tg"><label><input type="checkbox" id="tsfx"> 🔊 الأصوات</label><label><input type="checkbox" id="tch"> 🗣 التشجيع بصوت مصري</label></div>
 <div class="hint" id="ctl"></div>
+<div class="hint" style="font-size:10px;opacity:.8">الأصوات: OpenGameArt.org (ترخيص CC0)</div>
 <button id="go">يلّا بينا! 🛺</button>
 </div></div>
 <div id="rot">📱↻<br>أدِر جهازك بالعرض (أفقيًا) للعب</div>
@@ -212,6 +213,7 @@ const S={
       g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(.12,t+.05);g.gain.setValueAtTime(.12,t+.8);g.gain.linearRampToValueAtTime(.0001,t+1.1);o.connect(g);g.connect(lp);o.start(t);o.stop(t+1.15);}
     osc(c,'sine',90,45,t+.15,.6,.3,d);return 1.15;},
   click(c,d,t){osc(c,'square',800,1000,t,.04,.07,d);return .06;},
+  startup(c,d,t){nz(c,t,1.2,.2,'lowpass',200,700,1,d,.3);osc(c,'sawtooth',40,120,t,1.2,.12,d);osc(c,'square',70,90,t+.4,.8,.06,d);return 1.4;},
   burble(c,d,t){[0,.06,.13].forEach(x=>{nz(c,t+x,.04,.18,'lowpass',400,300,1,d,x*5);osc(c,'sawtooth',80,60,t+x,.05,.12,d);});return .2;},
   motor(c,d,t,o){const p=o.pitch||1,v=o.vol||1,dur=1.6,f=c.createBiquadFilter(),g=c.createGain();f.type='bandpass';f.frequency.value=900;f.Q.value=.8;
     g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(.1*v,t+dur*.45);g.gain.linearRampToValueAtTime(.0001,t+dur);
@@ -220,11 +222,86 @@ const S={
   bell(c,d,t,o){bell(c,d,t,1200*(o.pitch||1),.9,.09*(o.vol||1));return .9;},
   hammer(c,d,t,o){const v=o.vol||1;[0,.35,.7].forEach(x=>{nz(c,t+x,.04,.2*v,'bandpass',2500,2000,2,d,x*3);osc(c,'triangle',420,300,t+x,.06,.12*v,d);});return .8;}
 };
+/* ---- real recordings (OpenGameArt, CC0): lazy fetch+decode after first gesture; synth stays as fallback ---- */
+const SAMPLES=['horn1','horn2','horn3','bell','eng_tuk','eng_car','eng_bus','rev0','rev1','rev2','rev3','rev4','rev5','startup','thud','amb_traffic','amb_crowd'];
+const BUF={},BUFBUSY={};let SE=null,SAMP=null,SMPHOOK=null,duckT=0;
+function loadSamples(){
+  if(!AC||location.protocol==='file:'||typeof fetch!=='function')return;
+  for(const n of SAMPLES){
+    if(BUF[n]||BUFBUSY[n])continue;BUFBUSY[n]=1;
+    try{fetch('assets/snd/'+n+'.mp3').then(r=>{if(!r.ok)throw new Error('http');return r.arrayBuffer();})
+      .then(ab=>new Promise((res,rej)=>{const p=AC.decodeAudioData(ab,res,rej);if(p&&p.catch)p.catch(rej);}))
+      .then(b=>{BUF[n]=b;BUFBUSY[n]=0;}).catch(()=>{BUFBUSY[n]=0;});}catch(e){BUFBUSY[n]=0;}
+  }
+}
+function pb(name,o){
+  const b=BUF[name];if(!b||!AC)return 0;o=o||{};
+  const s=AC.createBufferSource(),g=AC.createGain(),rate=o.rate||1;
+  s.buffer=b;s.playbackRate.value=rate;g.gain.value=o.vol==null?1:o.vol;
+  if(o.dist){const lp=AC.createBiquadFilter();lp.type='lowpass';lp.frequency.value=1100;g.connect(lp);lp.connect(sfxBus);}else g.connect(sfxBus);
+  s.connect(g);s.start(AC.currentTime+.005+(o.delay||0));
+  s.onended=()=>{try{g.disconnect();}catch(e){}};
+  if(SMPHOOK){try{SMPHOOK(name,o);}catch(e){}}
+  return b.duration/rate+(o.delay||0);
+}
+function duck(d){try{ambBus.gain.setTargetAtTime(.3,AC.currentTime,.03);clearTimeout(duckT);duckT=setTimeout(applyAudioFlags,Math.min(1500,d*1000+200));}catch(e){}}
+function hornSample(o){
+  const k=o.kind||'ego',v=o.vol==null?1:o.vol,dist=o.dist;let du=0,ok=false;
+  const P=(n,r,vol,dl)=>{const d=pb(n,{rate:r,vol:vol*v*(dist?.5:1),delay:dl||0,dist});du=Math.max(du,d);return d>0;};
+  if(k==='ego'){let vk='tuk';try{vk=curVeh().kind;}catch(e){}
+    if(vk==='tuk'){ok=P('horn3',1,.7,0);P('horn3',1,.7,.22);}
+    else if(vk==='taxi')ok=P('horn1',1,.6);
+    else if(vk==='bus')ok=P('horn2',1,.6);
+    else{ok=P('horn3',.8,.7,0);P('horn3',.8,.7,.26);}}
+  else if(k==='car')ok=Math.random()<.5?P('horn1',rnd(.9,1.1),.6):P('horn2',rnd(.9,1.1),.55);
+  else if(k==='bus')ok=P('horn2',rnd(.85,1),.6);
+  else if(k==='truck')ok=P('horn2',.65,.65);
+  else if(k==='bike'){ok=P('horn3',1.3,.6);P('horn3',1.3,.6,.18);}
+  else{ok=P('horn1',rnd(.95,1.05),.6);P('horn1',rnd(.95,1.05),.6,.17);P('horn1',1,.6,.34);}
+  if(!ok)return null;duck(du);return{du,rep:true};
+}
+function trySample(name,o){
+  switch(name){
+    case 'horn':return hornSample(o);
+    case 'fare':{const d=pb('bell',{vol:.8});return d?{du:d,rep:true}:null;}
+    case 'bell':{const d=pb('bell',{rate:(o.pitch||1)*.9,vol:(o.vol||1)*.6});return d?{du:d,rep:true}:null;}
+    case 'startup':{const d=pb('startup',{vol:.7});return d?{du:d,rep:true}:null;}
+    case 'bump':case 'pothole':{const d=pb('thud',{rate:name==='bump'?.85:1,vol:.8});return d?{du:d,rep:false}:null;}
+  }
+  return null;
+}
 function snd(name,o){
   if(SNDHOOK){try{SNDHOOK(name,o);}catch(e){}}
   if(!AC||muted||!SAVE.sfx||voices>=16)return;
-  const f=S[name];if(!f)return;
-  try{const du=f(AC,sfxBus,AC.currentTime+.005,o||{});voices++;setTimeout(()=>{voices--;},Math.max(80,(du||.3)*1000));}catch(e){}
+  o=o||{};let du=0,done=false;
+  try{const r=trySample(name,o);if(r){du=r.du;done=r.rep;}}catch(e){}
+  if(!done){const f=S[name];if(f){try{du=Math.max(du,f(AC,sfxBus,AC.currentTime+.005,o)||.3);}catch(e){}}}
+  voices++;setTimeout(()=>{voices--;},Math.max(80,(du||.3)*1000));
+}
+const ENGS={tuk:['eng_tuk',.8,1.9],taxi:['eng_car',.8,1.5],vint:['eng_car',.8,1.5],bus:['eng_bus',.8,1.4]};
+function buildSampEngine(kind){
+  const cfg=ENGS[kind]||ENGS.tuk,b=BUF[cfg[0]];if(!b||!AC)return null;
+  const srcs=[],mk=buf=>{const s=AC.createBufferSource();s.buffer=buf;s.loop=true;srcs.push(s);return s;};
+  const main=mk(b),mg=AC.createGain();mg.gain.value=0;main.connect(mg);mg.connect(engBus);main.start();
+  const revs=[];
+  for(let i=0;i<6;i++){const rb=BUF['rev'+i];if(!rb){revs.push(null);continue;}const s=mk(rb),g=AC.createGain();g.gain.value=0;s.connect(g);g.connect(engBus);s.start(0,Math.random()*rb.duration*.5);revs.push(g);}
+  return{kind,off:false,
+    stop(){for(const s of srcs){try{s.stop();}catch(e){}}try{mg.disconnect();}catch(e){}for(const g of revs)if(g)try{g.disconnect();}catch(e){}},
+    set(cx,r,act,boost,gas){
+      const t=cx.currentTime,rr=Math.min(r,1.05),rate=(cfg[1]+(cfg[2]-cfg[1])*Math.min(rr,1))*(boost?1.08:1)*(gas?1.04:1);
+      main.playbackRate.setTargetAtTime(rate,t,.08);
+      mg.gain.setTargetAtTime(act?.5*(.7+.4*rr)*(gas?1.15:1):0,t,.08);
+      const a=act?Math.max(clamp((rr-.55)/.45,0,1)*.6,boost?1:0)*.28:0,p=Math.min(rr,1)*5,lo=Math.min(4,Math.floor(p)),fr=p-lo;
+      revs.forEach((g,i)=>{if(g)g.gain.setTargetAtTime(i===lo?a*(1-fr):i===lo+1?a*fr:0,t,.1);});
+    }};
+}
+const AS={sTraffic:.3,sCrowd:.4};
+function buildSampAmb(){
+  const L={},srcs=[];let n=0;
+  for(const k of[['sTraffic','amb_traffic'],['sCrowd','amb_crowd']]){const b=BUF[k[1]];if(!b)continue;const s=AC.createBufferSource(),g=AC.createGain();s.buffer=b;s.loop=true;g.gain.value=0;s.connect(g);g.connect(ambBus);s.start(0,Math.random()*b.duration);L[k[0]]=g;srcs.push(s);n++;}
+  if(!n)return null;
+  return{n,off:false,stop(){for(const s of srcs){try{s.stop();}catch(e){}}for(const k in L)try{L[k].disconnect();}catch(e){}},
+    set(cx,tg,tc){const t=cx.currentTime;for(const k in L)L[k].gain.setTargetAtTime(tg?(tg[k]||0)*AS[k]:0,t,tc||1);}};
 }
 /* engine: per-vehicle timbre. tuk = pulsed "tak-tak-tak" putter */
 const ENG={
@@ -273,9 +350,25 @@ function ambTarget(){
   if(z===0)t.crowd=.8;else if(z===1)t.crowd=1;else if(z===2){t.water=.9;t.wind=.25;t.crowd=.15;}else t.wind=.7;
   if(Lgt<.5&&z!==1)t.cricket=.8;
   t.rain=rainA;t.wind=Math.max(t.wind,sandA);t.crowd*=1-rainA*.5;
+  const st=((stageNo(G.dist)-1)%12)+1;
+  t.sTraffic=z===0?1:z===1?.3:z===2?.5:0;
+  t.sCrowd=z===1?1:z===0?((st===1||st===7)?1:.3):0;
+  t.sTraffic*=1-rainA*.4;
+  if(BUF.amb_crowd)t.crowd=0;
   return t;
 }
-function ambSet(tg){try{if(AC&&AMB)AMB.set(AC,(SAVE.sfx&&!muted)?tg:null,tg?1:.15);}catch(e){}}
+function ambSet(tg){try{
+  const on=AC&&tg&&SAVE.sfx&&!muted;
+  if(AC&&AMB)AMB.set(AC,on?tg:null,tg?1:.15);
+  if(on){
+    const av=(BUF.amb_traffic?1:0)+(BUF.amb_crowd?1:0);
+    if(av&&(!SAMP||SAMP.n<av)){if(SAMP)SAMP.stop();SAMP=buildSampAmb();}
+    if(SAMP){SAMP.off=false;SAMP.set(AC,tg,1.2);}
+  }else if(SAMP){
+    SAMP.set(AC,null,.15);
+    if(!SAMP.off){SAMP.off=true;setTimeout(()=>{if(SAMP&&SAMP.off){SAMP.stop();SAMP=null;}},900);}
+  }
+}catch(e){}}
 function honkNPC(o,angry){const k=o.ty==='bus'?'bus':o.ty==='truck'?'truck':o.ty==='bike'?'bike':'car';snd('horn',{kind:angry?'angry':k,pitch:rnd(.9,1.15),vol:.8});}
 function ambTick(dt){
   G.ambT=(G.ambT||3)-dt;G.ambS=(G.ambS||0)-dt;
@@ -311,26 +404,39 @@ function audioInit(){
       const C=window.AudioContext||window.webkitAudioContext;if(!C)return;
       AC=new C();master=AC.createGain();master.gain.value=muted?0:.85;
       comp=AC.createDynamicsCompressor();comp.threshold.value=-14;comp.ratio.value=6;comp.attack.value=.004;comp.release.value=.2;
-      master.connect(comp);comp.connect(AC.destination);
+      const lim=AC.createDynamicsCompressor();lim.threshold.value=-4;lim.knee.value=0;lim.ratio.value=20;lim.attack.value=.001;lim.release.value=.08;
+      master.connect(comp);comp.connect(lim);lim.connect(AC.destination);
       sfxBus=AC.createGain();engBus=AC.createGain();ambBus=AC.createGain();sfxBus.connect(master);engBus.connect(master);ambBus.connect(master);
       AMB=buildAmb(AC,ambBus);engineKind();applyAudioFlags();
     }
     if(AC.state==='suspended')AC.resume();
+    loadSamples();
   }catch(e){}
 }
 function engineKind(){
   if(!AC)return;
   let k='tuk';try{k=curVeh().kind;}catch(e){}
+  if(SE&&SE.kind!==k){SE.stop();SE=null;}
   if(EN&&EN.kind===k)return;
   if(EN)EN.stop();
   EN=buildEngine(AC,engBus,k);
 }
 function engineUpdate(r,on,boost,gas){
-  if(!AC||!EN)return;
-  try{EN.set(AC,r,on&&SAVE.sfx&&!muted,boost,gas);if(!on)ambSet(null);}catch(e){}
+  if(!AC)return;
+  try{
+    const act=!!(on&&SAVE.sfx&&!muted);
+    if(act&&!SE){let k='tuk';try{k=curVeh().kind;}catch(e){}SE=buildSampEngine(k);}
+    if(SE){
+      SE.set(AC,r,act,boost,gas);
+      if(act)SE.off=false;
+      else if(!SE.off){SE.off=true;setTimeout(()=>{if(SE&&SE.off){SE.stop();SE=null;}},900);}
+    }
+    if(EN)EN.set(AC,r,act&&!SE,boost,gas);
+    if(!on)ambSet(null);
+  }catch(e){}
 }
 const SND={};
-['horn','coin','crash','bump','pothole','near','fuel','fare','deliver','stage','nitro','over','click','screech','burble'].forEach(n=>{SND[n]=o=>snd(n,o);});
+['horn','coin','crash','bump','pothole','near','fuel','fare','deliver','stage','nitro','over','click','screech','burble','startup'].forEach(n=>{SND[n]=o=>snd(n,o);});
 function setMuted(m){muted=m;SAVE.mute=m;persist();try{if(master)master.gain.setTargetAtTime(m?0:.85,AC.currentTime,.02);}catch(e){}if(m)cheerStop();$('bm').textContent=m?'🔇':'🔊';}
 /* offline self-test: renders every sound/engine/ambience layer and reports peak + RMS */
 async function audioTest(){
@@ -1570,7 +1676,8 @@ function startGame(){
   newGame(false);state='play';setUI('play');
   for(const k in held)held[k]=0;
   say('يلّا بينا يا أسطى!','p','#fff');clockReset=true;
-  engineKind();cheerLast=-1e9;cheer('start');
+  engineKind();loadSamples();cheerLast=-1e9;cheer('start');
+  if(BUF.startup)SND.startup();else setTimeout(()=>{if(state==='play')SND.startup();},600);
 }
 function pauseGame(){if(state!=='play')return;state='pause';for(const k in held)held[k]=0;$('pm').style.display='flex';engineUpdate(0,false);cheerStop();persist();}
 function resumeGame(){if(state!=='pause')return;state='play';$('pm').style.display='none';clockReset=true;}
@@ -1608,7 +1715,7 @@ function frame(t){
   if(n>=6)accT=0;
   try{render();}catch(e){if(!window.__rerr){window.__rerr=1;console.error(e);}}
 }
-window.__tk={audioTest,S,snd,setHook(f){SNDHOOK=f;},cheerFn:()=>cheerEl&&cheerEl.src,get EN(){return EN;},get AMB(){return AMB;},get AC(){return AC;},get muted(){return muted;},setMuted,mk,get G(){return G;},get state(){return state;},SAVE:()=>SAVE,startGame,showMenu,TY,RH,LW,VIEW};
+window.__tk={BUF,setSmpHook(f){SMPHOOK=f;},get SE(){return SE;},get SAMP(){return SAMP;},audioTest,S,snd,setHook(f){SNDHOOK=f;},cheerFn:()=>cheerEl&&cheerEl.src,get EN(){return EN;},get AMB(){return AMB;},get AC(){return AC;},get muted(){return muted;},setMuted,mk,get G(){return G;},get state(){return state;},SAVE:()=>SAVE,startGame,showMenu,TY,RH,LW,VIEW};
 showMenu();
 requestAnimationFrame(frame);
 </script>
