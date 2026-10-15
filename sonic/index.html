@@ -39,6 +39,7 @@ body.inmenu .tb{display:none!important}
 #chs button{width:78px;padding:4px 2px 5px;border-radius:12px;border:3px solid #4b6aa8;background:#14285a;color:#fff;font:bold 13px Tahoma,Arial,sans-serif;cursor:pointer}
 #chs button img{display:block;width:54px;height:54px;border-radius:50%;margin:0 auto 3px;object-fit:cover;background:#1a2548}
 #chs button.sel{border-color:#ffd23c;background:#4a4416;box-shadow:0 0 10px #ffd23c88}
+#menu a.home{display:block;margin:6px auto 2px;padding:7px 12px;width:fit-content;border-radius:10px;background:#1f8f4a;color:#fff;text-decoration:none;font:bold 14px Tahoma,Arial,sans-serif}
 #go{position:sticky;bottom:0;z-index:2;box-shadow:0 -8px 12px rgb(8,18,48);width:100%;margin-top:8px;font:bold 24px Tahoma,Arial,sans-serif;padding:11px;border-radius:12px;border:0;background:linear-gradient(#ff5a4a,#c01822);color:#fff}
 #menu .ck{display:flex;align-items:center;justify-content:center;gap:8px;font-size:15px}
 #menu small{display:block;margin-top:8px;color:#9fb4d8;font-size:12px;line-height:1.6}
@@ -88,7 +89,7 @@ d.textContent='خطأ / Error: '+(e.message||'')+' — حدّث المتصفح �
 <div class="tb" id="bj">قفز</div><div class="tb" id="ba">هجوم</div><div class="tb" id="bs">تبديل</div>
 <div id="pz"><div class="box"><h2>🔒 لغز الباب</h2><div id="pzq"></div><div id="pzo"></div><small id="pzs"></small><button id="pzx">↩ رجوع</button></div></div>
 <div id="pm"><div class="box"><h2>⏸ إيقاف مؤقت</h2>
-<button id="pr">▶ متابعة اللعب</button><button id="prs">🔄 إعادة الفصل</button><button id="px">🚪 خروج للقائمة الرئيسية</button></div></div>
+<button id="pr">▶ متابعة اللعب</button><button id="prs">🔄 إعادة الفصل</button><button id="px">🚪 خروج للقائمة الرئيسية</button><button id="ph" style="background:#1f8f4a">🏠 الصفحة الرئيسية للألعاب</button></div></div>
 <div id="menu"><div class="box">
 <h1>سونيك</h1><h2>مغامرة الفيلم</h2>
 <label for="nm">اسم اللاعب</label>
@@ -99,14 +100,15 @@ d.textContent='خطأ / Error: '+(e.message||'')+' — حدّث المتصفح �
 <div id="vsel"><button id="vt">🔊 جرّب الصوت</button></div>
 <small id="vst"></small>
 <label class="ck"><input type="checkbox" id="vc" checked> التشجيع بصوت مصري</label>
+<a class="home" href="../">🏠 الصفحة الرئيسية للألعاب</a>
 <small id="ctl"></small>
-<small>الإصدار 12 · تسجيل بصوت بشري</small>
+<small>الإصدار 13 · تسجيل بصوت بشري</small>
 <small>لعبة معجبين غير رسمية وغير تجارية — الشخصيات ملك SEGA / Paramount. يُحفظ تقدمك تلقائيًا على هذا الجهاز.</small>
 </div></div>
 <div id="rot">📱↻<br>أدِر جهازك بالعرض (أفقيًا) للعب</div>
 <script>
 'use strict';
-const BUILD=12;
+const BUILD=13;
 (function(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{if(j.v>BUILD&&!sessionStorage.getItem('rl'+j.v)){sessionStorage.setItem('rl'+j.v,'1');location.replace(location.pathname+'?v='+j.v+'&t='+Date.now());}}).catch(()=>{});}catch(e){}})();
 const W=960,H=540,GR=.6,FONT='Tahoma, Arial, sans-serif';
 const cv=document.getElementById('c'),g=cv.getContext('2d');
@@ -154,7 +156,7 @@ function sfx(n){if(!AC)return;const S=SFX[n],t=AC.currentTime,o=AC.createOscilla
   v.gain.setValueAtTime(.07,t);v.gain.exponentialRampToValueAtTime(.001,t+S[2]);o.start(t);o.stop(t+S[2]);}
 
 /* ---------- image assets (portraits + sprites) ---------- */
-const IMG={};['p_sonic.jpg','p_tails.jpg','p_knuckles.jpg','p_super.jpg','p_silver.jpg','p_amy.jpg'].forEach(n=>{const i=new Image();i.src='assets/'+n+'?v=12';IMG[n.replace(/\.[a-z]+$/,'')]=i;});
+const IMG={};['p_sonic.jpg','p_tails.jpg','p_knuckles.jpg','p_super.jpg','p_silver.jpg','p_amy.jpg'].forEach(n=>{const i=new Image();i.src='assets/'+n+'?v=13';IMG[n.replace(/\.[a-z]+$/,'')]=i;});
 const imgOK=i=>!!(i&&i.complete&&i.naturalWidth>0);
 const PORT=['p_sonic','p_tails','p_knuckles',null];
 let SUPERDRAW=false;
@@ -435,7 +437,7 @@ const unlockedFor=n=>[1,n>=2?1:0,n>=3?1:0,n>=4?1:0];
 let voiceOn=SAVE.voice!==false,lastSpeak=0,toast={t:'',n:0},idle=0;
 /* Egyptian-Arabic cheering: pre-recorded neural voice clips (assets/v/) + subtitles */
 const CHEER={"start": ["يلا يا بطل!", "يلا بينا!", "يلا، صاحبك مستنيك تنقذه!", "يلا نكسر الدنيا!"], "ring": ["هايل!", "إيه ده! حلقات كتير!", "كمل كمل!"], "kill": ["تمام كده!", "هايل!", "برافو عليك!", "ده إنت قدها!"], "hurt": ["خد بالك!", "ركز شوية!"], "die": ["معلش، حاول تاني!", "ولا يهمك، إنت قدها!", "قوم تاني يا بطل!"], "cp": ["برافو! كمل!", "حلو قوي!"], "free": ["عاش! خلصت صاحبك!", "برافو عليك!", "هايل! الفريق كبر!"], "boss": ["ضربة حلوة!", "كمل كمل!", "ده إنت قدها!"], "half": ["قربت تخلص عليه، كمل!"], "done": ["برافو! عديت الفصل!", "هايل يا بطل!"], "win": ["مبروك! إنت أحسن بطل!", "عاش يا بطل!"], "idle": ["شد حيلك!", "يلا يا بطل!", "إنت قدها!"], "super": ["اجري يا بطل!", "سوبر! محدش هيلحقك!"]};
-let VDIR='v';const vurl=f=>'assets/'+VDIR+'/'+f+'.mp3?v=12';
+let VDIR='v';const vurl=f=>'assets/'+VDIR+'/'+f+'.mp3?v=13';
 const VA=new Audio();VA.preload='auto';
 function unlockVoice(){try{VA.muted=true;VA.src=vurl('start0');const pr=VA.play();(pr&&pr.then?pr:Promise.resolve()).then(()=>{VA.pause();VA.muted=false;}).catch(()=>{VA.muted=false;});}catch(e){}}
 function stopVoice(){try{VA.onended=null;VA.pause();}catch(e){}}
@@ -816,7 +818,7 @@ function makeShadowIcon(){try{g.save();g.setTransform(1,0,0,1,0,0);g.clearRect(0
 const CHOICES=[['سونيك','assets/p_sonic.jpg'],['تيلز','assets/p_tails.jpg'],['ناكلز','assets/p_knuckles.jpg'],['شادو',null]];
 function buildChars(){const box=$('chs');box.innerHTML='';
   CHOICES.forEach((c,i)=>{const b=document.createElement('button');if(i===selCh)b.className='sel';
-    const im=document.createElement('img');im.alt=c[0];im.src=c[1]?c[1]+'?v=12':(SHADOW_ICON||'');b.appendChild(im);b.appendChild(document.createTextNode(c[0]));
+    const im=document.createElement('img');im.alt=c[0];im.src=c[1]?c[1]+'?v=13':(SHADOW_ICON||'');b.appendChild(im);b.appendChild(document.createTextNode(c[0]));
     b.onclick=()=>{selCh=i;buildChars();};box.appendChild(b);});}
 function buildLevels(){const rd=SAVE.reached||0,box=$('lv');box.innerHTML='';
   for(let i=0;i<LV.length;i++){const b=document.createElement('button');
@@ -880,6 +882,7 @@ function pauseGame(){if(state!=='play')return;state='pause';for(const k in held)
 function resumeGame(){$('pm').style.display='none';document.body.classList.remove('inmenu');state='play';}
 $('pr').onclick=resumeGame;
 $('prs').onclick=()=>{$('pm').style.display='none';document.body.classList.remove('inmenu');run.lives=5;run.score=(SAVE.scores&&SAVE.scores[lvl])||0;run.unlocked=unlockedFor(lvl);beginLevel(lvl);};
+$('ph').onclick=()=>{location.href='../';};
 $('px').onclick=()=>{$('pm').style.display='none';showMenu();};
 SHADOW_ICON=makeShadowIcon();
 showMenu();
