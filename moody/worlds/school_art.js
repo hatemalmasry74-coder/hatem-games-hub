@@ -23,7 +23,7 @@
     [[20, 230, 110, 150, '#ffd0a8'], [140, 260, 100, 120, '#d9c7f5'], [680, 250, 120, 130, '#ffe29a'], [820, 220, 110, 160, '#c9eed0']].forEach(b => building(g, b[0], b[1], b[2], b[3], b[4], t));
     // school building
     rr(g, 300, 190, 330, 190, 8, '#ffd23c', 5); G.poly(g, [[290, 192], [465, 130], [640, 192]], '#ef5350', 5); rr(g, 420, 290, 90, 90, 6, '#8a5a3a', 4.5); G.line(g, 465, 290, 465, 380, 4);
-    [330, 540].forEach(x => rr(g, x, 224, 64, 58, 4, '#bfe8ff', 4)); rr(g, 380, 196, 170, 40, 8, '#fff7e3', 4); G.text(g, 'مدرسة الأمل', 465, 217, { size: 26, color: '#c25a00' });
+    [330, 540].forEach(x => rr(g, x, 224, 64, 58, 4, '#bfe8ff', 4)); rr(g, 352, 196, 226, 40, 8, '#fff7e3', 4); G.text(g, 'مدرسة آل زياد الابتدائية', 465, 217, { size: 17, color: '#c25a00' });
     flag(g, 668, 390, t);
     // fence + trees
     for (let x = 270; x < 700; x += 26) if (x < 410 || x > 520) rr(g, x, 350, 12, 40, 3, '#fff', 3);
@@ -60,7 +60,7 @@
   R.sc_yard = function (g, t, s) {
     const S = s.state;
     g.fillStyle = G.lin(g, 0, 0, 0, 400, ['#8fd6ff', '#e8f7ff']); g.fillRect(0, 0, 960, 540); G.sun(g, 840, 80, 28, t); G.cloud(g, 150 + (t * 7) % 600, 90, 1.2);
-    building(g, 20, 130, 360, 270, '#ffd7a0', t); rr(g, 20, 118, 360, 20, 4, '#ef5350', 4); G.text(g, 'مدرسة الأمل', 200, 128, { size: 16, color: '#fff' });
+    building(g, 20, 130, 360, 270, '#ffd7a0', t); rr(g, 20, 118, 360, 20, 4, '#ef5350', 4); G.text(g, 'مدرسة آل زياد الابتدائية', 200, 128, { size: 14, color: '#fff' });
     tree(g, 430, 400, 1.2); tree(g, 900, 400, 1);
     g.fillStyle = '#9fdc92'; g.fillRect(0, 400, 960, 140); G.line(g, 0, 400, 960, 400, 4);
     g.fillStyle = '#e0c9a0'; g.beginPath(); g.ellipse(480, 500, 520, 70, 0, 0, 6.3); g.fill();

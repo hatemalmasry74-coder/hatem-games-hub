@@ -1,0 +1,108 @@
+/* Moody & Aboody - engine/voice.js : pre-recorded voice narration (NOT speechSynthesis).
+   Clips live in assets/voice/<hash>.mp3 and are listed in assets/voice/manifest.json {hash:{voice,text}}.
+   id = voiceHash(text) (see DEV.md "Voice system" + tools/voice_hash.py: the two MUST stay identical).
+   A clip is only requested when its hash is in the manifest, so a missing clip is silent and never an error. */
+(function () {
+  'use strict';
+  const M = window.Moody;
+  const DEFAULTS = { m: 'مودي', a: 'عبودي', me: 'يا بطل', t: 'توتا', n: 'نيمو' };
+  const V = M.voice = { manifest: null, loading: null, last: null, instruction: null, cur: null, queue: [], busy: false, collect: /[?&]collectvoice=1/.test(location.search), log: [] };
+  if (V.collect) { window.__voiceLog = V.log; setTimeout(() => V.noteFixed && V.noteFixed(), 0); }
+
+  /* ---- normalisation + hash (identical to tools/voice_hash.py) ---- */
+  V.resolve = s => String(s == null ? '' : s).replace(/\{m\}/g, DEFAULTS.m).replace(/\{a\}/g, DEFAULTS.a).replace(/\{t\}/g, DEFAULTS.t).replace(/\{n\}/g, DEFAULTS.n).replace(/\{me\}/g, DEFAULTS.me).replace(/[ \t\r\n ]+/g, ' ').trim();
+  V.normalize = s => V.resolve(s).replace(/[ً-ٰٟـ]/g, '');
+  function fnv(bytes, h) { for (let i = 0; i < bytes.length; i++) { h ^= bytes[i]; h = Math.imul(h, 0x01000193) >>> 0; } return h >>> 0; }
+  const hex8 = n => ('00000000' + n.toString(16)).slice(-8);
+  V.hash = s => { const b = new TextEncoder().encode(V.normalize(s)); return (hex8(fnv(b, 0x811c9dc5)) + hex8(fnv(b, 0x9747b28c))).slice(0, 12); };
+
+  /* ---- speaker -> voice id (what the offline TTS should use) ---- */
+  const VOICES = { narrator: 'narrator', moody: 'boy_big', aboody: 'boy_small', mama: 'mama', baba: 'baba', toota: 'girl_big', nemo: 'girl_small', nana: 'nana', friend: 'boy_big' };
+  V.voiceFor = sp => VOICES[sp] || (M.voice.extraVoices && M.voice.extraVoices[sp]) || 'narrator';
+  V.extraVoices = {};                       // worlds may add: Moody.voice.extraVoices.sara = 'girl_big'
+
+  V.enabled = () => M.save.data.settings.narr !== false && M.audio.on();
+  V.setEnabled = on => { M.save.data.settings.narr = !!on; M.save.commit(); if (!on) V.stop(); };
+
+  /* ---- collection harness ---- */
+  V.note = function (text, speaker) {
+    if (!V.collect || !text) return; const t = V.resolve(text); if (!t) return; const sp = V.voiceFor(speaker || 'narrator');
+    if (!V.log.some(e => e.text === t && e.speaker === sp)) V.log.push({ text: t, speaker: sp, hash: V.hash(t) });
+  };
+  V.dump = () => JSON.stringify(V.log);
+
+  /* fixed UI phrases that the engine speaks by itself (collected by tools/collect_voice.js) */
+  V.fixedStrings = [['قريب! جرّب تاني', 'narrator'], ['شبه الإجابة! جرّب مرة كمان', 'narrator'], ['محاولة حلوة! كمّل', 'narrator'], ['تعالوا نشوفها سوا!', 'narrator'], ['فكّر تاني بهدوء', 'narrator'],
+    ['برافو! ممتاز!', 'narrator'], ['شاطرين أوي!', 'narrator'], ['أحسنتم!', 'narrator'], ['حكمة اليوم', 'narrator'], ['اللي يعمل خير يلاقي خير', 'narrator'],
+    ['صوت التعليمات شغّال', 'narrator'], ['خلّصوا المهمة اللي قبلها الأول', 'narrator'], ['قريبًا! لسه بنجهّزه', 'narrator'], ['محتاجين عملات أكتر! كمّلوا المهام', 'narrator'],
+    ['دوري الأول!', 'aboody'], ['وأنا دوري!', 'moody'], ['دوس في أي مكان عشان تقفز!', 'narrator'], ['اسحب الفرشة على الأماكن الوسخة', 'narrator'],
+    ['مش هنا.. جرّب مكان تاني', 'narrator'], ['مش دلوقتي.. فكّر في الأول', 'aboody'], ['ده تقيل أوي! محتاجين مودي', 'aboody'], ['محتاجين مودي الطويل', 'aboody'], ['محتاجين عبودي الصغير', 'moody'],
+    ['بابا بيتصل بيكم! اضغطوا عشان تردّوا.', 'narrator'], ['احكوا لبابا عن يومكم', 'narrator'], ['يوم حلو أوي', 'narrator'], ['يوم عادي', 'narrator'], ['تعبانين شوية', 'narrator'], ['ردّوا على بابا', 'narrator'], ['عملنا كده!', 'narrator'], ['اضغطوا لما تخلّصوا', 'narrator']];
+  V.noteFixed = () => V.fixedStrings.forEach(x => V.note(x[0], x[1]));
+  /* ---- manifest (lazy, silent on failure) ---- */
+  function load() {
+    if (V.loading) return V.loading;
+    V.loading = new Promise(res => { try { fetch('assets/voice/manifest.json?v=' + M.VERSION).then(r => r.ok ? r.json() : {}).then(j => { V.manifest = j && typeof j === 'object' ? j : {}; res(); }).catch(() => { V.manifest = {}; res(); }); } catch (e) { V.manifest = {}; res(); } });
+    return V.loading;
+  }
+  V.has = text => !!(V.manifest && V.manifest[V.hash(text)]);
+
+  /* ---- playback (one clip at a time; a new line cancels the previous) ---- */
+  let token = 0, pausedByGame = false;
+  V.stop = function () { token++; V.queue = []; if (V.cur) { try { V.cur.pause(); } catch (e) { } V.cur = null; } V.busy = false; };
+  function playNext(tk) {
+    if (tk !== token) return;
+    const it = V.queue.shift(); if (!it) { V.busy = false; V.cur = null; return; }
+    if (!V.has(it.text)) { playNext(tk); return; }            // missing clip: silent, move on
+    try {
+      const a = new Audio('assets/voice/' + V.hash(it.text) + '.mp3'); V.cur = a; V.busy = true; a.volume = 1;
+      const nxt = () => { if (tk !== token) return; V.cur = null; setTimeout(() => playNext(tk), it.gap == null ? 250 : it.gap); };
+      a.addEventListener('ended', nxt); a.addEventListener('error', nxt);
+      const p = a.play(); if (p && p.catch) p.catch(nxt);
+    } catch (e) { V.busy = false; }
+  }
+  function start(items, opts) {
+    opts = opts || {};
+    if (opts.soft && V.busy) return;                           // soft lines never cut a playing clip
+    V.stop(); const tk = token;
+    V.queue = items.slice();
+    const go = () => {
+      if (tk !== token) return;
+      if (M.audio.cheering) { const iv = setInterval(() => { if (tk !== token) { clearInterval(iv); return; } if (!M.audio.cheering) { clearInterval(iv); playNext(tk); } }, 120); return; }   // never overlap the owner's cheer clips
+      playNext(tk);
+    };
+    if (V.manifest) go(); else load().then(go);
+  }
+  V.speak = function (text, o) {
+    o = o || {}; if (!text) return; const t = V.resolve(text);
+    V.note(t, o.speaker); V.last = { text: t, speaker: o.speaker || 'narrator' };
+    if (o.instruction) V.instruction = V.last;
+    if (!V.enabled() && !o.force) return;
+    start([{ text: t, speaker: o.speaker }], o);
+  };
+  /* read several texts one after another (e.g. the answer choices) */
+  V.speakSeq = function (texts, o) {
+    o = o || {}; const items = texts.filter(Boolean).map(t => { const r = V.resolve(t); V.note(r, o.speaker); return { text: r, speaker: o.speaker, gap: 450 }; });
+    if (!items.length || (!V.enabled() && !o.force)) return; start(items, o);
+  };
+  /* the current task instruction (HUD prompt): spoken when it appears, replayable with the "ماذا نفعل؟" button */
+  V.setInstruction = function (text) { if (!text) return; V.speak(text, { speaker: 'narrator', instruction: true }); };
+  V.replay = function () { const x = V.instruction || V.last; if (x) { V.speak(x.text, { speaker: x.speaker, force: true }); } };
+  V.replayLast = function () { if (V.last) V.speak(V.last.text, { speaker: V.last.speaker, force: true }); };
+  V.clearInstruction = () => { V.instruction = null; };
+
+  /* pause / resume with the game, respect mute */
+  M.hooks.frame.push(() => {
+    if (!V.cur) return;
+    if (M.paused && !pausedByGame) { pausedByGame = true; try { V.cur.pause(); } catch (e) { } }
+    else if (!M.paused && pausedByGame) { pausedByGame = false; try { const p = V.cur.play(); if (p && p.catch) p.catch(() => { }); } catch (e) { } }
+    if (!M.audio.on() && V.cur) V.stop();
+  });
+  /* long-press helper: pressing an element for 500 ms speaks `getText()` and swallows the click */
+  V.pressSpeak = function (el, getText, speaker) {
+    let tm = null, fired = false;
+    el.addEventListener('pointerdown', () => { fired = false; tm = setTimeout(() => { fired = true; V.speak(getText(), { speaker: speaker || 'narrator', force: true }); }, 500); });
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach(e => el.addEventListener(e, () => clearTimeout(tm)));
+    el.addEventListener('click', e => { if (fired) { e.stopImmediatePropagation(); e.preventDefault(); fired = false; } }, true);
+  };
+})();

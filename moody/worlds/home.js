@@ -70,6 +70,7 @@
           await ctx.say('aboody', 'مممم! الفول بتاع ماما أحلى حاجة!');
           await ctx.games.ritual({ text: 'الحمد لله', sub: 'بعد الأكل', who: 'aboody' });
           await ctx.say('mama', 'الله يبارك فيكم! يلا على اليوم الجديد.');
+          await ctx.say('moody', 'بعد الفطار هننزل بالأسانسير من الدور السادس.. ونعدّي نسلّم على ننا زوزا في الدور التالت.');
           ctx.reward.star(1);
           return ctx.nav.complete();
         }
@@ -233,6 +234,7 @@
           const st = ctx.stage;
           await ctx.scene('balcony', { heroes: { moody: { x: 400, y: 485, dir: 1 }, aboody: { x: 500, y: 495, dir: 1 } } });
           await ctx.say('aboody', 'بُص يا {m}! القمر طلع والنجوم بتلمع!');
+          await ctx.say('moody', 'إحنا في الدور السادس.. وتحت في الدور التالت بيت ننا زوزا. تصبح على خير يا ننا!');
           await ctx.say('moody', 'سبحان الله.. اليوم خلص بسرعة. يلا ندخل نجهّز للنوم.');
           await ctx.scene('living', { state: { tvOn: true }, heroes: { moody: { x: 400, y: 480, dir: 1 }, aboody: { x: 500, y: 490, dir: 1 } } });
           await ctx.say('aboody', 'التلفزيون والمروحة واللمبة شغّالين ومفيش حد!');

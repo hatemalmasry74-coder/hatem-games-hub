@@ -20,6 +20,11 @@
   const starRow = (n, px, max) => { const s = h('span', { class: 'stars' }); for (let i = 0; i < (max || 3); i++) s.append(ico('star', px || 28, { off: i >= n })); return s; };
   UI.starRow = starRow;
   const ar = U.ar;
+  A.registerAll({
+    phone(g) { G.fillRR(g, -26, -40, 52, 80, 12, '#fff', 5); G.fillRR(g, -20, -30, 40, 52, 4, '#6fd0ff', 2.5); G.circ(g, 0, 31, 5, '#ccc', 1.5); G.circ(g, 0, -6, 11, '#ffd2a8', 2.5); G.fillRR(g, -13, 2, 26, 14, 7, '#2f6fe0', 2.5); },
+    narr(g, o) { G.fillRR(g, -40, -36, 80, 58, 18, '#fff', 5); G.poly(g, [[-16, 18], [-26, 40], [6, 20]], '#fff', 5); G.fillRR(g, -34, -30, 68, 46, 14, '#fff', 0); [-18, -6, 6, 18].forEach((x, i) => { const hh = [10, 22, 16, 26][i]; G.fillRR(g, x - 4, -7 - hh / 2, 8, hh, 4, '#4a8dff', 0); }); if (o.off) { G.line(g, -34, -34, 34, 22, 8, '#ef5350'); } },
+    whatnow(g) { G.poly(g, [[-38, -14], [-22, -14], [-4, -30], [-4, 30], [-22, 14], [-38, 14]], '#fff', 4.5); g.lineWidth = 5; g.strokeStyle = '#fff'; g.beginPath(); g.arc(-2, 0, 18, -.9, .9); g.stroke(); G.text(g, '؟', 28, 3, { size: 52, color: '#fff', stroke: M.OL, sw: 7 }); }
+  });
 
   const scr = h('div', { id: 'scr' }), hudEl = h('div', { id: 'hud', style: 'display:none' }), over = h('div', { id: 'over', style: 'position:absolute;inset:0;pointer-events:none' });
   root.append(scr, hudEl, over); UI.scr = scr; UI.over = over;
@@ -29,7 +34,7 @@
   UI.clearScreen = () => UI.show(null);
 
   /* ---------- toasts / modals / popups ---------- */
-  UI.toast = function (text, ms) { const t = h('div', { class: 'toast' }, M.fmt(text)); over.append(t); setTimeout(() => t.remove(), ms || 2200); return t; };
+  UI.toast = function (text, ms) { const t = h('div', { class: 'toast' }, M.fmt(text)); over.append(t); M.voice.speak(text, { speaker: 'narrator', soft: true }); setTimeout(() => t.remove(), ms || 2200); return t; };
   UI.modal = function (content) { const m = h('div', { class: 'modal' }, h('div', { class: 'panel' }, content)); over.append(m); return { el: m, close: () => m.remove() }; };
   UI.confirm = function (msg, okLabel, cancelLabel) {
     return new Promise(res => {
@@ -47,20 +52,32 @@
   UI.hud = {
     show(stage, opts) {
       opts = opts || {}; hudEl.textContent = ''; hudEl.style.display = 'block';
-      const sw = h('div', { id: 'sw' }); const mk = id => h('button', { class: 'h', 'data-hero': id, 'aria-label': M.chars.defs[id].name, onclick: () => { stage.setActive(id); } }, h('img', { src: M.chars.avatar(id) + '?v=1', alt: '' }));
-      const bm = mk('moody'), ba = mk('aboody'); const mid = h('div', { class: 'sw' }, ico('swap', 38));
-      sw.append(bm, mid, ba); // visual order LTR: moody - swap - aboody
+      const sw = h('div', { id: 'sw' });
       const coin = h('div', { class: 'chip' }, ico('coin', 28), h('span', { id: 'coinv' }, ar(M.save.data.coins)));
       const star = h('div', { class: 'chip' }, ico('star', 28), h('span', { id: 'starv' }, ar(0)));
       const pause = h('button', { class: 'btn round blue', 'aria-label': 'إيقاف مؤقت', onclick: tap(() => hud.onPause && hud.onPause()) }, ico('pause', 40));
       const hr = h('div', { id: 'hr' }, pause, star, coin);
       const prompt = h('div', { id: 'prompt' });
-      hudEl.append(sw, hr, prompt); hud = { sw, bm, ba, prompt, hr, stage, onPause: opts.onPause };
-      const sync = () => { bm.classList.toggle('on', stage.active === 'moody'); ba.classList.toggle('on', stage.active === 'aboody'); }; hud.sync = sync; sync();
-      stage.onSwitch = sync;
+      const what = h('button', { id: 'what', class: 'btn round green', 'aria-label': 'ماذا نفعل؟', onclick: tap(() => M.voice.replay()) }, ico('whatnow', 46));
+      hudEl.append(sw, hr, prompt, what); hud = { sw, prompt, hr, what, stage, btns: {}, onPause: opts.onPause };
+      hud.sync = () => { for (const k in hud.btns) hud.btns[k].classList.toggle('on', stage.active === k); };
+      hud.build = () => {   // 2 heroes: big avatars + swap icon; 3-4 heroes: compact row
+        sw.textContent = ''; hud.btns = {}; const ids = stage.control, many = ids.length > 2; sw.className = many ? 'many' : '';
+        ids.forEach((id, i) => {
+          const face = M.chars.defs[id].img ? h('img', { src: M.chars.avatar(id) + '?v=1', alt: '' }) : ico('face:' + id, 76);
+          const b = h('button', { class: 'h', 'data-hero': id, 'aria-label': M.chars.defs[id].name, onclick: () => { stage.setActive(id); } }, face);
+          hud.btns[id] = b; sw.append(b); if (!many && i === 0 && ids.length === 2) sw.append(h('div', { class: 'sw' }, ico('swap', 38)));
+        });
+        prompt.style.left = (many ? 14 + ids.length * 64 + 14 : 246) + 'px'; hud.sync();
+      };
+      hud.build(); stage.onSwitch = hud.sync;
     },
+    rebuild() { if (hud) hud.build(); },
     hide() { hudEl.style.display = 'none'; hudEl.textContent = ''; hud = null; UI.skip.hide(); },
-    setPrompt(t) { if (!hud) return; hud.prompt.textContent = ''; if (t) hud.prompt.append(h('div', { class: 'p' }, M.fmt(t))); },
+    setPrompt(t) {
+      if (!hud) return; hud.prompt.textContent = '';
+      if (t) { hud.prompt.append(h('div', { class: 'p', onclick: () => M.voice.replay() }, ico('sound', 30), h('span', null, M.fmt(t)))); M.voice.setInstruction(t); } else M.voice.clearInstruction();
+    },
     update(stars) { const s = document.getElementById('starv'), c = document.getElementById('coinv'); if (s) s.textContent = ar(stars || 0); if (c) c.textContent = ar(M.save.data.coins); },
     pulseSwitch(on) { if (hud) hud.sw.classList.toggle('pulse', !!on); },
     showSwitch(v) { if (hud) hud.sw.style.display = v ? 'flex' : 'none'; }
@@ -77,13 +94,15 @@
     return new Promise(res => {
       const text = M.fmt(o.text), who = o.who;
       let face;
-      if (who === 'moody' || who === 'aboody') face = h('img', { src: M.chars.avatar(who) + '?v=1', alt: '' });
+      const defs = M.chars.defs;
+      if (defs[who] && defs[who].img) face = h('img', { src: M.chars.avatar(who) + '?v=1', alt: '' });
+      else if (defs[who] && !o.icon) face = ico('face:' + who, 90);
       else face = ico(o.icon || (who === 'narrator' || !who ? 'narrator' : who), 90);
-      const name = who === 'moody' ? M.save.data.names.moody : who === 'aboody' ? M.save.data.names.aboody : (o.name || { mama: 'ماما', baba: 'بابا', friend: 'ماجد' }[who] || '');
+      const name = who === 'moody' ? M.save.data.names.moody : who === 'aboody' ? M.save.data.names.aboody : (o.name || (defs[who] ? (M.save.data.names[who] || defs[who].name) : '') || { mama: 'ماما', friend: 'ماجد' }[who] || '');
       const nx = h('div', { class: 'nx' }, ico('arrow', 38, {}));
       nx.style.display = 'none';
-      const tx = h('div', { class: 'tx' }), el = h('div', { id: 'dlg', class: 'panel' }, h('div', { class: 'face' }, face), h('div', { style: 'flex:1;display:flex;flex-direction:column;gap:2px' }, name ? h('div', { class: 'nm' }, name) : null, tx), nx);
-      over.append(el);
+      const tx = h('div', { class: 'tx' }), el = h('div', { id: 'dlg', class: 'panel' }, h('div', { class: 'face' }, face), h('div', { style: 'flex:1;display:flex;flex-direction:column;gap:2px' }, name ? h('div', { class: 'nm' }, name) : null, tx), h('button', { class: 'btn round green rp', 'aria-label': 'اسمع تاني', onclick: e => { e.stopPropagation(); M.voice.speak(o.text, { speaker: who || 'narrator', force: true }); } }, ico('sound', 34)), nx);
+      over.append(el); M.voice.speak(o.text, { speaker: who || 'narrator' });
       let i = 0, typing = true, closed = false;
       const iv = setInterval(() => { i += 1; tx.textContent = text.slice(0, i); if (i >= text.length) fin(); }, 24);
       function fin() { clearInterval(iv); typing = false; tx.textContent = text; nx.style.display = 'block'; if (o.onTalk) o.onTalk(false); }
@@ -112,25 +131,29 @@
     const compact = !!(q.row || q.count || q.art || q.emoji);
     const btns = order.map(idx => {
       const c = q.choices[idx], txt = typeof c === 'string' || typeof c === 'number' ? String(c) : c.text, art = c && c.art;
-      const b = h('button', { class: 'opt', 'data-correct': idx === q.answer ? '1' : '0', 'data-i': idx, style: compact ? 'min-height:72px' : '' }, art ? ico(art, 56) : null, txt ? M.fmt(txt) : null);
+      const b = h('button', { class: 'opt', 'data-correct': idx === q.answer ? '1' : '0', 'data-i': idx, style: compact ? 'min-height:72px' : '' }, art ? ico(art, 56) : null, txt ? M.fmt(txt) : null, txt ? h('span', { class: 'spk', role: 'button', 'aria-label': 'اسمع', onclick: e => { e.stopPropagation(); M.voice.speak(txt, { speaker: 'narrator', force: true }); } }, ico('sound', 30)) : null);
+      if (txt) { M.voice.note(txt, 'narrator'); M.voice.pressSpeak(b, () => txt, 'narrator'); }
       b.addEventListener('click', () => pick(idx, b)); return b;
     });
     btns.forEach(b => ch.append(b));
     const who = o.who ? h('div', { style: 'position:absolute;right:14px;top:8px;display:flex;align-items:center;gap:8px;background:#fff;border:4px solid var(--line);border-radius:30px;padding:3px 14px 3px 4px;font-size:24px;font-weight:bold' }, h('img', { class: 'av', src: M.chars.avatar(o.who) + '?v=1', style: 'width:52px;height:52px;border-width:3px;box-shadow:none' }), 'دور ' + M.save.data.names[o.who]) : null;
-    const el = h('div', { id: 'qz', class: 'panel', style: (o.who ? 'padding-top:66px;' : '') }, who, h('div', { class: 'qt', style: q.q.length > 60 ? 'font-size:28px' : '' }, M.fmt(q.q)), vis, ch, hint);
-    over.append(el);
+    const choiceTexts = order.map(i => { const c = q.choices[i]; return typeof c === 'string' || typeof c === 'number' ? String(c) : c.text; }).filter(Boolean);
+    const rpl = h('button', { class: 'btn round green', style: 'position:absolute;left:14px;top:8px;min-width:56px;width:56px;min-height:56px', 'aria-label': 'اسمع السؤال', onclick: tap(() => M.voice.speak(q.q, { speaker: 'narrator', force: true })) }, ico('sound', 34));
+    const lst = h('button', { class: 'btn sm teal', style: 'position:absolute;left:82px;top:10px;min-height:52px;font-size:20px;padding:2px 14px', onclick: tap(() => M.voice.speakSeq(choiceTexts, { speaker: 'narrator', force: true })) }, ico('sound', 26), 'اسمع الاختيارات');
+    const el = h('div', { id: 'qz', class: 'panel', style: 'padding-top:66px;' }, who, rpl, lst, h('div', { class: 'qt', style: q.q.length > 60 ? 'font-size:28px' : '' }, M.fmt(q.q)), vis, ch, hint);
+    over.append(el); M.voice.speak(q.q, { speaker: 'narrator' }); if (q.hint) M.voice.note(q.hint, 'narrator'); if (q.explain) M.voice.note(q.explain, 'narrator');
     function pick(idx, b) {
       if (done) return;
       if (idx === q.answer) {
         done = true; b.classList.add('right'); M.audio.sfx('good'); btns.forEach(x => { if (x !== b) x.classList.add('gone'); });
-        hint.textContent = q.explain ? M.fmt(q.explain) : ''; hint.style.color = '#1d7f33';
+        hint.textContent = q.explain ? M.fmt(q.explain) : ''; hint.style.color = '#1d7f33'; if (q.explain) M.voice.speak(q.explain, { speaker: 'narrator' });
         setTimeout(() => { if (!closed) { close(); o.onDone && o.onDone({ correct: true, tries: misses + 1, misses, revealed: misses >= 3 }); } }, q.explain ? 1700 : 650);
       } else {
         misses++; M.audio.sfx('wrong'); b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong'); b.classList.add('gone'); b.style.pointerEvents = 'none';
         o.onMiss && o.onMiss(misses);
-        if (misses === 1) hint.textContent = U.pick(CLOSE);
-        else if (misses === 2) { hint.textContent = 'تلميح: ' + M.fmt(q.hint || 'فكّر تاني بهدوء'); }
-        else { hint.textContent = 'تعالوا نشوفها سوا!'; btns.forEach(x => { if (x.dataset.correct === '1') x.style.animation = 'pulse .8s infinite'; }); }
+        if (misses === 1) { const c = U.pick(CLOSE); hint.textContent = c; M.voice.speak(c, { speaker: 'narrator' }); }
+        else if (misses === 2) { hint.textContent = 'تلميح: ' + M.fmt(q.hint || 'فكّر تاني بهدوء'); M.voice.speak(q.hint || 'فكّر تاني بهدوء', { speaker: 'narrator' }); }
+        else { hint.textContent = 'تعالوا نشوفها سوا!'; M.voice.speak('تعالوا نشوفها سوا!', { speaker: 'narrator' }); btns.forEach(x => { if (x.dataset.correct === '1') x.style.animation = 'pulse .8s infinite'; }); }
         const left = btns.filter(x => x.dataset.correct !== '1' && !x.classList.contains('gone'));
         if (misses === 2 && left.length > 1) { const r = U.pick(left); r.classList.add('gone'); }
         hint.style.color = '#c25a00';
@@ -143,9 +166,11 @@
   /* choice cards (moral decisions) */
   UI.choiceCards = function (prompt, opts, onPick) {
     const row = h('div', { class: 'row', style: 'gap:18px;align-items:stretch' });
-    const cards = opts.map((o, i) => { const c = h('button', { class: 'choicecard', 'data-i': i, 'data-good': o.good ? '1' : '0', onclick: () => { M.audio.sfx('tap'); onPick(i, c); } }, o.art ? ico(o.art, 110) : null, M.fmt(o.text)); row.append(c); return c; });
-    const el = h('div', { class: 'panel', style: 'position:absolute;left:50px;right:50px;top:80px;padding:14px 18px;text-align:center;animation:popin .3s;z-index:4' }, h('div', { style: 'font-size:32px;font-weight:bold;margin-bottom:10px' }, M.fmt(prompt)), row);
-    over.append(el); return { el, cards, close: () => el.remove() };
+    const cards = opts.map((o, i) => { const c = h('button', { class: 'choicecard', 'data-i': i, 'data-good': o.good ? '1' : '0', onclick: () => { M.audio.sfx('tap'); onPick(i, c); } }, o.art ? ico(o.art, 110) : null, M.fmt(o.text), h('span', { class: 'spk', role: 'button', 'aria-label': 'اسمع', onclick: e => { e.stopPropagation(); M.voice.speak(o.text, { speaker: 'narrator', force: true }); } }, ico('sound', 30))); M.voice.note(o.text, 'narrator'); M.voice.pressSpeak(c, () => o.text, 'narrator'); row.append(c); return c; });
+    const el = h('div', { class: 'panel', style: 'position:absolute;left:50px;right:50px;top:80px;padding:66px 18px 14px;text-align:center;animation:popin .3s;z-index:4' }, h('div', { style: 'font-size:32px;font-weight:bold;margin-bottom:10px' }, M.fmt(prompt)), row);
+    const rpl = h('button', { class: 'btn round green', style: 'position:absolute;left:12px;top:10px;min-width:56px;width:56px;min-height:56px', 'aria-label': 'اسمع', onclick: tap(() => M.voice.speak(prompt, { speaker: 'narrator', force: true })) }, ico('sound', 34));
+    const lst = h('button', { class: 'btn sm teal', style: 'position:absolute;left:78px;top:12px;min-height:52px;font-size:20px;padding:2px 14px', onclick: tap(() => M.voice.speakSeq(opts.map(o => o.text), { speaker: 'narrator', force: true })) }, ico('sound', 26), 'اسمع الاختيارات');
+    el.append(rpl, lst); over.append(el); M.voice.speak(prompt, { speaker: 'narrator' }); return { el, cards, close: () => el.remove() };
   };
 
   /* ---------- screens ---------- */
@@ -153,6 +178,7 @@
   const coinChip = () => h('div', { class: 'chip' }, ico('coin', 32), ar(M.save.data.coins));
   const soundBtn = () => { const b = h('button', { class: 'btn round teal', 'aria-label': 'الصوت' }); const set = () => { b.textContent = ''; b.append(ico('sound', 40, { off: !M.audio.on() })); }; b.onclick = () => { M.save.data.settings.sound = !M.audio.on(); M.save.commit(); set(); M.audio.sfx('tap'); }; set(); return b; };
   UI.soundBtn = soundBtn;
+  UI.narrBtn = () => { const b = h('button', { class: 'btn round pink', 'aria-label': 'صوت التعليمات' }); const set = () => { b.textContent = ''; b.append(ico('narr', 44, { off: M.save.data.settings.narr === false })); b.style.opacity = M.save.data.settings.narr === false ? .55 : 1; }; b.onclick = () => { M.voice.setEnabled(M.save.data.settings.narr === false); set(); M.audio.sfx('tap'); if (M.save.data.settings.narr !== false) M.voice.speak('صوت التعليمات شغّال', { speaker: 'narrator' }); }; set(); return b; };
   const hubLink = () => h('a', { class: 'btn sm green', href: '../' }, ico('home', 34), 'الصفحة الرئيسية للألعاب');
 
   UI.title = function (f) {
@@ -160,7 +186,7 @@
     const el = h('div', null, av('moody', 'right'), av('aboody', 'left'),
       h('div', { style: 'position:absolute;left:210px;right:210px;top:44px;text-align:center' }, h('div', { class: 'title', style: 'font-size:78px;white-space:nowrap' }, 'مودي وعبودي'), h('div', { class: 'chip', style: 'margin-top:20px;background:#ff6f91;color:#fff;font-size:34px;border-radius:34px;padding:2px 26px;text-shadow:0 2px 0 rgba(0,0,0,.25)' }, 'يوميات ومغامرات')),
       h('div', { style: 'position:absolute;left:0;right:0;top:250px;text-align:center' }, h('button', { class: 'btn big green', onclick: tap(f.start) }, ico('play', 56), 'ابدأ')),
-      h('div', { class: 'row', style: 'position:absolute;left:0;right:0;bottom:70px' }, soundBtn(), h('button', { class: 'btn round purple', 'aria-label': 'ركن الأهل', onclick: tap(f.parent) }, ico('parent', 42)), hubLink()),
+      h('div', { class: 'row', style: 'position:absolute;left:0;right:0;bottom:70px' }, soundBtn(), UI.narrBtn(), h('button', { class: 'btn round purple', 'aria-label': 'ركن الأهل', onclick: tap(f.parent) }, ico('parent', 42)), hubLink()),
       h('div', { style: 'position:absolute;left:0;right:0;bottom:14px;text-align:center;font-size:22px;font-weight:bold;color:#fff;text-shadow:0 2px 0 var(--line)' }, 'الإصدار ١'));
     UI.show(el, 'clear'); M.backdrop.mode = 'title';
   };
@@ -177,7 +203,7 @@
 
   UI.worldMap = function (f) {
     const cards = h('div', { class: 'cards scroll x', id: 'wcards' });
-    M.worlds.forEach(w => {
+    M.worlds.filter(w => !w.hidden).forEach(w => {
       const soon = !!w.soon, tot = w.missions.length * 3, got = M.save.mapStars(w), th = w.theme;
       const top = h('div', { class: 'top', style: 'background:linear-gradient(' + th.c1 + ',' + th.c2 + ')' }, soon ? ico('lock', 90) : ico(w.icon || 'home', 130));
       const c = h('button', { class: 'card' + (soon ? ' soon' : ''), 'data-world': w.id, onclick: () => { if (soon) { M.audio.sfx('wrong'); UI.toast('قريبًا! لسه بنجهّزه'); } else { M.audio.sfx('tap'); f.world(w.id); } } },
@@ -186,21 +212,22 @@
       cards.append(c);
     });
     const sc = d => () => { M.audio.sfx('tap'); cards.scrollBy({ left: d * 280, behavior: 'smooth' }); };
-    const tile = (label, icon, col, fn) => h('button', { class: 'tile', style: 'background:' + col, onclick: tap(fn) }, ico(icon, 40), label);
+    const tile = (label, icon, col, fn, dot) => h('button', { class: 'tile', style: 'background:' + col, onclick: tap(fn) }, ico(icon, 40), label, dot ? h('div', { class: 'ndot' }) : null);
     const el = h('div', null, hdr('خريطة المغامرات', f.back, [soundBtn(), coinChip()]), cards,
       h('button', { class: 'btn round yellow', style: 'position:absolute;right:6px;top:230px;z-index:2;opacity:.9', onclick: sc(1), 'aria-label': 'يمين' }, h('span', { style: 'display:flex;transform:scaleX(-1)' }, ico('arrow', 38))),
       h('button', { class: 'btn round yellow', style: 'position:absolute;left:6px;top:230px;z-index:2;opacity:.9', onclick: sc(-1), 'aria-label': 'شمال' }, ico('arrow', 38)),
-      h('div', { class: 'bar' }, tile('ألبوم الملصقات', 'album', '#ff8a2a', f.album), tile('يومياتي', 'diary', '#1fb5a6', f.diary), tile('تغيير الشكل', 'hanger', '#8a6bd6', f.closet), tile('ركن الأهل', 'parent', '#ff6f91', f.parent)));
+      h('div', { class: 'bar' }, tile('بابا بيتصل', 'phone', '#2fb86a', f.call, M.callPending && M.callPending()), tile('ألبوم الملصقات', 'album', '#ff8a2a', f.album), tile('يومياتي', 'diary', '#1fb5a6', f.diary), tile('تغيير الشكل', 'hanger', '#8a6bd6', f.closet), tile('ركن الأهل', 'parent', '#ff6f91', f.parent)));
     UI.show(el, 'clear'); M.backdrop.mode = 'map';
     const first = cards.firstChild; if (first) cards.scrollLeft = 0;
   };
 
   UI.missionList = function (w, f) {
-    const grid = h('div', { class: 'grid scroll', style: 'position:absolute;left:26px;right:26px;top:100px;bottom:20px;grid-template-columns:repeat(3,1fr);align-content:start;padding:6px 4px 14px' });
+    const grid = h('div', { class: 'grid scroll', style: 'position:absolute;left:26px;right:26px;top:96px;bottom:14px;grid-template-columns:repeat(3,1fr);align-content:start;padding:6px 4px 14px' });
     w.missions.forEach((m, i) => {
       const open = M.save.unlocked(w, i), p = M.save.prog(w.id, m.id) || {};
       const c = h('button', { class: 'mcard' + (open ? '' : ' locked'), 'data-mission': m.id, onclick: () => { if (open) { M.audio.sfx('tap'); f.start(i); } else { M.audio.sfx('wrong'); UI.toast('خلّصوا المهمة اللي قبلها الأول'); } } },
-        h('div', { class: 'num' }, ar(i + 1)), h('h4', null, m.title), open ? starRow(p.stars || 0, 34) : ico('lock', 44), open && m.intro ? null : null);
+        h('div', { class: 'num' }, ar(i + 1)), open ? ico(m.icon || (m.diary && m.diary.pic) || 'star', 52) : null, h('h4', null, m.title), open ? starRow(p.stars || 0, 30) : ico('lock', 44));
+      M.voice.pressSpeak(c, () => m.title, 'narrator');
       grid.append(c);
     });
     const el = h('div', null, hdr(w.title, f.back, [coinChip()]), grid); UI.show(el, 'clear'); M.backdrop.mode = 'map';
@@ -214,10 +241,11 @@
     const mid = h('div', { class: 'panel', style: 'position:absolute;left:170px;right:170px;top:16px;bottom:16px;padding:10px 16px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:space-between' },
       h('div', { class: 'title', style: 'font-size:48px' }, r.stars >= 3 ? 'برافو! ممتاز!' : r.stars === 2 ? 'شاطرين أوي!' : 'أحسنتم!'), sts,
       h('div', { class: 'row', style: 'gap:12px' }, h('div', { class: 'chip', style: 'animation:popin .5s 1.4s both' }, ico('coin', 34), '+' + ar(r.coins)), r.sticker ? h('div', { class: 'chip', style: 'animation:popin .5s 1.6s both;padding:2px 14px 2px 10px' }, A.sticker(r.sticker, 56), 'ملصق جديد: ' + (M.stickers[r.sticker] || {}).title) : null),
-      h('div', { style: 'background:#fff3c4;border:4px dashed #e0b23c;border-radius:22px;padding:6px 16px;font-size:26px;font-weight:bold;line-height:1.35;width:100%;animation:popin .5s 1.2s both' }, h('div', { style: 'font-size:20px;color:#c25a00' }, 'حكمة اليوم'), M.fmt(r.wisdom || 'اللي يعمل خير يلاقي خير')),
+      h('div', { style: 'background:#fff3c4;border:4px dashed #e0b23c;border-radius:22px;padding:6px 16px;font-size:26px;font-weight:bold;line-height:1.35;width:100%;animation:popin .5s 1.2s both' }, h('div', { style: 'font-size:20px;color:#c25a00;display:flex;gap:8px;align-items:center;justify-content:center' }, 'حكمة اليوم', h('span', { role: 'button', style: 'cursor:pointer;display:inline-flex', onclick: () => M.voice.speak(r.wisdom || 'اللي يعمل خير يلاقي خير', { speaker: 'narrator', force: true }) }, ico('sound', 34))), M.fmt(r.wisdom || 'اللي يعمل خير يلاقي خير')),
       h('div', { style: 'font-size:20px;font-weight:bold;opacity:.7' }, r.diary ? 'اتكتبت في يومياتي' : ''),
       h('div', { class: 'row' }, r.hasNext ? UI.btn('المهمة الجاية', 'green', f.next, 'play') : UI.btn('كمّل', 'green', f.next, 'play'), UI.btn('نعيدها', 'yellow', f.retry), UI.btn('القائمة', 'blue', f.menu)));
     UI.show(h('div', null, left, right, mid), 'clear'); M.backdrop.mode = 'result'; M.backdrop.confetti();
+    { const hd = r.stars >= 3 ? 'برافو! ممتاز!' : r.stars === 2 ? 'شاطرين أوي!' : 'أحسنتم!'; setTimeout(() => M.voice.speakSeq([hd, 'حكمة اليوم', r.wisdom || 'اللي يعمل خير يلاقي خير'], { speaker: 'narrator' }), 700); }
   };
 
   UI.celebrate = function (w, f) {
@@ -246,18 +274,18 @@
   UI.closet = function (f) {
     let who = M.save.data.hero || 'moody', tab = 'hat';
     const sd = M.save.data, left = h('div', { style: 'position:absolute;left:30px;top:100px;width:290px;bottom:20px;pointer-events:none' }), right = h('div', { class: 'panel', style: 'position:absolute;right:26px;left:350px;top:100px;bottom:20px;padding:10px 14px' });
-    const pv = h('canvas', { width: 580, height: 680, style: 'width:290px;height:340px;border-radius:30px;background:linear-gradient(#bfe8ff,#fff3c4);border:5px solid var(--line);pointer-events:auto' });
-    const g = pv.getContext('2d'); const drawPv = () => { g.setTransform(2, 0, 0, 2, 0, 0); g.clearRect(0, 0, 290, 340); const eq = sd.cosm.eq[who] || {}; G.ell(g, 145, 300, 70, 14, 'rgba(60,30,10,.2)', 0); M.chars.draw(g, who, 145, 300, { anim: 'cheer', t: M.time * .6, hat: eq.hat, shirtId: eq.shirt, sc: who === 'moody' ? 1.2 : 1.55 }); };
+    const pv = h('canvas', { width: 580, height: 600, style: 'width:290px;height:300px;border-radius:30px;background:linear-gradient(#bfe8ff,#fff3c4);border:5px solid var(--line);pointer-events:auto' });
+    const g = pv.getContext('2d'); const drawPv = () => { g.setTransform(2, 0, 0, 2, 0, 0); g.clearRect(0, 0, 290, 300); const eq = sd.cosm.eq[who] || {}; G.ell(g, 145, 268, 70, 14, 'rgba(60,30,10,.2)', 0); M.chars.draw(g, who, 145, 268, { anim: 'cheer', t: M.time * .6, hat: eq.hat, shirtId: eq.shirt, sc: { moody: 1.2, aboody: 1.55, toota: 1.3, nemo: 1.55 }[who] || 1.3 }); };
     const tabs = h('div', { class: 'row', style: 'margin-bottom:8px' }), tabsA = h('div', { class: 'row', style: 'gap:8px;margin-top:12px;pointer-events:auto' });
     const grid = h('div', { class: 'grid scroll', style: 'grid-template-columns:repeat(4,1fr);gap:12px;height:330px;align-content:start;padding:4px' });
     left.append(pv, tabsA);
     function owned(id) { return sd.cosm.owned.indexOf(id) >= 0; }
     function render() {
-      tabsA.textContent = ''; ['moody', 'aboody'].forEach(id => tabsA.append(h('button', { class: 'chip', style: 'cursor:pointer;font-size:20px;padding:2px 10px 2px 4px;' + (who === id ? 'background:#ffc93c' : ''), onclick: () => { who = id; M.audio.sfx('pop'); render(); } }, h('img', { class: 'av', src: M.chars.avatar(id) + '?v=1', style: 'width:42px;height:42px;border-width:3px;box-shadow:none' }), sd.names[id])));
-      tabs.textContent = ''; [['hat', 'القبعات'], ['shirt', 'ألوان التيشيرت']].forEach(t => tabs.append(h('button', { class: 'btn sm ' + (tab === t[0] ? 'orange' : 'gray'), onclick: tap(() => { tab = t[0]; render(); }) }, t[1])));
+      tabsA.textContent = ''; tabsA.style.flexWrap = 'wrap'; M.chars.playable().forEach(id => tabsA.append(h('button', { class: 'chip', 'data-who': id, style: 'cursor:pointer;font-size:18px;min-height:46px;padding:2px 8px 2px 3px;gap:4px;' + (who === id ? 'background:#ffc93c' : ''), onclick: () => { who = id; M.audio.sfx('pop'); M.voice.speak(sd.names[id] || M.chars.defs[id].name, { speaker: 'narrator' }); render(); } }, M.chars.defs[id].img ? h('img', { class: 'av', src: M.chars.avatar(id) + '?v=1', style: 'width:36px;height:36px;border-width:3px;box-shadow:none' }) : ico('face:' + id, 38), sd.names[id] || M.chars.defs[id].name)));
+      tabs.textContent = ''; [['hat', 'القبعات'], ['shirt', 'الألوان']].forEach(t => tabs.append(h('button', { class: 'btn sm ' + (tab === t[0] ? 'orange' : 'gray'), onclick: tap(() => { tab = t[0]; render(); }) }, t[1])));
       tabs.append(h('div', { style: 'margin-right:auto' }, coinChip()));
       grid.textContent = ''; const eq = sd.cosm.eq[who];
-      const items = [{ id: null, name: 'من غير', price: 0 }].concat(Object.values(tab === 'hat' ? M.chars.hats : M.chars.shirts));
+      const items = [{ id: null, name: 'من غير', price: 0 }].concat(Object.values(tab === 'hat' ? M.chars.hats : M.chars.shirts).filter(it => !it.for || it.for.indexOf(who) >= 0));
       items.forEach(it => {
         const have = it.id == null || owned(it.id), on = (eq[tab] || null) === it.id;
         const icon = it.id == null ? ico('x', 64) : tab === 'hat' ? hatIcon(it) : ico('tee', 64, { color: it.color });
@@ -276,7 +304,7 @@
   A.registerAll({ tee(g, o) { const c = o.color || '#9ea4ab'; G.poly(g, [[-18, -32], [-6, -38], [6, -38], [18, -32], [42, -14], [32, 6], [20, -2], [20, 38], [-20, 38], [-20, -2], [-32, 6], [-42, -14]], c, 5); g.beginPath(); g.arc(0, -38, 9, 0, Math.PI); G.fs(g, G.shade(c, -.2), 3); } });
 
   UI.parent = function (f) {
-    const sd = M.save.data; let tw = 0, tm = 0, stars = 0; M.worlds.forEach(w => { if (!w.soon) { tw += w.missions.length; tm += M.save.done(w); stars += M.save.mapStars(w); } });
+    const sd = M.save.data; let tw = 0, tm = 0, stars = 0; M.worlds.forEach(w => { if (!w.soon && !w.hidden) { tw += w.missions.length; tm += M.save.done(w); stars += M.save.mapStars(w); } });
     const stat = (l, v) => h('div', { class: 'chip', style: 'font-size:22px;min-height:46px' }, l + ': ', h('b', null, v));
     const bars = (info, data, title) => { const box = h('div', { style: 'margin:10px 0' }, h('div', { style: 'font-size:28px;font-weight:bold;margin-bottom:6px' }, title)); const keys = Object.keys(info), mx = Math.max(3, ...keys.map(k => data[k] || 0)); keys.forEach(k => { const v = data[k] || 0; box.append(h('div', { style: 'display:flex;align-items:center;gap:10px;margin:5px 0;text-align:right' }, h('div', { style: 'flex:0 0 190px;font-size:22px;font-weight:bold' }, info[k].label), h('div', { style: 'flex:1' }, h('div', { class: 'pbar', style: 'height:20px' }, h('i', { style: 'width:' + Math.round(100 * v / mx) + '%' })), h('div', { style: 'font-size:17px;opacity:.75;font-weight:bold;margin-top:2px' }, info[k].desc)), h('div', { style: 'flex:0 0 40px;font-size:24px;font-weight:bold' }, ar(v)))); }); return box; };
     const tiers = [['auto', 'تلقائي (حسب البطل)'], ['6', 'مستوى ٦ سنين'], ['9', 'مستوى ٩ سنين']];
@@ -288,7 +316,7 @@
       bars(M.values, sd.valuesPracticed, 'القيم والعادات اللي اتمرّنوا عليها'), bars(M.skillsInfo, sd.skills, 'المهارات (عدد الألغاز اللي اتحلّت)'),
       h('div', { style: 'font-size:28px;font-weight:bold;margin:12px 0 6px' }, 'مستوى الألغاز'), tierRow,
       h('div', { style: 'font-size:18px;opacity:.7;font-weight:bold;margin:6px 0' }, 'تلقائي: عبودي (٦ سنين) بيجاوب ألغاز أسهل ومودي (٩ سنين) ألغاز أصعب.'),
-      h('div', { class: 'row', style: 'margin:12px 0;flex-wrap:wrap' }, tog('الصوت', 'sound'), tog('تشجيع بصوت بشري', 'voice'), UI.btn('تغيير الأسماء', 'blue', f.names)),
+      h('div', { class: 'row', style: 'margin:12px 0;flex-wrap:wrap' }, tog('الصوت', 'sound'), tog('صوت التعليمات', 'narr'), tog('تشجيع بصوت بشري', 'voice'), UI.btn('تغيير الأسماء', 'blue', f.names)),
       h('div', { class: 'row', style: 'margin:18px 0 8px' }, UI.btn('مسح كل التقدّم', 'red', () => { UI.confirm('متأكد إنك عايز تمسح كل النجوم والملصقات واليوميات؟', 'أيوه، امسح', 'لأ').then(ok => { if (ok) { M.save.reset(); M.save.load(); UI.toast('اتمسح كل حاجة'); f.reset(); } }); })));
     UI.show(h('div', null, hdr('ركن الأهل', f.back), body), 'clear'); M.backdrop.mode = 'map';
   };
@@ -296,7 +324,7 @@
   UI.pause = function (f) {
     const mo = UI.modal([h('h2', null, 'استراحة'), h('div', { class: 'row', style: 'flex-direction:column;gap:12px' },
       UI.btn('كمّل اللعب', 'green', () => { mo.close(); f.resume(); }, 'play'), UI.btn('نبدأ المهمة من جديد', 'yellow', () => { mo.close(); f.restart(); }), UI.btn('قائمة المهام', 'blue', () => { mo.close(); f.quit(); }),
-      f.canSkip ? UI.btn('تخطّي المهمة', 'gray sm', () => { mo.close(); f.skip(); }) : null, h('div', { class: 'row' }, soundBtn(), hubLink()))]);
+      f.canSkip ? UI.btn('تخطّي المهمة', 'gray sm', () => { mo.close(); f.skip(); }) : null, h('div', { class: 'row' }, soundBtn(), UI.narrBtn(), hubLink()))]);
     return mo;
   };
 

@@ -53,10 +53,10 @@
     /* optional owner cheer clips from the sonic game; ignore errors, at most one per ~5s */
     cheer(kind) {
       try {
-        if (!M.save.data.settings.voice || !A.on()) return; const now = M.time; if (now - lastCheer < 5) return;
+        if (!M.save.data.settings.voice || !A.on() || (M.voice && M.voice.busy)) return; const now = M.time; if (now - lastCheer < 5) return;
         const map = { small: [['ring', 3], ['cp', 2]], big: [['done', 2], ['win', 2]], start: [['start', 4]], correct: [['kill', 4]], free: [['free', 3]] };
         const o = map[kind || 'small']; if (!o) return; const k = M.util.pick(o), f = k[0] + M.util.rndi(0, k[1] - 1);
-        lastCheer = now; const a = new Audio('../sonic/assets/v/' + f + '.mp3'); a.volume = .8; a.addEventListener('error', () => { }); const p = a.play(); if (p && p.catch) p.catch(() => { });
+        lastCheer = now; const a = new Audio('../sonic/assets/v/' + f + '.mp3'); a.volume = .8; A.cheering = true; const fin = () => { A.cheering = false; }; a.addEventListener('error', fin); a.addEventListener('ended', fin); setTimeout(fin, 4000); const p = a.play(); if (p && p.catch) p.catch(() => { });
       } catch (e) { }
     }
   };

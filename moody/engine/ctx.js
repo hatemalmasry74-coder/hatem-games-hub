@@ -71,7 +71,7 @@
     ctx.banner = ctx.prompt;
     ctx.titleCard = (t, sub) => mk((done, cl) => {
       const el = UI.h('div', { class: 'panel', style: 'position:absolute;left:150px;right:150px;top:170px;padding:20px;text-align:center;animation:popin .4s;z-index:40' }, UI.h('div', { class: 'title', style: 'font-size:56px' }, t), sub ? UI.h('div', { style: 'font-size:30px;font-weight:bold;margin-top:12px' }, M.fmt(sub)) : null);
-      UI.over.append(el); cl(() => el.remove()); M.wait(2.3).then(() => done());
+      UI.over.append(el); cl(() => el.remove()); M.voice.speak(t + '. ' + (sub || ''), { speaker: 'narrator' }); M.wait(2.3).then(() => done());
     });
     ctx.say = function (who, text, o) {
       o = o || {};
@@ -87,10 +87,17 @@
     ctx.walk = (who, x, y) => mk(done => { stage.walk(who, x, y).then(() => done()); });
     ctx.anim = (who, a, s) => mk(done => { stage.play(who, a, s).then(() => done()); });
     ctx.react = function (kind, who) {
-      const a = kind === 'good' ? 'cheer' : kind;
-      if (who === 'both' || !who) { stage.play('moody', a, 1.3); stage.play('aboody', a, 1.3); } else stage.play(who, a, 1.3);
+      const a = kind === 'good' ? 'cheer' : kind, ts = (who === 'both' || !who) ? stage.present() : [who];
+      ts.forEach(k => stage.play(k, a, 1.3));
       if (a === 'cheer') { M.audio.sfx('good'); } else if (a === 'oops') M.audio.sfx('wrong');
     };
+    /* heroes on stage: ctx.cast(['moody','aboody','toota','nemo'], controllable?)  (see DEV.md) */
+    ctx.cast = (list, control) => { stage.setCast(list, control); UI.hud.rebuild(); };
+    ctx.companions = list => ctx.cast(['moody', 'aboody'].concat(list || []), ['moody', 'aboody']);
+    ctx.abilities = o => { for (const k in o) stage.abil[k] = o[k]; };
+    /* a companion gives a light hint: ctx.tip('جرّب الكرسي!') */
+    ctx.tip = (text, who) => { const w = who || stage.present().find(k => stage.control.indexOf(k) < 0) || stage.present().find(k => k !== stage.active); if (w) { stage.bubble(w, text, 2.6); stage.play(w, 'wave', .9); } };
+    ctx.speak = (text, o) => M.voice.speak(text, Object.assign({ speaker: 'narrator' }, o));
     ctx.praise = function (who) { const w = who || stage.active, t = U.pick(PRAISE).replace('{m}', M.save.data.names.moody); stage.bubble(w, t.replace('عبودي', M.save.data.names.aboody), 1.8); stage.play(w, 'cheer', 1.1); M.audio.sfx('good'); };
     ctx.requireHero = function (id, msg) {
       return mk((done, cl) => {
@@ -154,10 +161,10 @@
   const F = M.flow = { cur: null };
   F.toTitle = function () { endMission(); M.setScene(M.backdrop); UI.hud.hide(); UI.title({ start: () => { if (!M.save.data.named) F.toNames(); else F.toMap(); }, parent: () => F.toParent(F.toTitle) }); };
   F.toNames = function (back) { UI.names({ back: back || F.toTitle, ok: F.toMap }); };
-  F.toMap = function () { endMission(); M.setScene(M.backdrop); UI.worldMap({ back: F.toTitle, world: F.toWorld, album: () => UI.album({ back: F.toMap }), diary: () => UI.diary({ back: F.toMap }), closet: () => UI.closet({ back: F.toMap }), parent: () => F.toParent(F.toMap) }); };
+  F.toMap = function () { endMission(); M.setScene(M.backdrop); UI.worldMap({ back: F.toTitle, world: F.toWorld, album: () => UI.album({ back: F.toMap }), diary: () => UI.diary({ back: F.toMap }), call: () => F.toCall(), closet: () => UI.closet({ back: F.toMap }), parent: () => F.toParent(F.toMap) }); };
   F.toParent = function (back) { UI.parent({ back, names: () => F.toNames(() => F.toParent(back)), reset: () => F.toParent(back) }); };
   F.toWorld = function (id) {
-    endMission(); const w = M.getWorld(id); if (!w || w.soon) return F.toMap(); M.setScene(M.backdrop);
+    endMission(); const w = M.getWorld(id); if (!w || w.soon || w.hidden) return F.toMap(); M.setScene(M.backdrop);
     UI.missionList(w, { back: F.toMap, start: i => F.startMission(id, i) });
   };
 
@@ -165,7 +172,7 @@
 
   F.startMission = function (wid, idx) {
     endMission(); const w = M.getWorld(wid), m = w.missions[idx]; if (!m) return F.toWorld(wid);
-    const stage = new M.Stage(); stage.layout('floor'); stage.bg = M.rooms && M.rooms.plain; M.setScene(stage); UI.clearScreen();
+    const stage = new M.Stage(); if (m.heroes || w.heroes) stage.setCast(m.heroes || w.heroes, m.control || w.control); if (m.abilities) Object.keys(m.abilities).forEach(k => { stage.abil[k] = m.abilities[k]; }); stage.layout('floor'); stage.bg = M.rooms && M.rooms.plain; M.setScene(stage); UI.clearScreen();
     const run = { quit() { F.toWorld(wid); } }, ctx = makeCtx(w, m, stage, run); F.cur = { ctx, stage, wid, idx };
     UI.hud.show(stage, { onPause: () => openPause() });
     UI.hud.update(0);
@@ -174,7 +181,7 @@
       const canSkip = M.time - ctx.startT > 120;
       UI.pause({ canSkip, resume() { M.paused = false; }, restart() { M.paused = false; F.startMission(wid, idx); }, quit() { M.paused = false; F.toWorld(wid); }, skip() { M.paused = false; ctx.abort(); ctx.endOpts = { skipped: true }; ctx.stars = Math.max(1, ctx.stars); finish(true); } });
     }
-    const kh = e => { if (e.key === 'Escape') { openPause(); return true; } if (e.key === 'Tab' || e.key === 's' || e.key === 'S') { stage.setActive(stage.active === 'moody' ? 'aboody' : 'moody'); return true; } return false; };
+    const kh = e => { if (e.key === 'Escape') { openPause(); return true; } if (e.key === 'Tab' || e.key === 's' || e.key === 'S') { const c = stage.control, i = c.indexOf(stage.active); stage.setActive(c[(i + 1) % c.length]); return true; } return false; };
     M.keys.push(kh); F.cur.kh = kh;
     let finished = false;
     function finish(skipped) {
@@ -187,7 +194,7 @@
       const dl = ctx.diaryList.length ? ctx.diaryList : (m.diary ? [m.diary] : []);
       dl.forEach(e => { const id = e.id || (w.id + '-' + m.id); const ent = { id, pic: e.pic, text: e.text, date: new Date().toLocaleDateString('ar-EG', { day: 'numeric', month: 'long' }) }; const i = sd.diary.findIndex(x => x.id === id); if (i >= 0) sd.diary[i] = ent; else sd.diary.push(ent); });
       [].concat(m.values || [], ctx.valueList).forEach(v => { sd.valuesPracticed[v] = (sd.valuesPracticed[v] || 0) + 1; });
-      M.save.commit(); const nowDone = M.save.done(w) === w.missions.length, justDone = nowDone && !wasDone;
+      M.save.commit(); const nowDone = M.save.done(w) === w.missions.length, justDone = nowDone && !wasDone && !w.hidden;
       const wisdom = (ctx.endOpts && ctx.endOpts.wisdom) || m.wisdom;
       UI.hud.hide(); endMission(); F.cur = null; M.setScene(M.backdrop); M.audio.sfx('fanfare'); M.audio.cheer(stars >= 3 ? 'big' : 'small');
       const hasNext = idx + 1 < w.missions.length;
@@ -196,7 +203,7 @@
     }
     (async () => {
       try {
-        await ctx.titleCard('المهمة ' + U.ar(idx + 1) + ': ' + m.title, m.intro);
+        if (!m.hideTitle) await ctx.titleCard('المهمة ' + U.ar(idx + 1) + ': ' + m.title, m.intro);
         await m.run(ctx);
         finish();
       } catch (e) {

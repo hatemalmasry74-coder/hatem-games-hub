@@ -2,7 +2,7 @@
 
 Vanilla JS + canvas + HTML overlays. No libraries, fonts, images (except the two cartoon avatar jpgs in `assets/`), CDN or network calls.
 Arabic RTL UI. Logical resolution **960x540**, scaled to fit with letterboxing (DPR capped at 2).
-**Privacy rule: never add real photos of the children anywhere. Heroes are canvas drawings; only `assets/moody_cartoon.jpg` / `assets/aboody_cartoon.jpg` (cartoons) are used as avatars.**
+**Privacy rule: never add real photos of the children anywhere. Heroes are canvas drawings; only the cartoon portraits in `assets/` (`moody_/aboody_/toota_/nemo_/baba_cartoon.jpg`) are used as circular avatars.**
 
 Heroes: **مودي** (Moody, 9, tall/strong: lifts heavy things, reaches high places, harder puzzles = tier 9),
 **عبودي** (Aboody, 6, small/quick: fits through gaps, crawls under furniture, easier puzzles = tier 6). Both are always on screen; the child switches the controlled hero with the HUD avatars (or by tapping the hero).
@@ -150,3 +150,56 @@ Register labels for new values/skills in `content/meta.js` style: `Moody.registe
 3. Drive the game like a kid: DOM buttons are real elements (`.card[data-world]`, `.mcard[data-mission]`, `.opt[data-correct]`, `.choicecard[data-good]`, `.seqcard[data-i]`, `.cardmem[data-art]`); canvas kits expose their targets in `Moody.scene.dbg` (e.g. `{kit:'dragdrop', items:[{id,x,y,tx,ty,needs}]}`) so a bot can convert logical 960x540 coordinates to page coordinates through `#c`'s bounding rect and drag with real mouse or CDP touch events.
 4. Check: stars/coins/stickers/diary survive `reload`, parent panel reset works, skip appears after 3 failures, switching heroes works, no soft-lock (every kit finishes).
 5. Look at screenshots in all three viewports: nothing overlaps the HUD (top 100 px), text readable, nothing needs scrolling except scroll panels.
+
+
+---
+# PHASE B additions (voice, family characters, companions, daily call)
+
+## Voice narration system (engine/voice.js) - for kids who cannot read yet
+Everything the game shows as an instruction/dialog/question is also *speakable*. Audio is **pre-recorded clips** (generated neural Egyptian TTS now, replaceable by the owner's own recordings later) - never `speechSynthesis`.
+
+* **Clip id** = `Moody.voice.hash(text)`. Normalisation (identical in `tools/voice_hash.py`): replace `{m}`->مودي `{a}`->عبودي `{t}`->توتا `{n}`->نيمو `{me}`->يا بطل (always the *default* names, so renaming a hero never changes the clip id); collapse runs of space/tab/CR/LF/NBSP to one space and trim; delete tashkeel U+064B..U+065F, U+0670 and tatweel U+0640. Hash = UTF-8 bytes -> two 32-bit FNV-1a hashes (offset bases `0x811c9dc5` and `0x9747b28c`, prime `0x01000193`) -> 16 hex digits -> **first 12**. Speaker is *not* part of the hash.
+* **Files**: `assets/voice/<hash>.mp3` and `assets/voice/manifest.json` = `{hash: {voice, text}}` (voice = `narrator | mama | baba | boy_big (Moody) | boy_small (Aboody) | girl_big (Toota) | girl_small (Nemo) | nana`). The engine only requests a clip whose hash is **in the manifest**, so a missing clip is silent (no 404, no throw). To replace a clip with your own recording: save it as `assets/voice/<same hash>.mp3` (keep it short, clear, one sentence) and make sure the hash is in the manifest (`python3 tools/voice_hash.py --manifest tools/voice_strings.json` rebuilds the manifest from the clips that exist).
+* **Pipeline**: `node tools/collect_voice.js` -> `tools/voice_strings.json` `[{text, speaker(voice id), hash}]` (all question banks incl. choices/hints/explain, the Baba call pool, mission titles/intros/wisdom, fixed UI phrases, a static scan of dialogue lines in worlds/*.js, plus a bot play-through of every mission of every world with `?unlock=1&collectvoice=1`). Generate the TTS clips from that file, name them `<hash>.mp3`, then rebuild the manifest. `python3 tools/voice_hash.py "text"` prints a hash; `--check file.json` verifies the JS/Python hashes agree and lists missing clips.
+* **Hooks inside the engine** (world files need no changes): `ctx.say` (speaker = who), HUD prompt (`ctx.prompt` / kit prompts -> "instruction", replayable), mission title card (`المهمة N: title. intro`), quiz stem (auto), each answer (speaker icon button, or press-and-hold 0.5 s), "اسمع الاختيارات" (reads the choices one after another), hints / "قريب! جرّب تاني" / explain, choice-scene prompt + cards, result screen ("برافو" + "حكمة اليوم" + wisdom), toasts, hero bubbles (soft: never cut a playing clip), rituals.
+* **API**: `Moody.voice.speak(text,{speaker, force, soft})`, `.speakSeq([texts])`, `.setInstruction(text)`, `.replay()` (the "ماذا نفعل؟" HUD button), `.stop()`, `.setEnabled(bool)` (setting `narr`, default ON, toggles in title / pause / ركن الأهل), `.pressSpeak(el, getText)`, `.hash/.normalize/.resolve`, `.voiceFor(speaker)` (extend with `Moody.voice.extraVoices.sara='girl_big'`), `.fixedStrings`, `.note(text,speaker)`.
+* **Behaviour**: one clip at a time, a new line cancels the previous; never overlaps the owner's cheer clips (narration waits for a cheer to end, cheers are skipped while narrating); pauses/resumes with the game pause; respects the sound mute; never blocks gameplay (all async, errors swallowed).
+* **Collection harness**: open the game with `?collectvoice=1` -> every spoken/shown `(text, voice)` is appended to `window.__voiceLog`; `Moody.voice.dump()` returns the JSON.
+* **Writing for non-readers**: short sentences, slow/simple colloquial wording, one idea per line; always pair an instruction with a picture (art icon). Put the *pictures* in `art`/`row`/`count`, the sentence in `prompt`.
+
+## Characters (engine/chars.js) - ONE table
+`Moody.chars.defs` holds every look: proportions (`sc L T R hr sw`), palette (`skin shirt skirt pants shoe hairC scarf under tie ...`), `top` (placket | vneck | polo | crew | dress | blouse | floral | hoodie), `hair` (curly | ponytail | pigtails | bob | scarf | short), accessories (`glasses neckPhones bunny bag watch ring beard sunhat stripes flowers`), `abilities` tags, `badge`, `img` (cartoon avatar jpg) and `speed`. Changing a colour/hair/outfit = edit that row only.
+
+| id | who | age | look (from the owner's cartoon references) | abilities |
+|---|---|---|---|---|
+| moody | مودي | 9 | gray button shirt, mustard pants, curls | strong, tall |
+| aboody | عبودي | 6 | navy dotted shirt, khaki pants, curls | small, quick |
+| toota | توتا (تسنيم) | 15 | cream hijab + burgundy underscarf, round glasses, burgundy blouse, cream floral skirt, pink headphones, beige bag | leader, order |
+| nemo | نيمو (ترنيم) | 12 | big pink woven sun hat with 2 bows, rose-gold glasses, dark bob, pink hoodie, bunny-ear headphones, big smile | curious, finder, small |
+| nana | ننا زوزا | ~68 | light headscarf, glasses, lilac flowery dress, slow gentle walk (`speed`) | wise, kind |
+| baba | بابا | ~40 | black curly hair, thick brows, full beard + mustache, big laugh, black tee, smartwatch + ring, olive skin | dad |
+
+Draw: `Moody.chars.draw(g, id, x, y, {anim, t, dir, sc, hat, shirtId, talk, carry})`; anims `idle walk run jump pickup lift cheer(=happy) wave oops think sleep`, `talk:true` animates the mouth. Portrait: `Moody.chars.portrait(g,id,cx,cy,r)` and art `face:<id>`. Cosmetics: `chars.registerHat(id,name,price,draw)` / `registerShirt(id,name,price,color)`; set `.for=['toota','nemo']` to restrict an item to some heroes (the shop has a tab per playable hero).
+Family facts: school = **مدرسة آل زياد الابتدائية**; the family lives on the **6th floor**, Nana Zoza on the **3rd floor** of the same building; Baba lives/works in **أبها (Abha), Asir, Saudi Arabia**: mountains, light mist and cool weather, stone-and-clay buildings with white-and-ochre towers, white minarets, the Abha cable car (التلفريك), Al-Souda mountain, Habala - use this as the visual style of the Saudi world.
+
+## Heroes, companions, abilities (stage + ctx)
+A mission/world may declare who is on stage and who the child can control:
+```js
+{ id:'m1', title:'..', heroes:['moody','aboody','toota','nemo'],   // present (also allowed on the world object)
+  control:['moody','aboody','toota','nemo'],                       // controllable (default: the brothers only)
+  abilities:{ toota:['leader'] },                                  // optional extra tags
+  async run(ctx){ ctx.cast([...],[...]); ctx.companions(['toota','nemo']); ctx.tip('جرّبوا الكرسي!'); } }
+```
+* Default = the two brothers (all older worlds are unchanged). Extra heroes who are present but not controllable are **companions**: they cheer/oops with `ctx.react('good','both')` and give light hints with `ctx.tip(text, who?)`.
+* Kits accept ability tags: `needs:'strong'` (Moody), `'small'` (Aboody/Nemo), `'leader'` (Toota), `'finder'`/`'curious'` (Nemo) or a hero id. `stage.can(id, need)`, `stage.who(need)`; `Moody.scene.dbg` items expose `hero` (the hero who satisfies `needs`) for bots.
+* The HUD switcher shows the controllable heroes: 2 = big avatars + swap icon, 3-4 = compact row (works at 844x390). `Tab` cycles heroes, `Esc` pauses. A round **"ماذا نفعل؟"** button (top-left) replays the current instruction by voice.
+* Speakers for dialogue: `'moody' 'aboody' 'toota' 'nemo' 'nana' 'baba' 'mama' 'friend' 'narrator'`; tokens `{m} {a} {t} {n} {me}`.
+
+## "بابا بيتصل" daily video call (engine/call.js + content/baba_calls.js)
+A button on the world map (with a red notification dot until today's call is done) starts a hidden world `call`: ringing -> Baba greets the kids by name -> "how was your day" choice -> ONE challenge from the pool (>= 30: habits, puzzles, counting, memory, ordering) -> praise -> rewards (2-3 stars, 8 coins; family stickers `f_baba`, `f_toota` (3rd call), `f_nemo` (5th), `f_nana` (8th), `f_family` (12th)) -> goodbye. One counted/rewarded call per calendar day (`callDay/callId/callCount` in the save); replays of the same call are allowed without extra rewards. Add challenges to `Moody.babaCalls` (schema at the top of `content/baba_calls.js`); every string is voiced (voice `baba`). Worlds can set `hidden:true` to stay off the map.
+
+## Adding the two planned worlds in parallel (only new files + registry lines)
+`worlds/registry.js` already plans **nana** ("بيت ننا زوزا", order 7, icon `w_nana`) and **saudi** ("السفر لبابا في السعودية", order 8, icon `w_saudi`) as locked "قريبًا" cards. To implement one: create `worlds/nana.js` (+ `nana_art.js`, `content/q_nana.js`) with `Moody.registerWorld({id:'nana', ...})` (same id replaces the stub, keep `order`) and add the files to `Moody.load` in `registry.js`. Declare `heroes/control` per mission to use the sisters; use `ctx.say('nana'|'baba'|'toota'|'nemo', ...)` - voices and avatars are automatic. Nana's house = 3rd floor of the same building (elevator/stairs from the 6th); Saudi world = Abha (see facts above).
+
+## Tools
+`tools/botlib.js` (kid-bot: real mouse/touch, all kits), `tools/regress.js [desk|phone|ipad] [wrong] [worlds]` (plays every mission), `tools/collect_voice.js`, `tools/voice_hash.py`. Test hooks: `?unlock=1`, `?collectvoice=1`, `Moody.scene.dbg`.

@@ -45,12 +45,12 @@
   M.registerSkill = (tag, info) => { M.skillsInfo[tag] = info; };
   /* question banks: schema in DEV.md */
   M.registerQuestions = function (arr) { arr.forEach(q => { M.banks[q.id] = q; }); };
-  M.fmt = s => { const n = M.save.data.names; return String(s).replace(/\{m\}/g, n.moody).replace(/\{a\}/g, n.aboody).replace(/\{me\}/g, n.me || 'يا بطل'); };
+  M.fmt = s => { const n = M.save.data.names; return String(s).replace(/\{m\}/g, n.moody).replace(/\{a\}/g, n.aboody).replace(/\{t\}/g, n.toota || 'توتا').replace(/\{n\}/g, n.nemo || 'نيمو').replace(/\{me\}/g, n.me || 'يا بطل'); };
 
   /* ---------- save ---------- */
   function defaults() {
-    return { v: 1, names: { moody: 'مودي', aboody: 'عبودي', me: '' }, named: false, hero: 'moody', progress: {}, coins: 0, stickers: {}, diary: [],
-      cosm: { owned: [], eq: { moody: {}, aboody: {} } }, settings: { sound: true, voice: true, tier: 'auto' }, skills: {}, valuesPracticed: {}, seen: {}, lastQ: '' };
+    return { v: 1, names: { moody: 'مودي', aboody: 'عبودي', me: '', toota: 'توتا', nemo: 'نيمو', nana: 'ننا زوزا', baba: 'بابا' }, named: false, hero: 'moody', progress: {}, coins: 0, stickers: {}, diary: [],
+      cosm: { owned: [], eq: { moody: {}, aboody: {} } }, settings: { sound: true, voice: true, narr: true, tier: 'auto' }, skills: {}, valuesPracticed: {}, seen: {}, lastQ: '', callDay: '', callId: '', callCount: 0 };
   }
   const S = M.save = {
     data: defaults(),

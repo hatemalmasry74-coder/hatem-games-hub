@@ -6,6 +6,8 @@
   const M = window.Moody, UI = M.ui, G = M.gfx, U = M.util, A = M.art, K = M.kits, h = UI.h, ico = UI.ico;
   const hint = (ctx, msg, who) => { ctx.stage.bubble(who || ctx.stage.active, msg, 2.2); };
   const hitR = s => Math.max(s / 2 + 8, 36);
+  const needMsg = (st, need) => { const k = st.who(need), n = (M.save.data.names[k] || M.chars.defs[k].name); return need === 'moody' || need === 'strong' ? 'ده تقيل أوي! محتاجين ' + n : 'محتاجين ' + n + '!'; };
+  const badge = (g, need, x, y, r, fs) => { const b = M.chars.badge(need); G.circ(g, x, y, r, b[1], 3); G.text(g, b[0], x, y + 1, { size: fs, color: '#fff', stroke: M.OL, sw: 3 }); };
 
   /* ================= DRAG & DROP ================= */
   K.dragdrop = function (ctx, o, done, cl) {
@@ -19,18 +21,18 @@
         for (let i = items.length - 1; i >= 0; i--) {
           const it = items[i]; if (it.placed || it.busy || it.drag != null) continue;
           if (U.dist(x, y, it.x, it.y) < hitR(it.s * it.sc)) {
-            if (it.needs && st.active !== it.needs) { it.wob = .5; M.audio.sfx('wrong'); hint(ctx, it.needsMsg || (it.needs === 'moody' ? 'ده تقيل أوي! محتاجين {m}' : 'ده ضيّق! محتاجين {a}')); UI.hud.pulseSwitch(true); setTimeout(() => UI.hud.pulseSwitch(false), 2600); return true; }
+            if (it.needs && !st.can(st.active, it.needs)) { it.wob = .5; M.audio.sfx('wrong'); hint(ctx, it.needsMsg || needMsg(st, it.needs)); UI.hud.pulseSwitch(true); setTimeout(() => UI.hud.pulseSwitch(false), 2600); return true; }
             it.drag = id; it.dx = it.x - x; it.dy = it.y - y; drag.set(id, it); items.splice(i, 1); items.push(it); M.audio.sfx('pick'); sk.poke();
-            if (it.needs === 'moody') { const m = st.hero('moody'); m.fa = 'lift'; m.fat = 60; m.carry = null; }
+            if (it.needs === 'moody' || it.needs === 'strong') { const m = st.hero(st.who(it.needs)); m.fa = 'lift'; m.fat = 60; m.carry = null; }
             return true;
           }
         }
         return false;
       },
-      move(x, y, id) { const it = drag.get(id); if (!it) return; it.x = U.clamp(x + it.dx, 30, 930); it.y = U.clamp(y + it.dy, 100, 520); if (it.needs === 'moody') { const m = st.hero('moody'); m.tx = U.clamp(it.x, 60, 900); m.ty = m.y; m.dir = it.x > m.x ? 1 : -1; m.fat = 60; } },
+      move(x, y, id) { const it = drag.get(id); if (!it) return; it.x = U.clamp(x + it.dx, 30, 930); it.y = U.clamp(y + it.dy, 100, 520); if (it.needs === 'moody' || it.needs === 'strong') { const m = st.hero(st.who(it.needs)); m.tx = U.clamp(it.x, 60, 900); m.ty = m.y; m.dir = it.x > m.x ? 1 : -1; m.fat = 60; } },
       up(x, y, id) {
         const it = drag.get(id); if (!it) return; drag.delete(id); it.drag = null;
-        if (it.needs === 'moody') { const m = st.hero('moody'); m.fa = null; m.fat = 0; m.tx = null; }
+        if (it.needs === 'moody' || it.needs === 'strong') { const m = st.hero(st.who(it.needs)); m.fa = null; m.fat = 0; m.tx = null; }
         const t = tg.find(t => Math.abs(it.x - t.x) < t.w / 2 + 16 && Math.abs(it.y - t.y) < t.h / 2 + 16);
         if (!t) { back(it); return; }
         const ok = it.to === t.id || (t.accepts && t.accepts(it));
@@ -46,7 +48,7 @@
       if (items.every(i => i.placed) && !finished) { finished = true; M.wait(.7).then(() => { ctx.react('good', 'both'); M.wait(.9).then(() => done({ mistakes: ctx.mistakes })); }); }
     }
     cl(st.addLayer({
-      z: 10, update(dt) { items.forEach(i => { if (i.wob > 0) i.wob -= dt; }); tg.forEach(t => { if (t.glow > 0) t.glow -= dt * 2; }); st.dbg = { kit: 'dragdrop', items: items.filter(i => !i.placed).map(i => { const t = tg.find(t => t.id === i.to) || {}; return { id: i.id, x: i.x, y: i.y, tx: t.x, ty: t.y, needs: i.needs || null }; }) }; },
+      z: 10, update(dt) { items.forEach(i => { if (i.wob > 0) i.wob -= dt; }); tg.forEach(t => { if (t.glow > 0) t.glow -= dt * 2; }); st.dbg = { kit: 'dragdrop', items: items.filter(i => !i.placed).map(i => { const t = tg.find(t => t.id === i.to) || tg.find(t => { try { return t.accepts && t.accepts(i); } catch (e) { return false; } }) || {}; return { id: i.id, x: i.x, y: i.y, tx: t.x, ty: t.y, needs: i.needs || null, hero: i.needs ? st.who(i.needs) : null }; }) }; },
       draw(g, t) {
         if (o.panel) G.fillRR(g, o.panel.x, o.panel.y, o.panel.w, o.panel.h, 22, 'rgba(255,247,227,.82)', 4);
         tg.forEach(tt => {
@@ -60,7 +62,7 @@
           const wob = it.wob > 0 ? Math.sin(it.wob * 40) * 6 : 0, lift = it.drag != null ? 1.18 : 1, bob = (it.drag == null && !it.placed) ? Math.sin(t * 2.5 + it.home.x) * 2 : 0;
           if (it.drag != null) G.shadow(g, it.x, it.y + it.s * .5, it.s * .4, 9, .25);
           g.save(); g.translate(wob, bob); if (it.draw) { g.save(); g.translate(it.x, it.y); g.scale(it.sc * lift, it.sc * lift); it.draw(g, it); g.restore(); } else A.draw(g, it.art, it.x, it.y, it.s * it.sc * lift); g.restore();
-          if (it.needs && !it.placed && it.drag == null) { const hx = it.x + it.s * .38; G.circ(g, hx, it.y - it.s * .42, 15, it.needs === 'moody' ? '#ffc93c' : '#4aa8e8', 3); G.text(g, it.needs === 'moody' ? 'م' : 'ع', hx, it.y - it.s * .42 + 1, { size: 18, color: '#fff', stroke: M.OL, sw: 3 }); }
+          if (it.needs && !it.placed && it.drag == null) badge(g, it.needs, it.x + it.s * .38, it.y - it.s * .42, 15, 18);
         });
       }
     }));
@@ -77,7 +79,7 @@
     const listed = () => spots.filter(s => s.listed !== false);
     const slotPos = s => { const L = listed(), i = L.indexOf(s), n = L.length, w = Math.min(64, 560 / n); return { x: 480 + ((n - 1) / 2 - i) * (w + 8) * -1, y: 150, w }; };
     function find(spot) {
-      busy = true; idle = 0; sk.poke(); const hero = spot.needs || st.active, hh = st.hero(hero);
+      busy = true; idle = 0; sk.poke(); const hero = spot.needs ? st.who(spot.needs) : st.active, hh = st.hero(hero);
       const act = async () => {
         if (!o.noWalk) { await st.walk(hero, U.clamp(spot.x + (spot.walkOff == null ? (spot.x > 480 ? 70 : -70) : spot.walkOff), 70, 890), hh.y); hh.dir = spot.x > hh.x ? 1 : -1; }
         await st.play(hero, spot.anim || 'pickup', .7); M.audio.sfx('pick'); st.burst(spot.x, spot.y, { n: 12, kind: 'star', max: 200 }); spot.found = true;
@@ -91,7 +93,7 @@
         if (busy) return true; let best = null, bd = 1e9;
         spots.forEach(s => { if (s.found || s.disabled) return; const d = U.dist(x, y, s.x, s.y + (s.hy || 0)); if (d < (s.hit || hitR(s.s)) && d < bd) { best = s; bd = d; } });
         if (best) {
-          if (best.needs && st.active !== best.needs) { M.audio.sfx('wrong'); hint(ctx, best.needsMsg || (best.needs === 'moody' ? 'محتاجين {m} الطويل' : 'محتاجين {a} الصغير')); UI.hud.pulseSwitch(true); setTimeout(() => UI.hud.pulseSwitch(false), 2600); return true; }
+          if (best.needs && !st.can(st.active, best.needs)) { M.audio.sfx('wrong'); hint(ctx, best.needsMsg || (best.needs === 'moody' ? 'محتاجين {m} الطويل' : best.needs === 'aboody' ? 'محتاجين {a} الصغير' : needMsg(st, best.needs))); UI.hud.pulseSwitch(true); setTimeout(() => UI.hud.pulseSwitch(false), 2600); return true; }
           find(best); return true;
         }
         for (const k of ['moody', 'aboody']) { const hh = st.heroes[k]; if (k !== st.active && Math.abs(x - hh.x) < 40 && y < hh.y + 6 && y > hh.y - 160) return false; }
@@ -99,13 +101,13 @@
       }
     };
     cl(st.addLayer({
-      z: 10, update(dt) { idle += dt; st.dbg = { kit: 'hidden', spots: spots.filter(s => !s.found).map(s => ({ id: s.id, x: s.x, y: s.y + (s.hy || 0), needs: s.needs || null })) }; },
+      z: 10, update(dt) { idle += dt; st.dbg = { kit: 'hidden', spots: spots.filter(s => !s.found).map(s => ({ id: s.id, x: s.x, y: s.y + (s.hy || 0), needs: s.needs || null, hero: s.needs ? st.who(s.needs) : null })) }; },
       draw(g, t) {
         spots.forEach(s => {
           if (s.gone) return; g.save(); g.globalAlpha = s.alpha;
           if (s.draw) { g.save(); g.translate(s.x, s.y); s.draw(g, t, st, s); g.restore(); } else if (s.art) A.draw(g, s.art, s.x, s.y + (s.found ? 0 : Math.sin(t * 2 + s.t0) * 1.5), s.s * s.sc);
           g.restore();
-          if (!s.found && s.needs && !s.noBadge) { const bx = s.x + s.s * .4, by = s.y - s.s * .4 + (s.hy || 0); G.circ(g, bx, by, 14, s.needs === 'moody' ? '#ffc93c' : '#4aa8e8', 3); G.text(g, s.needs === 'moody' ? 'م' : 'ع', bx, by + 1, { size: 16, color: '#fff', stroke: M.OL, sw: 3 }); }
+          if (!s.found && s.needs && !s.noBadge) badge(g, s.needs, s.x + s.s * .4, s.y - s.s * .4 + (s.hy || 0), 14, 16);
         });
         // find-list
         const L = listed(); if (L.length && o.list !== false) {
@@ -113,7 +115,7 @@
           L.forEach((s, i) => { const x = 480 + ((L.length - 1) / 2 - i) * -(w + 8); if (s.listArt === false) return; g.save(); g.globalAlpha = s.found ? .35 : 1; A.draw(g, s.listArt || s.art || 'question', x, 150, w * .8); g.restore(); if (s.found) A.draw(g, 'check', x, 150, w * .6); });
         }
         // hint ring
-        if (idle > (o.hintAfter || 18) || wrong >= 6) { const r = spots.find(s => !s.found && !s.optional); if (r) { g.save(); g.strokeStyle = '#ffc93c'; g.lineWidth = 6; g.globalAlpha = .6 + .4 * Math.sin(t * 6); g.beginPath(); g.arc(r.x, r.y + (r.hy || 0), r.s * .62 + Math.sin(t * 6) * 4, 0, 6.3); g.stroke(); g.restore(); if (r.needs && st.active !== r.needs) UI.hud.pulseSwitch(true); } }
+        if (idle > (o.hintAfter || 18) || wrong >= 6) { const r = spots.find(s => !s.found && !s.optional); if (r) { g.save(); g.strokeStyle = '#ffc93c'; g.lineWidth = 6; g.globalAlpha = .6 + .4 * Math.sin(t * 6); g.beginPath(); g.arc(r.x, r.y + (r.hy || 0), r.s * .62 + Math.sin(t * 6) * 4, 0, 6.3); g.stroke(); g.restore(); if (r.needs && !st.can(st.active, r.needs)) UI.hud.pulseSwitch(true); } }
       }
     }));
     cl(() => { st.input = null; st.dbg = null; UI.hud.pulseSwitch(false); });
@@ -292,7 +294,7 @@
 
   /* ================= RITUAL (a big tap: bismillah / alhamdulillah / thanks) ================= */
   K.ritual = function (ctx, o, done, cl) {
-    let fin = false; const b = h('button', { class: 'btn big pink', style: 'position:absolute;left:50%;bottom:150px;transform:translateX(-50%);animation:pulse 1.2s infinite;font-size:54px;min-height:120px;z-index:4;white-space:nowrap' }, o.text, o.sub ? h('small', { style: 'font-size:22px;display:block' }, M.fmt(o.sub)) : null);
+    let fin = false; const b = h('button', { class: 'btn big pink', style: 'position:absolute;left:0;right:0;margin:0 auto;width:fit-content;bottom:' + (o.bottom == null ? 150 : o.bottom) + 'px;animation:pulse 1.2s infinite;font-size:54px;min-height:120px;z-index:4;white-space:nowrap' }, o.text, o.sub ? h('small', { style: 'font-size:22px;display:block' }, M.fmt(o.sub)) : null);
     b.onclick = () => { if (fin) return; fin = true; ctx.sfx('bell'); ctx.stage.burst(480, 360, { n: 18, kind: 'spark', max: 300 }); ctx.stage.play(o.who || 'moody', 'cheer', 1); ctx.stage.play(ctx.stage.other(o.who || 'moody').id, 'cheer', 1); b.remove(); M.wait(.9).then(() => done({})); };
     UI.over.append(b); cl(() => b.remove());
     ctx.stage.dbg = { kit: 'ritual' }; cl(() => { ctx.stage.dbg = null; });
