@@ -17768,5 +17768,1680 @@
 "text": "يوم عمري يا حبايبي! تعالوا نتحضّن حضن جماعي.",
 "speaker": "nana",
 "hash": "ac79bade13fc"
+},
+{
+"text": "عدّ شنط السفر. كام شنطة؟",
+"speaker": "narrator",
+"hash": "9291ed88ae94"
+},
+{
+"text": "إيه اللي نحطه في شنطة السفر؟",
+"speaker": "narrator",
+"hash": "37a0373956a2"
+},
+{
+"text": "هدوم وفرشة أسنان",
+"speaker": "narrator",
+"hash": "584b01c3c8ea"
+},
+{
+"text": "حلّة طبيخ",
+"speaker": "narrator",
+"hash": "56d8a6607527"
+},
+{
+"text": "كنبة كبيرة",
+"speaker": "narrator",
+"hash": "086e78303a1a"
+},
+{
+"text": "اللي بنلبسه وبننضّف بيه أسناننا",
+"speaker": "narrator",
+"hash": "ae7111ad65a7"
+},
+{
+"text": "هدومنا وفرشة الأسنان مهمين في السفر",
+"speaker": "narrator",
+"hash": "a3e62d148bc1"
+},
+{
+"text": "شنطة وزنها ١٢ كيلو وشنطة تانية ٨ كيلو. وزنهم مع بعض كام؟",
+"speaker": "narrator",
+"hash": "881a14631994"
+},
+{
+"text": "٢٠ كيلو",
+"speaker": "narrator",
+"hash": "109c329233ea"
+},
+{
+"text": "١٨ كيلو",
+"speaker": "narrator",
+"hash": "0da70fd186b6"
+},
+{
+"text": "٢٢ كيلو",
+"speaker": "narrator",
+"hash": "eb9d1cb4334a"
+},
+{
+"text": "١٢ + ٨",
+"speaker": "narrator",
+"hash": "7cc26272eca1"
+},
+{
+"text": "المسموح للشنطة ٢٣ كيلو. شنطتنا ١٩ كيلو. كام كيلو كمان ينفع نزوّد؟",
+"speaker": "narrator",
+"hash": "dc902f75f71d"
+},
+{
+"text": "٤ كيلو",
+"speaker": "narrator",
+"hash": "a1adbc3f1efc"
+},
+{
+"text": "٣ كيلو",
+"speaker": "narrator",
+"hash": "cd69a8807073"
+},
+{
+"text": "٥ كيلو",
+"speaker": "narrator",
+"hash": "50e042e2e8e2"
+},
+{
+"text": "٢٣ − ١٩",
+"speaker": "narrator",
+"hash": "2d8d554e724e"
+},
+{
+"text": "واقفين في الطابور. الصح إني..",
+"speaker": "narrator",
+"hash": "38d0d1c6f445"
+},
+{
+"text": "أستنى دوري بهدوء",
+"speaker": "narrator",
+"hash": "6b812e655a59"
+},
+{
+"text": "أزق اللي قدامي",
+"speaker": "narrator",
+"hash": "bde23f251de4"
+},
+{
+"text": "أجري قدّام الكل",
+"speaker": "narrator",
+"hash": "ffdb5aaa629d"
+},
+{
+"text": "الصبر حلو والكل له دور",
+"speaker": "narrator",
+"hash": "27bd984c07b1"
+},
+{
+"text": "بنستنى دورنا وبنقول لو سمحت وشكرًا",
+"speaker": "narrator",
+"hash": "30dd60633972"
+},
+{
+"text": "عدّ الناس في الطابور. كام واحد؟",
+"speaker": "narrator",
+"hash": "ddfd49e5f343"
+},
+{
+"text": "عدّهم من الأول",
+"speaker": "narrator",
+"hash": "65f4a86b2473"
+},
+{
+"text": "إيه الورقة اللي لازم ناخدها معانا عشان نسافر لبلد تانية؟",
+"speaker": "narrator",
+"hash": "8d243b8ed3a0"
+},
+{
+"text": "جواز السفر",
+"speaker": "narrator",
+"hash": "9731624d9a69"
+},
+{
+"text": "كراسة الواجب",
+"speaker": "narrator",
+"hash": "4c0236531389"
+},
+{
+"text": "كارت الألعاب",
+"speaker": "narrator",
+"hash": "ba323aa9c0c0"
+},
+{
+"text": "ضابط الجوازات بيسأل عليها",
+"speaker": "narrator",
+"hash": "46cb8cbe20d2"
+},
+{
+"text": "جواز السفر هو بطاقتنا بين البلاد",
+"speaker": "narrator",
+"hash": "13c3fa6021e0"
+},
+{
+"text": "الطيارة هتقوم الساعة ٩. هنوصل المطار قبلها بـ ٣ ساعات. هنوصل الساعة كام؟",
+"speaker": "narrator",
+"hash": "4762cdd8b4b1"
+},
+{
+"text": "٩ − ٣",
+"speaker": "narrator",
+"hash": "0efc72cd0953"
+},
+{
+"text": "عدّ السحاب. كام سحابة؟",
+"speaker": "narrator",
+"hash": "c86d5b0c6622"
+},
+{
+"text": "اعدّها بصباعك",
+"speaker": "narrator",
+"hash": "a3944f10440c"
+},
+{
+"text": "الطيارة بتطير في إيه؟",
+"speaker": "narrator",
+"hash": "756e40ef675b"
+},
+{
+"text": "السما",
+"speaker": "narrator",
+"hash": "94bb6917569b"
+},
+{
+"text": "فوق السحاب",
+"speaker": "narrator",
+"hash": "a6f23688f9cd"
+},
+{
+"text": "ليه بنربط حزام الأمان في الطيارة؟",
+"speaker": "narrator",
+"hash": "e623108a8012"
+},
+{
+"text": "عشان نفضل في أمان لو الجو اتهز",
+"speaker": "narrator",
+"hash": "9900b6ee06da"
+},
+{
+"text": "عشان الطيارة تسرّع",
+"speaker": "narrator",
+"hash": "d4719e122871"
+},
+{
+"text": "عشان شكلنا يبقى حلو",
+"speaker": "narrator",
+"hash": "66e6633ef6b9"
+},
+{
+"text": "الحزام بيحمينا لو الطيارة اهتزت",
+"speaker": "narrator",
+"hash": "b42ab1d4af32"
+},
+{
+"text": "الطيارة من مصر للسعودية بتعدّي فوق أنهي بحر؟",
+"speaker": "narrator",
+"hash": "2565eadce605"
+},
+{
+"text": "البحر الأسود",
+"speaker": "narrator",
+"hash": "64c2e3d7227d"
+},
+{
+"text": "بحر البلطيق",
+"speaker": "narrator",
+"hash": "86c1bee78472"
+},
+{
+"text": "اللون ده في اسمه",
+"speaker": "narrator",
+"hash": "f7358576bfe7"
+},
+{
+"text": "البحر الأحمر بين مصر والسعودية",
+"speaker": "narrator",
+"hash": "3e2ac9c58379"
+},
+{
+"text": "شنطة {a} زرقا بنجوم. أنهي واحدة هي؟",
+"speaker": "narrator",
+"hash": "207846d3dc71"
+},
+{
+"text": "زرقا بنجوم",
+"speaker": "narrator",
+"hash": "ce03f5428b08"
+},
+{
+"text": "حمرا بخطوط",
+"speaker": "narrator",
+"hash": "ffc8cd85c3a3"
+},
+{
+"text": "خضرا بنقط",
+"speaker": "narrator",
+"hash": "802f6404efa7"
+},
+{
+"text": "دوّر على اللون الأزرق والنجوم",
+"speaker": "narrator",
+"hash": "ca83ce6906ab"
+},
+{
+"text": "كمّل النمط: خطوط، نقط، خطوط، نقط، ؟",
+"speaker": "narrator",
+"hash": "28c8e1a901c2"
+},
+{
+"text": "خطوط",
+"speaker": "narrator",
+"hash": "3a68bde28b9e"
+},
+{
+"text": "نقط",
+"speaker": "narrator",
+"hash": "c053efa8f43f"
+},
+{
+"text": "بعد النقط بتيجي الخطوط",
+"speaker": "narrator",
+"hash": "98bac7c11830"
+},
+{
+"text": "مدينة أبها في أنهي منطقة في السعودية؟",
+"speaker": "narrator",
+"hash": "b3cc7617300f"
+},
+{
+"text": "منطقة عسير",
+"speaker": "narrator",
+"hash": "3a2b61353e05"
+},
+{
+"text": "المنطقة الشرقية",
+"speaker": "narrator",
+"hash": "b99d7f030da1"
+},
+{
+"text": "منطقة المدينة المنورة",
+"speaker": "narrator",
+"hash": "4dea51a91405"
+},
+{
+"text": "منطقة الجبال في الجنوب الغربي",
+"speaker": "narrator",
+"hash": "1627562c6daf"
+},
+{
+"text": "أبها هي عاصمة منطقة عسير",
+"speaker": "narrator",
+"hash": "faaca0469bbc"
+},
+{
+"text": "ضابط الجوازات بيختم الجواز عشان..",
+"speaker": "narrator",
+"hash": "3ef610aec4a9"
+},
+{
+"text": "يسجّل دخولنا البلد",
+"speaker": "narrator",
+"hash": "837c50490445"
+},
+{
+"text": "يرسم لنا رسمة",
+"speaker": "narrator",
+"hash": "e3c69df49b0b"
+},
+{
+"text": "يديلنا هدية",
+"speaker": "narrator",
+"hash": "20f5fd58fa06"
+},
+{
+"text": "الختم دليل إننا دخلنا",
+"speaker": "narrator",
+"hash": "7660fd45cb45"
+},
+{
+"text": "شفنا بابا بعد وقت طويل. عملنا إيه؟",
+"speaker": "narrator",
+"hash": "e8171b12e5c8"
+},
+{
+"text": "حضناه وقلنا وحشتني",
+"speaker": "narrator",
+"hash": "b7152ef57746"
+},
+{
+"text": "زعلنا منه",
+"speaker": "narrator",
+"hash": "0e453d802c70"
+},
+{
+"text": "جرينا بعيد عنه",
+"speaker": "narrator",
+"hash": "534a02c84459"
+},
+{
+"text": "الحب بيتقال بالحضن",
+"speaker": "narrator",
+"hash": "9e961416b7a4"
+},
+{
+"text": "الحضن والكلمة الحلوة بيفرّحوا بابا",
+"speaker": "narrator",
+"hash": "effffd17acef"
+},
+{
+"text": "لما يبقى في ضباب، السواق بيعمل إيه؟",
+"speaker": "narrator",
+"hash": "59e88163b947"
+},
+{
+"text": "يشغّل الأنوار ويمشي بالراحة",
+"speaker": "narrator",
+"hash": "3e0df5397049"
+},
+{
+"text": "يجري بسرعة",
+"speaker": "narrator",
+"hash": "769c9b54ab35"
+},
+{
+"text": "يقفل عينيه",
+"speaker": "narrator",
+"hash": "485635423af0"
+},
+{
+"text": "عشان يشوفنا اللي قدّامنا",
+"speaker": "narrator",
+"hash": "5df40a673932"
+},
+{
+"text": "في الضباب نخفف السرعة ونشغّل الأنوار",
+"speaker": "narrator",
+"hash": "be853f24326b"
+},
+{
+"text": "أبها مشهورة بإيه؟",
+"speaker": "narrator",
+"hash": "18c35dc50e62"
+},
+{
+"text": "الجبال والجو اللطيف",
+"speaker": "narrator",
+"hash": "3718f15cc73c"
+},
+{
+"text": "الصحرا الحارة بس",
+"speaker": "narrator",
+"hash": "6727165063dd"
+},
+{
+"text": "الأهرامات",
+"speaker": "narrator",
+"hash": "3c9e459b3435"
+},
+{
+"text": "فيها جبال عالية وسحاب وضباب",
+"speaker": "narrator",
+"hash": "fc70e38e61af"
+},
+{
+"text": "أبها في جبال عسير، جوّها لطيف وفيه ضباب",
+"speaker": "narrator",
+"hash": "8dbc24daa83b"
+},
+{
+"text": "ليه بيبقى في ضباب على الجبال العالية؟",
+"speaker": "narrator",
+"hash": "532650175645"
+},
+{
+"text": "بخار الماية بيبرد ويبقى قطرات صغيرة",
+"speaker": "narrator",
+"hash": "858effd87a76"
+},
+{
+"text": "الشمس بتطفي",
+"speaker": "narrator",
+"hash": "d6ff1cc83d2f"
+},
+{
+"text": "الشجر بيطلّع دخان",
+"speaker": "narrator",
+"hash": "6c352513143c"
+},
+{
+"text": "الهوا فوق أبرد",
+"speaker": "narrator",
+"hash": "68b825ba1e47"
+},
+{
+"text": "الضباب سحابة قريبة من الأرض",
+"speaker": "narrator",
+"hash": "57fa31b997f1"
+},
+{
+"text": "الجو فوق الجبل برد وضباب. نلبس إيه؟",
+"speaker": "narrator",
+"hash": "498606c18a44"
+},
+{
+"text": "جاكت تقيل",
+"speaker": "narrator",
+"hash": "5709a30962d7"
+},
+{
+"text": "مايوه",
+"speaker": "narrator",
+"hash": "f4c516d4e72f"
+},
+{
+"text": "شبشب",
+"speaker": "narrator",
+"hash": "8f75f165300b"
+},
+{
+"text": "الدفا أهم حاجة",
+"speaker": "narrator",
+"hash": "f44961b7c083"
+},
+{
+"text": "عدّ عربيات التلفريك. كام عربية؟",
+"speaker": "narrator",
+"hash": "55938d8cc68f"
+},
+{
+"text": "عدّهم بالراحة",
+"speaker": "narrator",
+"hash": "6e18270d3848"
+},
+{
+"text": "التلفريك بيمشي على إيه؟",
+"speaker": "narrator",
+"hash": "0426f99733cc"
+},
+{
+"text": "كابل (سلك) معلّق عالي",
+"speaker": "narrator",
+"hash": "d1e274e1f17d"
+},
+{
+"text": "قضبان على الأرض",
+"speaker": "narrator",
+"hash": "481290a23372"
+},
+{
+"text": "بيطلع من فوق الوادي",
+"speaker": "narrator",
+"hash": "e934bbf4a5ee"
+},
+{
+"text": "عربية التلفريك معلّقة في كابل قوي",
+"speaker": "narrator",
+"hash": "3db3cde2a664"
+},
+{
+"text": "جبل السودة من أعلى القمم في السعودية. صح ولا غلط؟",
+"speaker": "narrator",
+"hash": "88d7d18c5058"
+},
+{
+"text": "صح",
+"speaker": "narrator",
+"hash": "ffd06265ccef"
+},
+{
+"text": "غلط",
+"speaker": "narrator",
+"hash": "0422a3a31799"
+},
+{
+"text": "قريب من أبها وعالي أوي",
+"speaker": "narrator",
+"hash": "e7432e152cae"
+},
+{
+"text": "السودة في عسير ومن أعلى قمم المملكة",
+"speaker": "narrator",
+"hash": "16cb5bc84985"
+},
+{
+"text": "الجو فوق الجبل العالي أبرد ولا أدفى من الجو تحت؟",
+"speaker": "narrator",
+"hash": "c54dc72b2146"
+},
+{
+"text": "أبرد",
+"speaker": "narrator",
+"hash": "7c0bb926bfc9"
+},
+{
+"text": "أدفى",
+"speaker": "narrator",
+"hash": "92dc08e532f7"
+},
+{
+"text": "نفس الحاجة",
+"speaker": "narrator",
+"hash": "0053168a482d"
+},
+{
+"text": "كل ما نطلع فوق الهوا بيبرد",
+"speaker": "narrator",
+"hash": "53802b52483b"
+},
+{
+"text": "كل ما علينا فوق الجو بيبرد",
+"speaker": "narrator",
+"hash": "031481d0e5a0"
+},
+{
+"text": "الحرارة في القاهرة ٣٠ درجة وفي أبها ٢٠ درجة. الفرق كام؟",
+"speaker": "narrator",
+"hash": "f740fae615a5"
+},
+{
+"text": "١٠ درجات",
+"speaker": "narrator",
+"hash": "fbb53f3316d7"
+},
+{
+"text": "٥ درجات",
+"speaker": "narrator",
+"hash": "3a05b2c41dc1"
+},
+{
+"text": "١٥ درجة",
+"speaker": "narrator",
+"hash": "367b5b125ad7"
+},
+{
+"text": "٣٠ − ٢٠",
+"speaker": "narrator",
+"hash": "5a714d8ee3e0"
+},
+{
+"text": "بابا ادّاني هدية. أقول إيه؟",
+"speaker": "narrator",
+"hash": "dc2cc92468b7"
+},
+{
+"text": "شكرًا يا بابا",
+"speaker": "narrator",
+"hash": "8badd1e9bf22"
+},
+{
+"text": "مش عاجبني",
+"speaker": "narrator",
+"hash": "93a43fc73f48"
+},
+{
+"text": "عايز أكتر",
+"speaker": "narrator",
+"hash": "1437fde21c1e"
+},
+{
+"text": "كلمة حلوة من القلب",
+"speaker": "narrator",
+"hash": "2f8610aee46e"
+},
+{
+"text": "الشكر بيفرّح اللي بيدّينا",
+"speaker": "narrator",
+"hash": "15f1e106c5d4"
+},
+{
+"text": "على السفرة ٣ أطباق وجه ٢ كمان. كام طبق؟",
+"speaker": "narrator",
+"hash": "aaa6a6c25ffa"
+},
+{
+"text": "٣ و٢ مع بعض",
+"speaker": "narrator",
+"hash": "29523e9783c6"
+},
+{
+"text": "لما نقول لبابا \"ربنا يخليك\" على هديته، ده اسمه..",
+"speaker": "narrator",
+"hash": "8230aea76355"
+},
+{
+"text": "شكر وامتنان",
+"speaker": "narrator",
+"hash": "f0ffc5ef7ac8"
+},
+{
+"text": "غيرة",
+"speaker": "narrator",
+"hash": "fdab90201797"
+},
+{
+"text": "زعل",
+"speaker": "narrator",
+"hash": "52b898f92dd9"
+},
+{
+"text": "كلمة بنقولها لما نفرح بحاجة",
+"speaker": "narrator",
+"hash": "bfb8a69a1d63"
+},
+{
+"text": "قضينا ٣ أيام مع بابا. اليوم ٢٤ ساعة. كام ساعة؟",
+"speaker": "narrator",
+"hash": "4d3700f7275a"
+},
+{
+"text": "٧٢ ساعة",
+"speaker": "narrator",
+"hash": "3365fb4629b9"
+},
+{
+"text": "٦٦ ساعة",
+"speaker": "narrator",
+"hash": "ff3009bf32f5"
+},
+{
+"text": "٨٤ ساعة",
+"speaker": "narrator",
+"hash": "ee342177adaf"
+},
+{
+"text": "٣ × ٢٤",
+"speaker": "narrator",
+"hash": "9dac8441146e"
+},
+{
+"text": "المهمة ١: نجهّز الشنطة. بكرة هنسافر لبابا في السعودية.. يلا نجهّز الشنطة!",
+"speaker": "narrator",
+"hash": "da06ec6c257e"
+},
+{
+"text": "اللي يجهّز شنطته بدري.. يسافر مرتاح",
+"speaker": "narrator",
+"hash": "70b4c38a635b"
+},
+{
+"text": "المهمة ٢: مطار القاهرة. الطابور والجوازات والفحص.. كل خطوة ليها قواعد!",
+"speaker": "narrator",
+"hash": "0f6bda208351"
+},
+{
+"text": "الصبر والأدب في الطابور بيخلّوا السفر أسهل",
+"speaker": "narrator",
+"hash": "33158dd8b035"
+},
+{
+"text": "المهمة ٣: في الطيارة. نربط الحزام، نقول دعاء السفر، ونطير فوق السحاب!",
+"speaker": "narrator",
+"hash": "5a7b9812b4e4"
+},
+{
+"text": "الحزام أمان.. والدعاء بركة في السفر",
+"speaker": "narrator",
+"hash": "70cea20867f8"
+},
+{
+"text": "المهمة ٤: وصلنا أبها. الهبوط، ختم الجواز، وشنطتنا على السير!",
+"speaker": "narrator",
+"hash": "56adebdb0606"
+},
+{
+"text": "بنستنى شنطتنا بهدوء.. ونعرفها من لونها ورسمتها",
+"speaker": "narrator",
+"hash": "801edbdbbf98"
+},
+{
+"text": "المهمة ٥: بابا والجبال. أخيرًا بابا! وبعدين رحلة بالعربية وسط الضباب والجبال.",
+"speaker": "narrator",
+"hash": "31a0fa582022"
+},
+{
+"text": "حضن بابا أحلى استقبال.. والضباب بنعدّي فيه بالأنوار وبالراحة",
+"speaker": "narrator",
+"hash": "6a5b0df8d005"
+},
+{
+"text": "المهمة ٦: جولة في أبها. تلفريك وجبال السودة وجو بارد.. نلبس إيه؟",
+"speaker": "narrator",
+"hash": "8238f05e9f9c"
+},
+{
+"text": "اللبس المناسب للجو بيخلّينا نستمتع بالرحلة",
+"speaker": "narrator",
+"hash": "5dbdc60fc798"
+},
+{
+"text": "المهمة ٧: سهرة مع بابا. عشاء وهدايا وشكر.. وتصبحوا على خير.",
+"speaker": "narrator",
+"hash": "877725f34274"
+},
+{
+"text": "نشكر اللي بيحبونا.. والسفر الحلو بيخلّي القلب كبير",
+"speaker": "narrator",
+"hash": "071fe289f97a"
+},
+{
+"text": "الجوازات فوق الرف العالي! محتاجين مودي الطويل",
+"speaker": "narrator",
+"hash": "0255c4958521"
+},
+{
+"text": "التذاكر تحت الكنبة في فتحة ضيقة! محتاجين عبودي أو نيمو الصغيرين",
+"speaker": "narrator",
+"hash": "5db754dba1d0"
+},
+{
+"text": "الدبدوب مستخبي ورا الستارة! محتاجين نيمو الفضولية",
+"speaker": "narrator",
+"hash": "49ddce19e6c3"
+},
+{
+"text": "الجوازات مع توتا القايدة",
+"speaker": "narrator",
+"hash": "77941e72b051"
+},
+{
+"text": "ده مش هنحتاجه في السفر.. نسيبه في البيت",
+"speaker": "narrator",
+"hash": "48b56b1d1b45"
+},
+{
+"text": "ده بيفضل في البيت يا حبيبي",
+"speaker": "narrator",
+"hash": "017cf22df994"
+},
+{
+"text": "يا ولاد، بكرة بإذن الله هنسافر لبابا في أبها! لازم نجهّز كل حاجة النهاردة.",
+"speaker": "mama",
+"hash": "6de6b681566f"
+},
+{
+"text": "يلا يلا! وحشني بابا أوي!",
+"speaker": "boy_small",
+"hash": "f022e66872d4"
+},
+{
+"text": "أنا عملت قايمة: الجوازات والتذاكر والدبدوب. بس الثلاثة دول ضايعين!",
+"speaker": "girl_big",
+"hash": "38a9d5dd3274"
+},
+{
+"text": "ولا يهمك يا توتا، هدوّر معاكم! كل واحد فينا له حاجة يعرف يعملها.",
+"speaker": "girl_small",
+"hash": "fe95a6904150"
+},
+{
+"text": "دوّروا على الجوازات والتذاكر والدبدوب",
+"speaker": "narrator",
+"hash": "79f02e30d3a6"
+},
+{
+"text": "وصلتلهم! الجوازات في إيدي.",
+"speaker": "boy_big",
+"hash": "9dde08f42014"
+},
+{
+"text": "لقيتها تحت الكنبة! التذاكر معانا.",
+"speaker": "boy_small",
+"hash": "5f542ab3dc03"
+},
+{
+"text": "لقيت الدبدوب مستخبي ورا الستارة!",
+"speaker": "girl_small",
+"hash": "a5e91ce5269e"
+},
+{
+"text": "كلهم اتلاقوا! الحمد لله. دلوقتي نحط في الشنطة اللي هنحتاجه بس.",
+"speaker": "girl_big",
+"hash": "8d24a0ff2393"
+},
+{
+"text": "حطّوا في الشنطة اللي هنحتاجه في السفر",
+"speaker": "narrator",
+"hash": "baa65eb39f7e"
+},
+{
+"text": "ما شاء الله! بس لازم نرتّب الشنطة صح: الحاجات التقيلة تحت، والخفيفة فوق.",
+"speaker": "mama",
+"hash": "4b7ec4bdfaa5"
+},
+{
+"text": "رتّب الشنطة: التقيل تحت والخفيف فوق",
+"speaker": "narrator",
+"hash": "721519d39b2a"
+},
+{
+"text": "الشنطة ثقلها كام يا ترى؟ لازم نحسب عشان المطار.",
+"speaker": "boy_big",
+"hash": "3881c9b4d994"
+},
+{
+"text": "اتقفلت الشنطة! بكرة الصبح بإذن الله نطلع على مطار القاهرة.",
+"speaker": "mama",
+"hash": "c2cf45163c45"
+},
+{
+"text": "أنا مش قادرة أستنى! نفسي أشوف الجبال اللي بابا بيحكي عنها.",
+"speaker": "girl_small",
+"hash": "47acb1c21c78"
+},
+{
+"text": "استنّوا شوية.. لسه الناس اللي قدامنا بيخلّصوا",
+"speaker": "narrator",
+"hash": "2e314f3e58f4"
+},
+{
+"text": "الشنطة الكبيرة تقيلة! محتاجين مودي القوي",
+"speaker": "narrator",
+"hash": "5beab8fc96f8"
+},
+{
+"text": "ده دور عبودي ونيمو!",
+"speaker": "narrator",
+"hash": "882424a0492b"
+},
+{
+"text": "الشنطة هنا على الميزان",
+"speaker": "narrator",
+"hash": "dc58d407694e"
+},
+{
+"text": "ده مش للصينية.. بصّوا على الصور تاني",
+"speaker": "narrator",
+"hash": "6d15db140031"
+},
+{
+"text": "العصير نشربه الأول قبل الفحص",
+"speaker": "narrator",
+"hash": "6efd7cdc4cbb"
+},
+{
+"text": "وصلنا مطار القاهرة! أول حاجة نقف في الطابور بهدوء وننتظر دورنا.",
+"speaker": "mama",
+"hash": "1021fe1564bf"
+},
+{
+"text": "أنا عايز أجري ناحية الشباك!",
+"speaker": "boy_small",
+"hash": "72f4c71ba772"
+},
+{
+"text": "لأ يا عبودي. الطابور بنمشي فيه خطوة خطوة، لما يجيلنا الدور.",
+"speaker": "girl_big",
+"hash": "4b60f6e8fb78"
+},
+{
+"text": "استنّوا لحد ما الضوء يبقى أخضر.. وبعدين اضغط السهم",
+"speaker": "narrator",
+"hash": "95c633221a38"
+},
+{
+"text": "برافو علينا! استنينا دورنا من غير ما نزق حد.",
+"speaker": "girl_small",
+"hash": "86d4d805d3b0"
+},
+{
+"text": "صباح الخير يا أبطال! رايحين فين النهاردة؟",
+"speaker": "narrator",
+"hash": "b4da8d2704cc"
+},
+{
+"text": "الأدب إننا نرد على الناس ونقول صباح الخير.",
+"speaker": "girl_big",
+"hash": "73ba3433d899"
+},
+{
+"text": "بالراحة يا حبيبي. بنقول صباح الخير ولو سمحت، والكل هيخلّص بسرعة.",
+"speaker": "narrator",
+"hash": "ad8f27f7aee4"
+},
+{
+"text": "ما شاء الله! بابا هيفرح بيكم أوي. رحلة سعيدة!",
+"speaker": "narrator",
+"hash": "1a15d2674d34"
+},
+{
+"text": "نسكت ونبص في الموبايل",
+"speaker": "narrator",
+"hash": "c9201db16830"
+},
+{
+"text": "مستعجلين! خلّصنا بسرعة",
+"speaker": "narrator",
+"hash": "3762c8194b2e"
+},
+{
+"text": "صباح النور! رايحين أبها نزور بابا",
+"speaker": "narrator",
+"hash": "bc10d5efb02e"
+},
+{
+"text": "نرد على الموظف إزاي؟",
+"speaker": "narrator",
+"hash": "0b3037c59031"
+},
+{
+"text": "الأول نوزن الشنط. شيلوهم على الميزان.",
+"speaker": "narrator",
+"hash": "3fcd16a9fc33"
+},
+{
+"text": "شيلوا الشنط على الميزان",
+"speaker": "narrator",
+"hash": "c8cb21f25607"
+},
+{
+"text": "الوزن تمام! خدوا بطاقات الصعود، وروحوا للجوازات.",
+"speaker": "narrator",
+"hash": "2bdaf2f71359"
+},
+{
+"text": "الجوازات مع الكبيرة! أنا اللي هسلّم الجوازات للضابط.",
+"speaker": "girl_big",
+"hash": "17bff9eb7ff9"
+},
+{
+"text": "توتا تسلّم الجوازات للضابط",
+"speaker": "narrator",
+"hash": "b7dbbce2893d"
+},
+{
+"text": "السلام عليكم. جوازاتكم سليمة. بتسافروا ليه يا أبطال؟",
+"speaker": "narrator",
+"hash": "5b57a9603e1d"
+},
+{
+"text": "الضابط بيعمل شغله وبيسأل بأدب. بنرد عليه بهدوء وبكلمة طيبة.",
+"speaker": "girl_big",
+"hash": "37feb6e107a9"
+},
+{
+"text": "ربنا يحفظكم ويوصلكم بالسلامة. رحلة سعيدة!",
+"speaker": "narrator",
+"hash": "36b0adcb2bbc"
+},
+{
+"text": "استنّى يا حبيبي. كل المسافرين بيعدّوا من هنا بالدور وبالقواعد.",
+"speaker": "narrator",
+"hash": "51434c12b2d6"
+},
+{
+"text": "مش عايز أرد على حد غريب",
+"speaker": "narrator",
+"hash": "c0484e5bfbd7"
+},
+{
+"text": "رايحين نزور بابا. هو بيشتغل في السعودية",
+"speaker": "narrator",
+"hash": "b24852787be5"
+},
+{
+"text": "نجري ونعدّي من غير ما نسلّم",
+"speaker": "narrator",
+"hash": "88ccc6f05f01"
+},
+{
+"text": "الضابط بيسأل: رايحين فين؟",
+"speaker": "narrator",
+"hash": "bfd86efe9231"
+},
+{
+"text": "الفحص الأمني: الحاجات المعدن والموبايل ينزلوا في الصينية. العصير نشربه الأول.",
+"speaker": "narrator",
+"hash": "504be1d3ac53"
+},
+{
+"text": "حطّوا المفاتيح والموبايل والحزام في الصينية",
+"speaker": "narrator",
+"hash": "8bf9831241c5"
+},
+{
+"text": "ممتاز! اتبعتوا القواعد صح. تعالوا نشوف مين هيعدّي أول واحد.",
+"speaker": "narrator",
+"hash": "14e980c66a36"
+},
+{
+"text": "يلا على البوابة! الطيارة مستنيانا.",
+"speaker": "mama",
+"hash": "e68a750f4a58"
+},
+{
+"text": "وصلنا أماكننا في الطيارة! ما شاء الله.",
+"speaker": "mama",
+"hash": "697646487e4c"
+},
+{
+"text": "أنا عايزة الشباك! لا استني.. كلنا هنتبادل بعدين.",
+"speaker": "girl_small",
+"hash": "9b2342bd00b3"
+},
+{
+"text": "الأول الحزام يا جماعة. الأمان قبل أي حاجة.",
+"speaker": "girl_big",
+"hash": "a50a4eb9d3c3"
+},
+{
+"text": "اربطوا حزام الأمان: دوس على كل إبزيم",
+"speaker": "narrator",
+"hash": "7ca48d753811"
+},
+{
+"text": "كلنا ربطنا الحزام. دلوقتي نقول دعاء السفر قبل ما نطير.",
+"speaker": "girl_big",
+"hash": "ea4e47ee722d"
+},
+{
+"text": "سبحان الذي سخّر لنا هذا وما كنّا له مقرنين، وإنا إلى ربنا لمنقلبون.",
+"speaker": "mama",
+"hash": "d58c7a5db13b"
+},
+{
+"text": "اضغط وقولوا دعاء السفر: سبحان الذي سخّر لنا هذا",
+"speaker": "narrator",
+"hash": "5eae2b4ecc8c"
+},
+{
+"text": "والطيارة بدأت تجري على الممر.. وبعدين طارت!",
+"speaker": "narrator",
+"hash": "1691cadb2864"
+},
+{
+"text": "الله! إحنا فوق السحاب! القاهرة بقت صغيرة أوي!",
+"speaker": "boy_small",
+"hash": "eab07034f4c3"
+},
+{
+"text": "دوّروا على السحابة الأرنب والقلب والسمكة",
+"speaker": "narrator",
+"hash": "8498e1d382fe"
+},
+{
+"text": "ده شكل أرنب! ما شاء الله.",
+"speaker": "girl_small",
+"hash": "9ad647bfa50f"
+},
+{
+"text": "سحابة على شكل قلب! زي شوقنا لبابا.",
+"speaker": "girl_big",
+"hash": "851342bfcd49"
+},
+{
+"text": "سمكة في السما! عجيبة!",
+"speaker": "boy_small",
+"hash": "c67eef099de5"
+},
+{
+"text": "ما شاء الله! بنعدّي دلوقتي فوق البحر الأحمر.",
+"speaker": "boy_big",
+"hash": "5d130e6a5043"
+},
+{
+"text": "لعبة قصيرة لحد ما نوصل: ورق السفر المتخبّي!",
+"speaker": "girl_small",
+"hash": "ff4e9974c36d"
+},
+{
+"text": "لاقوا الأزواج المتشابهة",
+"speaker": "narrator",
+"hash": "db56a531b6c2"
+},
+{
+"text": "فجأة.. الطيارة اتهزت شوية، وضوء حزام الأمان نوّر!",
+"speaker": "narrator",
+"hash": "f43dcf72ea48"
+},
+{
+"text": "لأ يا حبيبي! لما الحزام يبقى منوّر بنفضل قاعدين عشان ما نتعورش.",
+"speaker": "mama",
+"hash": "e7097a068903"
+},
+{
+"text": "الوقوف في الهزة خطر. الحزام يفضل مربوط لحد ما الضوء ينطفي.",
+"speaker": "girl_big",
+"hash": "bd6a38b3a7da"
+},
+{
+"text": "برافو! كده إحنا في أمان، والهزة بتعدّي.",
+"speaker": "girl_big",
+"hash": "13a6b0f73554"
+},
+{
+"text": "نقوم نجري في الممر",
+"speaker": "narrator",
+"hash": "b8e546251f5e"
+},
+{
+"text": "نفك الحزام ونقف على الكرسي",
+"speaker": "narrator",
+"hash": "858eaadccd89"
+},
+{
+"text": "نفضل قاعدين ونربط الحزام كويس",
+"speaker": "narrator",
+"hash": "342ea4fa71c5"
+},
+{
+"text": "الطيارة بتهتز شوية. نعمل إيه؟",
+"speaker": "narrator",
+"hash": "0b250d51dc59"
+},
+{
+"text": "والجو هدي تاني.. وظهرت تحت الجبال الخضرا.",
+"speaker": "narrator",
+"hash": "8103d9d17d27"
+},
+{
+"text": "سادتي الركّاب، بعد دقايق هنهبط في مطار أبها. نرجو ربط الأحزمة.",
+"speaker": "narrator",
+"hash": "09cc72360a81"
+},
+{
+"text": "الختم يتحط على الجواز",
+"speaker": "narrator",
+"hash": "ffddfe889a8d"
+},
+{
+"text": "مش دي! بصّ على اللون والرسمة",
+"speaker": "narrator",
+"hash": "c587e15c7284"
+},
+{
+"text": "الشنطة التقيلة محتاجة مودي القوي",
+"speaker": "narrator",
+"hash": "8b3f8f1ff468"
+},
+{
+"text": "الشنطة دي محتاجة حد صغير. جرّبوا عبودي أو نيمو",
+"speaker": "narrator",
+"hash": "cacdf3348885"
+},
+{
+"text": "شنطة توتا القايدة!",
+"speaker": "narrator",
+"hash": "a433a052d847"
+},
+{
+"text": "محتاجين نيمو اللي بتلاقي الحاجات",
+"speaker": "narrator",
+"hash": "49a71d636889"
+},
+{
+"text": "بُص يا مودي! جبال وبيوت من حجر وسحاب تحتنا!",
+"speaker": "boy_small",
+"hash": "d1cc5c445b56"
+},
+{
+"text": "هبطنا بالسلامة في مطار أبها. الجو برّه لطيف وفيه ضباب خفيف.",
+"speaker": "narrator",
+"hash": "de320c6dddab"
+},
+{
+"text": "الحمد لله على السلامة. أبها في منطقة عسير، في جبال عالية وجوّها حلو.",
+"speaker": "mama",
+"hash": "94130c003d0b"
+},
+{
+"text": "السلام عليكم! أهلًا وسهلًا في أبها. هنختم جوازاتكم.",
+"speaker": "narrator",
+"hash": "118bb9fc4c87"
+},
+{
+"text": "لما حد يسلّم علينا، بنرد السلام ونبتسم.",
+"speaker": "girl_big",
+"hash": "893bd3541f9b"
+},
+{
+"text": "الله يسلمك! أهلًا بيكم في بلدكم التاني.",
+"speaker": "narrator",
+"hash": "e3bfe1b8878b"
+},
+{
+"text": "نبص بعيد ومنردش",
+"speaker": "narrator",
+"hash": "03b060a46f60"
+},
+{
+"text": "وعليكم السلام ورحمة الله. شكرًا!",
+"speaker": "narrator",
+"hash": "c3acb626a36b"
+},
+{
+"text": "نرد على الضابط إزاي؟",
+"speaker": "narrator",
+"hash": "3ebf0fc02ae6"
+},
+{
+"text": "اختم جواز كل واحد: اسحب الختم على الجواز",
+"speaker": "narrator",
+"hash": "e1e426c87af1"
+},
+{
+"text": "اتختمت! أهلًا بيكم في السعودية. زيارة سعيدة!",
+"speaker": "narrator",
+"hash": "beda3f3690f4"
+},
+{
+"text": "دلوقتي نجيب شنطنا! بس نستنى بصبر على السير.",
+"speaker": "boy_big",
+"hash": "62cd33d2a539"
+},
+{
+"text": "كل شنطة ليها لون ورسمة. شوفوا الصور فوق واستنوا شنطتكم تعدّي.",
+"speaker": "girl_big",
+"hash": "bd1ff774a79a"
+},
+{
+"text": "دوّروا على شنطنا الأربعة على السير",
+"speaker": "narrator",
+"hash": "a8e7de813a76"
+},
+{
+"text": "كل شنطنا معانا! شاطرين أوي.",
+"speaker": "girl_small",
+"hash": "5162c7c70ee5"
+},
+{
+"text": "يلا نخرج! أكيد بابا مستنّينا برّه.",
+"speaker": "girl_big",
+"hash": "90e380faa0af"
+},
+{
+"text": "الأبواب الزجاج اتفتحت.. وفي ناس كتير مستنّية القادمين.",
+"speaker": "narrator",
+"hash": "a93f25cd2f14"
+},
+{
+"text": "فين بابا؟ أنا مش شايفه!",
+"speaker": "boy_small",
+"hash": "c68248900363"
+},
+{
+"text": "استنى.. بُص هناك! حد بيلوّح بإيده!",
+"speaker": "girl_small",
+"hash": "02e7d4a27454"
+},
+{
+"text": "بابا!!! ده بابا!",
+"speaker": "boy_big",
+"hash": "f2808904703d"
+},
+{
+"text": "يلا نجري عليه!",
+"speaker": "girl_big",
+"hash": "577c05b5df3f"
+},
+{
+"text": "وحشتوني أوي يا أحلى أولاد في الدنيا! الحمد لله على سلامتكم.",
+"speaker": "baba",
+"hash": "14da7abcd58b"
+},
+{
+"text": "اضغط عشان نحضن بابا",
+"speaker": "narrator",
+"hash": "dc9f538de3b7"
+},
+{
+"text": "وحشتني أوي يا بابا! أنا كبرت وبقيت أعرف أعدّ لحد عشرين!",
+"speaker": "boy_small",
+"hash": "bd082f768b6e"
+},
+{
+"text": "ما شاء الله عليك! وحشني ضحكتكم أكتر من أي حاجة.",
+"speaker": "baba",
+"hash": "710d8d06e307"
+},
+{
+"text": "ماما بتسلّم عليك وبتقول لك وحشتنا الأكل بتاعك!",
+"speaker": "girl_small",
+"hash": "8e878e7c6175"
+},
+{
+"text": "يلا بينا على العربية. الطريق لبيتنا في الجبال حلو أوي. اربطوا الأحزمة!",
+"speaker": "baba",
+"hash": "4db83f97cd3a"
+},
+{
+"text": "أبها فوق الجبال. بصّوا حواليكم: بيوت حجر ومنارات بيضا ومدرجات خضرا.",
+"speaker": "baba",
+"hash": "23d5bb362437"
+},
+{
+"text": "دوّروا: بيت الحجر والمنارة والمدرجات والشجرة",
+"speaker": "narrator",
+"hash": "db96f07f5a36"
+},
+{
+"text": "بيوت الحجر بشبابيكها البيضا حلوة أوي! شبه حواديت.",
+"speaker": "girl_big",
+"hash": "90ba48db90e7"
+},
+{
+"text": "ده الطراز العسيري. بنبني بالحجر وبنطلي الشبابيك بالأبيض.",
+"speaker": "baba",
+"hash": "f64ba07a14bf"
+},
+{
+"text": "وفجأة.. الضباب زاد جدًا على الطريق!",
+"speaker": "narrator",
+"hash": "faa5661ab828"
+},
+{
+"text": "لأ يا حبيبي! السرعة في الضباب خطر. الأمان أهم من الوصول بدري.",
+"speaker": "baba",
+"hash": "1e83a6fdf157"
+},
+{
+"text": "تمام! الأنوار بتخلّي العربيات تشوفنا.",
+"speaker": "baba",
+"hash": "77b9cca34fa2"
+},
+{
+"text": "بالظبط! في الضباب بنمشي بالراحة.",
+"speaker": "baba",
+"hash": "99462fc358b3"
+},
+{
+"text": "يزوّد السرعة عشان نوصل بدري",
+"speaker": "narrator",
+"hash": "50d027b21203"
+},
+{
+"text": "يشغّل أنوار الضباب",
+"speaker": "narrator",
+"hash": "b2bb64895082"
+},
+{
+"text": "يخفف السرعة ويمشي بالراحة",
+"speaker": "narrator",
+"hash": "0128b0d9aadf"
+},
+{
+"text": "الضباب كتير. بابا يعمل إيه؟",
+"speaker": "narrator",
+"hash": "c04042beb8ed"
+},
+{
+"text": "يعني في الضباب بنفتح الأنوار ونمشي بهدوء. فهمت!",
+"speaker": "boy_big",
+"hash": "eb8f02d58e45"
+},
+{
+"text": "شفتوا؟ الضباب بيعدّي. وصلنا قريب من البيت.",
+"speaker": "baba",
+"hash": "e4468f4113bd"
+},
+{
+"text": "أنا مبسوط أوي إننا مع بعض.",
+"speaker": "boy_small",
+"hash": "d26a1e1af49c"
+},
+{
+"text": "الجو برد وضباب. ده مش مناسب",
+"speaker": "narrator",
+"hash": "e7c75380f246"
+},
+{
+"text": "ده للصيف والحر. هنا برد",
+"speaker": "narrator",
+"hash": "1a3600b398e1"
+},
+{
+"text": "صباح الخير يا أبطال! النهاردة هنزور التلفريك وجبال السودة.",
+"speaker": "baba",
+"hash": "4c2b14935164"
+},
+{
+"text": "الجو برّه برد وفيه ضباب! نلبس إيه؟",
+"speaker": "girl_small",
+"hash": "35b1ba8f6d21"
+},
+{
+"text": "اختاروا اللبس المناسب للجو البارد",
+"speaker": "narrator",
+"hash": "6dd050d77f3f"
+},
+{
+"text": "تمام! بالجاكت والكوفية مش هتبردوا. يلا على التلفريك!",
+"speaker": "baba",
+"hash": "873dbbebc9e5"
+},
+{
+"text": "ده التلفريك. عربية معلّقة في كابل بتطلعنا فوق الوادي والجبال. اركبوا بهدوء.",
+"speaker": "baba",
+"hash": "b9202f2bb72d"
+},
+{
+"text": "اضغط عشان نركب التلفريك",
+"speaker": "narrator",
+"hash": "9496fcc786d0"
+},
+{
+"text": "العربية بتتحرك! أنا شايف الشجر تحتنا صغير أوي!",
+"speaker": "boy_small",
+"hash": "35ac94125b1e"
+},
+{
+"text": "من التلفريك: دوّروا على النسر والماعز والسحابة والعلم",
+"speaker": "narrator",
+"hash": "ddb1722e73ee"
+},
+{
+"text": "بصّ يا بابا! البيوت الحجر صغيرة من فوق!",
+"speaker": "boy_big",
+"hash": "4fde8d37fabd"
+},
+{
+"text": "ده الطراز العسيري يا مودي. والجبال هنا من أعلى جبال المملكة.",
+"speaker": "baba",
+"hash": "c00d6fce7b36"
+},
+{
+"text": "وصلنا السودة! من أعلى القمم في المملكة. بصّوا السحاب تحتنا!",
+"speaker": "baba",
+"hash": "1101817d60ea"
+},
+{
+"text": "ده برد! الحمد لله لبسنا الجاكتات.",
+"speaker": "girl_small",
+"hash": "1372566777f6"
+},
+{
+"text": "بالظبط! فوق الجبال الجو بيبقى أبرد.",
+"speaker": "girl_big",
+"hash": "fd3d6d49f315"
+},
+{
+"text": "لأ يا حبيبي، هنا الجو أبرد بكتير من القاهرة. بص على السحاب والضباب.",
+"speaker": "baba",
+"hash": "060b608b148b"
+},
+{
+"text": "برد وضباب وسحاب",
+"speaker": "narrator",
+"hash": "5d4d7e4367bb"
+},
+{
+"text": "حر شديد زي الصيف",
+"speaker": "narrator",
+"hash": "129726f13c8f"
+},
+{
+"text": "الجو هنا إزاي؟",
+"speaker": "narrator",
+"hash": "7bcdcb082059"
+},
+{
+"text": "مين يفتكر إيه اللي شفناه النهاردة؟",
+"speaker": "baba",
+"hash": "12dc4e917f7c"
+},
+{
+"text": "أنا أحلى حاجة عندي إننا مع بابا.",
+"speaker": "boy_small",
+"hash": "c06b26cbf812"
+},
+{
+"text": "الهدية دي لحد تاني.. افتكروا كلام بابا",
+"speaker": "narrator",
+"hash": "1eaf899c2999"
+},
+{
+"text": "افتكر كلام بابا عن كل هدية",
+"speaker": "narrator",
+"hash": "4ae2cb15daf1"
+},
+{
+"text": "الهدية دي لبابا",
+"speaker": "narrator",
+"hash": "c98230779d17"
+},
+{
+"text": "الختم يتحط على الصفحة",
+"speaker": "narrator",
+"hash": "43a8ff7f6719"
+},
+{
+"text": "السفرة جاهزة! كبسة وتمر وعصير. يلا يا حبايبي.",
+"speaker": "baba",
+"hash": "cc9f46af0116"
+},
+{
+"text": "الله! الريحة جميلة أوي.",
+"speaker": "girl_big",
+"hash": "9145ec878dfd"
+},
+{
+"text": "قبل ما ناكل بنقول إيه؟",
+"speaker": "mama",
+"hash": "8b3df4bc0b85"
+},
+{
+"text": "اضغط وقولوا بسم الله",
+"speaker": "narrator",
+"hash": "e0a9f4e9d4b5"
+},
+{
+"text": "مممم! الأكل لذيذ يا بابا!",
+"speaker": "boy_small",
+"hash": "d85f8a6ba261"
+},
+{
+"text": "الحمد لله. حكوا لي عن رحلتكم. كان أحلى حاجة فيها إيه؟",
+"speaker": "baba",
+"hash": "f1b28a12d6a8"
+},
+{
+"text": "السحاب على شكل قلب في الطيارة!",
+"speaker": "girl_small",
+"hash": "1f625c7a80d1"
+},
+{
+"text": "وأنا التلفريك والجبال العالية.",
+"speaker": "boy_big",
+"hash": "9695be6e6a5a"
+},
+{
+"text": "وعندي لكم مفاجأة. هدايا من أبها، وكل هدية ليها صاحب بيحبها!",
+"speaker": "baba",
+"hash": "07e4135a9a81"
+},
+{
+"text": "عربية التلفريك للي بيحب الحاجات اللي بتتحرك. والدبدوب للصغير الشاطر. والكوفية الحمرا للكبيرة المرتبة. والكراسة للي بيحب الرسم.",
+"speaker": "baba",
+"hash": "71b30d2eba91"
+},
+{
+"text": "وزّعوا هدايا بابا على أصحابها",
+"speaker": "narrator",
+"hash": "0aab141a24a5"
+},
+{
+"text": "الهدية بتتاخد بشكر وبحب. نقول شكرًا وبس.",
+"speaker": "mama",
+"hash": "54edf789059b"
+},
+{
+"text": "بابا اختار الهدايا بحب. نشكره ونفرح بيها.",
+"speaker": "girl_big",
+"hash": "2510c3159192"
+},
+{
+"text": "العفو يا حبيبي. فرحتكم هي أحلى هدية ليا.",
+"speaker": "baba",
+"hash": "0278f7ca2173"
+},
+{
+"text": "عايزين أكتر",
+"speaker": "narrator",
+"hash": "6588308aef4b"
+},
+{
+"text": "شكرًا يا بابا، ربنا يخلّيك لينا",
+"speaker": "narrator",
+"hash": "312e80f31d99"
+},
+{
+"text": "بابا ادّانا هدايا حلوة. نقول إيه؟",
+"speaker": "narrator",
+"hash": "ba99c4addd85"
+},
+{
+"text": "اضغط وقولوا شكرًا يا بابا",
+"speaker": "narrator",
+"hash": "e905dd8749e3"
+},
+{
+"text": "وإحنا كمان جايبين لك هدايا من مصر! بسبوسة من ماما وهدية مننا!",
+"speaker": "girl_small",
+"hash": "7ba1af5e6667"
+},
+{
+"text": "هاتوا هدايا بابا من مصر",
+"speaker": "narrator",
+"hash": "3a56ebb97645"
+},
+{
+"text": "الله! أحلى هدايا في الدنيا. وحشتوني أوي وفرحتوني كتير.",
+"speaker": "baba",
+"hash": "820ea5e7297d"
+},
+{
+"text": "الوقت اتأخر. بكرة يوم جديد بإذن الله. تصبحوا على خير يا أحلى أولاد.",
+"speaker": "baba",
+"hash": "e68693b07940"
+},
+{
+"text": "وإنت من أهل الخير يا بابا. أنا مبسوط إننا سافرنا.",
+"speaker": "boy_small",
+"hash": "bcb6d37e6a86"
+},
+{
+"text": "الحمد لله على سفر سعيد. دلوقتي لازم تاخدوا ختم مسافر ماهر!",
+"speaker": "mama",
+"hash": "834cc6966bbc"
+},
+{
+"text": "اختم جواز مسافر ماهر",
+"speaker": "narrator",
+"hash": "b0a4f62545d7"
+},
+{
+"text": "ما شاء الله عليكم! مسافرين مهرة: صبروا وسمعوا الكلام وساعدوا بعض.",
+"speaker": "baba",
+"hash": "c2ef0fafb671"
+},
+{
+"text": "الحمد لله على كل حاجة. تصبح على خير يا بابا.",
+"speaker": "girl_big",
+"hash": "96896fff75e8"
 }
 ]
