@@ -1,0 +1,82 @@
+{
+  "_doc": "FICTIONAL sample family. Copy this file, fill in your customer's data, run: node tools/family/build.js my-family.json ../out/my-family   (keys starting with _ are ignored)",
+
+  "edition": {
+    "id": "alsawy-demo",
+    "_id_doc": "latin slug a-z 0-9 - ; used for the browser storage key so editions never share progress",
+    "title": null,
+    "_title_doc": "null = '<kid1> و<kid2>' (e.g. ياسين وسلمى). Or write your own title.",
+    "subtitle": "يوميات ومغامرات",
+    "versionLabel": "إصدار عائلة الصاوي"
+  },
+
+  "kids": [
+    {
+      "_slot": "SLOT 1 = the OLDER playable child (drawn tall/strong: lifts heavy things, reaches high places, gets the harder puzzles).",
+      "name": "ياسين", "nick": "ياسين", "age": 10, "gender": "m",
+      "_nick_doc": "nick = the name shown in the game / used by the narrator; name = full name (shown in parent corner only). nick defaults to name.",
+      "look": { "skin": "#d9a374", "hairStyle": "curly", "hairColor": "#2b1a12", "outfit": "polo", "shirt": "#3f86d6", "bottom": "#3b3f50", "glasses": false },
+      "avatar": null, "avatarIsCartoon": false
+    },
+    {
+      "_slot": "SLOT 2 = the YOUNGER playable child (drawn small/quick: fits through gaps, crawls under furniture, easier puzzles). The base game has a boy here; gender 'f' re-words the lines and re-dresses the character.",
+      "name": "سلمى", "nick": "سلومة", "age": 7, "gender": "f",
+      "look": { "skin": "#e0ad82", "hairStyle": "pigtails", "hairColor": "#3b2417", "outfit": "dress", "shirt": "#ff86ad", "glasses": false },
+      "avatar": null, "avatarIsCartoon": false
+    },
+    {
+      "_slot": "SLOT 3 = an OLDER sibling (leader/organiser, controllable in the grandparent and trip worlds).",
+      "name": "جنى", "nick": "جنى", "age": 14, "gender": "f",
+      "look": { "hijab": { "scarf": "#e9eef7", "under": "#2c5aa0" }, "outfit": "blouse", "shirt": "#2c5aa0", "bottom": "#f3e8d8", "glasses": "#4a3b30", "headphones": "#9ec5ff", "bag": "#c9b18a" },
+      "avatar": null, "avatarIsCartoon": false
+    }
+  ],
+
+  "extraChildren": [
+    {
+      "_doc": "Used ONLY to fill slot 4 (or 3) when the family has fewer than 4 children: a cousin / neighbour. The story shows 4 kids in the grandparent and trip worlds.",
+      "name": "كريم", "nick": "كريم", "age": 12, "gender": "m",
+      "look": { "outfit": "hoodie", "shirt": "#5cc96b", "hairStyle": "short", "hairColor": "#2b1a12", "glasses": "#2b3a67" }
+    }
+  ],
+
+  "parents": { "dad": "بابا", "mom": "ماما", "_doc": "the words the children use. Only change if the family says e.g. 'بابي' / 'مامي'." },
+
+  "dad": {
+    "status": "abroad",
+    "_status_doc": "'abroad' = he works far away: keeps the trip world («السفر لبابا») and the daily video call. 'home' = both are REMOVED.",
+    "look": { "beard": "#17120e", "skin": "#c98f5f", "shirt": "#2b2b30" },
+    "avatar": null, "avatarIsCartoon": false
+  },
+
+  "grandparent": {
+    "exists": true,
+    "sameBuilding": true,
+    "_doc": "The grandparent world is built around the lift of the building where the family lives. sameBuilding=false removes that world.",
+    "gender": "f", "title": "تيتة", "name": "سميرة",
+    "homeFloor": 5, "grandFloor": 2,
+    "look": { "hijab": { "scarf": "#f6dfe8", "under": null }, "shirt": "#b6d7c4", "glasses": "#8a6b55" }
+  },
+
+  "home": {
+    "city": "الإسكندرية", "country": "مصر", "airport": "مطار برج العرب",
+    "_doc": "Used in the trip world only (departure airport, 'gifts from home'). Egyptian general-knowledge questions (capital, Nile, emergency numbers) are NOT changed: see README."
+  },
+
+  "school": { "name": "مدرسة النور الابتدائية" },
+
+  "destination": {
+    "preset": "custom",
+    "_preset_doc": "'abha' = keep the original trip (Abha, Asir). 'custom' = replace names + factual questions with the data below. The SCENERY (misty mountains, cable car, stone towers) stays: choose a similar place or edit by hand.",
+    "city": "الطائف", "region": "منطقة مكة المكرمة", "country": "السعودية", "airport": "مطار الطائف",
+    "mountain": "الهدا", "mountainIsTopPeak": false,
+    "architectureStyle": "الطراز الحجازي",
+    "seaOnRoute": "البحر الأحمر",
+    "temperature": { "home": 31, "dest": 21 },
+    "facts": {
+      "regionOfCity": "منطقة مكة المكرمة", "regionWrong": ["المنطقة الشرقية", "منطقة تبوك"], "regionHint": "غرب المملكة",
+      "famousFor": { "correct": "الورد والجبال والجو اللطيف", "wrong": ["الصحرا الحارة بس", "الأهرامات"], "hint": "فيها جبال وورد", "explain": "الطائف مشهورة بالورد والجو اللطيف" }
+    },
+    "_facts_doc": "VERIFY every fact with a reliable source before selling. Missing facts fall back to neutral questions (see build-report.json)."
+  }
+}

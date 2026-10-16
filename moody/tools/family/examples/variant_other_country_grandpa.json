@@ -1,0 +1,9 @@
+{
+  "edition": { "id": "variant-oman", "title": "أبطال العيلة" },
+  "kids": [ { "name": "حمد", "nick": "حمود", "age": 11, "gender": "m" }, { "name": "مريم", "nick": "ميمي", "age": 8, "gender": "f" }, { "name": "علي", "nick": "علي", "age": 15, "gender": "m" }, { "name": "نور", "nick": "نور", "age": 13, "gender": "f" } ],
+  "parents": { "dad": "بابا", "mom": "ماما" },
+  "grandparent": { "exists": true, "sameBuilding": true, "gender": "m", "title": "جدو", "name": "سالم", "homeFloor": 4, "grandFloor": 1 },
+  "home": { "city": "عمّان", "country": "الأردن", "airport": "مطار الملكة علياء" },
+  "school": { "name": "مدرسة الفجر الأساسية" },
+  "destination": { "preset": "custom", "city": "صلالة", "region": "محافظة ظفار", "country": "عُمان", "mountain": "سمحان", "mountainIsTopPeak": true, "architectureStyle": "الطراز العُماني", "seaOnRoute": "بحر العرب", "facts": {} }
+}

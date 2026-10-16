@@ -1,0 +1,7 @@
+{
+  "edition": { "id": "variant-nograndma" },
+  "kids": [ { "name": "عمر", "nick": "عمر", "age": 9, "gender": "m" }, { "name": "ليلى", "nick": "ليلى", "age": 6, "gender": "f" } ],
+  "dad": { "status": "home" },
+  "grandparent": { "exists": false },
+  "school": { "name": "مدرسة الأمل الابتدائية" }
+}
