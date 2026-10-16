@@ -5,6 +5,14 @@
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>ألعاب حاتم</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<meta name="theme-color" content="#0b1a33">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ألعاب حاتم">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
 :root{color-scheme:dark}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -17,6 +25,9 @@ p.sub{margin:0 0 18px;color:#bfd2f0;font-size:clamp(14px,3.4vw,18px)}
 .pro input{flex:1 1 200px;min-width:0;padding:10px;font:bold 17px Tahoma,Arial,sans-serif;text-align:center;border-radius:10px;border:2px solid #ffd23c;background:#fff;color:#111;direction:ltr}
 .pro button{padding:10px 18px;font:bold 17px Tahoma,Arial,sans-serif;border:0;border-radius:10px;background:linear-gradient(#ff5a4a,#c01822);color:#fff}
 #pm{width:100%;text-align:center;font-size:14px;color:#ffd23c;min-height:18px}
+#inst{display:none;max-width:980px;margin:0 auto 14px;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;background:rgba(61,123,255,.15);border:2px solid rgba(61,123,255,.5);border-radius:16px;padding:10px 14px;font-size:15px}
+#inst button{padding:10px 18px;font:bold 16px Tahoma,Arial,sans-serif;border:0;border-radius:10px;color:#fff;background:linear-gradient(#3d7bff,#1d3fa8)}
+#inst #sb{background:linear-gradient(#1f8f4a,#126a33)}
 .grid{max-width:980px;margin:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px}
 a.card{position:relative;display:block;border-radius:20px;padding:0;overflow:hidden;text-decoration:none;color:#fff;border:2px solid rgba(255,255,255,.22);background:#101a33;transition:transform .15s,border-color .15s}
 a.card:hover,a.card:focus-visible{transform:translateY(-3px);border-color:#ffd23c;outline:none}
@@ -49,6 +60,8 @@ footer{max-width:980px;margin:26px auto 0;text-align:center;color:#8fa3c8;font-s
   <div id="pm"></div>
 </div>
 
+<div id="inst"><span>📲 ثبّت الألعاب كتطبيق بأيقونة، بدون شريط الرابط:</span><button id="ib">تثبيت كتطبيق</button><button id="sb">مشاركة</button><div id="im" style="width:100%;text-align:center;color:#ffd23c;font-size:14px"></div></div>
+
 <div class="grid">
   <a class="card kids" href="moody/?v=2"><div class="art">👦👦</div><div class="tx"><h2>مودي وعبودي – يوميات ومغامرات</h2><span>6 عوالم و33 مهمة: البيت والمدرسة والشارع والسوق والحديقة ورحلة البحر. ألغاز وأسئلة بمستويين، ونجوم وملصقات وشهادة مغامر. مناسبة من 6 إلى 11 سنة.</span><em class="tag free">للأطفال · مجانية بلا اشتراك</em></div></a>
   <a class="card cat" href="cat/?v=2"><div class="art">🐱</div><div class="tx"><h2>القط الشاطر</h2><span>ميمو القط يجري في حارات مصر: اقفز وانزلق واجمع السمك وتفادى الكلاب. 12 مرحلة.</span><em class="tag free">جديد · شخصية أصلية</em></div></a>
@@ -64,6 +77,7 @@ footer{max-width:980px;margin:26px auto 0;text-align:center;color:#8fa3c8;font-s
 </footer>
 
 <script src="paywall.js"></script>
+<script src="pwa.js"></script>
 <script>
 (function(){
   var $=function(i){return document.getElementById(i);};
