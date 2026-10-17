@@ -5,7 +5,7 @@
 (function () {
   'use strict';
   const M = window.Moody, G = M.gfx, A = M.art, U = M.util, sh = U.shuffle;
-  const ALL = ['moody', 'aboody', 'toota', 'nemo'], WITHBABA = ALL.concat(['baba']);
+  const ALL = ['moody', 'aboody', 'toota', 'nemo'], WITHBABA = ALL.concat(['baba']), WITHKAMAL = WITHBABA.concat(['kamal']);   // kamal = Uncle Kamal (Baba's younger brother, lives in Abha with Baba)
   M.voice.extraVoices = M.voice.extraVoices || {}; M.voice.extraVoices.saudi_officer = 'narrator';
   const OFF = 'موظف المطار', CAP = 'الكابتن';
 
@@ -258,29 +258,33 @@
       },
       /* ============ 5) بابا والطريق في الجبال ============ */
       {
-        id: 'm5', title: 'بابا والجبال', intro: 'أخيرًا بابا! وبعدين رحلة بالعربية وسط الضباب والجبال.', values: ['sd_family', 'sd_tripsafety', 'thanks'], sticker: 'saudi_s_hug', heroes: WITHBABA, control: ALL,
+        id: 'm5', title: 'بابا والجبال', intro: 'أخيرًا بابا! وبعدين رحلة بالعربية وسط الضباب والجبال.', values: ['sd_family', 'sd_tripsafety', 'thanks'], sticker: 'saudi_s_hug', heroes: WITHKAMAL, control: ALL,
         wisdom: 'حضن بابا أحلى استقبال.. والضباب بنعدّي فيه بالأنوار وبالراحة', diary: { pic: 'saudi_heartpin', text: 'شفنا بابا في أبها وحضناه وسِرنا وسط الجبال والضباب' },
         async run(ctx) {
           const st = ctx.stage;
-          await ctx.scene('saudiAirport', { state: { kind: 'arrivals', abha: true, doors: 0 }, heroes: { toota: { x: 150, y: 484, dir: 1 }, nemo: { x: 230, y: 492, dir: 1 }, moody: { x: 320, y: 480, dir: 1 }, aboody: { x: 400, y: 492, dir: 1 }, baba: { x: 800, y: 482, dir: -1, visible: false } } });
+          await ctx.scene('saudiAirport', { state: { kind: 'arrivals', abha: true, doors: 0 }, heroes: { toota: { x: 150, y: 484, dir: 1 }, nemo: { x: 230, y: 492, dir: 1 }, moody: { x: 320, y: 480, dir: 1 }, aboody: { x: 400, y: 492, dir: 1 }, baba: { x: 790, y: 482, dir: -1, visible: false }, kamal: { x: 880, y: 490, dir: -1, visible: false } } });
           await ctx.say('narrator', 'الأبواب الزجاج اتفتحت.. وفي ناس كتير مستنّية القادمين.');
           st.state.doors = 1; ctx.sfx('click');
           await ctx.say('aboody', 'فين بابا؟ أنا مش شايفه!', { anim: 'think' });
           await ctx.say('nemo', 'استنى.. بُص هناك! حد بيلوّح بإيده!');
-          st.hero('baba').visible = true; st.play('baba', 'wave', 2);
-          await ctx.say('moody', 'بابا!!! ده بابا!', { anim: 'cheer' });
+          st.hero('baba').visible = true; st.hero('kamal').visible = true; st.play('baba', 'wave', 2); st.play('kamal', 'wave', 2);
+          await ctx.say('moody', 'بابا!!! ده بابا! ومعاه عمو كمال!', { anim: 'cheer' });
           await ctx.say('toota', 'يلا نجري عليه!');
           await Promise.all([ctx.walk('aboody', 700, 492), ctx.walk('moody', 640, 480), ctx.walk('nemo', 580, 492), ctx.walk('toota', 520, 484)]);
           await ctx.say('baba', 'وحشتوني أوي يا أحلى أولاد في الدنيا! الحمد لله على سلامتكم.');
+          await ctx.say('kamal', 'وأنا كمان! أنا استنيت معاه من بدري، وهو كان بيبص على الباب كل دقيقة!', { anim: 'wave' });
+          await ctx.say('baba', 'بطّل فضايح يا كمال!');
           ctx.prompt('اضغط عشان نحضن بابا'); await ctx.games.ritual({ bottom: 290, text: 'حضن بابا', sub: 'اضغط عشان نحضنه كلنا', who: 'aboody' });
           ctx.fx.burst(660, 340, { kind: 'heart', n: 22 }); ctx.fx.flash('#ffd6e0', .5); ctx.value('sd_family'); ctx.reward.star(1);
           st.playBoth('cheer', 1.6);
           await ctx.say('aboody', 'وحشتني أوي يا بابا! أنا كبرت وبقيت أعرف أعدّ لحد عشرين!');
           await ctx.say('baba', 'ما شاء الله عليك! وحشني ضحكتكم أكتر من أي حاجة.');
           await ctx.say('nemo', 'ماما بتسلّم عليك وبتقول لك وحشتنا الأكل بتاعك!');
+          await ctx.say('kamal', 'أنا شايل الشنط! بس شنطتكم تقيلة.. جايبين معاكم مصر كلها؟');
           await ctx.say('baba', 'يلا بينا على العربية. الطريق لبيتنا في الجبال حلو أوي. اربطوا الأحزمة!');
           /* ---- the drive ---- */
           await ctx.scene('saudiRoad', { state: { fog: .2, speed: 40 }, heroes: 'hidden' });
+          await ctx.say('kamal', 'أنا قاعد جنبكم ورا، وبابا هو اللي بيسوق. أنا أسوق أسرع منه بس هو مش مصدّق!');
           await ctx.say('baba', 'أبها فوق الجبال. بصّوا حواليكم: بيوت حجر ومنارات بيضا ومدرجات خضرا.');
           const items = [['saudi_tower', 250, 'بيت الحجر', 'تاور'], ['saudi_minaret', 258, 'المنارة', ''], ['saudi_terrace', 232, 'المدرجات', ''], ['saudi_juniper', 262, 'شجرة', '']];
           const spots = items.map((it, i) => ({
@@ -303,6 +307,7 @@
           await ctx.say('moody', 'يعني في الضباب بنفتح الأنوار ونمشي بهدوء. فهمت!');
           await pairQ(ctx, 'saudi_m5');
           M.tw(st.state, { fog: .35, speed: 30 }, 4, 'inOut');
+          await ctx.say('kamal', 'شفتوا؟ بابا ماشي بالراحة في الضباب. ده السواق الشاطر!');
           await ctx.say('baba', 'شفتوا؟ الضباب بيعدّي. وصلنا قريب من البيت.');
           await ctx.say('aboody', 'أنا مبسوط أوي إننا مع بعض.', { anim: 'cheer' });
           return ctx.nav.complete();
@@ -310,13 +315,14 @@
       },
       /* ============ 6) جولة في أبها ============ */
       {
-        id: 'm6', title: 'جولة في أبها', intro: 'تلفريك وجبال السودة وجو بارد.. نلبس إيه؟', values: ['sd_tripsafety', 'curiosity', 'teamwork'], sticker: 'saudi_s_cable', heroes: WITHBABA, control: ALL,
+        id: 'm6', title: 'جولة في أبها', intro: 'تلفريك وجبال السودة وجو بارد.. نلبس إيه؟', values: ['sd_tripsafety', 'curiosity', 'teamwork'], sticker: 'saudi_s_cable', heroes: WITHKAMAL, control: ALL,
         wisdom: 'اللبس المناسب للجو بيخلّينا نستمتع بالرحلة', diary: { pic: 'saudi_cablecar', text: 'ركبنا التلفريك وطلعنا جبال السودة والجو كان برد وضباب' },
         async run(ctx) {
           note(['الجو برد وضباب. ده مش مناسب', 'ده للصيف والحر. هنا برد']);
           const st = ctx.stage;
-          await ctx.scene('saudiDinner', { state: { night: false }, heroes: { toota: { x: 200, y: 484, dir: 1 }, nemo: { x: 290, y: 492, dir: 1 }, moody: { x: 380, y: 480, dir: 1 }, aboody: { x: 470, y: 492, dir: 1 }, baba: { x: 790, y: 482, dir: -1 } } });
+          await ctx.scene('saudiDinner', { state: { night: false }, heroes: { toota: { x: 200, y: 484, dir: 1 }, nemo: { x: 290, y: 492, dir: 1 }, moody: { x: 380, y: 480, dir: 1 }, aboody: { x: 470, y: 492, dir: 1 }, baba: { x: 770, y: 482, dir: -1 }, kamal: { x: 880, y: 490, dir: -1 } } });
           await ctx.say('baba', 'صباح الخير يا أبطال! النهاردة هنزور التلفريك وجبال السودة.');
+          await ctx.say('kamal', 'وأنا جاي معاكم! أنا بحب التلفريك، بس بخاف من الارتفاع شوية.. ماتقولوش لحد!', { anim: 'wave' });
           await ctx.say('nemo', 'الجو برّه برد وفيه ضباب! نلبس إيه؟', { anim: 'think' });
           const cl = await cnt(ctx, () => ctx.games.dragdrop({
             prompt: 'اختاروا اللبس المناسب للجو البارد', heroes: 'corner', panel: { x: 90, y: 112, w: 780, h: 200 }, wrongHint: 'الجو برد وضباب. ده مش مناسب',
@@ -324,10 +330,11 @@
             targets: [{ id: 'wear', x: 640, y: 420, w: 220, h: 100, art: 'hanger', s: 90, label: 'هنلبس', cols: 4, dx: 28, itemScale: .45, dy0: 10 }, { id: 'leave', x: 280, y: 420, w: 150, h: 100, art: 'box', s: 100, label: 'نسيبه', cols: 3, dx: 24, itemScale: .4 }]
           }));
           if (cl.miss <= 2) ctx.reward.star(1);
-          ctx.heroes({ toota: { x: 200, y: 484, dir: 1 }, nemo: { x: 290, y: 492, dir: 1 }, moody: { x: 380, y: 480, dir: 1 }, aboody: { x: 470, y: 492, dir: 1 }, baba: { x: 790, y: 482, dir: -1 } });
+          ctx.heroes({ toota: { x: 200, y: 484, dir: 1 }, nemo: { x: 290, y: 492, dir: 1 }, moody: { x: 380, y: 480, dir: 1 }, aboody: { x: 470, y: 492, dir: 1 }, baba: { x: 770, y: 482, dir: -1 }, kamal: { x: 880, y: 490, dir: -1 } });
           await ctx.say('baba', 'تمام! بالجاكت والكوفية مش هتبردوا. يلا على التلفريك!');
           await ctx.scene('saudiCable', { state: { prog: 0, fog: .25 }, heroes: 'hidden' });
           await ctx.say('baba', 'ده التلفريك. عربية معلّقة في كابل بتطلعنا فوق الوادي والجبال. اركبوا بهدوء.');
+          await ctx.say('kamal', 'أنا هقعد في النص وأمسك في الحديد.. بس بصراحة المنظر يستاهل!');
           ctx.prompt('اضغط عشان نركب التلفريك'); await ctx.games.ritual({ bottom: 290, text: 'يلا نركب', sub: 'اضغط عشان العربية تتحرك' });
           const ride = M.tw(st.state, { prog: 1 }, 22, 'inOut');
           await ctx.say('aboody', 'العربية بتتحرك! أنا شايف الشجر تحتنا صغير أوي!', { anim: 'cheer' });
@@ -342,9 +349,10 @@
           await ride;
           await ctx.say('moody', 'بصّ يا بابا! البيوت الحجر صغيرة من فوق!');
           await ctx.say('baba', 'ده الطراز العسيري يا {m}. والجبال هنا من أعلى جبال المملكة.');
-          await ctx.scene('saudiPeak', { state: { cold: true }, heroes: { toota: { x: 130, y: 484, dir: 1 }, nemo: { x: 220, y: 492, dir: 1 }, moody: { x: 310, y: 480, dir: 1 }, aboody: { x: 400, y: 492, dir: 1 }, baba: { x: 520, y: 482, dir: -1 } } });
+          await ctx.scene('saudiPeak', { state: { cold: true }, heroes: { toota: { x: 130, y: 484, dir: 1 }, nemo: { x: 220, y: 492, dir: 1 }, moody: { x: 310, y: 480, dir: 1 }, aboody: { x: 400, y: 492, dir: 1 }, baba: { x: 520, y: 482, dir: -1 }, kamal: { x: 610, y: 490, dir: -1 } } });
           await ctx.say('baba', 'وصلنا السودة! من أعلى القمم في المملكة. بصّوا السحاب تحتنا!');
           await ctx.say('nemo', 'ده برد! الحمد لله لبسنا الجاكتات.', { anim: 'cheer' });
+          await ctx.say('kamal', 'برررد! أنا لابس تلات طبقات وسايب الجاكت في العربية.. معلش!');
           const wc = await choiceQ(ctx, {
             prompt: 'الجو هنا إزاي؟', options: sh([
               { text: 'برد وضباب وسحاب', art: 'saudi_mist', good: true, reply: [['toota', 'بالظبط! فوق الجبال الجو بيبقى أبرد.']] },
@@ -360,18 +368,19 @@
       },
       /* ============ 7) سهرة مع بابا ============ */
       {
-        id: 'm7', title: 'سهرة مع بابا', intro: 'عشاء وهدايا وشكر.. وتصبحوا على خير.', values: ['thanks', 'sd_family', 'respect'], sticker: 'saudi_traveler', heroes: WITHBABA, control: ALL,
+        id: 'm7', title: 'سهرة مع بابا', intro: 'عشاء وهدايا وشكر.. وتصبحوا على خير.', values: ['thanks', 'sd_family', 'respect'], sticker: 'saudi_traveler', heroes: WITHKAMAL, control: ALL,
         wisdom: 'نشكر اللي بيحبونا.. والسفر الحلو بيخلّي القلب كبير', diary: { pic: 'saudi_traveler', text: 'تعشينا مع بابا وتبادلنا الهدايا وخدنا ختم مسافر ماهر' },
         async run(ctx) {
           note(['الهدية دي لحد تاني.. افتكروا كلام بابا', 'افتكر كلام بابا عن كل هدية', 'الهدية دي لبابا', 'الختم يتحط على الصفحة']);
           const st = ctx.stage, nm = ctx.names;
-          const POS = { toota: { x: 150, y: 484, dir: 1 }, nemo: { x: 235, y: 492, dir: 1 }, moody: { x: 320, y: 480, dir: 1 }, aboody: { x: 405, y: 492, dir: 1 }, baba: { x: 800, y: 482, dir: -1 } };
+          const POS = { toota: { x: 150, y: 484, dir: 1 }, nemo: { x: 235, y: 492, dir: 1 }, moody: { x: 320, y: 480, dir: 1 }, aboody: { x: 405, y: 492, dir: 1 }, baba: { x: 790, y: 482, dir: -1 }, kamal: { x: 880, y: 490, dir: -1 } };
           await ctx.scene('saudiDinner', { state: { night: true }, heroes: POS });
           await ctx.say('baba', 'السفرة جاهزة! كبسة وتمر وعصير. يلا يا حبايبي.');
           await ctx.say('toota', 'الله! الريحة جميلة أوي.', { anim: 'cheer' });
           await ctx.say('mama', 'قبل ما ناكل بنقول إيه؟');
           ctx.prompt('اضغط وقولوا بسم الله'); await ctx.games.ritual({ bottom: 290, text: 'بسم الله', sub: 'قبل الأكل' });
           await ctx.say('aboody', 'مممم! الأكل لذيذ يا بابا!');
+          await ctx.say('kamal', 'يا بختكم! أنا طبخت الكبسة بنفسي النهاردة.. ماتسألوش بابا عن الملح!');
           await ctx.say('baba', 'الحمد لله. حكوا لي عن رحلتكم. كان أحلى حاجة فيها إيه؟');
           await ctx.say('nemo', 'السحاب على شكل قلب في الطيارة!');
           await ctx.say('moody', 'وأنا التلفريك والجبال العالية.');
@@ -400,6 +409,15 @@
             targets: [{ id: 'baba', x: 700, y: 335, w: 180, h: 120, art: 'face:baba', s: 100, label: 'بابا', itemScale: .5, cols: 3, dx: 30, dy0: 40 }]
           });
           await ctx.say('baba', 'الله! أحلى هدايا في الدنيا. وحشتوني أوي وفرحتوني كتير.');
+          await ctx.say('kamal', 'وأنا كمان عايز أبعت هدية لابني لوكا في مصر! هو بيحب العربيات الصغيرة.');
+          const lk = await ctx.games.dragdrop({
+            prompt: 'حطّوا هدايا لوكا في الشنطة: العربية والمكعبات', heroes: 'corner', panel: { x: 200, y: 112, w: 400, h: 150 }, wrongHint: 'حطّها عند لوكا',
+            items: [['car', 'luka'], ['blocks', 'luka']].map((it, i) => ({ id: 'lk' + i, art: it[0], to: it[1], x: 300 + i * 160, y: 190, s: 74 })),
+            targets: [{ id: 'luka', x: 700, y: 335, w: 180, h: 120, art: 'face:luka', s: 100, label: 'لوكا', itemScale: .5, cols: 3, dx: 30, dy0: 40 }]
+          });
+          ctx.heroes(POS); ctx.fx.burst(700, 300, { kind: 'heart', n: 14 });
+          await ctx.say('kamal', 'لوكا هيفرح بالعربية دي! هبعتها مع أول حد مسافر لمصر.');
+          await ctx.say('aboody', 'وسلّم لي على لوكا! قول له عبودي بيسلّم عليك.');
           st.state.dim = .12; await pairQ(ctx, 'saudi_m7');
           await ctx.scene('saudiDinner', { state: { night: true, dim: .3 }, heroes: POS });
           await ctx.say('baba', 'الوقت اتأخر. بكرة يوم جديد بإذن الله. تصبحوا على خير يا أحلى أولاد.');

@@ -1,4 +1,4 @@
-/* Moody & Aboody - worlds/nana.js : WORLD 7 "بيت ننا زوزا" (6 missions).
+/* Moody & Aboody - worlds/nana.js : WORLD 7 "بيت ننا زوزا" (7 missions; m7 = cooking with Aunt Amani; Aunt Nada + Toti drop in as light comic cameos).
    The family lives on the 6th floor; Nana Zoza lives on the 3rd floor of the SAME building.
    Needs (loaded before): content/q_nana.js, worlds/nana_kits.js, worlds/nana_art.js.  Tokens {m} {a} {me} {t} {n} = names. */
 (function () {
@@ -8,7 +8,7 @@
   const pulse = r => (g, t, st, s) => { if (s && s.found) return; g.save(); g.globalAlpha = .28 + .22 * Math.sin(t * 4); G.circ(g, 0, 0, r, '#fff3a0', 0); g.globalAlpha = .9; g.strokeStyle = '#ffd23c'; g.lineWidth = 4; g.setLineDash([8, 8]); g.beginPath(); g.arc(0, 0, r + Math.sin(t * 4) * 3, t, t + 6.3); g.stroke(); g.setLineDash([]); g.restore(); };
   /* faint object + sparkle (it is "hidden" until found) */
   const faint = (art, s) => (g, t) => { g.save(); g.globalAlpha = .75; A.draw(g, art, 0, 0, s); g.restore(); G.sparkle(g, s * .3, -s * .3, 7 + Math.sin(t * 6) * 2, '#fff', .9); };
-  const ALL4 = ['moody', 'aboody', 'toota', 'nemo'], ALL5 = ALL4.concat(['nana']);
+  const ALL4 = ['moody', 'aboody', 'toota', 'nemo'], ALL5 = ALL4.concat(['nana']), ALL6 = ALL5.concat(['nada']);   // nada = aunt Nada (always on her phone)
   const mis = ctx => ctx.mistakes;
 
   M.registerValue('liftsafety', { label: 'الأمان في الأسانسير', desc: 'نمسك إيد الكبير ومنلعبش في الأسانسير' });
@@ -17,6 +17,7 @@
   M.registerValue('handwash', { label: 'غسل الإيدين قبل الأكل', desc: 'النضافة قبل المطبخ' });
   M.registerValue('eldercare', { label: 'رعاية الكبار', desc: 'نفكّر ننا بميعاد الدوا ونساعدها' });
   M.registerValue('plantcare', { label: 'رعاية النباتات', desc: 'نسقي الزرع ونحافظ عليه' });
+  M.registerValue('kitchensafety', { label: 'الأمان في المطبخ', desc: 'السخن والسكينة للكبار بس، وننضّف بعد الطبخ' });
   M.registerValue('family', { label: 'حب العيلة', desc: 'وقت حلو مع ننا وكلمة حلوة لبابا' });
 
   M.registerWorld({
@@ -25,7 +26,7 @@
       { id: 'nana_lift', title: 'أمان الأسانسير', art: 'nn_lift', bg: '#e3e8f5' }, { id: 'nana_salam', title: 'سلام وأدب', art: 'nn_door', bg: '#e6f6e8' },
       { id: 'nana_kaak', title: 'كحك ننا', art: 'nn_kaak', bg: '#fff0c4', rot: .08 }, { id: 'nana_album', title: 'ألبوم العيلة', art: 'nn_album', bg: '#ffe4e0', rot: -.06 },
       { id: 'nana_plant', title: 'حارس الزرع', art: 'nn_pot', bg: '#d9f6d0' }, { id: 'nana_gift', title: 'هدية من القلب', art: 'nn_gift', bg: '#ffe0ea', rot: .1 },
-      { id: 'nana_home', title: 'أبطال بيت ننا', art: 'w_nana', bg: '#ece0ff', rot: -.05 }
+      { id: 'nana_cook', title: 'شيف عمتو أماني', art: 'nn_dish', bg: '#fff0c4', rot: -.07 }, { id: 'nana_home', title: 'أبطال بيت ننا', art: 'w_nana', bg: '#ece0ff', rot: -.05 }
     ],
     missions: [
       /* ============ 1) ننزل لننا ============ */
@@ -170,12 +171,15 @@
       /* ============ 4) ألبوم ننا ============ */
       {
         id: 'm4', title: 'ألبوم ننا', intro: 'ننا بتحكي حكايات الصور القديمة.. بس الألبوم مستخبّي!', values: ['family', 'elders', 'kindness'], sticker: 'nana_album',
-        heroes: ALL5, control: ALL4, wisdom: 'اللي ملوش كبير يشتري له كبير', diary: { pic: 'nn_album', text: 'شفنا ألبوم صور العيلة مع ننا وسمعنا حكاياتها' },
+        heroes: ALL6, control: ALL4, wisdom: 'اللي ملوش كبير يشتري له كبير', diary: { pic: 'nn_album', text: 'شفنا ألبوم صور العيلة مع ننا وسمعنا حكاياتها' },
         async run(ctx) {
-          const st = ctx.stage, here = { moody: { x: 470, y: 482, dir: -1 }, aboody: { x: 560, y: 494, dir: -1 }, toota: { x: 400, y: 486, dir: 1 }, nemo: { x: 300, y: 490, dir: 1 }, nana: { x: 650, y: 478, dir: -1 } };
+          const st = ctx.stage, here = { moody: { x: 470, y: 482, dir: -1 }, aboody: { x: 560, y: 494, dir: -1 }, toota: { x: 400, y: 486, dir: 1 }, nemo: { x: 300, y: 490, dir: 1 }, nana: { x: 650, y: 478, dir: -1 }, nada: { x: 130, y: 488, dir: 1 } };
           let m0 = mis(ctx);
           await ctx.scene('nn_living', { state: { lampOn: true }, heroes: here });
           await ctx.say('nana', 'تعالوا اقعدوا جنبي يا حبايبي. عايزة أوريكم ألبوم الصور القديم.. بس مش لاقياه! ولا سبحتي كمان.');
+          await ctx.say('aboody', 'إزيّك يا عمتو ندى؟ إحنا هنا!');
+          await ctx.say('nada', 'ثانية واحدة يا حبيبي.. بخلّص رسالة!', { anim: 'phone' });
+          await ctx.say('nana', 'سيبوها يا ولاد، بتطمّن على حد من العيلة. يلا نلاقي الألبوم.');
           await ctx.say('nemo', 'أنا هدوّر! أنا بحب ألاقي الحاجات.');
           const f = await ctx.games.hidden({
             prompt: 'دوّروا على الألبوم وسبحة ننا', hintAfter: 14, spots: [
@@ -191,6 +195,7 @@
           if (mm.moves <= 9) ctx.reward.star(1);
           ctx.heroes(here);
           await ctx.say('nana', 'يا سلام! كلهم ضحكتهم حلوة. العيلة أحلى حاجة في الدنيا.');
+          await ctx.say('nada', 'استنوا! دي صورتي وأنا صغيرة؟ ثانية واحدة أصوّرها!', { anim: 'phone' });
           await ctx.say('toota', 'ننا، احكي لنا حكاية من زمان.');
           await ctx.say('nana', 'زمان كنت أسمع كلام الكبار وأتعلّم منهم. كانوا يقولوا: اللي ملوش كبير يشتري له كبير.');
           await ctx.say('toota', 'يعني الكبار عندهم خبرة وحكمة، ولازم نسمعهم؟');
@@ -225,9 +230,13 @@
           await ctx.say('nana', 'بقوا فرحانين! الزرع بيحب اللي يخاف عليه.');
           ctx.value('plantcare');
           await ctx.scene('nn_living', { state: { night: true, lampOn: true, meds: true }, heroes: { moody: { x: 500, y: 482, dir: 1 }, aboody: { x: 590, y: 494, dir: 1 }, toota: { x: 410, y: 486, dir: 1 }, nemo: { x: 320, y: 490, dir: 1 }, nana: { x: 700, y: 478, dir: -1 } } });
+          const here2n = { moody: { x: 500, y: 482, dir: 1 }, aboody: { x: 590, y: 494, dir: 1 }, toota: { x: 410, y: 486, dir: 1 }, nemo: { x: 320, y: 490, dir: 1 }, nana: { x: 700, y: 478, dir: -1 }, nada: { x: 150, y: 488, dir: 1 } };
           const here2 = { moody: { x: 500, y: 482, dir: 1 }, aboody: { x: 590, y: 494, dir: 1 }, toota: { x: 410, y: 486, dir: 1 }, nemo: { x: 320, y: 490, dir: 1 }, nana: { x: 700, y: 478, dir: -1 } };
           await ctx.say('nana', 'الساعة قربت تبقى تمانية.. أنا ساعات بنسى ميعاد الدوا.');
+          ctx.cast(ALL6, ALL4); ctx.heroes(here2n);
           await ctx.say('toota', 'ننا لازم تاخد الدوا في ميعاده.');
+          await ctx.say('nada', 'آه صح الدوا! ثانية واحدة أظبّط تنبيه على موبايلي.', { anim: 'phone' });
+          await ctx.say('aboody', 'وإحنا هنظبط الساعة لننا بنفسنا!');
           m0 = mis(ctx);
           const ch = await ctx.games.choice({
             prompt: 'علبة الدوا على الترابيزة. نعمل إيه؟', options: [
@@ -240,7 +249,7 @@
           const c1 = await ctx.games.nnClock({ prompt: 'ظبّطوا الساعة على ٨ بالظبط', h: 8, m: 0, label: 'ميعاد الدوا', art: 'nn_meds' });
           await ctx.say('nana', 'والمنبّه التاني للنوم: تسعة ونص.');
           const c2 = await ctx.games.nnClock({ prompt: 'ننا بتنام ٩ ونص. ظبّطوا الساعة', h: 9, m: 30, halves: true, label: 'ميعاد النوم', art: 'moon' });
-          ctx.heroes(here2);
+          ctx.heroes(here2n);
           const q = await ctx.quiz.pair({ aboody: B('nn6_clock8'), moody: B('nn9_meds') });
           if (c1.tries + c2.tries <= 3 && q.firstTry >= 1 && mis(ctx) - m0 <= 3) ctx.reward.star(1);
           await ctx.say('nana', 'تسلموا يا حبايبي. محدّش بيفتكرني زيكم.', { anim: 'cheer' });
@@ -250,9 +259,9 @@
       /* ============ 6) هدية لننا وبابا بيتصل ============ */
       {
         id: 'm6', title: 'هدية لننا', intro: 'الوقت جه نطلع.. نسيب لننا كارت حلو، وبابا بيتصل!', values: ['family', 'thanks', 'elders', 'kindness'], sticker: 'nana_gift',
-        heroes: ALL5, control: ALL4, wisdom: 'كلمة حلوة وهدية بسيطة بتفرّح قلب جدّتك', diary: { pic: 'nn_gift', text: 'عملنا كارت لننا وكلّمنا بابا وقلنا له إننا قضينا يوم جميل' },
+        heroes: ALL6, control: ALL4, wisdom: 'كلمة حلوة وهدية بسيطة بتفرّح قلب جدّتك', diary: { pic: 'nn_gift', text: 'عملنا كارت لننا وكلّمنا بابا وقلنا له إننا قضينا يوم جميل' },
         async run(ctx) {
-          const st = ctx.stage, here = { moody: { x: 420, y: 482, dir: 1 }, aboody: { x: 510, y: 494, dir: 1 }, toota: { x: 330, y: 486, dir: 1 }, nemo: { x: 240, y: 490, dir: 1 }, nana: { x: 640, y: 478, dir: -1 } };
+          const st = ctx.stage, here = { moody: { x: 420, y: 482, dir: 1 }, aboody: { x: 510, y: 494, dir: 1 }, toota: { x: 330, y: 486, dir: 1 }, nemo: { x: 240, y: 490, dir: 1 }, nana: { x: 640, y: 478, dir: -1 }, nada: { x: 120, y: 488, dir: 1 } };
           let m0 = mis(ctx);
           await ctx.scene('nn_living', { state: { lampOn: true }, heroes: here });
           await ctx.say('toota', 'الوقت اتأخر ولازم نطلع للدور السادس. بس نسيب لننا حاجة تفتكرنا بيها.');
@@ -266,6 +275,7 @@
           ctx.heroes(here);
           if (mis(ctx) - m0 <= 1) ctx.reward.star(1);
           await ctx.say('nana', 'الله! أحلى كارت في الدنيا! هحطّه على الثلاجة وكل يوم أبصّ له.');
+          await ctx.say('nada', 'يا سلام! كارت جميل.. ثانية واحدة أصوّره!', { anim: 'phone' });
           await ctx.games.ritual({ text: 'ربنا يخليكي يا ننا', sub: 'نشكر ننا', bottom: 120 }); ctx.value('thanks');
           await ctx.say('nana', 'وده كحك بالتمر. خدوا لماما وبابا، وسلّموا عليهم.', { anim: 'wave' });
           ctx.fx.float('هدية من ننا!', 480, 300);
@@ -285,6 +295,126 @@
           await ctx.say('baba', 'فخور بيكم أوي! يلا باي باي، وحشتوني.', { anim: 'wave' });
           ctx.fx.confetti(); ctx.react('good', 'both'); ctx.sfx('fanfare');
           await ctx.say('nana', 'يوم عمري يا حبايبي! تعالوا نتحضّن حضن جماعي.', { anim: 'cheer' });
+          return ctx.nav.complete();
+        }
+      },
+      /* ============ 7) نطبخ مع عمتو أماني ============ */
+      {
+        id: 'm7', title: 'نطبخ مع عمتو أماني', intro: 'عمتو أماني جت تزور ننا.. وهتعلّمنا رز بالشعرية بالنضافة والأمان!', values: ['help', 'handwash', 'kitchensafety', 'teamwork', 'thanks'], sticker: 'nana_cook',
+        heroes: ALL6.concat(['amani']), control: ALL4, wisdom: 'اللي يتعلّم يساعد في البيت بيكبر ويفرّح اللي بيحبّهم', diary: { pic: 'nn_dish', text: 'اتعلّمنا مع عمتو أماني نطبخ رز بالشعرية بالنضافة والأمان، وساعدنا في تنضيف المطبخ' },
+        async run(ctx) {
+          const st = ctx.stage; let m0 = mis(ctx);
+          const KC = ALL5.concat(['amani']);
+          const LV = { moody: { x: 470, y: 482, dir: -1 }, aboody: { x: 560, y: 494, dir: -1 }, toota: { x: 400, y: 486, dir: 1 }, nemo: { x: 300, y: 490, dir: 1 }, nana: { x: 650, y: 478, dir: -1 }, nada: { x: 130, y: 488, dir: 1 }, amani: { x: 940, y: 486, dir: -1, visible: false } };
+          const KP = o => Object.assign({ toota: { x: 100, y: 486, dir: 1 }, nemo: { x: 190, y: 490, dir: 1 }, moody: { x: 300, y: 482, dir: 1 }, aboody: { x: 410, y: 494, dir: 1 }, nana: { x: 600, y: 484, dir: -1 }, amani: { x: 720, y: 488, dir: -1 }, toti: { x: 520, y: 500, dir: -1 }, nada: { x: 860, y: 488, dir: -1 } }, o || {});
+          await ctx.scene('nn_living', { state: { lampOn: true }, heroes: LV });
+          await ctx.say('nana', 'حد بيخبّط! دي أماني بنتي جاية تزورنا. افتحوا لها يا حبايبي.');
+          ctx.sfx('bell'); st.hero('amani').visible = true; await ctx.walk('amani', 790, 486);
+          await ctx.say('amani', 'السلام عليكم! وحشتوني أوي يا حبايبي!', { anim: 'wave' });
+          await ctx.say('nana', 'أماني بنتي! أهلًا يا حبيبتي. وعمتكم ندى كمان بنتي، وبابا وعمو كمال ولادي.', { anim: 'wave' });
+          await ctx.say('aboody', 'عمتو أماني! جبتي معاكي إيه؟');
+          await ctx.say('amani', 'جبت رز وشعرية وسمنة. النهاردة هعلّمكم تعملوا رز بالشعرية بإيديكم!');
+          await ctx.say('toota', 'تعالوا نسلّم على عمتو ندى الأول.');
+          await ctx.say('aboody', 'إزيّك يا عمتو ندى؟');
+          await ctx.say('nada', 'ثانية واحدة يا حبيبي.. لسه بكتب كلمتين!', { anim: 'phone' });
+          await ctx.say('amani', 'سيبوها، هتخلّص وتيجي. ندى قلبها كبير بس موبايلها شاغلها شوية! تعالوا على المطبخ.');
+          /* ---- kitchen ---- */
+          await ctx.scene('nn_kitchen', { state: {}, heroes: KP({ nada: { x: 860, y: 488, dir: -1, visible: false }, toti: { x: 520, y: 500, dir: -1, visible: false } }) });
+          ctx.cast(KC, ALL4);
+          await ctx.say('amani', 'أول قاعدة في المطبخ: نلبس الغطاء بتاعنا ونغسل إيدينا بالصابون. جاهزين؟');
+          await ctx.games.scrub({
+            prompt: 'اغسلوا إيديكم بالصابونة', dirt: 5, tool: 'soap', base(g, t) {
+              [[300, 1], [660, -1]].forEach(h => { const x = h[0]; G.fillRR(g, x - 90, 200, 180, 190, 50, '#e4b58c', 5); [-66, -22, 22, 66].forEach((fx, i) => G.fillRR(g, x + fx - 17, 120 + (i === 1 || i === 2 ? -18 : 0), 34, 120, 17, '#e4b58c', 4.5)); G.fillRR(g, x + h[1] * 98 - 17, 250, 34, 100, 17, '#e4b58c', 4.5); });
+              G.text(g, 'اسحب الصابونة على الأماكن الوسخة', 480, 470, { size: 26, color: '#fff', stroke: M.OL, sw: 6 });
+            }
+          });
+          ctx.value('handwash'); ctx.heroes(KP());
+          await ctx.say('amani', 'إيديكم نضيفة! الرز بالشعرية عايز: رز وشعرية وسمنة وملح. دوّروا عليهم.');
+          ctx.tip('الرز على الرف العالي. مودي طويل!', 'toota');
+          const f = await ctx.games.hidden({
+            prompt: 'دوّروا على الرز والشعرية والسمنة والملح', hintAfter: 14, spots: [
+              { id: 'rice', art: 'rice', x: 252, y: 106, s: 62, needs: 'tall', walkOff: 0, listArt: 'rice', needsMsg: 'الرز عالي! محتاجين {m} الطويل' },
+              { id: 'vermi', art: 'nn_shaareya', x: 282, y: 212, s: 48, needs: 'finder', walkOff: 0, listArt: 'nn_shaareya', draw: faint('nn_shaareya', 48), needsMsg: 'الشعرية متخبّية بين البرطمانات! نيمو بتلاقيها' },
+              { id: 'ghee', art: 'nn_ghee', x: 330, y: 468, s: 60, needs: 'small', walkOff: 0, listArt: 'nn_ghee', needsMsg: 'السمنة في مكان ضيّق! محتاجين حد صغير' },
+              { id: 'salt', art: 'nn_salt', x: 850, y: 266, s: 52, listArt: 'nn_salt' }]
+          });
+          if (f.wrong <= 2) ctx.reward.star(1); ctx.value('teamwork');
+          ctx.heroes(KP());
+          await ctx.say('amani', 'كل حاجة جاهزة! دلوقتي نقيس. السمنة بالمعلقة، والماية بالكوب.');
+          m0 = mis(ctx);
+          const sp = await ctx.games.dragdrop({
+            prompt: 'حطّوا ٣ معالق سمنة في الحلة، والباقي في البرطمان', heroes: 'corner', panel: { x: 190, y: 130, w: 580, h: 130 }, wrongHint: 'الحلة محتاجة ٣ معالق بس! الباقي في البرطمان',
+            items: [0, 1, 2, 3, 4].map(i => ({ id: 'sp' + i, art: 'spoon', x: 270 + i * 100, y: 196, s: 64 })),
+            targets: [{ id: 'pot', x: 450, y: 400, w: 220, h: 110, art: 'pot', s: 110, label: 'الحلة', cols: 3, dx: 42, dy0: -10, itemScale: .5, accepts: function () { return this.n < 3; } },
+              { id: 'jar', x: 710, y: 400, w: 200, h: 110, art: 'nn_ghee', s: 100, label: 'البرطمان', cols: 2, dx: 42, dy0: -10, itemScale: .5, accepts: function () { return this.n < 2; } }]
+          });
+          const spOk = mis(ctx) - m0 <= 1; ctx.heroes(KP());
+          await ctx.say('amani', 'ممتاز! ٣ معالق. كوب رز واحد محتاج كوبين ماية.');
+          const ms = await ctx.games.measure({ prompt: 'حطّوا كوبين ماية في الإبريق', target: 2, unit: 'كوب ماية', max: 6 });
+          ctx.heroes(KP());
+          if (spOk && ms.tries <= 1) ctx.reward.star(1);
+          await ctx.say('amani', 'دلوقتي الترتيب. الطبخ ليه خطوات، لازم ننفذها بالدور.');
+          m0 = mis(ctx);
+          const sq = await ctx.games.sequence({ prompt: 'رتّبوا خطوات الرز بالشعرية', steps: [{ art: 'nn_ghee', label: 'نسخّن السمنة' }, { art: 'nn_shaareya', label: 'نحمّر الشعرية' }, { art: 'rice', label: 'نضيف الرز ونقلّب' }, { art: 'cup', label: 'نحط الماية والملح' }, { art: 'nn_hotpot', label: 'نغطّي ونسيبه ينضج' }] });
+          ctx.heroes(KP()); if (sq.mistakes <= 1) ctx.reward.star(1);
+          /* ---- kitchen safety ---- */
+          st.state.cook = true; ctx.sfx('bell');
+          await ctx.say('amani', 'الحلة بدأت تسخن. دلوقتي أهم حاجة: الأمان! إيه اللي للكبار بس وإيه اللي ينفع نمسكه؟');
+          m0 = mis(ctx);
+          const so = await ctx.games.dragdrop({
+            prompt: 'السخن والسكينة للكبار بس. صنّفوا الحاجات', heroes: 'corner', panel: { x: 90, y: 112, w: 780, h: 160 }, wrongHint: 'السخن والحاجات الحادة للكبار بس',
+            items: [['nn_knife', 'adult'], ['nn_woodspoon', 'kid'], ['nn_hotpot', 'adult'], ['cup', 'kid'], ['nn_stove', 'adult'], ['plate', 'kid']].map((it, i) => ({ id: 'sf' + i, art: it[0], to: it[1], x: 160 + i * 128, y: 192, s: 66 })),
+            targets: [{ id: 'adult', x: 440, y: 404, w: 230, h: 110, art: 'face:amani', s: 84, label: 'للكبار بس', cols: 3, dx: 42, dy0: 40, itemScale: .45 }, { id: 'kid', x: 710, y: 404, w: 230, h: 110, art: 'face:nemo', s: 84, label: 'ينفع نمسكه', cols: 3, dx: 42, dy0: 40, itemScale: .45 }]
+          });
+          const soOk = mis(ctx) - m0 <= 1; ctx.heroes(KP()); if (soOk) ctx.reward.star(1);
+          await ctx.say('narrator', 'وفجأة.. سمعوا خطوات صغيرة بتجري ناحية المطبخ!');
+          ctx.cast(KC.concat(['toti']), ALL4); ctx.heroes(KP({ toti: { x: 900, y: 500, dir: -1 } }));
+          await ctx.walk('toti', 520, 500);
+          await ctx.say('toti', 'أنا عايزة أشيل الحلة! أنا!', { anim: 'scream' });
+          await ctx.say('amani', 'لأ يا توتي يا حبيبتي! الحلة سخنة أوي وهتحرق إيدك.');
+          await ctx.say('toti', 'ووو.. أنا عايزة أشيلها!', { anim: 'cry' });
+          await ctx.say('nemo', 'تعالي يا توتي، أنا معاكي. إحنا هنساعد عمتو أماني بطريقة تانية.');
+          await ctx.say('toti', 'بطريقة إيه يا نيمو؟', { anim: 'idle' });
+          await ctx.say('nemo', 'إنتي هتعدّي لنا المعالق، وده شغل مهم! وبعدين نتفرج على الرز وهو بيطبخ من بعيد.');
+          await ctx.say('toti', 'حاضر! أنا بحبك يا نيمو.', { anim: 'cheer' });
+          m0 = mis(ctx);
+          const ch = await ctx.games.choice({
+            prompt: 'الحلة بتفور وسخنة. نعمل إيه؟', options: [
+              { text: 'نمسك الحلة بإيدينا', art: 'nn_hotpot', good: false, consequence: [['amani', 'لأ يا حبيبي! الحلة سخنة وبتحرق. دي للكبار بس.'], ['aboody', 'آسف يا عمتو!']] },
+              { text: 'نبعد، وعمتو تلبس القفاز وتشيلها', art: 'nn_mitt', good: true, reply: [['amani', 'برافو! القفاز بيحمي الإيد، وإنتو بعيد وأمان.'], ['toota', 'وأنا هاخد بالي من توتي.']] },
+              { text: 'نجري حوالين البوتجاز', art: 'ball', good: false, consequence: [['nana', 'لأ يا حبايبي، المطبخ مش ملعب. ممكن حد يتحرق.'], ['moody', 'معاها حق.']] }]
+          });
+          if (ch.firstTry) ctx.reward.star(1); ctx.value('kitchensafety'); ctx.heroes(KP());
+          await ctx.say('amani', 'دلوقتي نسيب الرز على نار هادية ونستنى شوية.');
+          await ctx.wait(1.2); st.state.cook = false; st.state.table = true; ctx.sfx('bell');
+          await ctx.say('amani', 'الرز جهز! ريحته جميلة. السفرة جاهزة.');
+          await ctx.say('nana', 'ما شاء الله عليكم! قبل ما ناكل نقول إيه؟', { anim: 'cheer' });
+          await ctx.games.ritual({ text: 'بسم الله', sub: 'قبل الأكل' }); ctx.value('bismillah');
+          await ctx.say('aboody', 'مممم! أحلى رز في الدنيا!');
+          await ctx.say('toota', 'أنا عايزة أتعلّم أعمله لماما في البيت.');
+          await ctx.say('nana', 'الله يبارك فيكم يا حبايبي. بقيتوا شيفات صغيرين!', { anim: 'cheer' });
+          await ctx.games.ritual({ text: 'تسلم إيدك يا عمتو', sub: 'نشكر عمتو أماني', bottom: 120 }); ctx.value('thanks');
+          await ctx.say('amani', 'الله يسلمكم! بس لسه فاضل حاجة مهمة: نضّف المطبخ بعد الأكل.');
+          st.state.table = false;
+          m0 = mis(ctx);
+          await ctx.games.dragdrop({
+            prompt: 'نضّفوا المطبخ: حطّوا الأطباق والمعالق في الحوض', heroes: 'corner', panel: { x: 150, y: 120, w: 660, h: 110 }, wrongHint: 'حطّها في الحوض',
+            items: [['plate', 0], ['plate', 1], ['cup', 2], ['spoon', 3], ['nn_woodspoon', 4]].map((it, i) => ({ id: 'cl' + i, art: it[0], x: 230 + i * 120, y: 176, s: 62 })),
+            targets: [{ id: 'sink', x: 640, y: 390, w: 300, h: 110, art: 'nn_basin', s: 150, label: 'الحوض', cols: 5, dx: 40, dy0: -4, itemScale: .5, accepts: () => true }]
+          });
+          ctx.heroes(KP()); ctx.value('help'); ctx.fx.burst(480, 320, { kind: 'star', n: 14 });
+          await ctx.say('narrator', 'وفجأة.. ريحة الرز وصلت للصالة!');
+          ctx.cast(KC.concat(['toti', 'nada']), ALL4); ctx.heroes(KP({ nada: { x: 900, y: 488, dir: -1 } }));
+          await ctx.walk('nada', 800, 488);
+          await ctx.say('nada', 'ثانية واحدة.. إيه الريحة الحلوة دي؟', { anim: 'phone' });
+          await ctx.say('nada', 'الله! رز بالشعرية! سيبوا لي طبق قبل ما يخلص.', { anim: 'cheer' });
+          await ctx.say('amani', 'مش قلت لك؟ الريحة بتوصل لحد الموبايل!');
+          await ctx.say('narrator', 'سؤالين من عمتو أماني!');
+          m0 = mis(ctx);
+          const q = await ctx.quiz.pair({ aboody: B('nn6_spoons'), moody: B('nn9_cup') });
+          const sk = await ctx.quiz.ask(B('nn9_skill'), { who: 'moody' });
+          if (q.firstTry >= 1 && mis(ctx) - m0 <= 2) ctx.reward.star(1);
+          await ctx.say('nana', 'يوم حلو.. المطبخ نضيف والبيت مليان ريحة حلوة. ربنا يخليكم يا حبايبي.', { anim: 'cheer' });
           return ctx.nav.complete();
         }
       }

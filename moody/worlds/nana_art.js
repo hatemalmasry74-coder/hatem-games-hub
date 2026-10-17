@@ -128,7 +128,7 @@
   };
 
   /* ================================================================
-     ROOM nn_kitchen : Nana's kitchen.  flags: table (show the dining table + 6 mats), bake (oven glow), trays (trays on the counter)
+     ROOM nn_kitchen : Nana's kitchen.  flags: table (show the dining table + 6 mats), bake (oven glow), trays (trays on the counter), cook (steam over the pot)
      Landmarks: high shelf with flour (205,112), mid shelf jars (y 205), counter (y 300), stool/floor corner (320,470), table ellipse (480,400)
      ================================================================ */
   R.nn_kitchen = function (g, t, s) {
@@ -146,6 +146,7 @@
     [[470, 282], [510, 282], [550, 282]].forEach(p => G.circ(g, p[0], p[1], 10, '#3a3f55', 3));
     // pot + mixing bowl on counter
     A.draw(g, 'pot', 330, 262, 74); G.ell(g, 760, 290, 62, 14, '#fff', 4.5); G.ell(g, 760, 292, 50, 9, '#ffdca0', 2.5);
+    if (S.cook) { g.save(); for (let i = 0; i < 4; i++) { const k = (t * .6 + i * .25) % 1; g.globalAlpha = .65 * (1 - k); G.circ(g, 330 + Math.sin(t * 2 + i * 2) * 10, 232 - k * 70, 9 + k * 12, '#fff', 0); } g.restore(); }
     if (S.trays) { A.draw(g, 'nn_tray', 190, 276, 84); A.draw(g, 'nn_tray', 250, 276, 84); }
     // table (6 places) - ellipse top view
     if (S.table) {
@@ -248,5 +249,19 @@
     nn_door(g) { rr(g, -30, -42, 60, 84, 6, '#b4783f', 4.5); rr(g, -22, -34, 44, 32, 4, '#c8935a', 3); rr(g, -22, 4, 44, 30, 4, '#c8935a', 3); G.circ(g, 20, 4, 4.5, '#ffd23c', 2.5); G.heart(g, 0, -18, 8, '#ff5a7a', 2.5); },
     nn_rack(g) { rr(g, -40, -30, 80, 66, 6, '#c8935a', 4.5); G.line(g, -40, 4, 40, 4, 4); A.draw(g, 'nn_shoe:blue', -18, -14, 26); A.draw(g, 'nn_shoe:pink', 16, 22, 26); },
     nn_hands(g) { [[-26, '#ffd2a8'], [0, '#e8b389'], [26, '#dd9d6c']].forEach((p, i) => { G.circ(g, p[0], -16, 11, p[1], 3.5); G.fillRR(g, p[0] - 9, -4, 18, 34, 8, ['#ff6f91', '#8b2346', '#9ea4ab'][i], 3.5); }); G.line(g, -17, 8, -9, 8, 5, '#ffd2a8'); G.line(g, 9, 8, 17, 8, 5, '#e8b389'); }
+  });
+
+  /* ---------------- cooking with Aunt Amani (mission m7): props ---------------- */
+  A.registerAll({
+    nn_shaareya(g) { g.beginPath(); g.moveTo(-30, -34); g.quadraticCurveTo(0, -42, 30, -34); g.lineTo(36, 36); g.quadraticCurveTo(0, 46, -36, 36); g.closePath(); G.fs(g, '#fff3c8', 4.5); G.fillRR(g, -26, -42, 52, 12, 5, '#e07a4a', 3.5); for (let i = 0; i < 6; i++) { G.line(g, -22 + i * 2, -14 + i * 9, 18 + i * 2, -22 + i * 9, 3, '#d9a548'); } },
+    nn_ghee(g) { rr(g, -26, -22, 52, 58, 10, '#ffd23c', 4.5); rr(g, -30, -34, 60, 16, 6, '#fff7e3', 4.5); G.fillRR(g, -18, -6, 36, 26, 5, '#fff7e3', 2.5); G.text(g, 'سمنة', 0, 8, { size: 15, color: '#c25a00' }); },
+    nn_salt(g) { g.beginPath(); g.moveTo(-20, 34); g.lineTo(-24, -10); g.quadraticCurveTo(0, -22, 24, -10); g.lineTo(20, 34); g.closePath(); G.fs(g, '#e8f2ff', 4.5); rr(g, -18, -28, 36, 18, 8, '#c7ccdb', 4.5); [[-7, -20], [0, -20], [7, -20]].forEach(p => G.circ(g, p[0], p[1], 2, OL, 0)); G.text(g, 'ملح', 0, 12, { size: 15, color: '#2b3a67' }); },
+    nn_knife(g) { g.save(); g.rotate(-.6); G.poly(g, [[-6, -44], [6, -44], [10, 12], [-6, 12]], '#dfe5f0', 4.5); G.fillRR(g, -9, 10, 18, 36, 6, '#8a5a3a', 4.5); g.restore(); },
+    nn_mitt(g) { rr(g, -26, -30, 52, 64, 16, '#ef5350', 4.5); G.ell(g, -28, -2, 11, 20, '#ef5350', 4.5, null, .5); rr(g, -26, 18, 52, 18, 6, '#c9363a', 3.5); [[-10, -14], [8, -6], [-4, 4]].forEach(p => G.circ(g, p[0], p[1], 4, '#fff7e3', 0)); },
+    nn_woodspoon(g) { g.save(); g.rotate(.7); G.ell(g, 0, -26, 14, 20, '#d9a566', 4.5); G.fillRR(g, -5, -10, 10, 56, 5, '#c08a4a', 4); g.restore(); },
+    nn_stove(g) { rr(g, -44, -8, 88, 46, 8, '#d9dde8', 4.5); G.ell(g, 0, -8, 34, 9, '#6e7791', 4); [-12, 0, 12].forEach((x, i) => { g.beginPath(); g.moveTo(x - 7, -8); g.quadraticCurveTo(x - 9, -26 - i % 2 * 6, x, -38); g.quadraticCurveTo(x + 9, -26, x + 7, -8); g.closePath(); G.fs(g, i === 1 ? '#ffd23c' : '#ff8a2a', 3); }); },
+    nn_hotpot(g, o) { G.poly(g, [[-34, -14], [34, -14], [30, 28], [-30, 28]], '#9aa0b5', 4.5); rr(g, -38, -22, 76, 12, 5, '#c7ccdb', 4.5); G.fillRR(g, 36, -12, 22, 9, 4, '#ef5350', 3.5); G.fillRR(g, -58, -12, 22, 9, 4, '#ef5350', 3.5); G.circ(g, 0, -28, 5, '#6e7791', 3); [-14, 4, 20].forEach((x, i) => { g.save(); g.globalAlpha = .75; G.circ(g, x, -42 - i * 7, 7 - i, '#fff', 2); g.restore(); }); },
+    nn_dish(g) { G.ell(g, 0, 16, 44, 18, '#fff', 4.5); G.ell(g, 0, 14, 34, 12, '#fff7e3', 2.5); g.beginPath(); g.moveTo(-30, 12); g.quadraticCurveTo(-26, -22, 0, -26); g.quadraticCurveTo(26, -22, 30, 12); g.quadraticCurveTo(0, 22, -30, 12); g.closePath(); G.fs(g, '#fff7d6', 4); for (let i = 0; i < 9; i++) { G.line(g, -20 + (i * 11) % 40, -12 + (i * 7) % 24, -12 + (i * 11) % 40, -8 + (i * 7) % 24, 3, '#c9873a'); } G.sparkle(g, 26, -28, 7, '#fff', .9); },
+    nn_basin(g) { rr(g, -44, -8, 88, 44, 12, '#c7ccdb', 4.5); G.ell(g, 0, -8, 38, 10, '#8fd6ff', 4); [[-14, -14, 8], [10, -18, 6], [20, -12, 5]].forEach(b => G.circ(g, b[0], b[1], b[2], 'rgba(255,255,255,.85)', 2.5)); G.line(g, 0, -8, 0, -38, 5, '#8f95a8'); G.line(g, 0, -38, 18, -38, 5, '#8f95a8'); }
   });
 })();
