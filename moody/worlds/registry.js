@@ -24,7 +24,8 @@
     { id: 'sea', order: 6, title: 'رحلة البحر', icon: 'w_sea', theme: { c1: '#a8f0f0', c2: '#1fb5a6' } },
     { id: 'nana', order: 7, title: 'بيت ننا زوزا', icon: 'w_nana', theme: { c1: '#e6d6ff', c2: '#b79be6' } },
     { id: 'saudi', order: 8, title: 'السفر لبابا في السعودية', icon: 'w_saudi', theme: { c1: '#ffe0a8', c2: '#e0a24a' } },
-    { id: 'habits', order: 9, title: 'عاداتي كل يوم', icon: 'w_habits', theme: { c1: '#ffe9a0', c2: '#f0b040' } }
+    { id: 'habits', order: 9, title: 'عاداتي كل يوم', icon: 'w_habits', theme: { c1: '#ffe9a0', c2: '#f0b040' } },
+    { id: 'gathering', order: 10, title: 'تجمّع العائلة', icon: 'w_gather', theme: { c1: '#ffd9c0', c2: '#f08a5d' } }
   ]);
   // engine content + worlds, loaded in this order
   M.load.push('content/baba_calls.js', 'content/meta.js', 'content/art_common.js', 'content/q_tier6.js', 'content/q_tier9.js', 'worlds/home_art.js', 'worlds/home.js');
@@ -34,4 +35,5 @@
   M.load.push('content/q_nana.js', 'worlds/nana_kits.js', 'worlds/nana_art.js', 'worlds/nana.js');
   M.load.push('content/q_saudi.js', 'worlds/saudi_art.js', 'worlds/saudi.js');
   M.load.push('content/q_habits.js', 'worlds/habits_kits.js', 'worlds/habits_art.js', 'worlds/habits.js');
+  M.load.push('content/q_gathering.js', 'worlds/gathering_kits.js', 'worlds/gathering_art.js', 'worlds/gathering.js');
 })();
