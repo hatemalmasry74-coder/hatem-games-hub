@@ -39,6 +39,7 @@ function loadConfig(file) {
   c._dir = base;
   const need = (cond, msg) => { if (!cond) err.push(msg); };
   c.edition = Object.assign({ id: 'family', title: null, subtitle: null, versionLabel: null }, c.edition || {});
+  c.friendName = c.friendName || 'كريم';   // the neighbour/cousin friend that replaces the owner's cousin «أوفا» in the stories
   need(/^[a-z0-9][a-z0-9-]{1,40}$/.test(c.edition.id), 'edition.id must be a lowercase latin slug (a-z 0-9 -), used for the storage key');
   c.parents = Object.assign({ dad: 'بابا', mom: 'ماما' }, c.parents || {});
   c.dad = Object.assign({ status: 'abroad' }, c.dad || {});
@@ -116,6 +117,7 @@ class Project {
 function buildDictionaries(c) {
   const k = c.kids, gp = c.grandparent, pairs = [];
   SLOTS.forEach((s, i) => pairs.push([BASE[s].old, k[i].nick]));
+  pairs.push(['أوفا', c.friendName]);   // the owner's cousin character becomes a generic friend
   pairs.push(['ننا زوزا', gp.full], ['ننا', gp.title], ['زوزا', gp.name || gp.title]);   // also without a grandparent: the engine still carries her default name
   if (c.parents.dad !== 'بابا') pairs.push(['بابا', c.parents.dad]);
   if (c.parents.mom !== 'ماما') pairs.push(['ماما', c.parents.mom]);
@@ -205,6 +207,23 @@ function textPass(P, c, dicts) {
     }
     P.files.set(f, join(segs));
   }
+}
+
+/* ------------------------------------------------------------------ the owner's extended family (never shipped to other families) */
+const EXT_IDS = ['ofa', 'toti', 'amani', 'nada', 'beno', 'medo', 'kamal', 'luka'];
+const EXT_WORDS = ['أوفا', 'توتي', 'أماني', 'عمتو ندى', 'بينو', 'ميدو', 'عمو كمال', 'لوكا'];
+function stripExtendedFamily(P, c) {
+  /* 1. stories: the cousin speaks as the generic 'friend' (his name is replaced by c.friendName in the text pass) */
+  for (const f of [...P.files.keys()]) if (/^worlds\/[^/]+\.js$/.test(f)) P.rep(f, /'ofa'/g, "'friend'", { optional: true, what: 'cousin -> generic friend speaker' }), P.rep(f, /'face:ofa'/g, "'friend'", { optional: true, what: 'cousin portrait -> friend icon' });
+  P.rep('engine/ui.js', "{ mama: 'ماما' }[who]", "{ mama: 'ماما', friend: " + jsq(c.friendName) + " }[who]", { what: 'default name of the friend NPC' });
+  /* 2. character table rows + marker comment */
+  P.rep('engine/chars.js', /\n[ \t]*\/\* ---- extended family[^\n]*\*\//, '', { what: 'extended-family comment' });
+  P.rep('engine/chars.js', new RegExp('\\n[ \\t]*(?:' + EXT_IDS.join('|') + '): \\{[^\\n]*\\},?', 'g'), '', { what: 'extended-family character rows', exact: EXT_IDS.length });
+  /* 3. speaker -> voice map */
+  P.rep('engine/voice.js', /\n[ \t]*Object\.assign\(VOICES, \{[^\n]*\n/, '\n', { what: 'extended-family voices' });
+  /* 4. family stickers of the relatives */
+  P.rep('engine/call.js', /, \{ id: 'f_(?:amani|nada|kamal|cousins)'[^}]*\}/g, '', { what: 'relatives stickers', exact: 4 });
+  P.rep('engine/call.js', ", 15: 'f_amani', 18: 'f_nada', 21: 'f_kamal', 24: 'f_cousins'", '', { what: 'relatives sticker rewards' });
 }
 
 /* ------------------------------------------------------------------ main build steps */
@@ -421,7 +440,7 @@ function makeIcons(P, c, outDir, report, flags) {
 
 /* ------------------------------------------------------------------ checks */
 function leakScan(P, c, outDir) {
-  const leaks = [], words = [['مودي', 0], ['عبودي', 0], ['توتا', 0], ['نيمو', 0], ['تسنيم', 0], ['ترنيم', 0], ['زوزا', 0], ['آل زياد', 0], ['ننا', 1]];
+  const leaks = [], words = [['أوفا', 1], ['توتي', 1], ['أماني', 1], ['عمتو ندى', 1], ['بينو', 1], ['ميدو', 1], ['عمو كمال', 1], ['لوكا', 1], ['مودي', 0], ['عبودي', 0], ['توتا', 0], ['نيمو', 0], ['تسنيم', 0], ['ترنيم', 0], ['زوزا', 0], ['آل زياد', 0], ['ننا', 1]];
   if (c.dad.status === 'abroad' && c.destination.preset === 'custom') words.push(['أبها', 0], ['عسير', 0], ['السودة', 0], ['العسيري', 0]);
   const keep = new Set(c.kids.map(k => k.nick).concat([c.grandparent.title, c.grandparent.name, c.school.name].filter(Boolean)));
   // a leak is only a leak if the same text is not a legitimate new name (e.g. a new child really called "نيمو")
@@ -457,6 +476,7 @@ function build(configFile, outDir, flags) {
   const P = new Project(); P.load();
   const report = { edition: c.edition.id, built: new Date().toISOString(), warnings: c._warn.slice(), review: [], avatars: [], gender: [], genderMixed: [], patches: [], leaks: [], syntax: [], scenery: [] };
   const dicts = buildDictionaries(c);
+  stripExtendedFamily(P, c);
   genericPatches(P, c);
   optionalWorlds(P, c);
   destinationClaims(P, c);

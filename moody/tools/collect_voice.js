@@ -10,7 +10,7 @@ const fs = require('fs'), path = require('path'), cp = require('child_process');
 const { launch, sleep } = require('./botlib.js');
 const ROOT = path.join(__dirname, '..'), PORT = 8777, STATIC = process.argv.includes('--static');
 const all = new Map();   // key text|speaker -> entry
-const VOICE = { moody: 'boy_big', aboody: 'boy_small', mama: 'mama', baba: 'baba', toota: 'girl_big', nemo: 'girl_small', nana: 'nana', narrator: 'narrator', friend: 'boy_big' };
+const VOICE = { moody: 'boy_big', aboody: 'boy_small', mama: 'mama', baba: 'baba', toota: 'girl_big', nemo: 'girl_small', nana: 'nana', narrator: 'narrator', friend: 'boy_big', ofa: 'boy_mid', toti: 'girl_tiny', luka: 'boy_tiny', amani: 'aunt_a', nada: 'aunt_n', beno: 'teen_a', medo: 'teen_b', kamal: 'uncle' };
 const add = (text, speaker) => { if (!text || typeof text !== 'string') return; speaker = VOICE[speaker || 'narrator'] || speaker || 'narrator'; const t = text.replace(/\s+/g, ' ').trim(); if (!t) return; const k = t + '|' + speaker; if (!all.has(k)) all.set(k, { text: t, speaker }); };
 
 (async () => {
@@ -20,7 +20,7 @@ const add = (text, speaker) => { if (!text || typeof text !== 'string') return; 
     /* (b) static scan of dialogue lines */
     for (const f of fs.readdirSync(path.join(ROOT, 'worlds')).filter(f => f.endsWith('.js'))) {
       const src = fs.readFileSync(path.join(ROOT, 'worlds', f), 'utf8');
-      for (const m of src.matchAll(/(?:say\(|\[)\s*'(moody|aboody|mama|baba|toota|nemo|nana|narrator|friend)'\s*,\s*'((?:[^'\\]|\\.)*)'/g)) add(m[2].replace(/\\'/g, "'"), VOICE[m[1]]);
+      for (const m of src.matchAll(/(?:say\(|\[)\s*'(moody|aboody|mama|baba|toota|nemo|nana|narrator|friend|ofa|toti|luka|amani|nada|beno|medo|kamal)'\s*,\s*'((?:[^'\\]|\\.)*)'/g)) add(m[2].replace(/\\'/g, "'"), VOICE[m[1]]);
       for (const m of src.matchAll(/(?:wisdom|intro|prompt)\s*[:(]\s*'((?:[^'\\]|\\.)*)'/g)) add(m[1].replace(/\\'/g, "'"), 'narrator');
     }
     const env = await launch({ kind: 'desk', url }); const p = env.p;

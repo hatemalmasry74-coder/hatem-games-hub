@@ -78,7 +78,7 @@
       return mk((done, cl) => {
         let close; const hero = stage.heroes[who];
         if (hero && o.anim) stage.play(who, o.anim, o.animT || 1.2);
-        UI.say({ who, text, name: o.name, icon: o.icon, onTalk: v => { if (hero) hero.talk = v ? 999 : 0; }, register: c => { close = c; } }).then(() => done());
+        UI.say({ who, text, name: o.name, icon: o.icon, face: o.face || (o.anim && ['cry', 'scream', 'phone'].indexOf(o.anim) >= 0 ? o.anim : null), onTalk: v => { if (hero) hero.talk = v ? 999 : 0; }, register: c => { close = c; } }).then(() => done());
         cl(() => { if (close) close(); if (hero) hero.talk = 0; });
       });
     };

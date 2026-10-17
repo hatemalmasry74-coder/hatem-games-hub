@@ -10,7 +10,7 @@
     this.shakeA = 0; this.flashC = null; this.flashA = 0; this.input = null; this.showActive = true; this.floorY = 480; this.dbg = null;
     this.active = M.save.data.hero || 'moody'; this.onSwitch = null;
     this.heroes = { moody: this.mkHero('moody', 300, 480), aboody: this.mkHero('aboody', 430, 492) };
-    ['toota', 'nemo', 'nana', 'baba'].forEach(k => { this.heroes[k] = this.mkHero(k, 200, 480); this.heroes[k].visible = false; });
+    M.chars.extras().forEach(k => { this.heroes[k] = this.mkHero(k, 200, 480); this.heroes[k].visible = false; });
     this.cast = ['moody', 'aboody']; this.control = ['moody', 'aboody']; this.abil = {};
   }
   const P = Stage.prototype;
@@ -33,25 +33,26 @@
 
   /* hero layouts */
   P.layout = function (name) {
-    this._lay = name; const m = this.heroes.moody, a = this.heroes.aboody, fy = this.floorY, ex = ['toota', 'nemo', 'nana', 'baba'].map(k => this.heroes[k]);
+    this._lay = name; const m = this.heroes.moody, a = this.heroes.aboody, fy = this.floorY, ex = M.chars.extras().map(k => this.heroes[k]);
     const reset = h => { h.visible = true; h.sc = 1; h.tx = null; h.fa = null; h.carry = null; h.jy = 0; };
     [m, a].concat(ex).forEach(reset);
     if (name && typeof name === 'object') {
       for (const k in name) { const h = this.heroes[k]; if (!h) continue; Object.assign(h, name[k]); h.hx = h.x; h.hy = h.y; h.visible = name[k].visible !== false; }
-      ['toota', 'nemo', 'nana', 'baba'].forEach((k, i) => { if (!(k in name)) this.placeExtra(k, 'floor'); });
+      M.chars.extras().forEach((k, i) => { if (!(k in name)) this.placeExtra(k, 'floor'); });
     } else {
       if (name === 'hidden') { [m, a].concat(ex).forEach(h => { h.visible = false; }); }
       else if (name === 'corner') { m.x = 62; m.y = 532; a.x = 898; a.y = 532; m.sc = a.sc = .62; a.dir = -1; m.dir = 1; }
       else if (name === 'bottom') { m.x = 330; m.y = 528; a.x = 440; a.y = 534; m.sc = a.sc = .72; m.dir = 1; a.dir = -1; }
       else { m.x = 320; m.y = fy; a.x = 450; a.y = fy + 10; m.dir = 1; a.dir = -1; }
       m.hx = m.x; m.hy = m.y; a.hx = a.x; a.hy = a.y;
-      ['toota', 'nemo', 'nana', 'baba'].forEach(k => this.placeExtra(k, name));
+      M.chars.extras().forEach(k => this.placeExtra(k, name));
     }
     if (name !== 'hidden') Object.keys(this.heroes).forEach(k => { if (this.cast.indexOf(k) < 0) this.heroes[k].visible = false; });
   };
   P.placeExtra = function (k, name) {
     const h = this.heroes[k], fy = this.floorY; if (!h) return;
-    const slot = { toota: [200, fy + 4, 1], nemo: [120, fy + 12, 1], nana: [560, fy + 2, -1], baba: [640, fy + 2, -1] }[k], cor = { toota: [128, 534, 1], nemo: [832, 534, -1], nana: [200, 534, 1], baba: [760, 534, -1] }[k];
+    const slot = { toota: [200, fy + 4, 1], nemo: [120, fy + 12, 1], nana: [560, fy + 2, -1], baba: [640, fy + 2, -1], ofa: [700, fy + 8, -1], toti: [250, fy + 16, 1], amani: [610, fy + 14, -1], nada: [520, fy + 18, -1], beno: [770, fy + 2, -1], medo: [840, fy + 4, -1], kamal: [900, fy + 10, -1], luka: [380, fy + 18, 1] }[k],
+      cor = { toota: [128, 534, 1], nemo: [832, 534, -1], nana: [200, 534, 1], baba: [760, 534, -1], ofa: [690, 534, -1], toti: [270, 534, 1], amani: [330, 534, 1], nada: [600, 534, -1], beno: [560, 534, -1], medo: [900, 534, -1], kamal: [60, 534, 1], luka: [400, 534, 1] }[k];
     if (name === 'hidden') { h.visible = false; return; }
     if (name === 'corner' || name === 'bottom') { h.x = cor[0]; h.y = cor[1]; h.dir = cor[2]; h.sc = .62; } else { h.x = slot[0]; h.y = slot[1]; h.dir = slot[2]; h.sc = 1; }
     h.hx = h.x; h.hy = h.y;

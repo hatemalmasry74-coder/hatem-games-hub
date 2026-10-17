@@ -179,6 +179,20 @@ Everything the game shows as an instruction/dialog/question is also *speakable*.
 | nana | ننا زوزا | ~68 | light headscarf, glasses, lilac flowery dress, slow gentle walk (`speed`) | wise, kind |
 | baba | بابا | ~40 | black curly hair, thick brows, full beard + mustache, big laugh, black tee, smartwatch + ring, olive skin | dad |
 
+### Extended family (all `playable:false`; ids = speakers = `ctx.cast` ids; age of `ofa` is PROVISIONAL)
+| id | who | age | look / props |
+|---|---|---|---|
+| ofa | أوفا (ابن عمة أماني, cousin of the kids; also the friend NPC of all worlds) | 9 | green tee, jeans, short straight hair with a fringe |
+| toti | توتي (بنت عمتو ندى, very naughty) | 4 | tiny, pigtails with pink bows, pink dress; extra poses `cry` (tears + wail) and `scream` (tantrum); fidgets when idle; loves Nemo |
+| amani | عمتو أماني (loves cooking) | ~42 | casual terracotta headscarf, sage floral dress, cream apron, wooden spoon in hand |
+| nada | عمتو ندى (mother of Toti) | ~38 | casual beige headscarf, teal blouse, navy skirt, phone in hand; default idle = pose `phone` (looks down at the phone) |
+| beno | بينو (ثالثة إعدادي, son of Amani) | 15 | quiff, slate hoodie, headphones round the neck |
+| medo | ميدو (ثالثة ثانوي, son of Amani) | 18 | tall, round glasses, maroon tee, backpack |
+| kamal | عمو كمال (owner's younger brother, lives in Saudi with Baba) | 34 | clean-shaven, neat side-parted hair, light-blue polo, watch + ring |
+| luka | لوكا (son of Kamal, lives in Egypt) | 4 | tiny, curls, orange tee, toy car in hand, curious head tilt |
+
+Use: `ctx.say('toti','...',{anim:'cry'})` (portrait + stage pose follow `cry|scream|phone`; or `{face:'cry'}` for the portrait only), `ctx.cast(['moody','aboody','nemo','toti'])` / `ctx.companions(['toti','luka'])`, `stage.play('toti','scream',2)`, art `face:<id>[:<pose>]`. Voices: `ofa boy_mid, toti girl_tiny, luka boy_tiny, amani aunt_a, nada aunt_n, beno teen_a, medo teen_b, kamal uncle` (`engine/voice.js`, `tools/collect_voice.js`, `tools/gen_voice.py`). Stickers `f_amani f_nada f_kamal f_cousins` come from daily calls 15/18/21/24. The family-edition builder strips all of this (`stripExtendedFamily` in `tools/family/build.js`; `ofa` turns into a generic friend named by `friendName`, default كريم).
+
 Draw: `Moody.chars.draw(g, id, x, y, {anim, t, dir, sc, hat, shirtId, talk, carry})`; anims `idle walk run jump pickup lift cheer(=happy) wave oops think sleep`, `talk:true` animates the mouth. Portrait: `Moody.chars.portrait(g,id,cx,cy,r)` and art `face:<id>`. Cosmetics: `chars.registerHat(id,name,price,draw)` / `registerShirt(id,name,price,color)`; set `.for=['toota','nemo']` to restrict an item to some heroes (the shop has a tab per playable hero).
 Family facts: school = **مدرسة آل زياد الابتدائية**; the family lives on the **6th floor**, Nana Zoza on the **3rd floor** of the same building; Baba lives/works in **أبها (Abha), Asir, Saudi Arabia**: mountains, light mist and cool weather, stone-and-clay buildings with white-and-ochre towers, white minarets, the Abha cable car (التلفريك), Al-Souda mountain, Habala - use this as the visual style of the Saudi world.
 

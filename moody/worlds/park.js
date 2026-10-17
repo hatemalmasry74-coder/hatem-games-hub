@@ -36,16 +36,16 @@
           await ctx.say('moody', 'استنى يا {a}.. بُص، في ولاد قبلنا واقفين مستنيين دورهم.');
           const c1 = await ctx.games.choice({
             prompt: 'في طابور على الأرجوحة. نعمل إيه؟', options: sh([
-              { text: 'نجري ونطلع قبلهم', art: 'sad', good: false, consequence: [['friend', 'يا جماعة! أنا مستنّي من بدري!', { name: 'يوسف' }], ['moody', 'عندك حق يا يوسف.. آسفين. هنقف في الطابور.']] },
-              { text: 'نقف في الطابور ونستنى دورنا', art: 'smile', good: true, reply: [['friend', 'برافو عليكم! الدور بيمشي بسرعة.', { name: 'يوسف' }]] },
+              { text: 'نجري ونطلع قبلهم', art: 'sad', good: false, consequence: [['ofa', 'يا جماعة! أنا مستنّي من بدري!'], ['moody', 'عندك حق يا أوفا.. آسفين. هنقف في الطابور.']] },
+              { text: 'نقف في الطابور ونستنى دورنا', art: 'smile', good: true, reply: [['ofa', 'برافو عليكم! الدور بيمشي بسرعة.']] },
               { text: 'نزعل ونمشي', art: 'pk_swing', good: false, consequence: [['aboody', 'بس أنا لسه عايز أركب...'], ['moody', 'لو استنينا شوية هيجي دورنا يا {a}.']] }])
           });
           if (c1.firstTry) ctx.reward.star(1); ctx.value('patience');
-          await ctx.say('friend', 'كل واحد ياخد ٥ دفعات وبعدين نبدّل. ممكن تزقّني ٥ مرات يا {a}؟', { name: 'يوسف' });
+          await ctx.say('ofa', 'كل واحد ياخد ٥ دفعات وبعدين نبدّل. ممكن تزقّني ٥ مرات يا {a}؟');
           st.state.noSwing = true;
           await ctx.games.pkSwing({ pusher: 'aboody', goal: 5, kid: 'pk_kid:orange', prompt: 'زقّ الأرجوحة ٥ مرات وعدّ معانا' });
           st.state.noSwing = false; st.layout({ moody: { x: 300, y: 482, dir: 1 }, aboody: { x: 420, y: 494, dir: 1 } });
-          await ctx.say('friend', 'شكرًا يا {a}! ٥ دفعات بالظبط. دورك!', { name: 'يوسف' });
+          await ctx.say('ofa', 'شكرًا يا {a}! ٥ دفعات بالظبط. دورك!');
           await ctx.say('narrator', 'وإحنا مستنيين.. سؤال سريع لكل واحد فيكم!');
           const q = await PK.pair(ctx, { cat: ['counting', 'math'], tag: 'park' });
           if (q.firstTry >= 1) ctx.reward.star(1);
@@ -77,7 +77,7 @@
         async run(ctx) {
           const st = ctx.stage;
           await ctx.scene('pkPark', { state: { kind: 'pitch' }, heroes: { moody: { x: 400, y: 484, dir: 1 }, aboody: { x: 500, y: 494, dir: -1 } } });
-          await ctx.say('friend', 'يلا نلعب ماتش! بس محتاجين نقسم الفريقين بالعدل.', { name: 'ماجد' });
+          await ctx.say('ofa', 'يلا نلعب ماتش! بس محتاجين نقسم الفريقين بالعدل.');
           const small = M.tierFor(ctx.active) === 6, cols = ['red', 'blue', 'green', 'yellow', 'purple:l:g', 'teal'], n = small ? 4 : 6, cap = n / 2; st.state.noGoal = true;
           const items = []; for (let i = 0; i < n; i++) items.push({ id: 'p' + i, art: 'pk_kid:' + cols[i], to: 'any', x: 480 + (i - (n - 1) / 2) * (n === 4 ? 120 : 84), y: 210, s: 84 });
           const accepts = function () { return this.n < cap; };
@@ -91,7 +91,7 @@
           await ctx.say('moody', 'كده الفريقين متساويين: ' + U.ar(cap) + ' و' + U.ar(cap) + '. ده العدل.');
           await ctx.say('narrator', 'قبل الماتش، تحدّي حساب لكل واحد!');
           await PK.pair(ctx, { cat: ['logic', 'math'], tag: 'park' });
-          await ctx.say('friend', 'نسخّن شوية! سجّل ٣ أهداف في المرمى.', { name: 'ماجد' });
+          await ctx.say('ofa', 'نسخّن شوية! سجّل ٣ أهداف في المرمى.');
           st.state.noGoal = true;
           await ctx.games.pkKick({ goal: 3, prompt: 'اضرب الكورة في المرمى: ٣ أهداف' });
           st.state.noGoal = false; ctx.reward.star(1);
@@ -100,7 +100,7 @@
           const c1 = await ctx.games.choice({
             prompt: 'واحد من الفريق التاني بيجري ناحية الكورة قدامك. تعمل إيه؟', options: sh([
               { text: 'أزقّه وآخد الكورة', art: 'x', good: false, consequence: [['narrator', 'الحكم صفّر: فاول! ممنوع الزق.'], ['moody', 'عندك حق يا حكم.. نلعب بالقواعد أحسن.']] },
-              { text: 'أجري وراها وألعب بنضافة', art: 'pk_football', good: true, reply: [['friend', 'لعب حلو يا مودي!', { name: 'ماجد' }]] },
+              { text: 'أجري وراها وألعب بنضافة', art: 'pk_football', good: true, reply: [['ofa', 'لعب حلو يا مودي!']] },
               { text: 'أمسك قميصه عشان يقف', art: 'pk_jersey:red', good: false, consequence: [['narrator', 'الحكم رفع الكارت الأصفر: تحذير!'], ['aboody', 'مش حلو كده.. الأحسن نلعب بالأصول.']] }])
           });
           if (c1.firstTry) ctx.reward.star(1); ctx.value('fairplay');
@@ -108,8 +108,8 @@
           await ctx.say('aboody', 'احنا خسرنا يا {m}... ');
           const c2 = await ctx.games.choice({
             prompt: 'الفريق التاني كسب. نعمل إيه؟', options: sh([
-              { text: 'نزعل ونرمي الكورة', art: 'sad', good: false, consequence: [['friend', 'ده مجرد لعب يا جماعة.. استمتعنا مع بعض.', { name: 'ماجد' }], ['moody', 'عندك حق، الخسارة بتعلّمنا.']] },
-              { text: 'نسلّم عليهم ونقول مبروك', art: 'pk_trophy', good: true, reply: [['friend', 'شكرًا يا مودي! ماتش حلو أوي.', { name: 'ماجد' }]] },
+              { text: 'نزعل ونرمي الكورة', art: 'sad', good: false, consequence: [['ofa', 'ده مجرد لعب يا جماعة.. استمتعنا مع بعض.'], ['moody', 'عندك حق، الخسارة بتعلّمنا.']] },
+              { text: 'نسلّم عليهم ونقول مبروك', art: 'pk_trophy', good: true, reply: [['ofa', 'شكرًا يا مودي! ماتش حلو أوي.']] },
               { text: 'نقول إن الحكم ظلمنا', art: 'pk_whistle', good: false, consequence: [['moody', 'الحكم بيحاول يعمل الصح.. والأهم إننا نلعب بنضافة.']] }])
           });
           if (c2.firstTry) ctx.reward.star(1); ctx.value('respect');
@@ -174,12 +174,12 @@
           await ctx.scene('pkZoo', { state: {}, heroes: { moody: { x: 330, y: 484, dir: 1 }, aboody: { x: 440, y: 494, dir: 1 } } });
           await ctx.say('baba', 'وصلنا حديقة الحيوان الصغيرة! بصّوا: الأسد والزرافة والفيل!', { name: 'بابا' });
           await ctx.say('aboody', 'الله! والقرد بيبصّلي!');
-          await ctx.say('friend', 'معايا شيبسي! هرميه للقرد يفرح.', { name: 'ماجد' });
+          await ctx.say('ofa', 'معايا شيبسي! هرميه للقرد يفرح.');
           const c1 = await ctx.games.choice({
-            prompt: 'ماجد عايز يرمي الشيبسي للقرد. نعمل إيه؟', options: sh([
+            prompt: 'أوفا عايز يرمي الشيبسي للقرد. نعمل إيه؟', options: sh([
               { text: 'نرمي معاه الشيبسي', art: 'chips', good: false, consequence: [['baba', 'اللافتة بتقول ممنوع نأكّل الحيوانات. الأكل ده بيعبّهم.', { name: 'بابا' }]] },
               { text: 'نخضّ القرد ونصرخ', art: 'pk_monkey', good: false, consequence: [['moody', 'ده بيخوّفه! الحيوان محتاج هدوء.']] },
-              { text: 'نقرا اللافتة ونتفرج بهدوء', art: 'pk_sign', good: true, reply: [['friend', 'عندكم حق.. اللافتة واضحة.', { name: 'ماجد' }]] }])
+              { text: 'نقرا اللافتة ونتفرج بهدوء', art: 'pk_sign', good: true, reply: [['ofa', 'عندكم حق.. اللافتة واضحة.']] }])
           });
           if (c1.firstTry) ctx.reward.star(1); ctx.value('animalcare');
           st.setActive('aboody', true);
@@ -225,7 +225,7 @@
         async run(ctx) {
           const st = ctx.stage, H = M.parkHide;
           await ctx.scene('pkPark', { state: { kind: 'hide' }, heroes: { moody: { x: 420, y: 486, dir: 1 }, aboody: { x: 520, y: 496, dir: -1 } } });
-          await ctx.say('friend', 'نلعب استغماية؟ {m} هيعدّ لحد ١٠ وإحنا نستخبّى!', { name: 'يوسف' });
+          await ctx.say('ofa', 'نلعب استغماية؟ {m} هيعدّ لحد ١٠ وإحنا نستخبّى!');
           await ctx.say('pk_kid:pink:l:g', 'بس نستخبّى فين يا جماعة؟', { name: 'ملك' });
           const c = await ctx.games.choice({
             prompt: 'نستخبّى فين؟', options: sh([
@@ -244,7 +244,7 @@
               mkF('f1', 'pk_kid:orange', H[0], 14, -50), mkF('f2', 'pk_kid:blue:d', H[1], 54, 26), mkF('f3', 'pk_kid:pink:l:g', H[2], -10, -44)]
           });
           if (hf.wrong <= 2) ctx.reward.star(1);
-          await ctx.say('friend', 'لقيتنا! أنت شاطر أوي يا مودي.', { name: 'يوسف' });
+          await ctx.say('ofa', 'لقيتنا! أنت شاطر أوي يا مودي.');
           await ctx.say('narrator', 'سؤال سريع قبل ما الدور يتغيّر!');
           await PK.pair(ctx, { cat: ['counting', 'math'], tag: 'park' });
           /* sun safety */

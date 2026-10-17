@@ -18,6 +18,7 @@
 
   /* ---- speaker -> voice id (what the offline TTS should use) ---- */
   const VOICES = { narrator: 'narrator', moody: 'boy_big', aboody: 'boy_small', mama: 'mama', baba: 'baba', toota: 'girl_big', nemo: 'girl_small', nana: 'nana', friend: 'boy_big' };
+  Object.assign(VOICES, { ofa: 'boy_mid', toti: 'girl_tiny', luka: 'boy_tiny', amani: 'aunt_a', nada: 'aunt_n', beno: 'teen_a', medo: 'teen_b', kamal: 'uncle' });   // extended family (owner edition; stripped by tools/family/build.js)
   V.voiceFor = sp => VOICES[sp] || (M.voice.extraVoices && M.voice.extraVoices[sp]) || 'narrator';
   V.extraVoices = {};                       // worlds may add: Moody.voice.extraVoices.sara = 'girl_big'
 

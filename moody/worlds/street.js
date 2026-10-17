@@ -223,7 +223,7 @@
           const st = ctx.stage;
           const lit = [{ art: 'st_paper', x: 250, y: 462 }, { art: 'st_bottle', x: 380, y: 470 }, { art: 'st_can', x: 700, y: 464 }, { art: 'st_peel', x: 800, y: 474 }, { art: 'st_news', x: 130, y: 470 }];
           await ctx.scene('st_block', { state: { litter: lit }, heroes: { moody: { x: 470, y: 482, dir: 1 }, aboody: { x: 570, y: 494, dir: 1 } } });
-          await ctx.say('friend', 'السلام عليكم يا أبطال! النهاردة عاملين يوم نضافة للحي.. تشاركوا معانا؟', { name: 'ماجد' });
+          await ctx.say('ofa', 'السلام عليكم يا أبطال! النهاردة عاملين يوم نضافة للحي.. تشاركوا معانا؟');
           await ctx.say('aboody', 'الشارع مليان ورق وازايز! يا خسارة.');
           await ctx.say('moody', 'يلا نفرز الزبالة الأول: الورق في الأزرق، البلاستيك والعلب في الأصفر، وبقايا الأكل في الأخضر.');
           ctx.heroes('corner');
@@ -239,7 +239,7 @@
           await pq(ctx, 'st5');
           /* planting */
           await ctx.scene('st_block', { state: { clean: true }, heroes: { moody: { x: 440, y: 484, dir: 1 }, aboody: { x: 330, y: 494, dir: 1 } } });
-          await ctx.say('friend', 'جبت لكم شتلة صغيرة نزرعها سوا في الحديقة الصغيرة.', { name: 'ماجد' });
+          await ctx.say('ofa', 'جبت لكم شتلة صغيرة نزرعها سوا في الحديقة الصغيرة.');
           st.setActive('moody', true);
           await ctx.games.tap({ prompt: '{m} يحفر حفرة بالشوكة', list: false, spots: [{ id: 'dig', x: 565, y: 414, s: 100, hit: 60, needs: 'moody', needsMsg: 'الحفر محتاج {m} القوي', walkOff: -70, draw: pulse(48), onFound: () => { st.state.hole = true; ctx.sfx('drop'); } }] });
           await ctx.games.tap({ prompt: '{a} يحط الشتلة في الحفرة', hintAfter: 12, spots: [{ id: 'sap', art: 'st_sapling', x: 400, y: 418, s: 70, needs: 'aboody', needsMsg: 'الشتلة الصغيرة مع {a}', walkOff: 0, listArt: 'st_sapling', onFound: () => { st.state.sapling = true; ctx.sfx('pop'); } }] });
@@ -250,7 +250,7 @@
           st.state.grown = true; ctx.sfx('fanfare'); ctx.fx.confetti();
           await ctx.say('aboody', 'الشجرة كبرت! وطلّعت فاكهة!', { anim: 'cheer' });
           /* cleanup race */
-          await ctx.say('friend', 'دلوقتي سباق النظافة! اجمعوا الزبالة بس.. وسيبوا ألعاب الأطفال.', { name: 'ماجد' });
+          await ctx.say('ofa', 'دلوقتي سباق النظافة! اجمعوا الزبالة بس.. وسيبوا ألعاب الأطفال.');
           const race = await ctx.games.lanes({ prompt: 'اجمع الزبالة وسيب الألعاب', lanes: 3, goal: 7, speed: 215, every: .85, good: ['st_paper', 'st_bottle', 'st_can'], bad: ['ball', 'teddy'], bg: (g, t, s) => { s.state.clean = true; M.rooms.st_block(g, t, s); } });
           ctx.skill('counting');
           /* the lost wallet */
@@ -267,7 +267,7 @@
           await ctx.say('st_man', 'يا ولاد! محفظتي! كنت بدوّر عليها في كل حتة!', { name: 'عم رمضان' });
           await ctx.say('st_man', 'ربنا يكرمكم! الأمانة دي مش لاقيها كتير.', { name: 'عم رمضان' });
           ctx.reward.coins(3);
-          await ctx.say('friend', 'يا أبطال الحي! الحي بقى أنضف وأحلى بسببكم.', { name: 'ماجد' });
+          await ctx.say('ofa', 'يا أبطال الحي! الحي بقى أنضف وأحلى بسببكم.');
           return ctx.nav.complete();
         }
       }

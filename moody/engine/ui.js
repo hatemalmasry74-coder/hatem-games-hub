@@ -96,9 +96,9 @@
       let face;
       const defs = M.chars.defs;
       if (defs[who] && defs[who].img) face = h('img', { src: M.chars.avatar(who) + '?v=1', alt: '' });
-      else if (defs[who] && !o.icon) face = ico('face:' + who, 90);
+      else if (defs[who] && !o.icon) face = ico('face:' + who + (o.face ? ':' + o.face : ''), 90);   // o.face = pose of the portrait, e.g. 'cry'
       else face = ico(o.icon || (who === 'narrator' || !who ? 'narrator' : who), 90);
-      const name = who === 'moody' ? M.save.data.names.moody : who === 'aboody' ? M.save.data.names.aboody : (o.name || (defs[who] ? (M.save.data.names[who] || defs[who].name) : '') || { mama: 'ماما', friend: 'ماجد' }[who] || '');
+      const name = who === 'moody' ? M.save.data.names.moody : who === 'aboody' ? M.save.data.names.aboody : (o.name || (defs[who] ? (M.save.data.names[who] || defs[who].name) : '') || { mama: 'ماما' }[who] || '');
       const nx = h('div', { class: 'nx' }, ico('arrow', 38, {}));
       nx.style.display = 'none';
       const tx = h('div', { class: 'tx' }), el = h('div', { id: 'dlg', class: 'panel' }, h('div', { class: 'face' }, face), h('div', { style: 'flex:1;display:flex;flex-direction:column;gap:2px' }, name ? h('div', { class: 'nm' }, name) : null, tx), h('button', { class: 'btn round green rp', 'aria-label': 'اسمع تاني', onclick: e => { e.stopPropagation(); M.voice.speak(o.text, { speaker: who || 'narrator', force: true }); } }, ico('sound', 34)), nx);

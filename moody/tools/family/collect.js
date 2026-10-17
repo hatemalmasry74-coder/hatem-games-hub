@@ -22,7 +22,7 @@ const add = (text, speaker) => { if (!text || typeof text !== 'string') return; 
     // (b) static scan of dialogue lines in the BUILT sources (speaker -> voice id)
     for (const f of fs.readdirSync(path.join(out, 'worlds')).filter(f => f.endsWith('.js'))) {
       const src = fs.readFileSync(path.join(out, 'worlds', f), 'utf8');
-      for (const m of src.matchAll(/(?:say\(|\[)\s*'(moody|aboody|mama|baba|toota|nemo|nana|narrator|friend)'\s*,\s*'((?:[^'\\]|\\.)*)'/g)) add(m[2].replace(/\\'/g, "'"), VOICE_OF[m[1]]);
+      for (const m of src.matchAll(/(?:say\(|\[)\s*'(moody|aboody|mama|baba|toota|nemo|nana|narrator|friend|ofa|toti|luka|amani|nada|beno|medo|kamal)'\s*,\s*'((?:[^'\\]|\\.)*)'/g)) add(m[2].replace(/\\'/g, "'"), VOICE_OF[m[1]]);
       for (const m of src.matchAll(/(?:wisdom|intro|prompt)\s*[:(]\s*'((?:[^'\\]|\\.)*)'/g)) add(m[1].replace(/\\'/g, "'"), 'narrator');
     }
     // (a) banks, call pool, missions, fixed phrases (read from the running engine)

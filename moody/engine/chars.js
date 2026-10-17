@@ -17,10 +17,20 @@
     toota: { name: 'توتا', full: 'تسنيم', age: 15, sc: 1.12, L: 56, T: 56, R: 28, hr: .93, sw: 20, skin: '#e8b389', skinD: '#d39a70', shirt: '#6b1f3d', skirt: '#f6ecdf', keepSkirt: true, flowers: ['#8b2346', '#e98fa6', '#2c3566'], pants: '#e8b389', legC: '#e8b389', legW: 11, shoe: '#f2ece4', eye: 1.0, w: 17, wf: 11, a1: 16, a2: 16, top: 'blouse', sleeveLong: true, ruffle: '#7d2a4c', hair: 'scarf', scarf: '#f8f3ea', under: '#6b1f3d', glasses: '#5a4636', lash: true, neckPhones: '#f4c5d2', bag: '#d9c3a0', img: 'assets/toota_cartoon.jpg', abilities: ['leader', 'order'], ability: 'قائدة ومنظمة', badge: ['ت', '#8b2346'], playable: true, speed: 230 },
     nemo: { name: 'نيمو', full: 'ترنيم', age: 12, sc: 1.04, L: 52, T: 52, R: 30, hr: .98, sw: 20, skin: '#d29566', skinD: '#bb7d52', shirt: '#f7a9c6', pants: '#8fa6d9', shoe: '#ffffff', eye: 1.12, w: 18, wf: 11, a1: 18, a2: 18, top: 'hoodie', hair: 'bob', hairC: '#2b1a12', sunhat: '#f6c3cf', glasses: '#d9a28f', lash: true, smile: 'big', neckPhones: '#f6b6cd', bunny: true, img: 'assets/nemo_cartoon.jpg', abilities: ['curious', 'finder', 'small'], ability: 'فضولية وبتلاقي المخفي', badge: ['ن', '#ff6f91'], playable: true, speed: 230 },
     nana: { name: 'ننا زوزا', age: 68, sc: .9, L: 50, T: 56, R: 30, hr: .96, sw: 22, skin: '#e4b58c', skinD: '#cf9f76', shirt: '#c9b6ec', skirt: '#c9b6ec', flowers: ['#ff6f91', '#ffd23c', '#ffffff'], pants: '#e4b58c', legC: '#e4b58c', legW: 11, shoe: '#6b5a74', eye: .95, w: 20, wf: 11, a1: 22, a2: 22, top: 'floral', hair: 'scarf', scarf: '#f6dfe8', hairC: '#cfcfd6', glasses: '#8a6b55', wrinkles: true, abilities: ['wise', 'kind'], ability: 'حكيمة وحنونة', badge: ['ز', '#c9b6ec'], playable: false, speed: 130, stoop: .03 },
-    baba: { name: 'بابا', age: 40, sc: 1.22, L: 58, T: 62, R: 28, hr: .96, sw: 24, skin: '#c98f5f', skinD: '#b17848', shirt: '#2b2b30', pants: '#3b3f50', shoe: '#2a2320', eye: .95, w: 22, wf: 13, a1: 24, a2: 24, top: 'crew', hair: 'curly', curl: .22, hairC: '#17120e', beard: '#17120e', smile: 'big', browW: 5.4, watch: true, ring: true, img: 'assets/baba_cartoon.jpg', abilities: ['dad'], ability: 'بابا', badge: ['ب', '#555a6b'], playable: false, speed: 200 }
+    baba: { name: 'بابا', age: 40, sc: 1.22, L: 58, T: 62, R: 28, hr: .96, sw: 24, skin: '#c98f5f', skinD: '#b17848', shirt: '#2b2b30', pants: '#3b3f50', shoe: '#2a2320', eye: .95, w: 22, wf: 13, a1: 24, a2: 24, top: 'crew', hair: 'curly', curl: .22, hairC: '#17120e', beard: '#17120e', smile: 'big', browW: 5.4, watch: true, ring: true, img: 'assets/baba_cartoon.jpg', abilities: ['dad'], ability: 'بابا', badge: ['ب', '#555a6b'], playable: false, speed: 200 },
+    /* ---- extended family (owner's edition only; tools/family/build.js strips these rows). All playable:false. Extra flags: phone/spoon/car/backpack/apron = props, idle = default idle pose, bow/quiff/part/fringe = hair details, fidget/curious = idle behaviour ---- */
+    ofa: { name: 'أوفا', age: 9, sc: .98, L: 54, T: 56, R: 28, hr: .95, sw: 21, skin: '#d79a68', skinD: '#c0834f', shirt: '#3fae6a', pants: '#4a5f8c', shoe: '#f3eee2', eye: 1.02, w: 19, wf: 12, a1: 24, a2: 24, top: 'crew', hair: 'short', hairC: '#2a1a10', fringe: true, smile: 'big', abilities: ['cousin', 'friendly'], ability: 'ابن عمتهم المرح', badge: ['أ', '#3fae6a'], playable: false, speed: 230 },
+    toti: { name: 'توتي', age: 4, sc: .62, L: 38, T: 40, R: 34, hr: 1.0, sw: 21, skin: '#e0a577', skinD: '#c98d5f', shirt: '#ff7fb0', trim: '#ffffff', belt: '#ffd23c', pants: '#e0a577', legC: '#e0a577', legW: 13, shoe: '#e5534b', eye: 1.25, w: 16, wf: 11, a1: 18, a2: 18, top: 'dress', hair: 'pigtails', hairC: '#2b1a12', tie: '#ff4a86', bow: '#ff4a86', lash: true, smile: 'big', fidget: true, abilities: ['naughty', 'tiny'], ability: 'شقية وبتحب نيمو', badge: ['ت', '#ff7fb0'], playable: false, speed: 190 },
+    amani: { name: 'عمتو أماني', age: 42, sc: .96, L: 48, T: 56, R: 29, hr: .97, sw: 22, skin: '#dca878', skinD: '#c6905f', shirt: '#7fb08f', flowers: ['#ffffff', '#f2c14e', '#e07a5f'], pants: '#dca878', legC: '#dca878', legW: 11, shoe: '#8a5a44', eye: .97, w: 20, wf: 11, a1: 22, a2: 22, top: 'floral', hair: 'scarf', scarf: '#e0825e', apron: '#fff7e6', apronTrim: '#e5534b', spoon: true, lash: true, smile: 'big', abilities: ['cook', 'kind'], ability: 'بتحب الطبخ', badge: ['أ', '#e0825e'], playable: false, speed: 170 },
+    nada: { name: 'عمتو ندى', age: 38, sc: 1, L: 54, T: 55, R: 28, hr: .95, sw: 20, skin: '#d9a070', skinD: '#c28858', shirt: '#4b86a8', skirt: '#2f3d5c', keepSkirt: true, pants: '#d9a070', legC: '#d9a070', legW: 11, shoe: '#f2ece4', eye: 1.0, w: 17, wf: 11, a1: 18, a2: 18, top: 'blouse', sleeveLong: true, ruffle: '#3a6f8e', hair: 'scarf', scarf: '#d8c3b0', under: '#4b86a8', lash: true, phone: true, idle: 'phone', abilities: ['phone'], ability: 'دايمًا في الموبايل', badge: ['ن', '#4b86a8'], playable: false, speed: 190 },
+    beno: { name: 'بينو', age: 15, sc: 1.1, L: 55, T: 56, R: 27.5, hr: .93, sw: 21, skin: '#cf935f', skinD: '#b87d4b', shirt: '#4a4f6a', pants: '#2b2f3a', shoe: '#ffffff', eye: .95, w: 20, wf: 12, a1: 22, a2: 22, top: 'hoodie', hair: 'short', hairC: '#1e130c', quiff: true, neckPhones: '#3b3b46', abilities: ['teen'], ability: 'مراهق رياضي', badge: ['ب', '#4a4f6a'], playable: false, speed: 240 },
+    medo: { name: 'ميدو', age: 18, sc: 1.2, L: 60, T: 60, R: 28, hr: .92, sw: 23, skin: '#c98b58', skinD: '#b27546', shirt: '#8a3b3b', pants: '#3d4a5e', shoe: '#2a2320', eye: .93, w: 22, wf: 13, a1: 24, a2: 24, top: 'crew', hair: 'short', hairC: '#17100b', glasses: '#2a2a2f', backpack: '#35507a', abilities: ['teen', 'tall'], ability: 'طويل ودحيح', badge: ['م', '#8a3b3b'], playable: false, speed: 240 },
+    kamal: { name: 'عمو كمال', age: 34, sc: 1.18, L: 58, T: 62, R: 28, hr: .95, sw: 23, skin: '#c98f5f', skinD: '#b17848', shirt: '#6ea0d6', pants: '#bfae8a', shoe: '#5a3c28', eye: .97, w: 22, wf: 13, a1: 24, a2: 24, top: 'polo', hair: 'short', hairC: '#1a120d', part: true, smile: 'big', browW: 4.6, watch: true, ring: true, abilities: ['uncle'], ability: 'عمو مسافر', badge: ['ك', '#6ea0d6'], playable: false, speed: 200 },
+    luka: { name: 'لوكا', age: 4, sc: .56, L: 36, T: 38, R: 34, hr: 1.0, sw: 20, skin: '#e0a272', skinD: '#c98a5c', shirt: '#ff9a3c', pants: '#4f78b8', shoe: '#ffffff', eye: 1.3, w: 17, wf: 11, a1: 18, a2: 18, top: 'crew', hair: 'curly', curl: .3, hairC: '#2b1a12', car: true, curious: true, smile: 'big', abilities: ['tiny', 'curious'], ability: 'فضولي وبيحب العربيات', badge: ['ل', '#ff9a3c'], playable: false, speed: 170 }
   };
   const C = M.chars = { defs: DEFS, hats: {}, shirts: {} };
   C.avatar = id => DEFS[id].img;
+  C.extras = () => Object.keys(DEFS).filter(k => k !== 'moody' && k !== 'aboody');   // every non-hero character (stage keeps one actor for each)
   C.playable = () => Object.keys(DEFS).filter(k => DEFS[k].playable);
   C.has = (id, need) => id === need || (DEFS[id] && DEFS[id].abilities.indexOf(need) >= 0);
   C.badge = need => { if (DEFS[need]) return DEFS[need].badge; const k = Object.keys(DEFS).find(k => DEFS[k].abilities.indexOf(need) >= 0 && DEFS[k].playable); return k ? DEFS[k].badge : ['؟', '#ffc93c']; };
@@ -67,14 +77,33 @@
       case 'think': p.ra = [26, -128]; p.la = [d.a1, 6]; p.eyes = 'up'; p.brows = 'think'; p.mouth = 'flat'; p.rot = sin(t * 1.5) * .03; p.dots = true; p.look = .5; break;
       case 'pickup': { const k = (sin(t * 3.2) + 1) / 2; p.dip = 12 + k * 6; p.la = [-8, 4]; p.ra = [-8, 4]; p.ll = [-6, 0]; p.rl = [6, 0]; p.eyes = 'open'; p.lookY = 1; p.mouth = 'smile'; p.rot = 0; break; }
       case 'lift': p.la = [165, 175]; p.ra = [165, 175]; p.mouth = 'big'; p.brows = 'worry'; p.eyes = 'happy'; p.bob = sin(t * 12) * .8; break;
+      case 'phone': { const s = sin(t * 3.1); p.ra = [34, -112 + s * 3]; p.eyes = 'down'; p.head = .07; p.mouth = 'smile'; p.bob = sin(t * 2) * 1; p.rot = sin(t * .9) * .006; break; }
+      case 'cry': { const s = sin(t * 17); p.la = [112 + s * 5, -150 + s * 8]; p.ra = [112 - s * 5, -150 - s * 8]; p.eyes = 'squeeze'; p.brows = 'worry'; p.mouth = 'wail'; p.tears = true; p.bob = ab(s) * 2.4; p.rot = sin(t * 11) * .035; p.head = sin(t * 8) * .06; break; }
+      case 'scream': { const s = sin(t * 13); p.la = [58, 22 + s * 6]; p.ra = [58, 22 - s * 6]; p.ll = [0, Math.max(0, s) * 9]; p.rl = [0, Math.max(0, -s) * 9]; p.eyes = 'squeeze'; p.brows = 'worry'; p.mouth = 'scream'; p.scream = true; p.bob = -ab(s) * 5; p.rot = sin(t * 26) * .035; p.head = sin(t * 9) * .05; break; }
       case 'sleep': p.eyes = 'closed'; p.mouth = 'flat'; p.bob = sin(t * 1.6) * 1.2; p.zzz = true; p.rot = .04; break;
       default: p.bob = sin(t * 2.2) * 1.4; p.la = [d.a1 + sin(t * 1.9) * 2, 6]; p.ra = [d.a1 - sin(t * 1.9) * 2, 6]; p.rot = sin(t * 1.1) * .008;
+        if (d.fidget) { p.bob = ab(sin(t * 5)) * 3; p.rot = sin(t * 4) * .03; p.la[0] += sin(t * 6) * 10; p.ra[0] -= sin(t * 6) * 10; p.ll = [sin(t * 5) * 3, 0]; }
+        if (d.curious) { p.head = sin(t * 1.3) * .1; p.lookW = sin(t * 1.1); p.bob = sin(t * 2.6) * 1.2; }
     }
     return p;
   }
 
+  /* props held in the right hand (phone / wooden spoon / toy car); drawn on top of the hand */
+  function handProp(g, d, A, anim, t, late) {
+    const x = A.H[0], y = A.H[1];
+    if (d.phone && (anim === 'phone') === !!late) {   // in the 'phone' pose the phone is drawn after the head so it stays visible
+      const lit = .55 + .25 * Math.sin(t * 3); g.save(); g.translate(x + 1, y - 4); g.rotate(anim === 'phone' ? -.25 : -.1);
+      G.fillRR(g, -8, -14, 16, 28, 4, '#2d3142', 2.6); G.fillRR(g, -6, -11, 12, 21, 2, '#9fd8ff', 0); g.fillStyle = 'rgba(255,255,255,' + lit * .5 + ')'; g.fillRect(-6, -11, 12, 5);
+      g.fillStyle = '#2d3142'; g.fillRect(-3, -9, 6, 1.6); g.restore(); G.circ(g, x + 4, y + 3, d.wf * .42, d.skin, 2.2);
+    }
+    if (d.spoon) { g.save(); g.translate(x, y); g.rotate(.35 + Math.sin(t * 2.4) * .12); G.fillRR(g, -2.6, -36, 5.2, 36, 2.4, '#c58a4a', 2.4); G.ell(g, 0, -42, 7.5, 10, '#d9a35f', 2.6); G.ell(g, 0, -42, 4, 6, '#b9763a', 0); g.restore(); G.circ(g, x, y, d.wf * .62, d.skin, 3); }
+    if (d.car) { g.save(); g.translate(x + 4, y + 3); G.fillRR(g, -13, -5, 26, 9, 3, '#e5534b', 2.4); G.fillRR(g, -7, -11, 14, 8, 3, '#ff8a85', 2.2); G.fillRR(g, -5, -10, 4, 5, 1, '#bfe8ff', 0); G.fillRR(g, 1, -10, 4, 5, 1, '#bfe8ff', 0); [-8, 8].forEach(wx => { G.circ(g, wx, 5, 4.4, '#2b2b30', 2); G.circ(g, wx, 5, 1.6, '#cfcfd6', 0); }); g.restore(); G.circ(g, x, y, d.wf * .5, d.skin, 2.4); }
+  }
+
   C.draw = function (g, id, x, y, o) {
-    o = o || {}; const d = DEFS[id], t = o.t || 0, anim = o.anim || 'idle', P = pose(anim, t, d), dir = o.dir || 1, sc = d.sc * (o.sc || 1);
+    o = o || {}; const d = DEFS[id], t = o.t || 0; let anim = o.anim || 'idle'; if (anim === 'idle' && d.idle && !o.plain) anim = d.idle;   // d.idle: character-specific default idle pose (e.g. 'phone')
+    if (anim === 'talk' && !o.talk) o = Object.assign({}, o, { talk: true });
+    const P = pose(anim, t, d), dir = o.dir || 1, sc = d.sc * (o.sc || 1);
     const shirtC = o.shirt || (C.shirts[o.shirtId] && C.shirts[o.shirtId].color) || d.shirt;
     const L = d.L, T = d.T, R = d.R, sw = d.sw, top = -(L + T), hipX = 10;
     if (o.alpha != null) { g.save(); g.globalAlpha = o.alpha; }
@@ -111,6 +140,7 @@
       G.circ(g, A.H[0], A.H[1], d.wf * .62, d.skin, 3);
       if (d.watch && A.side === -1) { const wx = A.E[0] + (A.H[0] - A.E[0]) * .78, wy = A.E[1] + (A.H[1] - A.E[1]) * .78; G.fillRR(g, wx - 8, wy - 5, 16, 10, 3, '#7a4a28', 2.2); G.fillRR(g, wx - 5, wy - 5, 10, 10, 2, '#17120e', 1.5); G.circ(g, wx, wy, 1.6, '#6fd0ff', 0); }
       if (d.ring && A.side === 1) G.circ(g, A.H[0] + 1, A.H[1] + 4, 2.6, '#ffd23c', 1.4);
+      if (A.side === 1) handProp(g, d, A, anim, t, false);
     }
     if (o.carry && anim !== 'lift') { drawArm(ArL); }
     else drawArm(ArL);
@@ -125,6 +155,7 @@
       g.fillStyle = 'rgba(0,0,0,.08)'; g.fillRect(hw0 * .3, wy, hw1, hemY - wy + 8);
       g.restore();
     }
+    if (d.backpack) { G.fillRR(g, tx - 9, ty + 2, tw + 18, th - 14, 12, d.backpack, 3.5); G.fillRR(g, tx - 9, ty + th * .45, tw + 18, th * .22, 6, G.shade(d.backpack, -.15), 2.4); }
     G.fillRR(g, tx, ty, tw, th - (dressy ? 8 : 0), 9, shirtC, 3.5);
     g.save(); G.rr(g, tx, ty, tw, th - (dressy ? 8 : 0), 9); g.clip();
     g.fillStyle = 'rgba(0,0,0,.09)'; g.fillRect(tx + tw * .62, ty, tw * .4, th); // soft shade
@@ -154,6 +185,14 @@
       else if (d.top === 'floral') { G.ell(g, 0, ty + 3, 12, 6, '#fff', 2.8); G.circ(g, 0, ty + 18, 2.4, '#ffd23c', 1.2); G.circ(g, 0, ty + 30, 2.4, '#ffd23c', 1.2); }
       else { G.ell(g, 0, ty + 3, 12, 6, d.trim || '#fff', 2.8); }
     }
+    if (d.backpack) { [-1, 1].forEach(s2 => { G.line(g, s2 * (sw - 6), ty + 1, s2 * (sw - 8), ty + th - 12, 7.5, OL); G.line(g, s2 * (sw - 6), ty + 1, s2 * (sw - 8), ty + th - 12, 4.4, G.shade(d.backpack, -.25)); }); }
+    if (d.apron) {   // cooking apron: bib + neck strap + skirt panel + pocket
+      const ac = d.apron, at = d.apronTrim || '#e5534b', ay = ty + 12;
+      g.beginPath(); g.moveTo(-9, ty + 1); g.lineTo(9, ty + 1); g.lineTo(sw - 5, ay + 6); g.lineTo(sw - 3, ty + th + 22); g.lineTo(-sw + 3, ty + th + 22); g.lineTo(-sw + 5, ay + 6); g.closePath(); G.fs(g, ac, 3);
+      g.beginPath(); g.moveTo(-9, ty + 1); g.lineTo(9, ty + 1); g.lineWidth = 3; g.strokeStyle = at; g.stroke(); G.fillRR(g, -sw + 3, ty + th + 14, sw * 2 - 6, 8, 2, at, 2.2);
+      G.fillRR(g, -9, ty + th - 14, 18, 15, 3, 'rgba(0,0,0,.05)', 2.4); G.circ(g, 0, ty + th - 6, 2.2, at, 0);
+      G.line(g, -9, ty + 1, -17, ty - 5, 3, at); G.line(g, 9, ty + 1, 17, ty - 5, 3, at);
+    }
     if (d.bag) { G.line(g, -sw + 3, ty + 2, sw - 3, ty + th - 10, 6.5, OL); G.line(g, -sw + 3, ty + 2, sw - 3, ty + th - 10, 3.6, d.bag); G.fillRR(g, sw - 14, ty + th - 22, 22, 18, 4, d.bag, 2.8); G.line(g, sw - 12, ty + th - 17, sw + 6, ty + th - 17, 2, 'rgba(0,0,0,.25)'); }
     if (d.neckPhones) {
       const pc = d.neckPhones; g.beginPath(); g.moveTo(-15, ty - 4); g.quadraticCurveTo(0, ty + 20, 15, ty - 4); g.lineWidth = 9; g.strokeStyle = OL; g.stroke(); g.lineWidth = 5; g.strokeStyle = pc; g.stroke();
@@ -166,6 +205,7 @@
     g.save(); g.translate(0, hcy); g.rotate(P.head + (o.tilt || 0) + (anim === 'think' ? -.1 : 0) + (anim === 'oops' ? 0 : 0));
     drawHead(g, id, d, R, P, t, o);
     g.restore();
+    if (d.phone && anim === 'phone') handProp(g, d, ArR, anim, t, true);
     /* carried item / extras */
     if (o.carry) {
       if (anim === 'lift') M.art.draw(g, o.carry, 0, hcy - R * 1.4, 70);
@@ -177,12 +217,14 @@
     if (o.alpha != null) g.restore();
   };
 
+  const er0 = R => R * .2;
   function drawHead(g, id, d, R, P, t, o) {
     const rx = R * d.hr, E = d.eye;
     const hc = d.hairC || HAIR, scarfy = d.hair === 'scarf';
     // hair parts that sit behind the head (ponytail / pigtails / headscarf)
     if (d.hair === 'ponytail') { g.save(); g.translate(rx * .9, -R * .25); g.rotate(-.55); G.ell(g, 8, R * .62, R * .3, R * .78, hc, 3.5); g.restore(); }
     else if (d.hair === 'pigtails') { [-1, 1].forEach(s => { g.save(); g.translate(s * (rx + 3), -R * .02); g.rotate(s * .3); G.ell(g, 0, R * .58, R * .27, R * .62, hc, 3.5); g.strokeStyle = 'rgba(255,255,255,.18)'; g.restore(); }); }
+    else if (d.hair === 'short' && d.quiff) { g.beginPath(); g.moveTo(-rx * .7, -R * .75); g.bezierCurveTo(-rx * .6, -R * 1.45, rx * .6, -R * 1.6, rx * 1.0, -R * .7); g.closePath(); G.fs(g, hc, 3.5); }
     else if (d.hair === 'bob') { [-1, 1].forEach(s => G.ell(g, s * rx * .92, R * .38, R * .3, R * .62, hc, 3.5)); }
     else if (scarfy) { const dr = d.top === 'blouse' ? 1.22 : 1.1; G.ell(g, 0, R * 1.02, rx * dr, R * (dr > 1.2 ? .66 : .55), G.shade(d.scarf, -.1), 3.5); G.ell(g, 0, -R * .04, rx * 1.2, R * 1.17, d.scarf, 3.5); }
     // ears
@@ -213,7 +255,9 @@
       g.quadraticCurveTo(rx * .86, -R * .06, rx * .4, -R * (hl - .06)); g.quadraticCurveTo(-rx * .05, -R * (hl + .12), -rx * .42, -R * (hl - .1)); g.quadraticCurveTo(-rx * .86, -R * .06, -rx * 1.04, R * .22); g.closePath(); G.fs(g, hc, 3.5);
       g.strokeStyle = 'rgba(255,255,255,.22)'; g.lineWidth = 3; g.beginPath(); g.arc(-rx * .15, -R * .55, R * .6, Math.PI * 1.15, Math.PI * 1.6); g.stroke();
       if (d.hair === 'ponytail') G.circ(g, rx * .92, -R * .18, R * .13, d.tie || '#ff6f91', 2.5);
-      if (d.hair === 'pigtails') [-1, 1].forEach(s => G.circ(g, s * (rx + 1), R * .05, R * .12, d.tie || '#fff', 2.5));
+      if (d.hair === 'pigtails') [-1, 1].forEach(s => { G.circ(g, s * (rx + 1), R * .05, R * .12, d.tie || '#fff', 2.5); if (d.bow) { g.save(); g.translate(s * (rx + 2), R * .02); G.poly(g, [[0, 0], [s * R * .42, -R * .28], [s * R * .42, R * .28]], d.bow, 2.6); G.poly(g, [[0, 0], [-s * R * .06, -R * .26], [-s * R * .06, R * .26]], d.bow, 2.6); G.circ(g, 0, 0, R * .1, G.shade(d.bow, -.2), 2); g.restore(); } });
+      if (d.part) { g.strokeStyle = 'rgba(0,0,0,.35)'; g.lineWidth = 2.2; g.beginPath(); g.moveTo(-rx * .3, -R * .98); g.quadraticCurveTo(-rx * .38, -R * .72, -rx * .5, -R * .46); g.stroke(); }
+      if (d.fringe) { g.beginPath(); g.moveTo(-rx * .86, -R * .06); g.lineTo(-rx * .86, -R * .3); g.quadraticCurveTo(0, -R * .52, rx * .86, -R * .3); g.lineTo(rx * .86, -R * .06); g.quadraticCurveTo(rx * .45, -R * .36, 0, -R * .3); g.quadraticCurveTo(-rx * .45, -R * .36, -rx * .86, -R * .06); g.closePath(); G.fs(g, hc, 3); }
     }
     if (d.sunhat) {
       const hcol = d.sunhat, hd = G.shade(hcol, -.08);
@@ -229,9 +273,10 @@
     const ex = rx * .42, ey = R * .2;
     const blink = (t % 3.7) < .11 && P.eyes === 'open';
     [-1, 1].forEach(s => {
-      const x = s * ex, lk = (o.lookX || 0) * 3 + P.look * s * 0 + (P.look ? 2.5 : 0), ly = P.lookY ? 3 : (P.eyes === 'up' ? -4 : 0);
+      const x = s * ex, lk = (o.lookX || 0) * 3 + P.look * s * 0 + (P.look ? 2.5 : 0) + (P.lookW || 0) * 3, ly = P.lookY ? 3 : (P.eyes === 'up' ? -4 : P.eyes === 'down' ? 4.5 : 0);
       const er = R * .2 * E;
-      if (P.eyes === 'happy') { g.beginPath(); g.arc(x, ey + er * .5, er * .95, Math.PI * 1.1, Math.PI * 1.9); g.lineWidth = 3.6; g.strokeStyle = OL; g.stroke(); }
+      if (P.eyes === 'squeeze') { g.beginPath(); g.moveTo(x + s * er * 1.1, ey - er * .9); g.lineTo(x - s * er * .8, ey); g.lineTo(x + s * er * 1.1, ey + er * .9); g.lineWidth = 3.8; g.strokeStyle = OL; g.stroke(); }
+      else if (P.eyes === 'happy') { g.beginPath(); g.arc(x, ey + er * .5, er * .95, Math.PI * 1.1, Math.PI * 1.9); g.lineWidth = 3.6; g.strokeStyle = OL; g.stroke(); }
       else if (P.eyes === 'closed' || blink) { g.beginPath(); g.arc(x, ey - er * .2, er * .9, Math.PI * .15, Math.PI * .85); g.lineWidth = 3.2; g.strokeStyle = OL; g.stroke(); }
       else {
         const w = P.eyes === 'wide' ? 1.2 : 1;
@@ -268,12 +313,24 @@
       g.fillStyle = '#8c2a2a'; g.fill(); g.save(); g.clip(); g.fillStyle = '#fff'; g.fillRect(-w, my - R * .15, w * 2, R * .13); g.fillStyle = '#ff7f8a'; g.beginPath(); g.ellipse(0, my + h, w * .6, h * .55, 0, 0, 6.3); g.fill(); g.restore();
       g.lineWidth = 2.8; g.strokeStyle = OL; g.beginPath(); g.moveTo(-w, my - R * .14); g.quadraticCurveTo(0, my - R * .1, w, my - R * .14); g.quadraticCurveTo(w * .8, my + h, 0, my + h); g.quadraticCurveTo(-w * .8, my + h, -w, my - R * .14); g.stroke();
     }
+    else if (m === 'wail' || m === 'scream') {
+      const w = R * (m === 'scream' ? .5 : .42), top = R * .46, h = R * (m === 'scream' ? .5 : .4), wob = m === 'wail' ? Math.sin(t * 17) * R * .04 : 0;
+      g.beginPath(); g.moveTo(-w, top); g.quadraticCurveTo(0, top - R * .08, w, top); g.quadraticCurveTo(w * 1.05, top + h + wob, 0, top + h * 1.15 + wob); g.quadraticCurveTo(-w * 1.05, top + h + wob, -w, top); g.closePath();
+      g.fillStyle = '#8c2a2a'; g.fill(); g.save(); g.clip(); g.fillStyle = '#fff'; g.fillRect(-w, top - 1, w * 2, R * .11); g.fillStyle = '#ff7f8a'; g.beginPath(); g.ellipse(0, top + h * 1.1, w * .65, h * .5, 0, 0, 6.3); g.fill(); g.restore();
+      g.lineWidth = 2.8; g.strokeStyle = OL; g.beginPath(); g.moveTo(-w, top); g.quadraticCurveTo(0, top - R * .08, w, top); g.quadraticCurveTo(w * 1.05, top + h + wob, 0, top + h * 1.15 + wob); g.quadraticCurveTo(-w * 1.05, top + h + wob, -w, top); g.stroke();
+    }
     else if (m === 'o') G.ell(g, 0, my + 1, R * .1, R * .14, '#7a2323', 2.6);
     else { g.beginPath(); g.moveTo(-R * .12, my); g.lineTo(R * .12, my - 1); g.lineWidth = 3; g.strokeStyle = OL; g.stroke(); }
     if (d.beard) { g.beginPath(); g.moveTo(-rx * .55, R * .6); g.quadraticCurveTo(-rx * .25, R * .4, 0, R * .5); g.quadraticCurveTo(rx * .25, R * .4, rx * .55, R * .6); g.quadraticCurveTo(rx * .25, R * .56, 0, R * .53); g.quadraticCurveTo(-rx * .25, R * .56, -rx * .55, R * .6); g.closePath(); G.fs(g, d.beard, 2.6); }
     if (d.stubble) { g.fillStyle = 'rgba(35,25,20,.26)'; for (let i = 0; i < 34; i++) { const a = .35 + (i * 0.137) % 2.45, rr = .72 + ((i * 7) % 10) / 40; const px = Math.cos(a) * rx * rr, py = Math.sin(a) * R * rr * .98; if (py > R * .42 && Math.abs(px) > R * .08 || py > R * .72) { g.beginPath(); g.arc(px, py, .95, 0, 6.3); g.fill(); } } }
     if (d.glasses) { const gr = R * .2 * E * 1.55; g.lineWidth = 2.6; g.strokeStyle = d.glasses; [-1, 1].forEach(s => { g.beginPath(); g.arc(s * ex, ey, gr, 0, 6.3); g.stroke(); g.fillStyle = 'rgba(210,235,255,.12)'; g.fill(); }); g.beginPath(); g.moveTo(-ex + gr, ey - 1); g.quadraticCurveTo(0, ey - 6, ex - gr, ey - 1); g.stroke(); }
     if (d.wrinkles) { g.lineWidth = 1.6; g.strokeStyle = 'rgba(120,70,40,.4)'; [-1, 1].forEach(s => { g.beginPath(); g.moveTo(s * ex * 1.5, ey + R * .22); g.quadraticCurveTo(s * ex * 1.75, ey + R * .3, s * ex * 1.45, ey + R * .4); g.stroke(); }); }
+    if (P.tears) {
+      [-1, 1].forEach(s => { const x = s * ex, y0 = ey + R * .22; g.strokeStyle = 'rgba(120,200,255,.75)'; g.lineWidth = 5; g.lineCap = 'round'; g.beginPath(); g.moveTo(x, y0); g.quadraticCurveTo(x + s * R * .1, y0 + R * .3, x + s * R * .06, y0 + R * .62); g.stroke();
+        for (let k = 0; k < 3; k++) { const f = ((t * 1.7 + k / 3 + (s > 0 ? .17 : 0)) % 1), dy = f * R * .85; G.ell(g, x + s * R * (.05 + f * .06), y0 + dy, 3.4, 5.2, '#7cc9ff', 1.6); }
+        const f2 = (t * 2.4 + (s > 0 ? .5 : 0)) % 1; G.ell(g, x + s * (er0(R) * 1.9 + f2 * 14), ey + R * .1 + f2 * 18, 3, 4.6, '#9fdcff', 1.4); });
+    }
+    if (P.scream) { g.lineCap = 'round'; g.strokeStyle = OL; g.lineWidth = 3.4; const j = Math.sin(t * 26) * 2; [-1, 1].forEach(s => [-1, 0, 1].forEach(k => { g.beginPath(); g.moveTo(s * (rx + 9 + j), -R * .15 + k * 17); g.lineTo(s * (rx + 22 + j), -R * .15 + k * 25); g.stroke(); })); }
     if (P.sweat) { g.beginPath(); const sx = rx * .95, sy = -R * .1; g.moveTo(sx, sy - 10); g.quadraticCurveTo(sx + 8, sy + 2, sx, sy + 6); g.quadraticCurveTo(sx - 8, sy + 2, sx, sy - 10); G.fs(g, '#8fd6ff', 2.2); }
   }
 
@@ -286,7 +343,7 @@
     g.beginPath(); g.arc(cx, cy, r, 0, 6.2832); g.lineWidth = Math.max(2, r * .07); g.strokeStyle = OL; g.stroke();
   };
   C.hasPortraitArt = true;
-  M.art.register('face', function (g, o) { const id = (o.args && o.args[0]) || 'moody'; C.portrait(g, id, 0, 0, 46); });
+  M.art.register('face', function (g, o) { const id = (o.args && o.args[0]) || 'moody'; C.portrait(g, id, 0, 0, 46, o.args && o.args[1] ? { anim: o.args[1], t: 2.2 } : null); });   // 'face:toti:cry' = portrait with a pose
 
   /* ----- people icons used in dialogs ----- */
   M.art.registerAll({

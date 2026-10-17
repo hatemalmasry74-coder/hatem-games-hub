@@ -78,7 +78,7 @@
       /* ============ 2) غرفتنا مرتبة ============ */
       {
         id: 'm2', title: 'غرفتنا مرتبة', intro: 'الأوضة مقلوبة! لازم نرتّبها قبل ما ماما تيجي.', values: ['tidy', 'share', 'teamwork', 'honesty'], sticker: 's_tidy',
-        wisdom: 'اللي يرتّب مكانه.. يلاقي كل حاجة بسهولة', diary: { pic: 'toybox', text: 'رتّبنا الأوضة ولعبنا مع ماجد' },
+        wisdom: 'اللي يرتّب مكانه.. يلاقي كل حاجة بسهولة', diary: { pic: 'toybox', text: 'رتّبنا الأوضة ولعبنا مع أوفا' },
         async run(ctx) {
           const st = ctx.stage;
           await ctx.scene('bedroom', { state: { hideStorage: true, bedMade: true }, heroes: { moody: { x: 520, y: 480, dir: -1 }, aboody: { x: 610, y: 490, dir: -1 } } });
@@ -109,11 +109,11 @@
           await ctx.quiz.pair({ cat: ['counting', 'math', 'patterns'] });
           ctx.sticker.give('s_tidy');
           /* friend visits: sharing */
-          await ctx.say('friend', 'السلام عليكم! أنا ماجد. ممكن ألعب بالعربية الحمرا؟', { name: 'ماجد' });
+          await ctx.say('ofa', 'السلام عليكم! أنا أوفا. ممكن ألعب بالعربية الحمرا؟');
           const ch = await ctx.games.choice({
             prompt: 'العربية الحمرا أحلى لعبة عند {a}. نعمل إيه؟', options: [
-              { text: 'أخبّيها وأقول مش معايا', art: 'car', good: false, consequence: [['friend', 'ماجد زعل وراح بيته من غير ما يلعب...', { name: 'ماجد' }], ['aboody', 'وأنا كمان زعلان.. كان الأحسن نلعب سوا.']] },
-              { text: 'أديهاله ونلعب سوا', art: 'heartbig', good: true, reply: [['friend', 'شكرًا يا {a}! أنت صاحب حقيقي!', { name: 'ماجد' }], ['moody', 'اللعب مع حد أحلى بكتير.']] }]
+              { text: 'أخبّيها وأقول مش معايا', art: 'car', good: false, consequence: [['ofa', 'أوفا زعل وراح بيته من غير ما يلعب...'], ['aboody', 'وأنا كمان زعلان.. كان الأحسن نلعب سوا.']] },
+              { text: 'أديهاله ونلعب سوا', art: 'heartbig', good: true, reply: [['ofa', 'شكرًا يا {a}! أنت صاحب حقيقي!'], ['moody', 'اللعب مع حد أحلى بكتير.']] }]
           });
           if (ch.firstTry) ctx.reward.star(1); ctx.sticker.give('s_share'); ctx.value('share');
           await ctx.say('narrator', 'ولعبوا التلاتة وسط ضحك وفرحة.');

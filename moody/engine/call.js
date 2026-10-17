@@ -45,7 +45,7 @@
 
   M.registerWorld({
     id: 'call', hidden: true, order: 999, title: 'بابا بيتصل', icon: 'phone', theme: { c1: '#2f4170', c2: '#1d2a4a' },
-    stickers: [{ id: 'f_baba', title: 'مكالمة بابا', art: 'face:baba', bg: '#dfe8ff' }, { id: 'f_toota', title: 'توتا', art: 'face:toota', bg: '#ffe7ee' }, { id: 'f_nemo', title: 'نيمو', art: 'face:nemo', bg: '#ffe0ec' }, { id: 'f_nana', title: 'ننا زوزا', art: 'face:nana', bg: '#f1e6ff' }, { id: 'f_family', title: 'العيلة الحلوة', art: 'home', bg: '#fff0c4' }],
+    stickers: [{ id: 'f_baba', title: 'مكالمة بابا', art: 'face:baba', bg: '#dfe8ff' }, { id: 'f_toota', title: 'توتا', art: 'face:toota', bg: '#ffe7ee' }, { id: 'f_nemo', title: 'نيمو', art: 'face:nemo', bg: '#ffe0ec' }, { id: 'f_nana', title: 'ننا زوزا', art: 'face:nana', bg: '#f1e6ff' }, { id: 'f_family', title: 'العيلة الحلوة', art: 'home', bg: '#fff0c4' }, { id: 'f_amani', title: 'عمتو أماني', art: 'face:amani', bg: '#ffe9dc' }, { id: 'f_nada', title: 'عمتو ندى', art: 'face:nada', bg: '#e3f1fa' }, { id: 'f_kamal', title: 'عمو كمال', art: 'face:kamal', bg: '#e1ecfa' }, { id: 'f_cousins', title: 'أولاد العمّة', art: 'face:ofa', bg: '#e1f6e8' }],
     missions: [{
       id: 'daily', title: 'مكالمة بابا', intro: 'بابا بيتصل بيكم!', icon: 'phone', hideTitle: true, values: ['thanks', 'kindness'], wisdom: 'العيلة هي الأمان',
       async run(ctx) {
@@ -76,7 +76,7 @@
         if (!again) {
           sd.callDay = today(); sd.callId = ch.id; sd.callCount = (sd.callCount || 0) + 1; M.save.commit();
           ctx.reward.star(2); if (good) ctx.reward.star(1); ctx.reward.coins(8);
-          const n = sd.callCount, g2 = { 1: 'f_baba', 3: 'f_toota', 5: 'f_nemo', 8: 'f_nana', 12: 'f_family' }[n]; if (g2) { ctx.sticker.give(g2); }
+          const n = sd.callCount, g2 = { 1: 'f_baba', 3: 'f_toota', 5: 'f_nemo', 8: 'f_nana', 12: 'f_family', 15: 'f_amani', 18: 'f_nada', 21: 'f_kamal', 24: 'f_cousins' }[n]; if (g2) { ctx.sticker.give(g2); }
         } else { ctx.reward.star(1); }
         ctx.diary.add({ id: 'call-' + today(), pic: 'phone', text: 'اتصل بينا بابا وعملنا تحدّي اليوم' });
         await ctx.say('baba', pk(M.babaBye), { anim: 'wave' });

@@ -9,7 +9,10 @@ M = 'ar-EG-ShakirNeural'; F = 'ar-EG-SalmaNeural'
 V = {  # voice, rate, pitch
  'narrator': (F, '+0%', '+0Hz'), 'mama': (F, '-4%', '-3Hz'), 'baba': (M, '-2%', '-2Hz'),
  'boy_big': (M, '+2%', '+22Hz'), 'boy_small': (M, '+4%', '+38Hz'),
- 'girl_big': (F, '+2%', '+8Hz'), 'girl_small': (F, '+4%', '+20Hz'), 'nana': (F, '-12%', '-14Hz')}
+ 'girl_big': (F, '+2%', '+8Hz'), 'girl_small': (F, '+4%', '+20Hz'), 'nana': (F, '-12%', '-14Hz'),
+ # extended family
+ 'boy_mid': (M, '+2%', '+14Hz'), 'girl_tiny': (F, '+8%', '+32Hz'), 'boy_tiny': (M, '+8%', '+48Hz'), 'aunt_a': (F, '+1%', '+3Hz'), 'aunt_n': (F, '-2%', '-7Hz'),
+ 'teen_a': (M, '+2%', '+10Hz'), 'teen_b': (M, '+0%', '+5Hz'), 'uncle': (M, '+0%', '+1Hz')}
 async def one(item, sem):
     h = item['hash']; out = os.path.join(vd, h + '.mp3')
     if os.path.exists(out) and os.path.getsize(out) > 500: return

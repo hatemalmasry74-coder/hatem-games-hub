@@ -285,10 +285,10 @@
             targets: [{ id: 'b1', x: 320, y: 380, w: 120, h: 110, art: 'pk_bin:blue', s: 130, label: 'بلاستيك وعلب', cols: 3, dx: 24, itemScale: .4 }, { id: 'b2', x: 640, y: 380, w: 120, h: 110, art: 'pk_bin:green', s: 130, label: 'مخلّفات تانية', cols: 3, dx: 24, itemScale: .4 }]
           });
           if (tq.mistakes <= 2) ctx.reward.star(1); ctx.value('environment'); ctx.heroes('floor');
-          await ctx.say('friend', 'السلام عليكم! سبنا كيس شيبسي فاضي هناك.. نسيبه؟', { name: 'ماجد' });
+          await ctx.say('ofa', 'السلام عليكم! سبنا كيس شيبسي فاضي هناك.. نسيبه؟');
           const c = await ctx.games.choice({
             prompt: 'في كيس فاضي على الرمل. نعمل إيه؟', options: sh([
-              { text: 'ناخده ونرميه في الزبالة', art: 'pk_bin:green', good: true, reply: [['friend', 'عندكم حق! الشاطئ لازم يفضل نضيف.', { name: 'ماجد' }]] },
+              { text: 'ناخده ونرميه في الزبالة', art: 'pk_bin:green', good: true, reply: [['ofa', 'عندكم حق! الشاطئ لازم يفضل نضيف.']] },
               { text: 'نسيبه، الموج هياخده', art: 'pk_pbag', good: false, consequence: [['moody', 'الموج هياخده للبحر.. وهناك ممكن يأذي السمك والسلاحف.']] },
               { text: 'ندفنه في الرمل', art: 'sa_sandpile', good: false, consequence: [['aboody', 'بس ده برضه هيفضل موجود تحت الرمل..']] }])
           });

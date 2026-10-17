@@ -103,20 +103,20 @@
           const cq2 = await ctx.quiz.pair({ cat: ['general', 'geography', 'logic', 'riddles'] });
           if (cq.firstTry + cq2.firstTry >= 2) ctx.reward.star(1);
           st.state.hideDesks = true; ctx.sfx('click');
-          await ctx.say('mama', 'عندنا تلميذ جديد في الفصل.. اسمه سامي. ممكن تساعدوه يلاقي مقعد؟', TEACHER);
-          await ctx.say('friend', 'أنا سامي.. أول يوم لي هنا وخايف شوية.', { name: 'سامي' });
+          await ctx.say('mama', 'عندنا تلميذ جديد في الفصل.. اسمه أوفا. ممكن تساعدوه يلاقي مقعد؟', TEACHER);
+          await ctx.say('ofa', 'أنا أوفا.. أول يوم لي هنا وخايف شوية.');
           const mk = (id, bag) => ({ id, x: 0, y: 0, w: 130, h: 96, bag, draw: (g, tt) => A.draw(g, 'desk', 0, 0, 108, { bag: tt.bag }) });
           const d1 = mk('d1', true), d2 = mk('d2', false), d3 = mk('d3', true); [d1.x, d2.x, d3.x] = [230, 480, 730]; d1.y = d2.y = d3.y = 360;
           const seat = await ctx.games.dragdrop({
-            prompt: 'ساعد سامي يلاقي مقعد فاضي', heroes: 'corner', wrongHint: 'المقعد ده عليه شنطة صاحبه.. دوّر على الفاضي',
-            items: [{ id: 'sami', art: 'friend', to: 'd2', x: 480, y: 200, s: 84 }], targets: [d1, d2, d3].map(d => Object.assign(d, { label: d.id === 'd2' ? '' : '' }))
+            prompt: 'ساعد أوفا يلاقي مقعد فاضي', heroes: 'corner', wrongHint: 'المقعد ده عليه شنطة صاحبه.. دوّر على الفاضي',
+            items: [{ id: 'ofa', art: 'face:ofa', to: 'd2', x: 480, y: 200, s: 84 }], targets: [d1, d2, d3].map(d => Object.assign(d, { label: d.id === 'd2' ? '' : '' }))
           });
-          await ctx.say('friend', 'شكرًا أوي! حاسس إني بقيت أحسن.', { name: 'سامي' });
-          await ctx.say('friend', 'بس نسيت القلم في البيت!', { name: 'سامي' });
+          await ctx.say('ofa', 'شكرًا أوي! حاسس إني بقيت أحسن.');
+          await ctx.say('ofa', 'بس نسيت القلم في البيت!');
           const pc = await ctx.games.choice({
-            prompt: 'سامي ما معاهوش قلم.. نعمل إيه؟', options: [
-              { text: 'نقوله: ده مش مشكلتي', art: 'sad', good: false, consequence: [['friend', 'ماشي.. هحاول أستلف من حد تاني.', { name: 'سامي' }], ['aboody', 'أنا حاسس إنه زعل.. كان ممكن نساعده.']] },
-              { text: 'نديه قلم من علبة الأقلام', art: 'pencil', good: true, reply: [['friend', 'ربنا يخليكم! أنتم أصحاب كويسين.', { name: 'سامي' }], ['moody', 'المساعدة الصغيرة بتفرق.']] }]
+            prompt: 'أوفا ما معاهوش قلم.. نعمل إيه؟', options: [
+              { text: 'نقوله: ده مش مشكلتي', art: 'sad', good: false, consequence: [['ofa', 'ماشي.. هحاول أستلف من حد تاني.'], ['aboody', 'أنا حاسس إنه زعل.. كان ممكن نساعده.']] },
+              { text: 'نديه قلم من علبة الأقلام', art: 'pencil', good: true, reply: [['ofa', 'ربنا يخليكم! أنتم أصحاب كويسين.'], ['moody', 'المساعدة الصغيرة بتفرق.']] }]
           });
           if (pc.firstTry) ctx.reward.star(1);
           ctx.value('kindness'); ctx.sticker.give('s_class');
@@ -150,12 +150,12 @@
           if (cn.mistakes <= 2) ctx.reward.star(1);
           ctx.sticker.give('s_recess');
           await ctx.scene('sc_yard', { state: { canteen: false }, heroes: { moody: { x: 330, y: 484, dir: 1 }, aboody: { x: 430, y: 494, dir: 1 } } });
-          await ctx.say('friend', 'أنا سامي.. نسيت السندوتش في البيت وجعان.', { name: 'سامي' });
+          await ctx.say('ofa', 'أنا أوفا.. نسيت السندوتش في البيت وجعان.');
           const sh = await ctx.games.choice({
-            prompt: 'سامي ما معاهوش أكل.. نعمل إيه؟', options: [
-              { text: 'ناكل في ركن بعيد ونسيبه', art: 'sad', good: false, consequence: [['friend', 'أنا قاعد لوحدي وبطني بتصوّت...', { name: 'سامي' }], ['aboody', 'ياااه.. كده مش حلو.']] },
-              { text: 'نقسم سندوتشنا معاه', art: 'sandwich', good: true, reply: [['friend', 'الله يخليكم! أحلى سندوتش!', { name: 'سامي' }], ['moody', 'الأكل بالمشاركة طعمه أحلى.']] },
-              { text: 'نديه نص التفاحة ونص العصير', art: 'apple', good: true, reply: [['friend', 'ميرسي! أنتم كرماء أوي.', { name: 'سامي' }]] }]
+            prompt: 'أوفا ما معاهوش أكل.. نعمل إيه؟', options: [
+              { text: 'ناكل في ركن بعيد ونسيبه', art: 'sad', good: false, consequence: [['ofa', 'أنا قاعد لوحدي وبطني بتصوّت...'], ['aboody', 'ياااه.. كده مش حلو.']] },
+              { text: 'نقسم سندوتشنا معاه', art: 'sandwich', good: true, reply: [['ofa', 'الله يخليكم! أحلى سندوتش!'], ['moody', 'الأكل بالمشاركة طعمه أحلى.']] },
+              { text: 'نديه نص التفاحة ونص العصير', art: 'apple', good: true, reply: [['ofa', 'ميرسي! أنتم كرماء أوي.']] }]
           });
           if (sh.firstTry) ctx.reward.star(1);
           ctx.value('share');
@@ -175,10 +175,10 @@
           });
           if (rec.mistakes <= 2) ctx.reward.star(1);
           ctx.value('recycle');
-          await ctx.say('aboody', 'المكان بقى نضيف! دلوقتي نلعب لعبة الذاكرة مع سامي.');
+          await ctx.say('aboody', 'المكان بقى نضيف! دلوقتي نلعب لعبة الذاكرة مع أوفا.');
           const small = M.tierFor(ctx.active) === 6;
           await ctx.games.memory({ prompt: 'العب لعبة الذاكرة في الفناء', pairs: small ? ['ball', 'apple', 'bell'] : ['ball', 'apple', 'bell', 'pencil', 'lunchbox', 'duck'], timeLimit: small ? 50 : 75 });
-          await ctx.say('friend', 'إنتم أحسن أصحاب! النهارده كان أحلى يوم.', { name: 'سامي' });
+          await ctx.say('ofa', 'إنتم أحسن أصحاب! النهارده كان أحلى يوم.');
           return ctx.nav.complete();
         }
       },
@@ -263,17 +263,17 @@
           await ctx.scene('sc_library', { state: { mouseSleep: true }, heroes: { moody: { x: 340, y: 482, dir: 1 }, aboody: { x: 450, y: 492, dir: 1 } } });
           let found = false;
           await ctx.games.tap({ prompt: 'في حاجة لامعة تحت الترابيزة.. {a} يشوفها', hintAfter: 10, list: false, spots: [{ id: 'box', art: 'pencilcase', x: 570, y: 420, s: 52, needs: 'aboody', walkOff: 0, draw: faint('pencilcase', 56) }] });
-          await ctx.say('aboody', 'يا ساتر! علبة ألوان جديدة ولسه بتلمع! وعليها اسم "سامي".');
+          await ctx.say('aboody', 'يا ساتر! علبة ألوان جديدة ولسه بتلمع! وعليها اسم "أوفا".');
           const ch = await ctx.games.choice({
-            prompt: 'لقينا علبة ألوان عليها اسم سامي.. نعمل إيه؟', options: [
-              { text: 'نخبّيها في الشنطة ونرسم بيها', art: 'pencilcase', good: false, consequence: [['friend', 'ضاعت علبة ألواني اللي بابا جابها لي...', { name: 'سامي' }], ['aboody', 'أنا حاسس إني مش مرتاح.. دي مش بتاعتي.']] },
+            prompt: 'لقينا علبة ألوان عليها اسم أوفا.. نعمل إيه؟', options: [
+              { text: 'نخبّيها في الشنطة ونرسم بيها', art: 'pencilcase', good: false, consequence: [['ofa', 'ضاعت علبة ألواني اللي بابا جابها لي...'], ['aboody', 'أنا حاسس إني مش مرتاح.. دي مش بتاعتي.']] },
               { text: 'نسيبها مكانها ونمشي', art: 'x', good: false, consequence: [['mama', 'ممكن حد غيرنا ياخدها. الأحسن نتصرف.', L], ['moody', 'عندها حق.']] },
               { text: 'نسلّمها لأبلة منى', art: 'heartbig', good: true, reply: [['mama', 'برافو! ده الصدق والأمانة.', L]] }]
           });
           if (ch.firstTry) ctx.reward.star(1);
-          await ctx.say('friend', 'علبة ألواني! كنت بدوّر عليها من الصبح! مين لقاها؟', { name: 'سامي' });
+          await ctx.say('ofa', 'علبة ألواني! كنت بدوّر عليها من الصبح! مين لقاها؟');
           await ctx.say('mama', '{m} و{a} هما اللي لقوها وسلّموها.', L);
-          await ctx.say('friend', 'شكرًا ليكم! أنتم أصحابي بجد.', { name: 'سامي' });
+          await ctx.say('ofa', 'شكرًا ليكم! أنتم أصحابي بجد.');
           ctx.value('honesty'); ctx.sticker.give('s_library');
           await ctx.say('aboody', 'أنا فرحان أوي إني رجّعتها!', { anim: 'cheer' });
           return ctx.nav.complete();
