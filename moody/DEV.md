@@ -182,7 +182,7 @@ Everything the game shows as an instruction/dialog/question is also *speakable*.
 ### Extended family (all `playable:false`; ids = speakers = `ctx.cast` ids; age of `ofa` is PROVISIONAL)
 | id | who | age | look / props |
 |---|---|---|---|
-| ofa | أوفا (ابن عمة أماني, cousin of the kids; also the friend NPC of all worlds) | 9 | green tee, jeans, short straight hair with a fringe |
+| ofa | أوفا (ابن عمة أماني, cousin of the kids; also the friend NPC of all worlds) | 10 | green tee, jeans, short straight hair with a fringe |
 | toti | توتي (بنت عمتو ندى, very naughty) | 4 | tiny, pigtails with pink bows, pink dress; extra poses `cry` (tears + wail) and `scream` (tantrum); fidgets when idle; loves Nemo |
 | amani | عمتو أماني (loves cooking) | ~42 | casual terracotta headscarf, sage floral dress, cream apron, wooden spoon in hand |
 | nada | عمتو ندى (mother of Toti) | ~38 | casual beige headscarf, teal blouse, navy skirt, phone in hand; default idle = pose `phone` (looks down at the phone) |
