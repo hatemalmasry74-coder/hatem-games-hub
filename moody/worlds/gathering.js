@@ -76,6 +76,10 @@
               { text: 'نبص في الموبايل ونسكت', art: 'gather_phone', good: false, consequence: [['nana', 'الموبايل بعدين يا قلبي. دلوقتي نقعد سوا.'], ['nemo', 'عندها حق، نسلّم الأول.']] }]
           });
           if (ch.firstTry) ctx.reward.star(1); ctx.value('gt_respect');
+          await ctx.say('nana', 'وبابا وعمو كمال، ولادي الغاليين! وحشتوني قوي. وبناتي أماني وندى حواليّا. ربنا يجمعنا دايمًا.', { anim: 'wave' });
+          await ctx.say('toota', 'يعني ننا زوزا هي أم بابا وعمو كمال وعمتو أماني وعمتو ندى!');
+          await ctx.say('aboody', 'يعني بابا كان صغير زينا عند ننا؟');
+          await ctx.say('nana', 'أيوه يا حبيبي. وكان شقي زيك كده!', { anim: 'cheer' });
           await ctx.say('amani', 'أهلًا يا حبايبي! أنا عمتو أماني. ده أوفا وبينو وميدو، ولاد عمتكم.', { anim: 'wave' });
           await ctx.say('nada', 'أهلًا.. استنوا لحظة.. أنا كنت بكتب رسالة.', { anim: 'phone' });
           await ctx.say('toota', 'عمتو ندى! حمد لله على السلامة!');
