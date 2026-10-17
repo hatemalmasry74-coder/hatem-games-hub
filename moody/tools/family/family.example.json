@@ -40,6 +40,15 @@
     }
   ],
 
+  "friendName": "عادل",
+  "_friendName_doc": "the owner's cousin «أوفا» appears in many scenes as 'the friend'. He becomes this generic friend (must differ from the kids' nicknames).",
+
+  "extendedFamily": {
+    "enabled": false,
+    "relatives": [ { "role": "aunt", "name": "منى", "gender": "f", "age": 40 } ],
+    "_doc": "OPTIONAL and NOT BUILT YET (first version). The owner's relatives (aunts Amani/Nada, uncle Kamal, cousins, the whole «تجمّع العائلة» world) are ALWAYS removed from customer copies. This section is only validated and a warning is printed; the customer's own gathering world has to be written by hand after the build."
+  },
+
   "parents": { "dad": "بابا", "mom": "ماما", "_doc": "the words the children use. Only change if the family says e.g. 'بابي' / 'مامي'." },
 
   "dad": {

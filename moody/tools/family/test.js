@@ -5,6 +5,7 @@
 const fs = require('fs'), path = require('path'), assert = require('assert'), vm = require('vm'), os = require('os');
 const AR = require('./lib/ar'), G = require('./lib/gender'), { scan, join } = require('./lib/lexer');
 const { build, ROOT } = require('./build');
+const cp = require('child_process');
 let pass = 0; const t = (name, fn) => { try { fn(); pass++; console.log('ok   ', name); } catch (e) { console.log('FAIL ', name, '\n     ', e.message); process.exitCode = 1; } };
 
 t('word replacer keeps clitics and does not touch look-alikes', () => {
@@ -57,6 +58,16 @@ for (const [cfg, name] of [['family.example.json', 'sample'], ['examples/variant
     assert(!fs.readdirSync(path.join(out, 'assets')).some(f => /cartoon/.test(f)), 'a base cartoon avatar was copied');
     assert(!fs.existsSync(path.join(out, 'tools')), 'tools/ must not ship');
     const man = JSON.parse(fs.readFileSync(path.join(out, 'assets', 'voice', 'manifest.json'), 'utf8')); assert.deepStrictEqual(man, {});
+    // the owner's extended family never ships
+    for (const f of ['worlds/gathering.js', 'worlds/gathering_art.js', 'worlds/gathering_kits.js', 'content/q_gathering.js']) assert(!fs.existsSync(path.join(out, f)), f + ' must not ship');
+    const reg = fs.readFileSync(path.join(out, 'worlds', 'registry.js'), 'utf8'); assert(!/gather/.test(reg), 'gathering still in registry');
+    const sb = { M: {} }; vm.runInNewContext('M.plan = x => { PLAN = x; }; var PLAN; (function(){ var window = { Moody: { plan: M.plan, art: { registerAll() {} }, gfx: {}, load: [] } }; ' + reg.replace(/^\/\*[\s\S]*?\*\/\s*/, '') + ' })();', sb);   // the plan array must stay valid JS
+    assert(Array.isArray(sb.PLAN) && sb.PLAN.length >= 7 && sb.PLAN.every(w => w && w.id), 'world plan has holes: ' + JSON.stringify(sb.PLAN && sb.PLAN.map(w => w && w.id)));
+    const all = fs.readdirSync(path.join(out, 'worlds')).concat(fs.readdirSync(path.join(out, 'content'))).map(f => fs.readFileSync(path.join(out, fs.existsSync(path.join(out, 'worlds', f)) ? 'worlds' : 'content', f), 'utf8')).join('\n');
+    assert(!/'(toti|amani|nada|kamal|luka|beno|medo|ofa)'/.test(all), 'an extended-family speaker id survived');
+    if (fs.existsSync(path.join(out, 'worlds', 'nana.js'))) assert.strictEqual((fs.readFileSync(path.join(out, 'worlds', 'nana.js'), 'utf8').match(/id: 'm\d'/g) || []).length, 6, 'nana must have 6 missions (m7 cooking cut)');
+    if (fs.existsSync(path.join(out, 'worlds', 'saudi.js'))) assert.strictEqual((fs.readFileSync(path.join(out, 'worlds', 'saudi.js'), 'utf8').match(/id: 'm\d'/g) || []).length, 7);
+    assert(!/nana_cook|kitchensafety|f_amani|f_cousins|f_kamal|f_nada/.test(all + fs.readFileSync(path.join(out, 'engine', 'call.js'), 'utf8')), 'sticker/value of the relatives survived');
   });
 }
 console.log(pass + ' passed' + (process.exitCode ? ', SOME FAILED' : ''));

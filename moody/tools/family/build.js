@@ -39,7 +39,7 @@ function loadConfig(file) {
   c._dir = base;
   const need = (cond, msg) => { if (!cond) err.push(msg); };
   c.edition = Object.assign({ id: 'family', title: null, subtitle: null, versionLabel: null }, c.edition || {});
-  c.friendName = c.friendName || 'كريم';   // the neighbour/cousin friend that replaces the owner's cousin «أوفا» in the stories
+  c.friendName = c.friendName || 'عادل';   // the neighbour/cousin friend that replaces the owner's cousin «أوفا» in the stories
   need(/^[a-z0-9][a-z0-9-]{1,40}$/.test(c.edition.id), 'edition.id must be a lowercase latin slug (a-z 0-9 -), used for the storage key');
   c.parents = Object.assign({ dad: 'بابا', mom: 'ماما' }, c.parents || {});
   c.dad = Object.assign({ status: 'abroad' }, c.dad || {});
@@ -86,6 +86,13 @@ function loadConfig(file) {
   const texts = []; const walk = (v, p) => { if (typeof v === 'string') { if (!/(avatar|^_|\._)/.test(p)) texts.push([p, v]); } else if (v && typeof v === 'object') Object.keys(v).forEach(k => { if (!k.startsWith('_')) walk(v[k], p ? p + '.' + k : k); }); };
   walk({ edition: c.edition, kids: c.kids, parents: c.parents, grandparent: Object.assign({}, c.grandparent, { look: undefined }), home: c.home, school: c.school, destination: c.destination }, '');
   texts.forEach(([p, v]) => { if (/['"\\{}<>`$]/.test(v)) err.push(p + ': contains a quote, backslash, brace, < > or $ (' + v + ') - remove it'); });
+  if (c.kids.some(k => k.nick === c.friendName)) err.push('friendName ("' + c.friendName + '") must differ from the kids\' nicknames: it names the generic friend of the stories');
+  if (c.extendedFamily !== undefined) {
+    const ef = c.extendedFamily || {};
+    if (ef.enabled && !Array.isArray(ef.relatives)) err.push('extendedFamily.relatives must be a list of {role,name,gender,age}');
+    (ef.relatives || []).forEach((r, i) => { if (!r || !r.role || !r.name) err.push('extendedFamily.relatives[' + i + '] needs role and name'); });
+    warn.push('extendedFamily is accepted but NOT built yet: the owner\'s relatives world («تجمّع العائلة») and every relative-specific scene (aunts, uncle, cousins) are always REMOVED; the customer\'s own gathering world must be written by hand (see README).');
+  }
   c.kids.forEach((k, i) => { if (k.nick && k.nick.length > 12) err.push('kids[' + i + '].nick is longer than 12 letters (the in-game name box allows 12)'); });
   c._warn = warn; c._err = err; return c;
 }
@@ -226,6 +233,36 @@ function stripExtendedFamily(P, c) {
   P.rep('engine/call.js', ", 15: 'f_amani', 18: 'f_nada', 21: 'f_kamal', 24: 'f_cousins'", '', { what: 'relatives sticker rewards' });
 }
 
+/* ------------------------------------------------------------------ the owner's extended-family STORIES (cut out; never shipped to other families)
+   Every cut is an exact patch with a match count: if the base game changes, the build FAILS instead of shipping a half-cut story. */
+function stripOwnerFamilyStories(P, c) {
+  /* world 10 "تجمّع العائلة": entirely about the owner's relatives -> removed completely (plan card, loader, 4 files = its questions, stickers, values, art, voice strings) */
+  removeWorld(P, 'gathering', ['worlds/gathering.js', 'worlds/gathering_art.js', 'worlds/gathering_kits.js', 'content/q_gathering.js'], /\n\s*\{ id: 'gathering', order: 10[^\n]*\},?/, /\n\s*M\.load\.push\('content\/q_gathering\.js'[^\n]*/);
+  /* world 7 (grandma's house): mission 7 "cooking with aunt Amani" + Nada's phone gag + Toti cameo */
+  const N = 'worlds/nana.js';
+  P.rep(N, /\n[ \t]*\/\* ============ 7\) [^\n]*\n[ \t]*\{\n[ \t]*id: 'm7'[\s\S]*?\n      \}\n(?=    \])/, '\n', { what: 'nana m7 (cooking with the owner\'s aunt)', exact: 1 });
+  P.rep(N, /[ \t]*\{ id: 'nana_cook'[^}]*\}, /, '', { what: 'sticker of nana m7', exact: 1 });
+  P.rep(N, /\n[ \t]*M\.registerValue\('kitchensafety'[^\n]*/, '', { what: 'value only used by nana m7', exact: 1 });
+  P.rep(N, /ALL6 = ALL5\.concat\(\['nada'\]\);[^\n]*/, 'ALL6 = ALL5;', { what: 'no aunt on stage', exact: 1 });
+  P.rep(N, /\n[ \t]*await ctx\.say\('nada',[^\n]*/g, '', { what: 'Nada phone-gag lines (m4-m6)', exact: 4 });
+  P.rep(N, "\n          await ctx.say('aboody', 'إزيّك يا عمتو ندى؟ إحنا هنا!');", '', { what: 'greeting of the aunt', exact: 1 });
+  P.rep(N, "\n          await ctx.say('nana', 'سيبوها يا ولاد، بتطمّن على حد من العيلة. يلا نلاقي الألبوم.');", '', { what: 'line about the aunt', exact: 1 });
+  P.rep('content/q_nana.js', /\n[ \t]*Q\([69], '(?:spoons|hotpot|cup|skill)'[^\n]*/g, '', { what: 'questions of nana m7', exact: 4 });
+  /* world 8 (trip): Uncle Kamal and the gift for his son Luka */
+  const S = 'worlds/saudi.js';
+  P.rep(S, /WITHKAMAL = WITHBABA\.concat\(\['kamal'\]\);[^\n]*/, 'WITHKAMAL = WITHBABA;', { what: 'no uncle on stage', exact: 1 });
+  P.rep(S, /\n[ \t]*await ctx\.say\('kamal', 'وأنا كمان عايز أبعت هدية[^\n]*\n[ \t]*const lk = await ctx\.games\.dragdrop\(\{[\s\S]*?\n[ \t]*\}\);/, '', { what: 'gift-for-Luka drag&drop', exact: 1 });
+  P.rep(S, "st.hero('kamal').visible = true; ", '', { what: 'uncle appears at arrivals', exact: 1 });
+  P.rep(S, " st.play('kamal', 'wave', 2);", '', { what: 'uncle waves', exact: 1 });
+  P.rep(S, "'بابا!!! ده بابا! ومعاه عمو كمال!'", "'بابا!!! ده بابا!'", { what: 'arrival line', exact: 1 });
+  P.rep(S, "\n          await ctx.say('baba', 'بطّل فضايح يا كمال!');", '', { what: 'dad answering the uncle', exact: 1 });
+  P.rep(S, "\n          await ctx.say('aboody', 'وسلّم لي على لوكا! قول له عبودي بيسلّم عليك.');", '', { what: 'greeting to Luka', exact: 1 });
+  P.rep(S, /\n[ \t]*await ctx\.say\('kamal',[^\n]*/g, '', { what: 'Uncle Kamal lines', exact: 9 });
+  P.rep(S, /, kamal: \{ x: 880, y: 490, dir: -1 \}/g, '', { what: 'uncle position in the scenes', exact: 3 });
+  /* guard: no extended-family id may survive in any story/engine file (stage.js keeps harmless slot tables) */
+  for (const [f, src] of P.files) if (/^(worlds|content)\//.test(f)) { const m = /'(toti|amani|nada|kamal|luka|beno|medo)'|face:(toti|amani|nada|kamal|luka|beno|medo)/.exec(src); if (m) throw new Error('EXTENDED FAMILY LEFT in ' + f + ': ' + m[0]); }
+}
+
 /* ------------------------------------------------------------------ main build steps */
 function genericPatches(P, c) {
   const k = c.kids, id = c.edition.id, ar = AR.arDigits;
@@ -316,7 +353,7 @@ function optionalWorlds(P, c) {
     }
   } else floorPatches(P, c);
   if (c.dad.status === 'home') {
-    removeWorld(P, 'saudi', ['worlds/saudi.js', 'worlds/saudi_art.js', 'content/q_saudi.js'], /\n\s*\{ id: 'saudi', order: 8[^\n]*\}/, /\n\s*M\.load\.push\('content\/q_saudi\.js'[^\n]*/);
+    removeWorld(P, 'saudi', ['worlds/saudi.js', 'worlds/saudi_art.js', 'content/q_saudi.js'], /\n\s*\{ id: 'saudi', order: 8[^\n]*\},?/, /\n\s*M\.load\.push\('content\/q_saudi\.js'[^\n]*/);
     P.rep('engine/ui.js', "tile('بابا بيتصل', 'phone', '#2fb86a', f.call, M.callPending && M.callPending()), ", '', { what: 'no daily call button' });
   }
 }
@@ -476,6 +513,7 @@ function build(configFile, outDir, flags) {
   const P = new Project(); P.load();
   const report = { edition: c.edition.id, built: new Date().toISOString(), warnings: c._warn.slice(), review: [], avatars: [], gender: [], genderMixed: [], patches: [], leaks: [], syntax: [], scenery: [] };
   const dicts = buildDictionaries(c);
+  stripOwnerFamilyStories(P, c);
   stripExtendedFamily(P, c);
   genericPatches(P, c);
   optionalWorlds(P, c);
