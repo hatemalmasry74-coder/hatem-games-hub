@@ -4,13 +4,9 @@
   'use strict';
   const M = window.Moody, G = M.gfx, OL = M.OL, A = M.art, R = M.rooms = M.rooms || {};
   const rr = G.fillRR, ar = M.util.ar;
-  const CACHE = {};
-  function blit(g, key, fn) {
-    let c = CACHE[key];
-    if (!c) { c = document.createElement('canvas'); c.width = 1440; c.height = 810; const k = c.getContext('2d'); k.scale(1.5, 1.5); k.lineJoin = 'round'; k.lineCap = 'round'; k.direction = 'rtl'; try { fn(k); } catch (e) { } CACHE[key] = c; }
-    g.drawImage(c, 0, 0, 960, 540);
-  }
-  function awning(g, x, y, w, c1, c2, n) { n = n || 6; for (let i = 0; i < n; i++) G.poly(g, [[x + i * w / n, y], [x + (i + 1) * w / n, y], [x + (i + 1) * w / n - 3, y + 26], [x + i * w / n + 3, y + 26]], i % 2 ? c2 : c1, 3.5); G.fillRR(g, x - 4, y - 8, w + 8, 12, 5, G.shade(c1, -.2), 3.5); }
+  const RK = G.room;
+  function blit(g, key, fn) { fn(g); }
+  function awning(g, x, y, w, c1, c2, n) { n = n || 6; for (let i = 0; i < n; i++) G.poly(g, [[x + i * w / n, y], [x + (i + 1) * w / n, y], [x + (i + 1) * w / n - 3, y + 26], [x + i * w / n + 3, y + 26]], i % 2 ? c2 : c1, 3.5); G.fillRR(g, x - 4, y - 8, w + 8, 12, 5, G.shade(c1, -.2), 3); g.fillStyle = 'rgba(40,15,0,.22)'; g.fillRect(x, y + 26, w, 10); }
   function sign(g, x, y, w, txt, c, tc) { rr(g, x, y, w, 36, 9, c, 4); G.text(g, txt, x + w / 2, y + 19, { size: 22, color: tc || '#fff', stroke: OL, sw: 4 }); }
   function table(g, x, y, w, h, c) { rr(g, x, y, w, h, 6, c || '#c8935a', 4.5); rr(g, x - 6, y - 8, w + 12, 14, 5, G.shade(c || '#c8935a', .12), 4); }
   function crateRow(g, x, y, n, art, s) { for (let i = 0; i < n; i++) { rr(g, x + i * s * 1.18, y, s * 1.12, s * .52, 4, '#d9a66e', 3.5); for (let k = 0; k < 3; k++) A.draw(g, art, x + i * s * 1.18 + s * (.22 + k * .34), y - s * .06, s * .52); } }
@@ -60,90 +56,88 @@
   });
 
   /* ================= BACKGROUNDS ================= */
+  M.look.setAll({
+    mk_market: { tod: 'morning', indoor: false, floor: 430, live: ['list', 'gift'], vig: .22 }, mk_street: { tod: 'day', indoor: false, floor: 400, live: ['crowd', 'balloons', 'meet'], vig: .2 },
+    mk_bakery: { tod: 'warm', floor: 430, live: ['baker', 'queue', 'crumbs', 'bird'], vig: .3 }, mk_checkout: { tod: 'day', floor: 430, live: ['shown', 'items'], vig: .24 }
+  });
+  const GRD = (g, y, a, b) => { RK.sidewalk(g, y, 540, a || '#e4d3b0', b || '#c9b68f'); g.fillStyle = 'rgba(40,20,5,.22)'; g.fillRect(0, y - 2, 960, 6); };
   /* --- the fruit & vegetable market. flags: list [{art,n,got}], gift (bool), open (bool), hideBags --- */
   R.mk_market = function (g, t, s) {
     const S = s.state;
-    blit(g, 'mk_market', k => {
-      k.fillStyle = G.lin(k, 0, 0, 0, 300, ['#ffd9b0', '#fff3d6']); k.fillRect(0, 0, 960, 540);
-      // far shop row
-      [['#ffd0dc', 0], ['#cfeaf8', 180], ['#fff0b0', 360], ['#d6f0c8', 540], ['#e6d8f8', 720]].forEach((b, i) => { rr(k, b[1], 40 + (i % 2) * 18, 190, 150, 5, b[0], 4); for (let c = 0; c < 3; c++) rr(k, b[1] + 16 + c * 56, 60 + (i % 2) * 18, 40, 46, 5, '#bfe8ff', 3); });
-      // stalls
-      [[40, 'خضار', '#5cc96b', '#fff'], [320, 'فاكهة', '#ff6f91', '#fff'], [600, 'بقالة', '#ffb347', '#fff']].forEach((st, i) => {
-        awning(k, st[0], 168, 260, st[2], st[3], 7); sign(k, st[0] + 70, 138, 120, st[1], st[2]);
-        rr(k, st[0] + 6, 194, 10, 236, 3, '#8a5a3a', 3.5); rr(k, st[0] + 244, 194, 10, 236, 3, '#8a5a3a', 3.5);
-        table(k, st[0] + 16, 330, 228, 100, '#d9a66e');
-      });
-      crateRow(k, 60, 296, 3, 'tomato', 62); crateRow(k, 340, 296, 3, 'apple', 62); crateRow(k, 620, 296, 3, 'orange', 62);
-      A.draw(k, 'cucumber', 112, 366, 40); A.draw(k, 'mk_potato', 170, 366, 40); A.draw(k, 'banana', 394, 366, 40); A.draw(k, 'mk_grapes', 454, 366, 44); A.draw(k, 'carrot', 668, 366, 40); A.draw(k, 'mk_onion', 726, 366, 38);
-      // ground
-      k.fillStyle = '#dccba8'; k.fillRect(0, 430, 960, 110); G.line(k, 0, 430, 960, 430, 4); k.strokeStyle = 'rgba(90,60,30,.15)'; k.lineWidth = 2; for (let x = 0; x < 960; x += 80) { k.beginPath(); k.moveTo(x, 440); k.lineTo(x - 40, 540); k.stroke(); }
+    RK.sky(g, s, 'morning', 300, { seed: 2, nc: 3 });
+    [['#ffd0dc', 0], ['#cfeaf8', 180], ['#fff0b0', 360], ['#d6f0c8', 540], ['#e6d8f8', 720]].forEach((b, i) => RK.building(g, b[1], 40 + (i % 2) * 18, 190, 150, b[0], { cols: 3, rows: 1, ww: 56, wh: 60 }));
+    [[40, 'خضار', '#5cc96b', '#fff'], [320, 'فاكهة', '#ff6f91', '#fff'], [600, 'بقالة', '#ffb347', '#fff']].forEach((st, i) => {
+      awning(g, st[0], 168, 260, st[2], st[3], 7); sign(g, st[0] + 70, 138, 120, st[1], st[2]);
+      rr(g, st[0] + 6, 194, 10, 236, 3, '#8a5a3a', 3); rr(g, st[0] + 244, 194, 10, 236, 3, '#8a5a3a', 3);
+      g.fillStyle = 'rgba(40,20,5,.12)'; g.fillRect(st[0] + 16, 196, 228, 130); table(g, st[0] + 16, 330, 228, 100, '#d9a66e');
     });
-    // clipboard list (left)
-    if (S.list) {
-      G.fillRR(g, 14, 108, 170, 40 + S.list.length * 46, 14, '#fff8b8', 4); G.text(g, 'القايمة', 99, 130, { size: 24, color: '#c25a00' });
-      S.list.forEach((l, i) => { const y = 172 + i * 46; A.draw(g, l.art, 48, y, 38); for (let k = 0; k < l.n; k++) G.circ(g, 92 + k * 17, y, 7, k < (l.got || 0) ? '#5cc96b' : '#fff', 2.5); if ((l.got || 0) >= l.n) A.draw(g, 'check', 166, y, 28); });
-    }
-    if (S.gift) { A.draw(g, 'mk_cloth:blue', 480, 395, 120 + Math.sin(t * 3) * 3); for (let i = 0; i < 5; i++) G.sparkle(g, 480 + Math.sin(t * 2 + i * 1.3) * 80, 340 + Math.cos(t * 2.3 + i) * 30, 7 + i % 3, '#fff6a8', .8); }
+    crateRow(g, 60, 296, 3, 'tomato', 62); crateRow(g, 340, 296, 3, 'apple', 62); crateRow(g, 620, 296, 3, 'orange', 62);
+    A.draw(g, 'cucumber', 112, 366, 40); A.draw(g, 'mk_potato', 170, 366, 40); A.draw(g, 'banana', 394, 366, 40); A.draw(g, 'mk_grapes', 454, 366, 44); A.draw(g, 'carrot', 668, 366, 40); A.draw(g, 'mk_onion', 726, 366, 38);
+    GRD(g, 430);
+    G.amb(s, { k: 'glow', x: 480, y: 160, r: 420, ry: 200, col: '255,214,150', a: .18, z: 'top' }); G.amb(s, { k: 'pollen', x0: 0, x1: 960, y0: 120, y1: 420, n: 10, z: 'top', seed: 3 });
+    G.live(g, s, (g, t) => {
+      if (S.list) {
+        G.fillRR(g, 14, 108, 170, 40 + S.list.length * 46, 14, '#fff8b8', 4); G.text(g, 'القايمة', 99, 130, { size: 24, color: '#c25a00' });
+        S.list.forEach((l, i) => { const y = 172 + i * 46; A.draw(g, l.art, 48, y, 38); for (let k = 0; k < l.n; k++) G.circ(g, 92 + k * 17, y, 7, k < (l.got || 0) ? '#5cc96b' : '#fff', 2.5); if ((l.got || 0) >= l.n) A.draw(g, 'check', 166, y, 28); });
+      }
+      if (S.gift) { A.draw(g, 'mk_cloth:blue', 480, 395, 120 + Math.sin(t * 3) * 3); for (let i = 0; i < 5; i++) G.sparkle(g, 480 + Math.sin(t * 2 + i * 1.3) * 80, 340 + Math.cos(t * 2.3 + i) * 30, 7 + i % 3, '#fff6a8', .8); }
+    });
   };
 
   /* --- busy market street (crowd) --- */
   R.mk_street = function (g, t, s) {
     const S = s.state;
-    blit(g, 'mk_street', k => {
-      k.fillStyle = G.lin(k, 0, 0, 0, 300, ['#8fd6ff', '#fff0d0']); k.fillRect(0, 0, 960, 540);
-      [['#ffd0dc', 0], ['#cfeaf8', 150], ['#fff0b0', 300], ['#d6f0c8', 450], ['#e6d8f8', 600], ['#ffd9b0', 750]].forEach((b, i) => { rr(k, b[1], 30 + (i % 3) * 14, 170, 190, 5, b[0], 4); for (let c = 0; c < 3; c++) for (let r = 0; r < 2; r++) rr(k, b[1] + 14 + c * 50, 50 + r * 62 + (i % 3) * 14, 36, 42, 5, '#bfe8ff', 3); });
-      // stall row
-      [[20, '#ef5350'], [200, '#4a8dff'], [380, '#ffb347'], [560, '#5cc96b'], [740, '#8a6bd6']].forEach((st, i) => { awning(k, st[0], 210, 190, st[1], '#fff', 6); table(k, st[0] + 12, 300, 166, 80, '#d9a66e'); });
-      ['apple', 'orange', 'banana', 'tomato', 'bread'].forEach((a, i) => { for (let j = 0; j < 3; j++) A.draw(k, a, 56 + i * 180 + j * 40, 296, 38); });
-      k.fillStyle = '#dccba8'; k.fillRect(0, 400, 960, 140); G.line(k, 0, 400, 960, 400, 4); k.strokeStyle = 'rgba(90,60,30,.15)'; k.lineWidth = 2; for (let x = 0; x < 960; x += 80) { k.beginPath(); k.moveTo(x, 410); k.lineTo(x - 40, 540); k.stroke(); }
-      // hanging bunting
-      G.line(k, 0, 180, 960, 196, 3, '#6a4a2a'); for (let i = 0; i < 16; i++) G.poly(k, [[i * 60 + 10, 184 + i * 1], [i * 60 + 42, 186 + i * 1], [i * 60 + 26, 210 + i * 1]], ['#ef5350', '#ffd23c', '#4a8dff', '#5cc96b'][i % 4], 2.5);
+    RK.sky(g, s, 'city', 300, { seed: 4 });
+    [['#ffd0dc', 0], ['#cfeaf8', 150], ['#fff0b0', 300], ['#d6f0c8', 450], ['#e6d8f8', 600], ['#ffd9b0', 750]].forEach((b, i) => RK.building(g, b[1], 30 + (i % 3) * 14, 170, 190, b[0], { cols: 3, rows: 2, ww: 50, wh: 62 }));
+    [[20, '#ef5350'], [200, '#4a8dff'], [380, '#ffb347'], [560, '#5cc96b'], [740, '#8a6bd6']].forEach((st, i) => { awning(g, st[0], 210, 190, st[1], '#fff', 6); table(g, st[0] + 12, 300, 166, 80, '#d9a66e'); });
+    ['apple', 'orange', 'banana', 'tomato', 'bread'].forEach((a, i) => { for (let j = 0; j < 3; j++) A.draw(g, a, 56 + i * 180 + j * 40, 296, 38); });
+    GRD(g, 400);
+    RK.stringLights(g, s, 0, 960, 178, 14, 20, ['#ff6f91', '#ffd23c', '#4a8dff', '#5cc96b'], true);
+    G.line(g, 0, 180, 960, 196, 2.5, '#6a4a2a'); for (let i = 0; i < 16; i++) G.poly(g, [[i * 60 + 10, 184 + i * 1], [i * 60 + 42, 186 + i * 1], [i * 60 + 26, 210 + i * 1]], ['#ef5350', '#ffd23c', '#4a8dff', '#5cc96b'][i % 4], 2);
+    G.live(g, s, (g, t) => {
+      if (S.crowd !== false) {
+        const cols = ['ef5350', '4a8dff', 'ffd23c', '5cc96b', '8a6bd6', 'ff8a2a', 'ff6f91', '1fb5a6'];
+        for (let i = 0; i < 9; i++) { const sp = 14 + (i % 4) * 7, dir = i % 2 ? 1 : -1, x = ((i * 137 + t * sp * dir) % 1100 + 1100) % 1100 - 70, y = 392 + (i % 3) * 30; shopper(g, x, y, .95 + (i % 3) * .06, '#' + cols[i % 8], i % 3 ? '#dd9d6c' : '#f0c08a', t, i); }
+      }
+      if (S.balloons) { A.draw(g, 'mk_balloon:red', 760, 170 + Math.sin(t * 2) * 6, 50); A.draw(g, 'mk_balloon:blue', 800, 150 + Math.sin(t * 2 + 1) * 6, 50); A.draw(g, 'mk_balloon:yellow', 840, 175 + Math.sin(t * 2 + 2) * 6, 50); }
+      if (S.meet) A.draw(g, 'mk_meet', S.meet.x, S.meet.y, 90);
     });
-    if (S.crowd !== false) {
-      const cols = ['ef5350', '4a8dff', 'ffd23c', '5cc96b', '8a6bd6', 'ff8a2a', 'ff6f91', '1fb5a6'];
-      for (let i = 0; i < 9; i++) { const sp = 14 + (i % 4) * 7, dir = i % 2 ? 1 : -1, x = ((i * 137 + t * sp * dir) % 1100 + 1100) % 1100 - 70, y = 392 + (i % 3) * 30; shopper(g, x, y, .95 + (i % 3) * .06, '#' + cols[i % 8], i % 3 ? '#dd9d6c' : '#f0c08a', t, i); }
-    }
-    if (S.balloons) { A.draw(g, 'mk_balloon:red', 760, 170 + Math.sin(t * 2) * 6, 50); A.draw(g, 'mk_balloon:blue', 800, 150 + Math.sin(t * 2 + 1) * 6, 50); A.draw(g, 'mk_balloon:yellow', 840, 175 + Math.sin(t * 2 + 2) * 6, 50); }
-    if (S.meet) A.draw(g, 'mk_meet', S.meet.x, S.meet.y, 90);
   };
 
   /* --- bakery. flags: queue [{x,art}] , tray bool --- */
   R.mk_bakery = function (g, t, s) {
     const S = s.state;
-    blit(g, 'mk_bakery', k => {
-      k.fillStyle = G.lin(k, 0, 0, 0, 440, ['#ffe9c8', '#ffd9a0']); k.fillRect(0, 0, 960, 440);
-      k.fillStyle = 'rgba(255,255,255,.25)'; for (let x = 0; x < 960; x += 80) k.fillRect(x, 0, 40, 440);
-      // shelves of bread behind counter
-      for (let r = 0; r < 3; r++) { rr(k, 60, 120 + r * 70, 560, 10, 3, '#b97b4a', 3.5); for (let i = 0; i < 9; i++) A.draw(k, ['mk_baladi', 'mk_fino', 'bread'][(i + r) % 3], 100 + i * 60, 100 + r * 70, 46); }
-      // oven
-      A.draw(k, 'mk_oven', 790, 190, 190); sign(k, 640, 36, 280, 'مخبز الحارة', '#c96a4a');
-      // counter
-      rr(k, 40, 300, 620, 130, 8, '#c8935a', 5); rr(k, 28, 288, 644, 24, 8, '#e8b878', 5);
-      for (let i = 0; i < 4; i++) rr(k, 64 + i * 150, 330, 130, 80, 6, '#d9a66e', 3.5);
-      A.draw(k, 'mk_baladi', 140, 278, 56); A.draw(k, 'mk_fino', 220, 276, 56); A.draw(k, 'mk_baladi', 300, 278, 56); A.draw(k, 'cake', 420, 274, 52); A.draw(k, 'mk_register', 560, 262, 74);
-      k.fillStyle = '#d9cdb8'; k.fillRect(0, 430, 960, 110); G.line(k, 0, 430, 960, 430, 4);
-      // queue marks
-      for (let i = 0; i < 5; i++) { k.fillStyle = 'rgba(255,255,255,.7)'; k.beginPath(); k.ellipse(840 - i * 110, 506, 34, 9, 0, 0, 6.3); k.fill(); }
+    RK.wall(g, 430, '#ffeccb', '#ffd9a2', { pattern: 'stripes', pw: 80, dado: { h: 70, c: '#e9b878' } });
+    for (let r = 0; r < 3; r++) { RK.shelf(g, 60, 120 + r * 70, 560, '#b97b4a'); for (let i = 0; i < 9; i++) A.draw(g, ['mk_baladi', 'mk_fino', 'bread'][(i + r) % 3], 100 + i * 60, 100 + r * 70, 46); }
+    A.draw(g, 'mk_oven', 790, 190, 190); sign(g, 640, 36, 280, 'مخبز الحارة', '#c96a4a');
+    G.ao(g, 40, 300, 620, 130); rr(g, 40, 300, 620, 130, 8, '#c8935a', 5); rr(g, 28, 288, 644, 24, 8, '#e8b878', 5); g.fillStyle = 'rgba(255,255,255,.4)'; g.fillRect(34, 291, 632, 4);
+    for (let i = 0; i < 4; i++) rr(g, 64 + i * 150, 330, 130, 80, 6, '#d9a66e', 3.5);
+    A.draw(g, 'mk_baladi', 140, 278, 56); A.draw(g, 'mk_fino', 220, 276, 56); A.draw(g, 'mk_baladi', 300, 278, 56); A.draw(g, 'cake', 420, 274, 52); A.draw(g, 'mk_register', 560, 262, 74);
+    RK.floor(g, 430, '#e6d8bf', '#c4b28e', { kind: 'tile', alt: 'rgba(255,255,255,.2)', line: 'rgba(100,70,30,.2)' });
+    for (let i = 0; i < 5; i++) { g.fillStyle = 'rgba(255,255,255,.7)'; g.beginPath(); g.ellipse(840 - i * 110, 506, 34, 9, 0, 0, 6.3); g.fill(); }
+    G.amb(s, { k: 'glow', x: 790, y: 250, r: 220, ry: 200, col: '255,150,60', a: .45, flick: .15, z: 'top' }); G.amb(s, { k: 'steam', x: 400, y: 262, sc: 1.1, n: 4, z: 'mid' }); G.amb(s, { k: 'steam', x: 160, y: 262, sc: 1, n: 3, z: 'mid' });
+    G.live(g, s, (g, t) => {
+      if (S.baker !== false) A.draw(g, 'mk_baker', 340, 214, 86);
+      if (S.queue) S.queue.forEach((q, i) => { shopper(g, q.x, 500 + (q.dy || 0), 1.45, q.c || '#ef5350', q.sk || '#dd9d6c', t, i); });
+      if (S.crumbs) S.crumbs.forEach(c => { if (!c.gone) A.draw(g, 'mk_crumbs', c.x, c.y, 40); });
+      if (S.bird) { const b = S.bird; A.draw(g, 'mk_bird', b.x, b.y + Math.sin(t * 6) * 2, 54); }
     });
-    if (S.baker !== false) A.draw(g, 'mk_baker', 340, 214, 86);
-    if (S.queue) S.queue.forEach((q, i) => { shopper(g, q.x, 500 + (q.dy || 0), 1.45, q.c || '#ef5350', q.sk || '#dd9d6c', t, i); });
-    if (S.crumbs) S.crumbs.forEach(c => { if (!c.gone) A.draw(g, 'mk_crumbs', c.x, c.y, 40); });
-    if (S.bird) { const b = S.bird; A.draw(g, 'mk_bird', b.x, b.y + Math.sin(t * 6) * 2, 54); }
   };
 
   /* --- checkout counter. flags: shown {text} on the register display --- */
   R.mk_checkout = function (g, t, s) {
     const S = s.state;
-    blit(g, 'mk_checkout', k => {
-      k.fillStyle = G.lin(k, 0, 0, 0, 440, ['#d6f0c8', '#eef8d8']); k.fillRect(0, 0, 960, 440);
-      // shelves with goods
-      for (let r = 0; r < 3; r++) { rr(k, 40, 110 + r * 80, 560, 10, 3, '#b97b4a', 3.5); ['soda', 'chips', 'milk', 'cheese', 'candy', 'bread', 'chocolate', 'cake'].forEach((a, i) => A.draw(k, a, 80 + i * 68, 84 + r * 80, 46)); }
-      sign(k, 650, 40, 250, 'سوبر ماركت الحي', '#2fa09a'); A.draw(k, 'mk_price:5', 700, 130, 56); A.draw(k, 'mk_price:15', 780, 130, 56); A.draw(k, 'mk_price:20', 860, 130, 56);
-      rr(k, 620, 230, 320, 200, 8, '#c8935a', 5); rr(k, 608, 216, 344, 24, 8, '#e8b878', 5); A.draw(k, 'mk_register', 880, 190, 100);
-      k.fillStyle = '#d9cdb8'; k.fillRect(0, 430, 960, 110); G.line(k, 0, 430, 960, 430, 4); k.strokeStyle = 'rgba(90,60,30,.15)'; k.lineWidth = 2; for (let x = 0; x < 960; x += 80) { k.beginPath(); k.moveTo(x, 440); k.lineTo(x - 40, 540); k.stroke(); }
+    RK.wall(g, 430, '#e0f5d2', '#f0f9dc', { pattern: 'tiles', tw: 60, th: 44, grout: 'rgba(255,255,255,.6)', crown: false });
+    for (let r = 0; r < 3; r++) { RK.shelf(g, 40, 110 + r * 80, 560, '#b97b4a'); ['soda', 'chips', 'milk', 'cheese', 'candy', 'bread', 'chocolate', 'cake'].forEach((a, i) => A.draw(g, a, 80 + i * 68, 84 + r * 80, 46)); }
+    sign(g, 650, 40, 250, 'سوبر ماركت الحي', '#2fa09a'); A.draw(g, 'mk_price:5', 700, 130, 56); A.draw(g, 'mk_price:15', 780, 130, 56); A.draw(g, 'mk_price:20', 860, 130, 56);
+    G.ao(g, 620, 230, 320, 200); rr(g, 620, 230, 320, 200, 8, '#c8935a', 5); rr(g, 608, 216, 344, 24, 8, '#e8b878', 5); g.fillStyle = 'rgba(255,255,255,.4)'; g.fillRect(614, 219, 332, 4); A.draw(g, 'mk_register', 880, 190, 100);
+    RK.floor(g, 430, '#e9e2cf', '#c9bea0', { kind: 'tile', alt: 'rgba(255,255,255,.25)', line: 'rgba(100,80,40,.2)' });
+    G.amb(s, { k: 'glow', x: 300, y: 40, r: 420, ry: 140, col: '255,255,235', a: .3, z: 'top' });
+    G.amb(s, { k: 'blink', x: 936, y: 100, r: 3.4, col: '#ff5a4a', glow: '255,100,80', period: 1.6, z: 'mid' });
+    G.live(g, s, (g, t) => {
+      A.draw(g, 'mk_vendor', 790, 168, 84);
+      if (S.shown) { G.fillRR(g, 836, 160, 88, 30, 5, '#1d3a22', 0); G.text(g, S.shown, 880, 175, { size: 22, color: '#9ff0a8' }); }
+      if (S.items) S.items.forEach(a => A.draw(g, a.art, a.x, a.y, a.s || 50));
     });
-    A.draw(g, 'mk_vendor', 790, 168, 84);
-    if (S.shown) { G.fillRR(g, 836, 160, 88, 30, 5, '#1d3a22', 0); G.text(g, S.shown, 880, 175, { size: 22, color: '#9ff0a8' }); }
-    if (S.items) S.items.forEach(a => A.draw(g, a.art, a.x, a.y, a.s || 50));
   };
 })();

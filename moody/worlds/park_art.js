@@ -58,85 +58,88 @@
   });
 
   /* ------------------------------------------------------------------ backgrounds */
-  function sky(g, t, top, bot, sunx) {
-    g.fillStyle = G.lin(g, 0, 0, 0, 400, [top || '#7fd0ff', bot || '#dff3ff']); g.fillRect(0, 0, 960, 430);
-    G.sun(g, sunx || 830, 92, 32, t); [[120, 110, 1.3], [420, 80, 1], [660, 130, 1.1]].forEach((c, i) => G.cloud(g, ((c[0] + t * (6 + i * 3)) % 1180) - 120, c[1], c[2], .85));
-  }
+  const RK = G.room;
+  function sky(g, t, top, bot, sunx, s) { RK.sky(g, s, 'garden', 400, { seed: 5, cy1: 200 }); }
   function hills(g, y) {
-    g.fillStyle = '#a8e0a0'; g.beginPath(); g.moveTo(0, y + 30); g.quadraticCurveTo(200, y - 50, 420, y + 20); g.quadraticCurveTo(650, y + 70, 960, y - 20); g.lineTo(960, 540); g.lineTo(0, 540); g.fill();
-    g.fillStyle = '#92d68c'; g.beginPath(); g.moveTo(0, y + 60); g.quadraticCurveTo(300, y + 10, 560, y + 50); g.quadraticCurveTo(800, y + 80, 960, y + 40); g.lineTo(960, 540); g.lineTo(0, 540); g.fill();
+    G.hills(g, 0, 960, y + 40, 90, '#8fd486', 3, '#b4e8a6'); G.hills(g, 0, 960, y + 90, 70, '#6fc46c', 8, '#8fd68a');
   }
   function trees(g, y, n) { for (let i = 0; i < n; i++) A.draw(g, 'pk_tree', 40 + i * (900 / (n - 1)) + (i % 2) * 22, y + (i % 3) * 8, 118 + (i % 2) * 34); }
-  function grass(g, y) { g.fillStyle = G.lin(g, 0, y, 0, 540, ['#86d17f', '#5cb85c']); g.fillRect(0, y, 960, 540 - y); G.line(g, 0, y, 960, y, 3, 'rgba(60,110,50,.5)'); g.strokeStyle = 'rgba(40,110,50,.35)'; g.lineWidth = 3; for (let i = 0; i < 40; i++) { const x = (i * 97) % 960, yy = y + 14 + (i * 53) % (540 - y - 20); g.beginPath(); g.moveTo(x, yy); g.lineTo(x - 3, yy - 9); g.moveTo(x + 5, yy); g.lineTo(x + 7, yy - 8); g.stroke(); } }
-  function path(g) { g.fillStyle = '#ecd7a8'; g.beginPath(); g.moveTo(330, 430); g.quadraticCurveTo(500, 410, 640, 430); g.lineTo(900, 540); g.lineTo(80, 540); g.closePath(); g.fill(); g.strokeStyle = 'rgba(120,80,30,.25)'; g.lineWidth = 3; g.stroke(); }
-  function fence(g, y, c) { rr(g, -10, y, 980, 9, 3, c || '#c8935a', 3.5); for (let x = 6; x < 960; x += 44) { rr(g, x, y - 26, 14, 56, 3, c || '#c8935a', 3.5); } }
+  function grass(g, y) { RK.grass(g, y, '#90d884', '#5fb558', 6); }
+  function path(g) { g.fillStyle = G.lin(g, 0, 410, 0, 540, ['#f2e0b4', '#dcc590']); g.beginPath(); g.moveTo(330, 430); g.quadraticCurveTo(500, 410, 640, 430); g.lineTo(900, 540); g.lineTo(80, 540); g.closePath(); g.fill(); g.strokeStyle = 'rgba(120,80,30,.25)'; g.lineWidth = 2; g.stroke(); g.fillStyle = 'rgba(255,255,255,.25)'; for (let i = 0; i < 40; i++) g.fillRect(150 + (i * 61) % 640, 450 + (i * 37) % 80, 6, 2); }
+  function fence(g, y, c) { g.fillStyle = 'rgba(30,60,20,.25)'; g.fillRect(0, y + 8, 960, 10); rr(g, -10, y, 980, 9, 3, c || '#c8935a', 3); for (let x = 6; x < 960; x += 44) { rr(g, x, y - 26, 14, 56, 3, c || '#c8935a', 3); } }
+  M.look.setAll({
+    pkPark: { tod: 'day', indoor: false, floor: 392, live: ['noSwing', 'noKid', 'noQueue', 'smallKid', 'noCrowd'], vig: .2 },
+    pkGarden: { tod: 'morning', indoor: false, floor: 380, live: ['hose', 'tapSpot', 'tapOff', 'bees'], vig: .2 },
+    pkZoo: { tod: 'day', indoor: false, floor: 436, live: ['hideAnimals'], vig: .2 }
+  });
 
   const HIDE = [{ x: 150, y: 372, art: 'pk_bush', s: 180 }, { x: 420, y: 330, art: 'pk_tree', s: 230 }, { x: 660, y: 392, art: 'pk_bench', s: 180 }, { x: 850, y: 352, art: 'pk_slide', s: 210 }];
   M.parkHide = HIDE;
 
   R.pkPark = function (g, t, s) {
     const S = s.state, kind = S.kind || 'plain';
-    sky(g, t); hills(g, 330); trees(g, 318, 8); grass(g, 392);
+    sky(g, t, 0, 0, 0, s); hills(g, 330); trees(g, 318, 8); grass(g, 392);
     if (kind === 'pitch') {
-      for (let i = 0; i < 6; i++) { g.fillStyle = i % 2 ? '#6fc96a' : '#7ed476'; g.beginPath(); g.moveTo(480 + (i - 3) * 60, 392); g.lineTo(480 + (i - 2) * 60, 392); g.lineTo(480 + (i - 2) * 190 - 190 * 0 - 0, 540); g.lineTo(480 + (i - 3) * 190, 540); g.closePath(); g.fill(); }
-      g.strokeStyle = 'rgba(255,255,255,.85)'; g.lineWidth = 5; g.beginPath(); g.moveTo(130, 540); g.lineTo(260, 392); g.lineTo(700, 392); g.lineTo(830, 540); g.stroke(); g.beginPath(); g.ellipse(480, 470, 110, 34, 0, 0, 6.3); g.stroke(); g.beginPath(); g.moveTo(480, 392); g.lineTo(480, 506); g.stroke();
+      for (let i = 0; i < 6; i++) { g.fillStyle = i % 2 ? 'rgba(80,170,70,.5)' : 'rgba(150,230,120,.35)'; g.beginPath(); g.moveTo(480 + (i - 3) * 60, 392); g.lineTo(480 + (i - 2) * 60, 392); g.lineTo(480 + (i - 2) * 190, 540); g.lineTo(480 + (i - 3) * 190, 540); g.closePath(); g.fill(); }
+      g.strokeStyle = 'rgba(255,255,255,.9)'; g.lineWidth = 5; g.beginPath(); g.moveTo(130, 540); g.lineTo(260, 392); g.lineTo(700, 392); g.lineTo(830, 540); g.stroke(); g.beginPath(); g.ellipse(480, 470, 110, 34, 0, 0, 6.3); g.stroke(); g.beginPath(); g.moveTo(480, 392); g.lineTo(480, 506); g.stroke();
       if (!S.noGoal) { A.draw(g, 'pk_goal', 230, 372, 150); A.draw(g, 'pk_goal', 730, 372, 150); }
-      if (!S.noCrowd) [['pk_kid:red', 70, 400], ['pk_kid:blue:d', 150, 396], ['pk_kid:green', 810, 398], ['pk_kid:purple:l:g', 890, 402]].forEach((k, i) => { const jump = Math.abs(Math.sin(t * 3 + i)) * 6; A.draw(g, k[0], k[1], k[2] - jump - 20, 92); });
       if (S.cones) [[300, 452], [660, 452]].forEach(c => A.draw(g, 'pk_cone', c[0], c[1], 44));
     } else {
       path(g); fence(g, 392, '#d9a66e');
       for (let i = 0; i < 9; i++) A.draw(g, 'pk_flower:' + ['pink', 'yellow', 'red', 'white', 'purple'][i % 5], 30 + i * 112 + (i % 2) * 20, 452 + (i * 17) % 40, 46);
     }
-    if (kind === 'swings') {
-      if (!S.noSwing) {
-        const sx = 430, top = 220, L = 120, a = Math.sin(t * 1.9) * .5;
-        G.line(g, sx - 120, 420, sx - 70, top, 10); G.line(g, sx + 120, 420, sx + 70, top, 10); G.line(g, sx - 120, 420, sx - 70, top, 5, '#e07a4a'); G.line(g, sx + 120, 420, sx + 70, top, 5, '#e07a4a'); G.line(g, sx - 80, top, sx + 80, top, 11); G.line(g, sx - 80, top, sx + 80, top, 6, '#ef8a5a');
-        [[-30, 1], [30, 0]].forEach(([dx, kid]) => { const aa = kid ? a : a * .5 + .3, px = sx + dx + Math.sin(aa) * L, py = top + Math.cos(aa) * L; G.line(g, sx + dx - 14, top, px - 14, py, 3); G.line(g, sx + dx + 14, top, px + 14, py, 3); if (kid && !S.noKid) A.draw(g, 'pk_kid:orange', px, py - 30, 70); rr(g, px - 22, py - 4, 44, 9, 4, '#8a5a3a', 3.5); });
-        if (!S.noQueue) [['pk_kid:blue', 690, 462], ['pk_kid:pink:l:g', 760, 470]].forEach(k => A.draw(g, k[0], k[1], k[2] - 24, 100));
-      }
-      A.draw(g, 'pk_slide', 850, 340, 200); A.draw(g, 'pk_bench', 120, 400, 150);
-      if (S.smallKid) { A.draw(g, 'pk_kid:pink:l:g', S.smallKid.x || 560, S.smallKid.y || 440, 96); if (S.smallKid.balloon) A.draw(g, 'pk_balloon:red', (S.smallKid.x || 560) + 30, (S.smallKid.y || 440) - 74 + Math.sin(t * 2) * 4, 52); }
-      if (S.balloonStuck) { A.draw(g, 'pk_tree', 290, 300, 270); G.line(g, 290, 214, 290, 196, 2.5, '#8a8aa0'); A.draw(g, 'pk_balloon:red', 290, 178, 66); }
-    }
+    if (kind === 'swings') { A.draw(g, 'pk_slide', 850, 340, 200); A.draw(g, 'pk_bench', 120, 400, 150); }
     if (kind === 'hide') HIDE.forEach(p => { if (p.art === 'pk_tree') A.draw(g, p.art, p.x, p.y, p.s); });
     if (kind === 'hide') HIDE.forEach(p => { if (p.art !== 'pk_tree') A.draw(g, p.art, p.x, p.y, p.s); });
     if (kind === 'plain' && S.bag) A.draw(g, S.bag, 480, 440, 120);
+    G.amb(s, { k: 'pollen', x0: 0, x1: 960, y0: 250, y1: 500, n: 14, z: 'top', seed: 6 }); G.amb(s, { k: 'leaves', x0: 40, x1: 920, y0: 100, y1: 440, n: 5, cols: ['#8fd16a', '#c8e080', '#f0d060'], z: 'top', seed: 11 });
+    G.amb(s, { k: 'glow', x: 830, y: 80, r: 360, ry: 260, col: '255,240,190', a: .1, z: 'top' });
+    G.live(g, s, (g, t) => {
+      if (kind === 'pitch' && !S.noCrowd) [['pk_kid:red', 70, 400], ['pk_kid:blue:d', 150, 396], ['pk_kid:green', 810, 398], ['pk_kid:purple:l:g', 890, 402]].forEach((k, i) => { const jump = Math.abs(Math.sin(t * 3 + i)) * 6; A.draw(g, k[0], k[1], k[2] - jump - 20, 92); });
+      if (kind === 'swings') {
+        if (!S.noSwing) {
+          const sx = 430, top = 220, L = 120, a = Math.sin(t * 1.9) * .5;
+          G.line(g, sx - 120, 420, sx - 70, top, 10); G.line(g, sx + 120, 420, sx + 70, top, 10); G.line(g, sx - 120, 420, sx - 70, top, 5, '#e07a4a'); G.line(g, sx + 120, 420, sx + 70, top, 5, '#e07a4a'); G.line(g, sx - 80, top, sx + 80, top, 11); G.line(g, sx - 80, top, sx + 80, top, 6, '#ef8a5a');
+          [[-30, 1], [30, 0]].forEach(([dx, kid]) => { const aa = kid ? a : a * .5 + .3, px = sx + dx + Math.sin(aa) * L, py = top + Math.cos(aa) * L; G.line(g, sx + dx - 14, top, px - 14, py, 3); G.line(g, sx + dx + 14, top, px + 14, py, 3); if (kid && !S.noKid) A.draw(g, 'pk_kid:orange', px, py - 30, 70); rr(g, px - 22, py - 4, 44, 9, 4, '#8a5a3a', 3.5); });
+          if (!S.noQueue) [['pk_kid:blue', 690, 462], ['pk_kid:pink:l:g', 760, 470]].forEach(k => A.draw(g, k[0], k[1], k[2] - 24, 100));
+        }
+        if (S.smallKid) { A.draw(g, 'pk_kid:pink:l:g', S.smallKid.x || 560, S.smallKid.y || 440, 96); if (S.smallKid.balloon) A.draw(g, 'pk_balloon:red', (S.smallKid.x || 560) + 30, (S.smallKid.y || 440) - 74 + Math.sin(t * 2) * 4, 52); }
+        if (S.balloonStuck) { A.draw(g, 'pk_tree', 290, 300, 270); G.line(g, 290, 214, 290, 196, 2.5, '#8a8aa0'); A.draw(g, 'pk_balloon:red', 290, 178, 66); }
+      }
+    });
   };
 
   R.pkGarden = function (g, t, s) {
-    const S = s.state; sky(g, t, '#8fd8ff', '#e8f8ff', 780); hills(g, 320); fence(g, 330, '#e8d2a8');
-    // shed
-    rr(g, 770, 190, 160, 150, 6, '#c8935a', 5); G.poly(g, [[756, 192], [850, 140], [944, 192]], '#b9533a', 5); rr(g, 820, 250, 54, 90, 4, '#8a5a3a', 4); G.circ(g, 866, 296, 3.5, '#ffd23c', 2);
+    const S = s.state; sky(g, t, 0, 0, 0, s); hills(g, 320); fence(g, 330, '#f0dcb4');
+    rr(g, 770, 190, 160, 150, 6, '#c8935a', 4); G.poly(g, [[756, 192], [850, 140], [944, 192]], '#b9533a', 4); rr(g, 820, 250, 54, 90, 4, '#8a5a3a', 4); G.circ(g, 866, 296, 3.5, '#ffd23c', 2);
     trees(g, 300, 4); grass(g, 380);
-    // beds
     [[70, 250], [350, 250], [630, 160]].forEach((b, i) => {
-      const x = b[0], w = b[1]; rr(g, x, 392, w, 66, 10, '#8a5a3a', 5); rr(g, x + 8, 386, w - 16, 20, 8, '#6a4426', 3);
+      const x = b[0], w = b[1]; G.ao(g, x, 392, w, 66); rr(g, x, 392, w, 66, 10, '#8a5a3a', 4); rr(g, x + 8, 386, w - 16, 20, 8, '#6a4426', 3);
       for (let k = 0; k < 4; k++) { const px = x + 30 + k * ((w - 60) / 3); if (S.bloom) A.draw(g, 'pk_flower:' + ['pink', 'yellow', 'red', 'purple'][(i + k) % 4], px, 372, 64); else if (S.sprouts) A.draw(g, 'pk_sprout', px, 380, 40); else G.ell(g, px, 400, 14, 5, 'rgba(40,20,5,.35)', 0); }
     });
-    if (S.hose && S.tapSpot) { const tx = S.tapSpot.x, ty = S.tapSpot.y + 22; g.beginPath(); g.moveTo(tx, ty); g.bezierCurveTo(tx + 10, ty + 90, tx + 90, ty + 40, tx + 120, ty + 140); g.lineWidth = 12; g.strokeStyle = OL; g.stroke(); g.lineWidth = 7; g.strokeStyle = '#5cc96b'; g.stroke(); if (!S.tapOff) for (let i = 0; i < 4; i++) G.ell(g, tx + 120 + (i % 2) * 8, ty + 150 + ((t * 100 + i * 17) % 34), 4, 7, '#4aa8e8', 1.5); }
-    if (S.tapSpot) A.draw(g, 'tap', S.tapSpot.x, S.tapSpot.y, 90, { drip: !S.tapOff });
-    if (S.bees) S.bees.forEach((b, i) => A.draw(g, b.art, b.x + Math.sin(t * 2 + i) * 12, b.y + Math.cos(t * 2.4 + i) * 8, b.s || 44));
+    G.amb(s, { k: 'pollen', x0: 0, x1: 960, y0: 250, y1: 480, n: 14, z: 'top', seed: 7 }); G.amb(s, { k: 'birds', y: 120, n: 3, speed: 22, sc: 1, seed: 5 }); G.amb(s, { k: 'glow', x: 780, y: 70, r: 340, ry: 240, col: '255,240,190', a: .1, z: 'top' });
+    G.live(g, s, (g, t) => {
+      if (S.hose && S.tapSpot) { const tx = S.tapSpot.x, ty = S.tapSpot.y + 22; g.beginPath(); g.moveTo(tx, ty); g.bezierCurveTo(tx + 10, ty + 90, tx + 90, ty + 40, tx + 120, ty + 140); g.lineWidth = 12; g.strokeStyle = OL; g.stroke(); g.lineWidth = 7; g.strokeStyle = '#5cc96b'; g.stroke(); if (!S.tapOff) for (let i = 0; i < 4; i++) G.ell(g, tx + 120 + (i % 2) * 8, ty + 150 + ((t * 100 + i * 17) % 34), 4, 7, '#4aa8e8', 1.5); }
+      if (S.tapSpot) A.draw(g, 'tap', S.tapSpot.x, S.tapSpot.y, 90, { drip: !S.tapOff });
+      if (S.bees) S.bees.forEach((b, i) => A.draw(g, b.art, b.x + Math.sin(t * 2 + i) * 12, b.y + Math.cos(t * 2.4 + i) * 8, b.s || 44));
+    });
   };
 
   const ZOO_HIDE = [{ x: 90, y: 438, art: 'pk_bush', s: 150 }, { x: 480, y: 444, art: 'pk_bench', s: 150 }, { x: 880, y: 438, art: 'barrels', s: 120 }];
   M.zooHide = ZOO_HIDE;
   A.register('barrels', (g) => { [[-18, 8], [18, 8], [0, -22]].forEach(p => { G.fillRR(g, p[0] - 17, p[1] - 22, 34, 44, 8, '#c8935a', 4.5); G.line(g, p[0] - 17, p[1] - 8, p[0] + 17, p[1] - 8, 3); G.line(g, p[0] - 17, p[1] + 8, p[0] + 17, p[1] + 8, 3); }); });
   R.pkZoo = function (g, t, s) {
-    const S = s.state; sky(g, t, '#8fd8ff', '#fdf3d0', 800); hills(g, 300); trees(g, 280, 6);
-    // enclosures (back)
+    const S = s.state; sky(g, t, 0, 0, 0, s); hills(g, 300); trees(g, 280, 6);
     const enc = [[30, 'pk_lion', '#e8c98a', 84], [270, 'pk_giraffe', '#c9e6a0', 120], [510, 'pk_elephant', '#e0d3b0', 120], [750, 'pk_monkey', '#c9e6a0', 84]];
-    enc.forEach((e, i) => {
-      const x = e[0]; rr(g, x, 214, 190, 190, 12, e[2], 5);
-      if (i === 3) { G.line(g, x + 140, 214, x + 140, 330, 8, '#8a5a3a'); G.line(g, x + 100, 250, x + 180, 240, 6, '#8a5a3a'); }
-      const bob = Math.sin(t * 1.5 + i) * 4; const ay = e[1] === 'pk_giraffe' ? 318 : 322 + bob;
-      if (!(S.hideAnimals && S.hideAnimals.indexOf(e[1]) >= 0)) A.draw(g, e[1], x + 95 + (e[1] === 'pk_monkey' ? Math.sin(t * 2) * 24 : 0), ay + (e[1] === 'pk_giraffe' ? 0 : -6), e[3] * 1.4);
-    });
-    grass(g, 400); g.fillStyle = '#ecd7a8'; g.fillRect(0, 436, 960, 104); G.line(g, 0, 436, 960, 436, 4);
-    // bars in front of animals
-    enc.forEach(e => { const x = e[0]; rr(g, x - 4, 384, 198, 14, 5, '#6e7791', 4); for (let k = 0; k < 8; k++) rr(g, x + 4 + k * 24, 346, 7, 42, 3, '#9aa0b5', 3); rr(g, x - 4, 342, 198, 10, 4, '#6e7791', 4); });
-    // gate banner
+    enc.forEach((e, i) => { const x = e[0]; rr(g, x, 214, 190, 190, 12, e[2], 4); g.fillStyle = 'rgba(60,30,5,.15)'; G.rr(g, x + 6, 220, 178, 60, 8); g.fill(); if (i === 3) { G.line(g, x + 140, 214, x + 140, 330, 8, '#8a5a3a'); G.line(g, x + 100, 250, x + 180, 240, 6, '#8a5a3a'); } });
+    grass(g, 400); RK.sidewalk(g, 436, 540, '#f0e0b8', '#d8c496');
     rr(g, 300, 100, 360, 50, 14, '#ffd23c', 5); G.text(g, 'حديقة الحيوان الصغيرة', 480, 126, { size: 30, color: '#8a2a00' });
     A.draw(g, 'pk_sign', 925, 350, 80);
     if (S.hideKitten) ZOO_HIDE.forEach(p => A.draw(g, p.art, p.x, p.y, p.s));
+    G.amb(s, { k: 'pollen', x0: 0, x1: 960, y0: 250, y1: 480, n: 10, z: 'top', seed: 9 }); G.amb(s, { k: 'glow', x: 800, y: 70, r: 340, ry: 240, col: '255,240,190', a: .1, z: 'top' });
+    G.live(g, s, (g, t) => {
+      enc.forEach((e, i) => { const x = e[0], bob = Math.sin(t * 1.5 + i) * 4, ay = e[1] === 'pk_giraffe' ? 318 : 322 + bob; if (!(S.hideAnimals && S.hideAnimals.indexOf(e[1]) >= 0)) { g.save(); g.beginPath(); g.rect(x, 150, 190, 250); g.clip(); A.draw(g, e[1], x + 95 + (e[1] === 'pk_monkey' ? Math.sin(t * 2) * 24 : 0), ay + (e[1] === 'pk_giraffe' ? 0 : -6), e[3] * 1.4); g.restore(); } });
+      enc.forEach(e => { const x = e[0]; rr(g, x - 4, 384, 198, 14, 5, '#6e7791', 3); for (let k = 0; k < 8; k++) rr(g, x + 4 + k * 24, 346, 7, 42, 3, '#9aa0b5', 2.5); rr(g, x - 4, 342, 198, 10, 4, '#6e7791', 3); });
+    }, 'mid');
   };
 })();

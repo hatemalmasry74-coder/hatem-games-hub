@@ -217,3 +217,108 @@ A button on the world map (with a red notification dot until today's call is don
 
 ## Tools
 `tools/botlib.js` (kid-bot: real mouse/touch, all kits), `tools/regress.js [desk|phone|ipad] [wrong] [worlds]` (plays every mission), `tools/collect_voice.js`, `tools/voice_hash.py`. Test hooks: `?unlock=1`, `?collectvoice=1`, `Moody.scene.dbg`.
+
+
+
+---
+# Visual system (scene look: painted rooms, light, depth, ambient life)
+
+Everything below lives in `engine/gfx.js` (toolkit), `engine/stage.js` (baking, compositing, transitions, fx) and the room drawers in `worlds/*_art.js`.
+Characters are still drawn through `Moody.chars.draw` (unchanged API; the stage passes `noShadow:true` because it draws its own contact shadow).
+
+## How a room is drawn
+A background `Moody.rooms[name] = (g, t, stage) => {...}` is **baked once** (per canvas size + per change of `stage.state`) into shared offscreen canvases:
+
+| layer | what | per frame |
+|---|---|---|
+| **far** | sky / window views / distant scenery, painted at half resolution (soft, hazed = cheap depth-of-field) and upscaled once | 1:1 blit of the occupied tiles only, shifted by the **parallax** offset (opposite to the camera) |
+| ambient `far` | clouds, birds, stars, traffic behind the glass | animated |
+| **mid** | the room itself (opaque, painted mode, contact shadows, wall/floor occlusion) | one 1:1 blit |
+| ambient `mid` | curtains, steam, blinking lights, flags, drips, `G.live` pieces | animated |
+| hero contact shadows + heroes | soft shadow offset away from the room's key light, shrinks while jumping | |
+| **near** | foreground framing (hanging vines, string lights) + colour grade: time-of-day tint, vignette, ceiling/floor falloff | 1:1 blit of occupied tiles, shifted the other way |
+| ambient `top` | light shafts (god rays), dust motes, lamp / TV / oven glows, pollen, leaves | animated, additive |
+| glows | pulsing ring under draggable items (auto from `stage.dbg`), manual `stage.addGlow` | |
+| kit layers, particles, bubbles ... | unchanged | |
+
+Per-frame cost of a baked room is ~3 blits + a handful of sprites, independent of how many shapes the room has.
+**Paint mode** (`G.paint`, only while baking or building a sprite): `G.fs` (used by fillRR/circ/ell/poly/star/heart/line) turns flat fills into soft vertical gradients with a top sheen + inner rim shade and swaps the black outline for a thin darker tone of the fill; things that stand on the floor line get an ambient-occlusion contact shadow (`G.ao`). Every legacy art/room therefore upgrades automatically.
+`Moody.art.draw` at runtime renders each prop once into a cached painted sprite (`A.sprite`) and blits it, so kit items match the rooms. Animated arts are excluded in `A.noCache` (tap, alarm, clock, fan, sun...). `?sprites=0` disables it.
+
+## Writing / editing a room
+```js
+Moody.look.setAll({ my_room: s => ({ tod:'morning', floor:430, lightX:465, live:['door'], vig:.26 }) });   // or a plain object
+Moody.rooms.my_room = function (g, t, s) {
+  const S = s.state, RK = Moody.gfx.room, G = Moody.gfx;
+  RK.wall(g, 430, '#ffe8cc', '#ffd6ac', {pattern:'stripes', dado:{h:70, c:'#ffcc9c'}});   // + 'dots' 'stars' 'tiles' 'brick'
+  RK.floor(g, 430, '#dba670', '#a8733f', {kind:'wood'});                                  // 'wood' 'tile' 'carpet' 'stone' (perspective)
+  G.window(g, s, 390, 90, 150, 140, {view:'morning', curtains:'#ff8fb8'});               // far view + hole + frame + sill + sun shaft + dust + swaying curtains + clouds
+  RK.rug(g, 580, 480, 190, 36, '#ff9ec0', '#ffd0e0', {star:true});  RK.frame(...)  RK.shelf(...)  RK.stringLights(...)
+  G.fillRR(...), G.circ(...), A.draw(g,'sofa',...)                                         // normal drawing code - painted automatically
+  G.amb(s, {k:'steam', x:525, y:222, sc:1, n:4});                                         // ambient animation (see kinds)
+  G.live(g, s, (g, t) => { if (S.door) ... });                                            // anything that changes every frame / by tween
+};
+```
+* **Meta (`Moody.look`)**: `tod` (`day morning noon sunset evening night warm cool` = tint/vignette/glow colour), `floor` (floor line y: occlusion strip + AO band), `lightX` (key-light x: shadow direction), `vig`, `indoor` (ceiling falloff + floor sheen), `ao`, `par` (parallax multiplier, 0 = off), `glow:{x,y,r,a,col}`, `tint`, `haze`, `shadow` (hero shadow strength), `live:[stateKeys]`, `raw:true` (never bake; draw every frame - used for `callroom`). May be a function of the stage.
+* **State and baking**: the bake is re-done when `JSON.stringify(stage.state)` changes (minus the keys listed in `live`). Keys that are **tweened or mutated every frame** (door openness, positions, `prog`, `scroll` ...) MUST be listed in `live` and drawn inside `G.live(g, s, fn, z)` (`z` = `'far'|'mid'|'top'`), otherwise the room would re-bake each frame (a guard falls back to raw drawing after 6 bakes in 1.5 s). Call `stage.dirty()` after mutating nested state objects in place.
+* **Layers inside a room function**: `G.far(g,s,c=>{...})` draws into the far layer, `G.near(g,s,c=>{...})` into the foreground layer, `G.hole(g,s,x,y,w,h,r)` cuts a window through the mid layer. When a room function is called outside the stage bake (e.g. directly by a kit) these degrade to plain drawing.
+* **Views** (`G.views[name](ctx,x,y,w,h)`, used by `G.window`, `RK.sky`): `day morning sunset night city citysunset citynight garden mountain sea plainsky dusksky` (+ world specific ones registered by the art files). `RK.sky(g, s, view, height)` = full-width sky with clouds + birds for outdoor rooms.
+* **Outdoor kit**: `RK.building`, `RK.tree`, `RK.road`, `RK.sidewalk`, `RK.grass`, `RK.flag`, `G.hills`, `G.skyline`, `G.blobTrees`.
+* **Scrolling parallax**: `G.tile(key, P, y0, y1, res, fn)` bakes a seamless layer (fn periodic in P), `G.drawTile(g, tile, scroll)` blits it wrapped (see `saudiRoad`). `G.nzp`/`G.kq` give periodic noise.
+* **Ambient kinds** (`G.amb(stage, {k, ...})`, table `G.amb.kinds`): `curtain shaft dust glow clouds birds stars steam blink waves cars second(clock hand) leaves pollen bubbles drip flag live`. Add one: `G.amb.kinds.mine = {z:'mid', opt:true, draw(g,t,spec,stage){...}}` (`opt` = decorative, skipped when ambient is off). `t` is 0 when motion is off, so every kind must look right frozen.
+* Colour helpers: `G.shade G.tones G.mix G.rgba G.parse`, light helpers `G.glowSprite G.glowAt G.shadowSprite G.cloudSprite G.ao G.aoEll`.
+
+## Global switches (`Moody.fx`)
+`fx.motion` (follows `prefers-reduced-motion`; `?motion=0` forces off: no parallax, no sway, everything frozen), `fx.ambient` (`?ambient=0`: skips decorative ambient), `fx.parallax`, `fx.shadows`, `fx.glow`, `fx.sprites`. Parallax follows the active hero, the pointer and (when the device reports it) the tilt - always tiny, quantised to device pixels so blits stay 1:1.
+
+## Scene transitions, title card, effects (stage API; `ctx` wrappers where it makes sense)
+* `await ctx.scene(bg, {...})` now runs `stage.transition(applyFn)`: a soft iris closes on the active hero (210 ms), the scene swaps, it opens with a slight zoom-out (300 ms). **Any tap/click skips it** (`stage.skipTr()`); `{instant:true}` is unchanged. `stage.transition(apply, {closeMs, openMs, instant})` can be used directly.
+* `ctx.titleCard` switches `stage.setMood(true)`: cinematic bars, dimming and a slow zoom behind the title panel (`setMood(false)` when it closes).
+* `stage.sparkle(x,y,{n,spread,cols})` / `ctx.fx.sparkle` : glittering burst + ring + glow. `stage.reward(x,y)` / `ctx.fx.reward` : sparkle + stars.
+* `stage.addGlow(x,y,r,col)` / `ctx.fx.glow` : pulsing "tap me" ring (returns a remover). Draggable items of the `dragdrop` kit get it automatically (read from `stage.dbg`); the `hidden` kit shows one on the first remaining spot after 12 s idle.
+* `stage.doorOpen(x,y,w,h,{col,light,dur,hold})` / `ctx.fx.doorOpen` : two door leaves swing open over a warm light, resolves when done.
+* `stage.dirty()`: force a re-bake (after mutating nested `state` objects in place).
+
+## Performance notes
+Bake ~10-60 ms once per scene/state change (hidden behind the iris), then ~1 ms of blits per frame; far/near are blitted only where they have pixels (`occRects`). Memory: 3 full-size canvases + 2 half-size scratch canvases shared by all stages (~28 MB at 1920x1080, ~13 MB on a typical phone). Runtime prop sprites are capped (400 sprites / 60 Mpx, LRU). The DPR cap (2) and the single rAF loop are unchanged. Benchmark helper: see `tools2/bench.js` in the working copy (frame time over 120 frames per room, optional CDP CPU throttling).
+Anonymous background functions (runner / lanes kits pass their own `bg`) are not baked: they are drawn as before with a generic vignette on top.
+
+
+
+---
+# Characters v2 (engine/chars.js + engine/voice.js lip-sync)
+
+3D-look shaded characters + living animation. **API is backward compatible** (`draw/portrait/avatar/face:<id>:<pose>`, `defs`, abilities, `ctx.say/cast`).
+
+**Rendering**: static layers (body+clothes, head skin, hair/hijab/hat, beard, glasses/moustache, shoes, hands, hair tails) are baked once to offscreen canvases per *character + outfit + hat + pixel density + light side* (top-left key light; mirrored sprite sets for `dir:-1` so light stays top-left) and drawn with `drawImage`; limbs, eyes, brows, mouth are live vectors (gradients cached, no per-frame allocation in the hot path except one `getTransform()` per draw). `M.chars.warm(ids)` pre-bakes (auto-runs for all 14 ~2.5 s after load); `M.chars.clearCache()`.
+Per-character animation state is keyed by id (or `o.key`). A 2nd draw of the same id in the same frame (art props, icons) renders a static snapshot with no side effects.
+
+**Draw options** `draw(g,id,x,y,{anim,t,dir,sc,hat,shirt,shirtId,talk,carry,alpha,noShadow,plain,tilt, emote, key, look:{x,y}, snap})` (`snap:true` = deterministic pose, no blending/blink; used by static portraits/art).
+**Anims**: idle walk run jump pickup lift cheer oops think sleep wave phone cry scream (as v1) + `point shrug thumbs hug jumpcheer sad yawn giggle nod shake`. Pose changes blend over ~150-250 ms; the walk cycle is phase-locked to the measured ground speed (also steps when a tween moves an `idle` actor); characters turn with a quick squash instead of snapping.
+**Idle life**: breathing, weight shift, random blink (double blinks), eye saccades, eyes then head follow the gaze target (priority: active speaker > last tapped character > pointer > wander), eyebrow micro-motion, spring follow-through for hair / pigtails / ponytail / scarf drape / skirt. `prefers-reduced-motion` (or `Moody.chars.setReduced(true)`) cuts secondary motion, wander and blink rate.
+
+**Emotions** `neutral happy excited sad worried surprised thinking proud shy angry`:
+* `Moody.chars.emote(id, 'sad', {dur})` (no dur = until `emote(id,null)`), `chars.emotions`, `chars.currentEmotion(id)`; also `draw(..., {emote})`.
+* `ctx.say(who, text, {emote:'happy'})` (small hook in ctx.js) - when `emote` is omitted an emotion is *inferred* from the text (`!` happy, `!!`/praise excited, `؟` thinking, sad / worry words); pass `{auto:false}` to disable. The emotion is released when the line closes. Stage actor AND dialog portrait share it.
+
+**Mouth sync**: `engine/voice.js` exposes `Moody.voice.speaker` (character id of the playing clip), `.isSpeaking()`, `.getLevel()` (0..1). Real clips go through a WebAudio `AnalyserNode` (only when the AudioContext is `running` and the clip is same-origin, so autoplay policy / audibility are never affected); otherwise (no analyser, suspended context, tainted/silent signal) a rhythmic talk loop tied to play/ended is used. Lines without a clip, or with narration off, still move the mouth (~55 ms/char). `Moody.chars.speaking(id)`, `.level(id)`, `.talkFor(id,sec)`. The stage's `h.talk` flag keeps working (rhythmic fallback).
+**Portraits**: `chars.portrait(g,id,cx,cy,r,o)` is static (shaded). Art `face:<id>[:pose]` elements created with `Moody.art.el` (dialog avatars of characters without a jpg, e.g. toti/ofa/luka...) are **animated automatically** while attached to the DOM (blink, breath, emotion, lip-sync; 30 fps, max 8). Manual: `chars.portraitLive(canvas, id, {anim, emote, r})` -> `{stop()}`.
+
+**Tap reaction**: `Moody.chars.react(id[, 'giggle'|'wave'|'spin'|'jumpcheer'|'auto'], {sfx:false})` returns the duration (0 if on cooldown / unknown). Characters also react by themselves when the canvas is tapped on an idle visible character while no kit owns the pointer (`stage.input` unset); set `Moody.chars.autoTap = false` if stage.js prefers to call `react` itself. Other characters look at the tapped one for ~2 s. `chars.gesture(id, anim, dur)` plays a one-shot without the stage.
+**Enter / exit** (eased walk with the walk cycle): `chars.enter(id,{from:'left'|'right'|x, to:x, y, dur, wave:true, stage})` -> Promise; `chars.exit(id,{to:'left'|'right'|x, hide:true})` -> Promise; `chars.hug(idA, idB, {dur})` walks A next to B then both play `hug`. Defaults to `Moody.scene` as the stage.
+Other: `chars.look(id,x,y,sec)`, `chars.stats()`.
+
+
+---
+# UI system v2 (engine/ui.css + ui.js) - premium kids-game look
+
+* **Design tokens** (`:root` in ui.css): `--font` (Arabic-first stack, no web fonts), palette (`--orange --teal --pink --yellow --green --purple --blue --red --night`), radii `--r-s/m/l/pill`, depth `--sh-1/-2`, `--gloss`, easings `--ease-out --spring`, `--hud-h`, `--us` (UI scale, set by ui.js) and `--tap` (= 48 physical px in logical px; `min-height:max(64px,var(--tap))` keeps touch targets >= 48 px on phones).
+* **Buttons** (`.btn` + colour `green teal pink blue purple yellow gray red orange`, size `sm big round`): per-colour vars `--b` (base) `--t` (top) `--d` (dark edge); 3D bottom edge, glossy highlight, pressed state (translate down), hover on `(hover:hover)`, `:focus-visible` ring, ripple + sparkle on tap (delegated in ui.js), `.shine` sweep for CTAs. Same look for `.tile`, `.opt`, `.choicecard`, `.seqcard`, `.cardmem`, `.mcard`, `.card`.
+* **Icons**: `Moody.ui.i(name, px, {off, color})` = inline SVG sprite (coin star pause sound replay home back arrow lock check heart settings album diary parent phone play x swap plus minus whatnow narr hanger). `Moody.ui.ico(name)` still returns canvas art for game art, except `sound pause swap arrow whatnow narr coin star` which map to the SVG set. Colour via CSS vars `--ic` (fill) / `--ics` (shadow).
+* **FX helpers**: `ui.flyTo('coin'|'star', x, y, {n, onArrive})` (flies to the `[data-ctr=kind]` counter in the HUD / result and bumps it; `ctx.reward.star` already uses it through `ui.starPop`), `ui.sparks(x,y,{n,r,colors})`, `ui.sparkEl(el)`, `ui.countTo(el, n, ms)`, `ui.bump(el)`.
+* **HUD**: top band 0..76 only. Left: hero chips (`#sw .h[data-hero]`, active ring + name tag), `#what` (voice replay). Centre: `#prompt .p` + `#mprog` mission progress strip (`ui.hud.step(n)` / `ui.hud.progress(f)`; beats = new instruction, answered question, star, every 3rd dialog line; the total is learned from the last finished play of that mission, kept in `localStorage['moody_ui_v1']`). Right: pause + star pill + coin pill (count-up).
+* **Dialog** `ui.say({who,text,x,dock,speed,name,icon,face,emotion,onTalk,register,auto})`: slim bubble, speaker portrait at the RTL start side, name tag, tail to the speaker (`x`, default = hero x on the stage, centred/hidden if unknown), typewriter (tap/Enter skips; speed follows the voice clip length when `Moody.voice.cur.duration` is known, else `speed` or 26 ms/char), auto-fit font (27..17 px, bubble <= ~26% of the screen height), enter/exit animation, 🔊 replay. `dock:'auto'` (default) docks at the bottom unless that would cover a hero; then it goes to the top, under the HUD. Optional hooks if the character module provides them: `Moody.chars.speaking(id,bool)`, `Moody.chars.emotion(id,name)`.
+* **Safe-area API**: `Moody.ui.safeArea()` -> `{x,y,w,h,top,bottom,dock}` = the rectangle not covered by UI chrome (top = 76 under the HUD, or below a top-docked dialog; bottom = top edge of a bottom-docked dialog, else 540); `Moody.ui.onSafe(fn)` subscribes (returns unsubscribe); CSS vars `--safe-t/--safe-b` on `#ui`. Keep heroes and hotspots inside it.
+* **Screens**: `UI.show(el, cls, level)`: levels title 0 / map 1 / world 2 / sub-screens + result 3 give fade-scale transitions forward or back; the previous screen leaves for 190 ms (inert, its data-* hooks removed). Showing any screen hides the mission HUD. `#splash` (index.html) is removed when the title appears.
+* **Reduced motion**: `@media (prefers-reduced-motion)` disables animations, typewriter, confetti-like fx.
+* **Hooks kept for the bot / kits**: `#hud #sw .h[data-hero] #what #prompt .p #skip #dlg .nx(display none while typing) #qz .qt .opt[data-correct] .spk .choicecard[data-good] .seqcard[data-i] .cardmem[data-art].back/.match .mch[data-k][data-side] .pkcnt .bar2 .btn[data-act] #over .btn.big.pink (ritual) #fadeov .card[data-world] .mcard[data-mission]`.

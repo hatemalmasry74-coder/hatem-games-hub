@@ -48,16 +48,44 @@
   }
   V.has = text => !!(V.manifest && V.manifest[V.hash(text)]);
 
+  /* ---- lip-sync: V.speaker (who is talking), V.getLevel() 0..1 mouth energy, V.isSpeaking().
+     Real clips: WebAudio AnalyserNode on the clip (same-origin + running AudioContext only). Otherwise: rhythmic talk loop tied to play/ended. ---- */
+  let AC = null, AN = null, buf = null, lvl = 0, speakEnd = 0, ana = null, anaZero = 0, rhythm = false, pseudoUntil = 0;
+  V.speaker = null;
+  function ensureAC() {
+    if (AC) return AC; try { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; AC = new C(); AN = AC.createAnalyser(); AN.fftSize = 512; AN.smoothingTimeConstant = .2; buf = new Uint8Array(AN.fftSize); AN.connect(AC.destination); } catch (e) { AC = null; } return AC;
+  }
+  ['pointerdown', 'keydown', 'touchend'].forEach(ev => document.addEventListener(ev, () => { try { if (!AC) ensureAC(); if (AC && AC.state === 'suspended') AC.resume(); } catch (e) { } }, { capture: true, passive: true }));
+  function hook(a, url) {   // route the clip through the analyser only when that is safe (audio must stay audible and un-tainted)
+    ana = null; anaZero = 0; if (!AC || AC.state !== 'running') return;
+    try { if (new URL(url, location.href).origin !== location.origin) return; const src = AC.createMediaElementSource(a); src.connect(AN); ana = a; } catch (e) { ana = null; }
+  }
+  V.isSpeaking = () => (V.cur && !V.cur.paused && !!V.speaker) || performance.now() < pseudoUntil;
+  V.getLevel = () => lvl;
+  function pseudo(sp, ms) { V.speaker = sp || V.speaker; pseudoUntil = performance.now() + ms; rhythm = true; }
+  M.hooks.frame.push(() => {
+    const tn = performance.now() / 1000; let target = 0;
+    if (V.cur && !V.cur.paused) {
+      if (ana === V.cur) {
+        AN.getByteTimeDomainData(buf); let sum = 0; for (let i = 0; i < buf.length; i++) { const v = (buf[i] - 128) / 128; sum += v * v; } const rms = Math.sqrt(sum / buf.length); target = Math.min(1, rms * 3.6);
+        if (rms < .0008) { anaZero++; if (anaZero > 40 && V.cur.currentTime > .3) ana = null; } else anaZero = 0;   // silent analyser (tainted / unsupported): fall back to the rhythmic loop
+      }
+      if (ana !== V.cur) target = Math.max(0, (Math.sin(tn * 17) * .5 + .4) * (.65 + .35 * Math.sin(tn * 3.1)) + Math.sin(tn * 7.3) * .1);
+    } else if (performance.now() < pseudoUntil) target = Math.max(0, (Math.sin(tn * 17) * .5 + .4) * (.65 + .35 * Math.sin(tn * 3.1)));
+    lvl += (target - lvl) * (target > lvl ? .6 : .3); if (lvl < .01) lvl = 0;
+    if (!V.cur && performance.now() >= pseudoUntil && V.speaker && lvl === 0) V.speaker = null;
+  });
+
   /* ---- playback (one clip at a time; a new line cancels the previous) ---- */
   let token = 0, pausedByGame = false;
-  V.stop = function () { token++; V.queue = []; if (V.cur) { try { V.cur.pause(); } catch (e) { } V.cur = null; } V.busy = false; };
+  V.stop = function () { token++; V.queue = []; if (V.cur) { try { V.cur.pause(); } catch (e) { } V.cur = null; } V.busy = false; V.speaker = null; pseudoUntil = 0; ana = null; };
   function playNext(tk) {
     if (tk !== token) return;
-    const it = V.queue.shift(); if (!it) { V.busy = false; V.cur = null; return; }
-    if (!V.has(it.text)) { playNext(tk); return; }            // missing clip: silent, move on
+    const it = V.queue.shift(); if (!it) { V.busy = false; V.cur = null; V.speaker = null; return; }
+    if (!V.has(it.text)) { pseudo(it.speaker, Math.max(900, it.text.length * 55)); playNext(tk); return; }            // missing clip: silent (mouth still moves), move on
     try {
-      const a = new Audio('assets/voice/' + V.hash(it.text) + '.mp3'); V.cur = a; V.busy = true; a.volume = 1;
-      const nxt = () => { if (tk !== token) return; V.cur = null; setTimeout(() => playNext(tk), it.gap == null ? 250 : it.gap); };
+      const url = 'assets/voice/' + V.hash(it.text) + '.mp3', a = new Audio(url); V.cur = a; V.busy = true; a.volume = 1; V.speaker = it.speaker || null; hook(a, url);
+      const nxt = () => { if (tk !== token) return; V.cur = null; ana = null; setTimeout(() => { if (tk === token && !V.cur) { V.speaker = V.queue.length ? V.speaker : null; } playNext(tk); }, it.gap == null ? 250 : it.gap); };
       a.addEventListener('ended', nxt); a.addEventListener('error', nxt);
       const p = a.play(); if (p && p.catch) p.catch(nxt);
     } catch (e) { V.busy = false; }
@@ -78,7 +106,7 @@
     o = o || {}; if (!text) return; const t = V.resolve(text);
     V.note(t, o.speaker); V.last = { text: t, speaker: o.speaker || 'narrator' };
     if (o.instruction) V.instruction = V.last;
-    if (!V.enabled() && !o.force) return;
+    if (!V.enabled() && !o.force) { if (!o.soft && o.speaker && o.speaker !== 'narrator' && M.chars && M.chars.defs[o.speaker]) pseudo(o.speaker, Math.max(900, t.length * 55)); return; }   // voice off: the mouth still moves
     start([{ text: t, speaker: o.speaker }], o);
   };
   /* read several texts one after another (e.g. the answer choices) */

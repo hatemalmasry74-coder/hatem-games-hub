@@ -7,66 +7,50 @@
   const A2 = '#fff7e3';
 
   /* ---------------- small helpers ---------------- */
-  function wall(g, y1, c1, c2, stripe) { g.fillStyle = G.lin(g, 0, 0, 0, y1, [c1, c2]); g.fillRect(0, 0, 960, y1); if (stripe) { g.fillStyle = stripe; for (let i = 0; i < 12; i++) g.fillRect(i * 90, 0, 36, y1); } }
-  function floorTiles(g, y, c1, c2, size, line) {
-    g.fillStyle = G.lin(g, 0, y, 0, 540, [c1, c2]); g.fillRect(0, y, 960, 540 - y); g.strokeStyle = line || 'rgba(90,50,20,.16)'; g.lineWidth = 2;
-    for (let i = -6; i < 22; i++) { g.beginPath(); g.moveTo(480 + (i - 8) * size * .55, y); g.lineTo(480 + (i - 8) * size * 1.5, 540); g.stroke(); }
-    for (let k = 1; k < 5; k++) { const yy = y + (540 - y) * (k * k / 25); g.beginPath(); g.moveTo(0, yy); g.lineTo(960, yy); g.stroke(); }
-    G.line(g, 0, y, 960, y, 4);
-  }
-  function glowLamp(g, x, y, t, r) { const gr = g.createRadialGradient(x, y, 4, x, y, r); gr.addColorStop(0, 'rgba(255,236,150,.5)'); gr.addColorStop(1, 'rgba(255,236,150,0)'); g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2); }
-  function winFrame(g, x, y, w, h, t, o) {
-    o = o || {}; g.save(); g.beginPath(); g.rect(x, y, w, h); g.clip();
-    if (o.dusk) { g.fillStyle = G.lin(g, 0, y, 0, y + h, ['#7a6bd0', '#ff9a6a']); } else if (o.night) { g.fillStyle = G.lin(g, 0, y, 0, y + h, ['#16204a', '#2e3b7a']); } else g.fillStyle = G.lin(g, 0, y, 0, y + h, ['#8fd6ff', '#e4f6ff']);
-    g.fillRect(x, y, w, h);
-    if (o.night) { for (let i = 0; i < 8; i++) G.sparkle(g, x + 12 + (i * 37) % (w - 18), y + 12 + (i * 53) % (h - 30), 3 + (i % 3), '#fff6a8', .6 + .4 * Math.sin(t * 2 + i)); A.draw(g, 'moon', x + w * .72, y + h * .3, 40); }
-    else if (!o.dusk) { G.sun(g, x + w * .75, y + h * .28, 14, t); G.cloud(g, x + ((t * 8) % (w + 60)) - 30, y + h * .6, .55); }
-    g.fillStyle = o.night ? '#2f5f45' : '#8ed08a'; g.fillRect(x, y + h - 20, w, 20); g.restore();
-    g.lineWidth = 6; g.strokeStyle = OL; g.strokeRect(x, y, w, h); G.line(g, x + w / 2, y, x + w / 2, y + h, 5);
-  }
+  const RK = G.room;
+  function wall(g, y1, c1, c2, stripe, o) { RK.wall(g, y1, c1, c2, Object.assign({ pattern: stripe ? 'stripes' : 'none', pw: 90 }, o)); }
+  function floorTiles(g, y, c1, c2, size, line) { RK.floor(g, y, c1, c2, { kind: 'tile', alt: 'rgba(255,255,255,.2)', line: line || 'rgba(90,50,20,.18)', n: Math.round(900 / size) }); }
+  function glowLamp(g, s, x, y, t, r, a) { G.amb(s, { k: 'glow', x, y, r, col: '255,230,140', a: a || .5, flick: .05, z: 'top' }); }
+  function winFrame(g, s, x, y, w, h, t, o) { o = o || {}; G.window(g, s, x, y, w, h, { view: o.dusk ? 'sunset' : o.night ? 'citynight' : 'city', frame: '#fff6e6', curtains: null, floor: 430, dir: .3, shaft: !o.night && !o.dusk }); }
   /* sliding lift doors (open 0..1) at x,y,w,h */
   function liftDoors(g, x, y, w, h, open, col) {
     const half = w / 2, gap = open * (half - 4);
-    rr(g, x - 10, y - 10, w + 20, h + 14, 8, '#a8afc0', 5);
-    g.fillStyle = '#ffeab8'; g.fillRect(x, y, w, h);            // warm light inside
+    rr(g, x - 10, y - 10, w + 20, h + 14, 8, '#a8afc0', 4);
+    g.fillStyle = G.lin(g, 0, y, 0, y + h, ['#fff3cc', '#ffe0a0']); g.fillRect(x, y, w, h);
     if (open > .3) { g.fillStyle = 'rgba(255,255,255,.35)'; g.fillRect(x + 10, y + 30, w - 20, h - 40); }
-    [[x - gap, 0], [x + half + gap, 1]].forEach(d => { const px = d[0]; g.save(); g.beginPath(); g.rect(x, y, w, h); g.clip(); rr(g, px, y, half, h, 2, col || '#cfd5e3', 4); G.line(g, px + (d[1] ? 12 : half - 12), y + 6, px + (d[1] ? 12 : half - 12), y + h - 6, 4, 'rgba(255,255,255,.75)'); g.restore(); });
+    [[x - gap, 0], [x + half + gap, 1]].forEach(d => { const px = d[0]; g.save(); g.beginPath(); g.rect(x, y, w, h); g.clip(); rr(g, px, y, half, h, 2, col || '#cfd5e3', 3); g.fillStyle = 'rgba(255,255,255,.25)'; g.fillRect(px + 4, y + 4, half * .3, h - 8); G.line(g, px + (d[1] ? 12 : half - 12), y + 6, px + (d[1] ? 12 : half - 12), y + h - 6, 3, 'rgba(255,255,255,.75)'); g.restore(); });
   }
   const R3 = (g, x, y, w, h, r, f, l) => G.fillRR(g, x, y, w, h, r, f, l);
+  M.look.setAll({
+    nn_hall6: { tod: 'warm', floor: 430, live: ['liftFloor', 'callLit', 'doorsOpen'], lightX: 480 }, nn_lift: { tod: 'cool', floor: 430, live: ['floor', 'doors', 'moving'], ao: .5, vig: .3 },
+    nn_door3: { tod: 'warm', floor: 430, live: ['open', 'bell'], lightX: 480 }, nn_kitchen: s => ({ tod: 'morning', floor: 430, lightX: 775 }),
+    nn_living: s => ({ tod: s.state.night ? 'night' : 'warm', floor: 430, lightX: 775, vig: .3 }), nn_balcony: s => ({ tod: s.state.dusk ? 'sunset' : 'morning', floor: 430, indoor: false, lightX: 800 })
+  });
 
   /* ================================================================
      ROOM nn_hall6 : 6th-floor corridor.  flags: liftFloor (number shown, default 6), callLit, doorsOpen (0..1)
      Landmarks: our door (left), lift (center), call button (600,262), bench (640-860) with a gap under it, plant (910)
      ================================================================ */
   R.nn_hall6 = function (g, t, s) {
-    const S = s.state; wall(g, 430, '#ffe9cf', '#ffd5a8', 'rgba(255,255,255,.1)');
-    g.fillStyle = '#e8b98c'; g.fillRect(0, 300, 960, 130); G.line(g, 0, 300, 960, 300, 5, '#b97b4a');     // wainscot
-    g.fillStyle = 'rgba(255,255,255,.25)'; for (let x = 0; x < 960; x += 80) g.fillRect(x + 6, 310, 68, 112);
-    floorTiles(g, 430, '#f0dcc0', '#d8bf9a', 70);
-    g.fillStyle = 'rgba(255,255,255,.35)'; for (let i = 0; i < 8; i++) for (let j = 0; j < 2; j++) if ((i + j) % 2) g.fillRect(i * 120, 440 + j * 50, 120, 50);
-    // ceiling lamp
-    rr(g, 440, 0, 80, 20, 8, '#fff7d0', 4); glowLamp(g, 480, 20, t, 160);
-    // our apartment door (left)
-    rr(g, 40, 140, 150, 290, 8, '#a0643a', 5); rr(g, 54, 154, 122, 262, 4, '#c8935a', 3.5); rr(g, 70, 172, 90, 100, 6, '#b4783f', 3); rr(g, 70, 290, 90, 110, 6, '#b4783f', 3);
-    G.circ(g, 168, 300, 7, '#ffd23c', 3); rr(g, 85, 112, 60, 30, 8, '#fff', 4); G.text(g, '٦', 115, 128, { size: 28, color: '#c25a00' });
-    G.ell(g, 115, 440, 70, 12, '#ff8fa8', 3.5);
-    // lift
-    const open = S.doorsOpen || 0; liftDoors(g, 395, 130, 170, 300, open);
-    rr(g, 400, 66, 160, 44, 10, '#2a2f45', 5);
-    const fl = S.liftFloor == null ? 6 : S.liftFloor; G.text(g, M.util.ar(Math.round(fl)), 480, 90, { size: 32, color: '#ff5a4a' }); G.poly(g, [[430, 80], [446, 80], [438, 98]], '#ff5a4a', 0);
-    // call panel + buttons
-    rr(g, 592, 232, 44, 86, 10, '#9aa0b5', 4.5);
-    G.poly(g, [[614, 250], [602, 270], [626, 270]], '#e8ecf5', 3); G.circ(g, 614, 298, 12, S.callLit ? '#ffd23c' : '#e8ecf5', 3.5); G.poly(g, [[606, 292], [622, 292], [614, 304]], '#9aa0b5', 2);
-    if (S.callLit) glowLamp(g, 614, 298, t, 50);
-    // stairwell window (right)
-    winFrame(g, 770, 110, 110, 100, t); R3(g, 760, 208, 130, 12, 4, '#b97b4a', 4);
-    // bench with a gap under it
-    rr(g, 640, 360, 230, 22, 8, '#c8935a', 4.5); rr(g, 650, 326, 210, 36, 10, '#e07a4a', 4.5); G.fillRR(g, 654, 382, 16, 48, 3, '#a0643a', 4); G.fillRR(g, 840, 382, 16, 48, 3, '#a0643a', 4);
-    g.fillStyle = 'rgba(60,30,10,.22)'; g.fillRect(672, 392, 166, 38);
-    // plant
+    const S = s.state; wall(g, 430, '#ffeacf', '#ffd5a8', true, { dado: { h: 130, c: '#e8b98c' } });
+    floorTiles(g, 430, '#f2dfc4', '#d6bc94', 70);
+    rr(g, 440, 0, 80, 20, 8, '#fff7d0', 3.5); glowLamp(g, s, 480, 20, t, 190, .6);
+    G.ao(g, 40, 140, 150, 290); rr(g, 40, 140, 150, 290, 8, '#a0643a', 4.5); rr(g, 54, 154, 122, 262, 4, '#c8935a', 3); rr(g, 70, 172, 90, 100, 6, '#b4783f', 2.5); rr(g, 70, 290, 90, 110, 6, '#b4783f', 2.5);
+    G.circ(g, 168, 300, 7, '#ffd23c', 2.5); rr(g, 85, 112, 60, 30, 8, '#fff', 3.5); G.text(g, '٦', 115, 128, { size: 28, color: '#c25a00' });
+    RK.rug(g, 115, 446, 70, 12, '#ff8fa8', '#ffd0e0');
+    rr(g, 400, 66, 160, 44, 10, '#2a2f45', 4);
+    rr(g, 592, 232, 44, 86, 10, '#9aa0b5', 4); G.poly(g, [[614, 250], [602, 270], [626, 270]], '#e8ecf5', 2.5);
+    winFrame(g, s, 770, 110, 110, 100, t); R3(g, 760, 208, 130, 12, 4, '#b97b4a', 3);
+    G.ao(g, 640, 360, 230, 70); rr(g, 640, 360, 230, 22, 8, '#c8935a', 4); rr(g, 650, 326, 210, 36, 10, '#e07a4a', 4); G.fillRR(g, 654, 382, 16, 48, 3, '#a0643a', 3); G.fillRR(g, 840, 382, 16, 48, 3, '#a0643a', 3);
+    g.fillStyle = G.lin(g, 0, 390, 0, 432, ['rgba(40,18,4,.36)', 'rgba(40,18,4,.08)']); g.fillRect(672, 392, 166, 40);
     A.draw(g, 'plant', 915, 385, 110);
-    // wall picture
-    rr(g, 230, 180, 110, 80, 6, '#fff', 4.5); G.circ(g, 262, 214, 14, '#ffd23c', 3); g.fillStyle = '#5cc96b'; g.beginPath(); g.moveTo(236, 256); g.lineTo(285, 226); g.lineTo(334, 256); g.closePath(); g.fill(); G.line(g, 236, 256, 334, 256, 3);
+    RK.frame(g, 230, 180, 110, 80, { frame: '#fff', bg: '#bfe8ff', draw: (g, x, y, w, h) => { G.circ(g, x + 32, y + 34, 14, '#ffd23c', 2.5); g.fillStyle = '#5cc96b'; g.beginPath(); g.moveTo(x, y + h); g.lineTo(x + 50, y + 38); g.lineTo(x + w, y + h); g.closePath(); g.fill(); } });
+    G.live(g, s, (g, t) => {
+      const open = S.doorsOpen || 0; liftDoors(g, 395, 130, 170, 300, open);
+      const fl = S.liftFloor == null ? 6 : S.liftFloor; G.text(g, M.util.ar(Math.round(fl)), 480, 90, { size: 32, color: '#ff5a4a' }); G.poly(g, [[430, 80], [446, 80], [438, 98]], '#ff5a4a', 0);
+      G.circ(g, 614, 298, 12, S.callLit ? '#ffd23c' : '#e8ecf5', 3); G.poly(g, [[606, 292], [622, 292], [614, 304]], '#9aa0b5', 2);
+      if (S.callLit) { g.save(); g.globalCompositeOperation = 'lighter'; g.globalAlpha = .6 + .3 * Math.sin(t * 6); g.drawImage(G.glowSprite('255,230,140'), 560, 244, 108, 108); g.restore(); }
+    });
   };
 
   /* ================================================================
@@ -74,24 +58,20 @@
      The kit puts HTML floor buttons on the right (panel plate drawn here at x 748-930, y 92-408)
      ================================================================ */
   R.nn_lift = function (g, t, s) {
-    const S = s.state; g.fillStyle = G.lin(g, 0, 0, 0, 430, ['#d7dbe6', '#b7bdd0']); g.fillRect(0, 0, 960, 430);
-    g.fillStyle = 'rgba(255,255,255,.18)'; for (let i = 0; i < 10; i++) g.fillRect(i * 100 + 20, 0, 40, 430);
-    // mirror
-    rr(g, 190, 100, 330, 180, 12, '#e9f6ff', 5); g.save(); g.beginPath(); g.rect(196, 106, 318, 168); g.clip(); G.line(g, 230, 280, 330, 100, 24, 'rgba(255,255,255,.6)'); G.line(g, 340, 280, 400, 100, 12, 'rgba(255,255,255,.5)'); g.restore();
-    // handrail
-    G.line(g, 30, 322, 700, 322, 10, '#8f95a8'); G.line(g, 30, 322, 700, 322, 5, '#e8ecf5'); [60, 670].forEach(x => G.line(g, x, 322, x, 340, 8, '#8f95a8'));
-    // floor
-    floorTiles(g, 430, '#a9afc0', '#7d849b', 80, 'rgba(0,0,0,.14)');
-    // display on top
-    rr(g, 340, 22, 190, 58, 12, '#1f2338', 5); const fl = S.floor == null ? 6 : S.floor; G.text(g, M.util.ar(Math.round(fl)), 450, 52, { size: 44, color: '#ff5a4a' });
-    G.poly(g, [[384, 40], [408, 40], [396, 64]], S.moving ? '#ff5a4a' : '#5a3a3a', 0);
-    // safety sign
-    rr(g, 60, 90, 90, 110, 8, '#fff', 4.5); G.circ(g, 105, 140, 28, '#fff', 4); G.circ(g, 105, 140, 28, null, 5, '#ef5350'); G.line(g, 86, 121, 124, 159, 6, '#ef5350'); A.draw(g, 'ball', 105, 140, 28); G.text(g, 'ممنوع اللعب', 105, 182, { size: 14, color: '#ef5350' });
-    // button panel plate
-    rr(g, 748, 92, 182, 316, 18, '#8f95a8', 5); rr(g, 756, 100, 166, 300, 14, '#c7ccdb', 3);
-    // doors (open amount: S.doors 0 open .. 1 closed)
-    const d = S.doors == null ? 0 : S.doors; if (d > 0) { const w = 480 * d; g.fillStyle = '#cfd5e3'; g.fillRect(0, 0, w / 2, 430); g.fillRect(960 - w / 2, 0, w / 2, 430); G.line(g, w / 2, 0, w / 2, 430, 5); G.line(g, 960 - w / 2, 0, 960 - w / 2, 430, 5); }
-    if (S.moving) { g.fillStyle = 'rgba(0,0,0,' + (.03 + .02 * Math.sin(t * 30)) + ')'; g.fillRect(0, 0, 960, 540); }
+    const S = s.state; g.fillStyle = G.lin(g, 0, 0, 0, 430, ['#dfe3ee', '#b7bdd0']); g.fillRect(0, 0, 960, 430);
+    g.fillStyle = 'rgba(255,255,255,.2)'; for (let i = 0; i < 10; i++) { const gr = g.createLinearGradient(i * 100 + 20, 0, i * 100 + 60, 0); gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(.5, 'rgba(255,255,255,.2)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = gr; g.fillRect(i * 100 + 20, 0, 40, 430); }
+    g.fillStyle = 'rgba(30,40,70,.25)'; G.rr(g, 196, 108, 330, 180, 12); g.fill(); rr(g, 190, 100, 330, 180, 12, '#f2faff', 4); g.save(); g.beginPath(); g.rect(196, 106, 318, 168); g.clip(); g.fillStyle = G.lin(g, 0, 106, 0, 274, ['#cfeaff', '#9ccbe8']); g.fillRect(196, 106, 318, 168); G.line(g, 230, 280, 330, 100, 24, 'rgba(255,255,255,.6)'); G.line(g, 340, 280, 400, 100, 12, 'rgba(255,255,255,.5)'); g.restore();
+    G.line(g, 30, 322, 700, 322, 10, '#8f95a8'); G.line(g, 30, 322, 700, 322, 5, '#eef1f8'); [60, 670].forEach(x => G.line(g, x, 322, x, 340, 8, '#8f95a8'));
+    floorTiles(g, 430, '#b3b9cb', '#7d849b', 80, 'rgba(0,0,0,.16)');
+    rr(g, 340, 22, 190, 58, 12, '#1f2338', 4);
+    RK.frame(g, 60, 90, 90, 110, { frame: '#fff', bg: '#fff', draw: (g, x, y, w, h) => { G.circ(g, x + w / 2, y + 40, 28, null, 5, '#ef5350'); G.line(g, x + w / 2 - 19, y + 21, x + w / 2 + 19, y + 59, 6, '#ef5350'); A.draw(g, 'ball', x + w / 2, y + 40, 28); G.text(g, 'ممنوع اللعب', x + w / 2, y + 90, { size: 14, color: '#ef5350' }); } });
+    rr(g, 748, 92, 182, 316, 18, '#8f95a8', 4); rr(g, 756, 100, 166, 300, 14, '#c7ccdb', 3);
+    G.amb(s, { k: 'glow', x: 480, y: 6, r: 420, ry: 150, col: '255,255,240', a: .35, z: 'top' });
+    G.live(g, s, (g, t) => {
+      const fl = S.floor == null ? 6 : S.floor; G.text(g, M.util.ar(Math.round(fl)), 450, 52, { size: 44, color: '#ff5a4a' }); G.poly(g, [[384, 40], [408, 40], [396, 64]], S.moving ? '#ff5a4a' : '#5a3a3a', 0);
+      const d = S.doors == null ? 0 : S.doors; if (d > 0) { const w = 480 * d; g.fillStyle = '#cfd5e3'; g.fillRect(0, 0, w / 2, 430); g.fillRect(960 - w / 2, 0, w / 2, 430); g.fillStyle = 'rgba(255,255,255,.25)'; g.fillRect(8, 0, 14, 430 * (d > 0 ? 1 : 0)); G.line(g, w / 2, 0, w / 2, 430, 4, 'rgba(70,80,110,.7)'); G.line(g, 960 - w / 2, 0, 960 - w / 2, 430, 4, 'rgba(70,80,110,.7)'); }
+      if (S.moving) { g.fillStyle = 'rgba(0,0,0,' + (.03 + .02 * Math.sin(t * 30)) + ')'; g.fillRect(0, 0, 960, 540); }
+    }, 'top');
   };
 
   /* ================================================================
@@ -99,32 +79,28 @@
      Landmarks: door (340-560, 140-430), bell (610,262), shoe rack (30-250) with TOP shelf (y~300) and LOW shelf (y~390)
      ================================================================ */
   R.nn_door3 = function (g, t, s) {
-    const S = s.state; wall(g, 430, '#dff3e6', '#bfe3cd', 'rgba(255,255,255,.1)'); g.fillStyle = '#9fd0b0'; g.fillRect(0, 310, 960, 120); G.line(g, 0, 310, 960, 310, 5, '#6fae8a');
-    floorTiles(g, 430, '#efe0c6', '#d6c09c', 70);
-    rr(g, 440, 0, 80, 18, 8, '#fff7d0', 4); glowLamp(g, 480, 18, t, 170);
-    // door frame + leaf
-    rr(g, 322, 118, 256, 312, 10, '#8a5a3a', 5);
-    const open = S.open || 0; g.fillStyle = '#ffe8b0'; g.fillRect(340, 136, 220, 294);
-    if (open > .05) { // warm home inside
-      g.fillStyle = G.lin(g, 0, 136, 0, 430, ['#fff2c8', '#ffd9a0']); g.fillRect(340, 136, 220, 294); glowLamp(g, 450, 230, t, 160); g.fillStyle = '#e9a86a'; g.fillRect(340, 396, 220, 34);
-      rr(g, 395, 170, 100, 74, 6, '#fff', 3.5); G.heart(g, 445, 208, 20, '#ff8fa8', 3); g.save(); g.beginPath(); g.rect(340, 136, 220, 294); g.clip(); A.draw(g, 'sofa', 505, 392, 190); A.draw(g, 'plant', 380, 376, 80); g.restore();
-    }
-    const lw = 220 * (1 - open * .82); g.save(); g.beginPath(); g.rect(340, 136, 220, 294); g.clip();
-    rr(g, 340, 136, lw, 294, 4, '#b4783f', 5); if (lw > 80) { rr(g, 358, 154, lw - 36, 104, 6, '#c8935a', 3.5); rr(g, 358, 276, lw - 36, 140, 6, '#c8935a', 3.5); G.circ(g, 340 + lw - 20, 300, 7, '#ffd23c', 3); }
-    g.restore();
-    rr(g, 410, 92, 80, 34, 10, '#fff', 4.5); G.text(g, '٣', 450, 110, { size: 28, color: '#c25a00' });
-    // wreath
-    if (open < .5) { G.circ(g, 450, 205, 24, null, 9, '#5cc96b'); [0, 1, 2, 3, 4, 5].forEach(i => G.circ(g, 450 + Math.cos(i * 1.05) * 24, 205 + Math.sin(i * 1.05) * 24, 6, ['#ff6f91', '#ffd23c', '#fff'][i % 3], 2.5)); }
-    // mat
-    G.ell(g, 450, 452, 120, 16, '#ff8fa8', 4); G.ell(g, 450, 452, 90, 10, '#ffd0e0', 2.5); G.text(g, 'أهلًا', 450, 454, { size: 15, color: '#c25a00' });
-    // bell
-    G.circ(g, 614, 262, 24, '#fff', 4.5); const pulse = S.bell ? 1 + .08 * Math.sin(t * 7) : 1; G.circ(g, 614, 262, 14 * pulse, S.bell ? '#ffd23c' : '#ffc93c', 3.5); A.draw(g, 'nn_bell', 614, 262, 22);
-    // shoe rack (left): open shelves
-    rr(g, 30, 266, 220, 168, 8, '#7a4a2a', 5); g.fillStyle = 'rgba(0,0,0,.18)'; g.fillRect(40, 276, 200, 56); g.fillRect(40, 346, 200, 78);
-    rr(g, 26, 330, 228, 14, 5, '#c8935a', 4.5); rr(g, 26, 424, 228, 14, 5, '#c8935a', 4.5); rr(g, 26, 262, 228, 12, 5, '#c8935a', 4.5);
+    const S = s.state; wall(g, 430, '#e2f5e9', '#bfe3cd', true, { dado: { h: 120, c: '#9fd0b0' } });
+    floorTiles(g, 430, '#f1e3ca', '#d6c09c', 70);
+    rr(g, 440, 0, 80, 18, 8, '#fff7d0', 3.5); glowLamp(g, s, 480, 18, t, 200, .55);
+    G.ao(g, 322, 118, 256, 312); rr(g, 322, 118, 256, 312, 10, '#8a5a3a', 4.5);
+    rr(g, 410, 92, 80, 34, 10, '#fff', 4); G.text(g, '٣', 450, 110, { size: 28, color: '#c25a00' });
+    RK.rug(g, 450, 452, 120, 16, '#ff8fa8', '#ffd0e0'); G.text(g, 'أهلًا', 450, 454, { size: 15, color: '#c25a00' });
+    G.ao(g, 30, 266, 220, 168); rr(g, 30, 266, 220, 168, 8, '#7a4a2a', 4.5); g.fillStyle = 'rgba(0,0,0,.22)'; g.fillRect(40, 276, 200, 56); g.fillRect(40, 346, 200, 78);
+    rr(g, 26, 330, 228, 14, 5, '#c8935a', 4); rr(g, 26, 424, 228, 14, 5, '#c8935a', 4); rr(g, 26, 262, 228, 12, 5, '#c8935a', 4);
     G.text(g, 'الجزم', 140, 246, { size: 22, color: '#fff', stroke: OL, sw: 5 });
-    // plant
     A.draw(g, 'plant', 820, 380, 120);
+    G.live(g, s, (g, t) => {
+      const open = S.open || 0; g.fillStyle = '#ffe8b0'; g.fillRect(340, 136, 220, 294);
+      if (open > .05) {
+        g.fillStyle = G.lin(g, 0, 136, 0, 430, ['#fff2c8', '#ffd9a0']); g.fillRect(340, 136, 220, 294); g.save(); g.globalCompositeOperation = 'lighter'; g.globalAlpha = .5; g.drawImage(G.glowSprite('255,230,150'), 290, 150, 320, 280); g.restore(); g.fillStyle = '#e9a86a'; g.fillRect(340, 396, 220, 34);
+        rr(g, 395, 170, 100, 74, 6, '#fff', 3.5); G.heart(g, 445, 208, 20, '#ff8fa8', 3); g.save(); g.beginPath(); g.rect(340, 136, 220, 294); g.clip(); A.draw(g, 'sofa', 505, 392, 190); A.draw(g, 'plant', 380, 376, 80); g.restore();
+      }
+      const lw = 220 * (1 - open * .82); g.save(); g.beginPath(); g.rect(340, 136, 220, 294); g.clip();
+      rr(g, 340, 136, lw, 294, 4, '#b4783f', 4); if (lw > 80) { rr(g, 358, 154, lw - 36, 104, 6, '#c8935a', 3); rr(g, 358, 276, lw - 36, 140, 6, '#c8935a', 3); G.circ(g, 340 + lw - 20, 300, 7, '#ffd23c', 2.5); }
+      g.restore();
+      if (open < .5) { G.circ(g, 450, 205, 24, null, 9, '#5cc96b'); [0, 1, 2, 3, 4, 5].forEach(i => G.circ(g, 450 + Math.cos(i * 1.05) * 24, 205 + Math.sin(i * 1.05) * 24, 6, ['#ff6f91', '#ffd23c', '#fff'][i % 3], 2)); }
+      G.circ(g, 614, 262, 24, '#fff', 4); const pulse = S.bell ? 1 + .08 * Math.sin(t * 7) : 1; G.circ(g, 614, 262, 14 * pulse, S.bell ? '#ffd23c' : '#ffc93c', 3); A.draw(g, 'nn_bell', 614, 262, 22);
+    });
   };
 
   /* ================================================================
@@ -132,27 +108,22 @@
      Landmarks: high shelf with flour (205,112), mid shelf jars (y 205), counter (y 300), stool/floor corner (320,470), table ellipse (480,400)
      ================================================================ */
   R.nn_kitchen = function (g, t, s) {
-    const S = s.state; wall(g, 430, '#fff3c8', '#ffe39a'); g.fillStyle = 'rgba(255,255,255,.4)'; for (let x = 0; x < 960; x += 64) for (let y = 215; y < 300; y += 46) g.fillRect(x + ((y / 46 | 0) % 2) * 32, y, 60, 42);
-    floorTiles(g, 430, '#eed9b3', '#cdb383', 70);
-    // window with lace
-    winFrame(g, 700, 70, 150, 120, t); rr(g, 692, 62, 166, 14, 6, '#c9633a', 4); [0, 1, 2, 3, 4, 5].forEach(i => G.circ(g, 706 + i * 29, 80, 9, '#fff', 3));
-    // high shelf + jars
-    rr(g, 70, 140, 300, 14, 4, '#b97b4a', 4.5); [[110, '#ffd23c'], [170, '#ff8a2a'], [320, '#5cc96b']].forEach(j => { R3(g, j[0] - 20, 100, 40, 40, 8, j[1], 3.5); R3(g, j[0] - 22, 92, 44, 10, 4, '#fff7e3', 3.5); });
-    rr(g, 70, 232, 300, 14, 4, '#b97b4a', 4.5); [[110, '#9ed8ff'], [170, '#ff6f91'], [230, '#fff7e3'], [330, '#ffd23c']].forEach(j => { R3(g, j[0] - 20, 194, 40, 38, 8, j[1], 3.5); R3(g, j[0] - 22, 186, 44, 10, 4, '#c9633a', 3.5); });
-    // counter + cabinets
-    rr(g, 20, 300, 900, 130, 6, '#e0a560', 5); rr(g, 12, 286, 920, 26, 6, '#fff7e3', 5); [0, 1, 2, 3, 4, 5, 6].forEach(i => { rr(g, 34 + i * 127, 330, 112, 92, 6, '#f0b872', 3.5); G.circ(g, 34 + i * 127 + 98, 352, 4, '#8a5a3a', 2); });
-    // big oven (right of centre)
-    rr(g, 430, 262, 200, 168, 10, '#d9dde8', 5); rr(g, 450, 316, 160, 92, 8, S.bake ? '#ffb347' : '#6e7791', 4.5); if (S.bake) { glowLamp(g, 530, 362, t, 110); [0, 1, 2].forEach(i => A.draw(g, 'nn_kaak', 480 + i * 50, 366, 36)); }
-    [[470, 282], [510, 282], [550, 282]].forEach(p => G.circ(g, p[0], p[1], 10, '#3a3f55', 3));
-    // pot + mixing bowl on counter
-    A.draw(g, 'pot', 330, 262, 74); G.ell(g, 760, 290, 62, 14, '#fff', 4.5); G.ell(g, 760, 292, 50, 9, '#ffdca0', 2.5);
-    if (S.cook) { g.save(); for (let i = 0; i < 4; i++) { const k = (t * .6 + i * .25) % 1; g.globalAlpha = .65 * (1 - k); G.circ(g, 330 + Math.sin(t * 2 + i * 2) * 10, 232 - k * 70, 9 + k * 12, '#fff', 0); } g.restore(); }
+    const S = s.state; wall(g, 430, '#fff4cc', '#ffe39e', false);
+    for (let x = 0; x < 960; x += 64) for (let y = 215, r = 0; y < 300; y += 46, r++) { g.fillStyle = 'rgba(255,255,255,.5)'; G.rr(g, x + (r % 2) * 32 + 1.5, y + 1.5, 61, 42, 5); g.fill(); g.fillStyle = 'rgba(255,255,255,.4)'; g.fillRect(x + (r % 2) * 32 + 6, y + 6, 22, 3); }
+    floorTiles(g, 430, '#efdbb6', '#cdb383', 70);
+    G.window(g, s, 700, 70, 150, 120, { view: 'garden', frame: '#fff', curtains: null, floor: 300, dir: .2 }); rr(g, 692, 62, 166, 14, 6, '#c9633a', 3.5); [0, 1, 2, 3, 4, 5].forEach(i => G.circ(g, 706 + i * 29, 80, 9, '#fff', 2.5));
+    RK.shelf(g, 70, 140, 300); [[110, '#ffd23c'], [170, '#ff8a2a'], [320, '#5cc96b']].forEach(j => { R3(g, j[0] - 20, 100, 40, 40, 8, j[1], 3); R3(g, j[0] - 22, 92, 44, 10, 4, '#fff7e3', 3); });
+    RK.shelf(g, 70, 232, 300); [[110, '#9ed8ff'], [170, '#ff6f91'], [230, '#fff7e3'], [330, '#ffd23c']].forEach(j => { R3(g, j[0] - 20, 194, 40, 38, 8, j[1], 3); R3(g, j[0] - 22, 186, 44, 10, 4, '#c9633a', 3); });
+    G.ao(g, 20, 300, 900, 130); rr(g, 20, 300, 900, 130, 6, '#e0a560', 4.5); rr(g, 12, 286, 920, 26, 6, '#fff7e3', 4.5); g.fillStyle = 'rgba(255,255,255,.5)'; g.fillRect(18, 289, 908, 4); [0, 1, 2, 3, 4, 5, 6].forEach(i => { rr(g, 34 + i * 127, 330, 112, 92, 6, '#f0b872', 3); rr(g, 42 + i * 127, 338, 96, 76, 4, 'rgba(255,255,255,.13)', 2); G.circ(g, 34 + i * 127 + 98, 352, 4, '#8a5a3a', 2); });
+    rr(g, 430, 262, 200, 168, 10, '#d9dde8', 4.5); rr(g, 450, 316, 160, 92, 8, S.bake ? '#ffb347' : '#6e7791', 4); g.fillStyle = 'rgba(255,255,255,.22)'; G.rr(g, 458, 322, 140, 20, 6); g.fill(); if (S.bake) { glowLamp(g, s, 530, 362, t, 140, .6); [0, 1, 2].forEach(i => A.draw(g, 'nn_kaak', 480 + i * 50, 366, 36)); }
+    [[470, 282], [510, 282], [550, 282]].forEach(p => G.circ(g, p[0], p[1], 10, '#3a3f55', 2.5));
+    A.draw(g, 'pot', 330, 262, 74); G.ell(g, 760, 290, 62, 14, '#fff', 4); G.ell(g, 760, 292, 50, 9, '#ffdca0', 2);
+    if (S.cook) G.amb(s, { k: 'steam', x: 330, y: 236, sc: 1.3, n: 4, z: 'mid' });
     if (S.trays) { A.draw(g, 'nn_tray', 190, 276, 84); A.draw(g, 'nn_tray', 250, 276, 84); }
-    // table (6 places) - ellipse top view
     if (S.table) {
-      G.shadow(g, 480, 468, 340, 26, .2); G.ell(g, 480, 410, 330, 80, '#ff8a6a', 5); G.ell(g, 480, 410, 308, 66, '#fff1e0', 3);
+      G.ell(g, 480, 468, 340, 26, 'rgba(40,20,5,.2)', 0); G.ell(g, 480, 410, 330, 80, '#ff8a6a', 4); G.ell(g, 480, 410, 308, 66, '#fff1e0', 2.5);
       g.save(); g.beginPath(); g.ellipse(480, 410, 308, 66, 0, 0, 6.3); g.clip(); g.strokeStyle = 'rgba(239,83,80,.25)'; g.lineWidth = 16; for (let x = -60; x < 960; x += 52) { g.beginPath(); g.moveTo(x, 340); g.lineTo(x + 40, 480); g.stroke(); } g.restore();
-      G.ell(g, 480, 410, 330, 80, null, 5);
+      G.ell(g, 480, 410, 330, 80, null, 3);
     }
   };
 
@@ -161,28 +132,19 @@
      Landmarks: family frames (wall, 90-440, y 90-190), cabinet high shelf (y 150, x 60-250), coffee table (700,400), basket at the right (850,400)
      ================================================================ */
   R.nn_living = function (g, t, s) {
-    const S = s.state; wall(g, 430, '#fbe3ec', '#f3c9d9', 'rgba(255,255,255,.12)');
-    g.fillStyle = 'rgba(255,255,255,.35)'; for (let x = 20; x < 960; x += 60) G.circ(g, x, 256 + (((x / 60) | 0) % 2) * 18, 7, 'rgba(255,255,255,.35)', 0);
-    floorTiles(g, 430, '#d8aa74', '#b0834f', 90);
-    // frames wall (portraits are drawn from the cartoon heads)
-    [['baba', 108, 112], ['toota', 202, 100], ['nemo', 296, 112], ['moody', 154, 200], ['aboody', 250, 206]].forEach(f => { rr(g, f[1] - 38, f[2] - 44, 76, 88, 8, '#c9963a', 4.5); rr(g, f[1] - 31, f[2] - 37, 62, 74, 4, '#fff7e3', 2.5); A.draw(g, 'face:' + f[0], f[1], f[2] + 2, 62); });
-    rr(g, 440, 200, 190, 58, 10, '#fff', 4.5); G.text(g, 'ما شاء الله', 535, 229, { size: 30, color: '#1fb5a6' });
-    // window with lace curtains
-    winFrame(g, 700, 70, 150, 150, t, { night: S.night }); [[690, 0], [850, 1]].forEach(c => { g.beginPath(); g.moveTo(c[0], 64); g.lineTo(c[0] + 14, 64); g.quadraticCurveTo(c[0] + (c[1] ? 20 : -6), 150, c[0] + 14, 236); g.lineTo(c[0] - 6, 236); g.closePath(); G.fs(g, '#fff', 3.5); });
-    G.line(g, 676, 62, 880, 62, 7, '#b97b4a');
-    // tall cabinet on the left with a high shelf
-    rr(g, 40, 258, 140, 172, 8, '#b97b4a', 5); G.line(g, 110, 258, 110, 430, 4); G.circ(g, 100, 340, 4, '#ffd23c', 2); G.circ(g, 120, 340, 4, '#ffd23c', 2);
-    // carpet
-    G.ell(g, 480, 486, 330, 42, '#b06fd6', 4.5); G.ell(g, 480, 486, 300, 32, '#e2c4f5', 3); G.ell(g, 480, 486, 230, 22, '#b06fd6', 0); G.ell(g, 480, 486, 160, 14, '#e2c4f5', 0);
-    // sofa
-    A.draw(g, 'sofa', 330, 372, 300); G.fillRR(g, 235, 330, 40, 30, 10, '#ffd23c', 3.5); G.fillRR(g, 395, 330, 40, 30, 10, '#1fb5a6', 3.5);
-    // coffee table + tea
-    rr(g, 600, 372, 190, 20, 8, '#c8935a', 5); G.fillRR(g, 612, 392, 14, 40, 3, '#a0643a', 4); G.fillRR(g, 764, 392, 14, 40, 3, '#a0643a', 4); G.ell(g, 695, 372, 36, 7, '#fff', 3); G.fillRR(g, 700, 350, 22, 20, 6, '#ffb347', 3);
+    const S = s.state; wall(g, 430, '#fce5ee', '#f3c9d9', true, { pattern: 'dots', pcol: 'rgba(255,255,255,.4)', dado: { h: 60, c: '#eab6cb' } });
+    floorTiles(g, 430, '#d8aa74', '#a9794a', 90);
+    [['baba', 108, 112], ['toota', 202, 100], ['nemo', 296, 112], ['moody', 154, 200], ['aboody', 250, 206]].forEach(f => { g.fillStyle = 'rgba(50,25,5,.22)'; G.rr(g, f[1] - 34, f[2] - 38, 76, 88, 8); g.fill(); rr(g, f[1] - 38, f[2] - 44, 76, 88, 8, '#c9963a', 4); rr(g, f[1] - 31, f[2] - 37, 62, 74, 4, '#fff7e3', 2); A.draw(g, 'face:' + f[0], f[1], f[2] + 2, 62); });
+    rr(g, 440, 200, 190, 58, 10, '#fff', 4); G.text(g, 'ما شاء الله', 535, 229, { size: 30, color: '#1fb5a6' });
+    G.window(g, s, 700, 70, 150, 150, { view: S.night ? 'citynight' : 'city', night: S.night, frame: '#fff6e6', curtains: '#fff', cw: 36, floor: 430, dir: .4 });
+    G.ao(g, 40, 258, 140, 172); rr(g, 40, 258, 140, 172, 8, '#b97b4a', 4.5); G.line(g, 110, 258, 110, 430, 3.5); G.circ(g, 100, 340, 4, '#ffd23c', 2); G.circ(g, 120, 340, 4, '#ffd23c', 2);
+    RK.rug(g, 480, 486, 330, 42, '#b06fd6', '#e2c4f5', { star: true });
+    A.draw(g, 'sofa', 330, 372, 300); G.fillRR(g, 235, 330, 40, 30, 10, '#ffd23c', 3); G.fillRR(g, 395, 330, 40, 30, 10, '#1fb5a6', 3);
+    G.ao(g, 600, 372, 190, 60); rr(g, 600, 372, 190, 20, 8, '#c8935a', 4.5); G.fillRR(g, 612, 392, 14, 40, 3, '#a0643a', 3); G.fillRR(g, 764, 392, 14, 40, 3, '#a0643a', 3); G.ell(g, 695, 372, 36, 7, '#fff', 3); G.fillRR(g, 700, 350, 22, 20, 6, '#ffb347', 3);
     if (S.album) A.draw(g, 'nn_album', 650, 352, 64); if (S.meds) { A.draw(g, 'nn_meds', 640, 350, 54); A.draw(g, 'nn_glass', 740, 354, 38); }
-    // basket (right) where the album hides, plus a floor lamp
-    G.poly(g, [[810, 380], [900, 380], [890, 436], [820, 436]], '#d8a460', 4.5); G.line(g, 812, 400, 898, 400, 3); G.line(g, 816, 418, 892, 418, 3);
-    G.line(g, 940, 110, 940, 430, 6, '#8a5a3a'); R3(g, 912, 84, 56, 44, 10, S.lampOn || S.night ? '#fff2a8' : '#fff7e3', 4.5); if (S.lampOn || S.night) glowLamp(g, 940, 108, t, 190);
-    if (S.night) { g.fillStyle = 'rgba(30,24,80,.28)'; g.fillRect(0, 0, 960, 540); glowLamp(g, 940, 108, t, 260); glowLamp(g, 330, 300, t, 230); }
+    G.poly(g, [[810, 380], [900, 380], [890, 436], [820, 436]], '#d8a460', 4); G.line(g, 812, 400, 898, 400, 2.5); G.line(g, 816, 418, 892, 418, 2.5);
+    G.line(g, 940, 110, 940, 430, 6, '#8a5a3a'); R3(g, 912, 84, 56, 44, 10, S.lampOn || S.night ? '#fff2a8' : '#fff7e3', 4); if (S.lampOn || S.night) { glowLamp(g, s, 940, 108, t, 260, .7); }
+    if (S.night) glowLamp(g, s, 330, 300, t, 230, .3);
   };
 
   /* ================================================================
@@ -190,24 +152,21 @@
      Landmarks: stand with shelves (left), hanging hook (610,120), low spot behind the chair (150,430), stand shelf (820,330)
      ================================================================ */
   R.nn_balcony = function (g, t, s) {
-    const S = s.state; g.fillStyle = S.dusk ? G.lin(g, 0, 0, 0, 430, ['#6a5bc4', '#ff9a6a', '#ffd29a']) : G.lin(g, 0, 0, 0, 430, ['#8fd6ff', '#e4f6ff', '#fff3d0']); g.fillRect(0, 0, 960, 430);
-    if (!S.dusk) { G.sun(g, 800, 110, 34, t); G.cloud(g, 160 + (t * 9) % 520, 100, 1.1); } else { A.draw(g, 'moon', 820, 100, 56); for (let i = 0; i < 9; i++) G.sparkle(g, 60 + i * 100, 40 + (i * 37) % 80, 3 + i % 3, '#fff6a8', .6 + .4 * Math.sin(t * 2 + i)); }
-    // far buildings and trees
-    g.fillStyle = S.dusk ? '#7d5aa6' : '#d6b49c'; [[40, 200, 120], [190, 160, 130], [350, 220, 110], [520, 180, 150], [700, 210, 120], [850, 150, 140]].forEach(b => { g.fillRect(b[0], b[1], b[2] * .62, 280); g.fillStyle = S.dusk ? '#ffd86a' : '#f6e4d0'; for (let y = b[1] + 14; y < 380; y += 40) for (let x = b[0] + 10; x < b[0] + b[2] * .62 - 18; x += 28) g.fillRect(x, y, 16, 22); g.fillStyle = S.dusk ? '#7d5aa6' : '#d6b49c'; });
-    [[70, 400], [230, 410], [420, 405], [620, 412], [800, 402], [930, 410]].forEach(p => { G.circ(g, p[0], p[1], 52, S.dusk ? '#2f7a55' : '#5cc96b', 4); G.circ(g, p[0] - 18, p[1] - 12, 22, S.dusk ? '#3e9468' : '#7fdc8a', 0); });
-    // awning
-    g.fillStyle = '#ef5350'; g.beginPath(); g.moveTo(0, 0); g.lineTo(960, 0); g.lineTo(960, 52); for (let i = 16; i >= 0; i--) g.lineTo(i * 60, 52 + (i % 2 ? 22 : 0)); g.closePath(); G.fs(g, '#ef5350', 4.5); for (let i = 0; i < 16; i += 2) { g.fillStyle = 'rgba(255,255,255,.55)'; g.fillRect(i * 60, 0, 60, 50); }
-    G.line(g, 610, 74, 610, 108, 5, '#8f95a8'); G.circ(g, 610, 112, 6, '#8f95a8', 3);   // hanging hook
-    // rail + floor
-    g.fillStyle = '#e8c79a'; g.fillRect(0, 300, 960, 130); G.line(g, 0, 300, 960, 300, 6, '#8a5a3a'); G.line(g, 0, 330, 960, 330, 4, '#8a5a3a'); for (let x = 20; x < 960; x += 46) G.fillRR(g, x, 300, 10, 130, 3, '#b97b4a', 3.5);
-    floorTiles(g, 430, '#d9b98a', '#b78f5f', 80);
-    // plant stand (right)
-    G.line(g, 760, 300, 760, 436, 7, '#8a5a3a'); G.line(g, 880, 300, 880, 436, 7, '#8a5a3a'); rr(g, 744, 346, 152, 12, 4, '#b97b4a', 4.5); rr(g, 744, 398, 152, 12, 4, '#b97b4a', 4.5);
-    // chair with cushion (left), low gap behind it
-    rr(g, 70, 350, 110, 18, 6, '#c8935a', 4.5); rr(g, 70, 292, 14, 90, 4, '#c8935a', 4.5); G.fillRR(g, 74, 368, 12, 66, 3, '#a0643a', 4); G.fillRR(g, 164, 368, 12, 66, 3, '#a0643a', 4); rr(g, 86, 336, 84, 16, 8, '#ff9ec0', 3.5);
-    // small table
-    G.ell(g, 440, 440, 70, 12, '#8a5a3a', 4.5); G.fillRR(g, 434, 396, 12, 44, 3, '#8a5a3a', 3.5); rr(g, 384, 380, 112, 14, 6, '#c8935a', 4.5);
+    const S = s.state;
+    G.far(g, s, c => { G.view(c, S.dusk ? 'citysunset' : 'city', 0, 0, 960, 430, 20); c.fillStyle = S.dusk ? '#2f7a55' : '#5cc96b'; });
+    G.hole(g, s, 0, 0, 960, 430);
+    if (S.dusk) { const R2 = G.rand(5), pts = []; for (let i = 0; i < 14; i++) pts.push([R2() * 960, 20 + R2() * 120, 2 + R2() * 2]); G.amb(s, { k: 'stars', pts, z: 'far' }); } else { G.amb(s, { k: 'clouds', x0: -100, x1: 1060, y0: 60, y1: 200, n: 3, speed: 8, sc: .8, seed: 6 }); G.amb(s, { k: 'birds', y: 130, n: 3, speed: 22, sc: 1, seed: 8 }); }
+    [[70, 400], [230, 410], [420, 405], [620, 412], [800, 402], [930, 410]].forEach(p => { const gr = g.createRadialGradient(p[0] - 16, p[1] - 22, 4, p[0], p[1], 56); gr.addColorStop(0, S.dusk ? '#4fa77a' : '#86df92'); gr.addColorStop(1, S.dusk ? '#276a47' : '#4cb85a'); g.fillStyle = gr; g.beginPath(); g.arc(p[0], p[1], 54, 0, 6.3); g.fill(); g.lineWidth = 1.6; g.strokeStyle = 'rgba(20,70,30,.5)'; g.stroke(); });
+    g.fillStyle = S.dusk ? '#e04a5a' : '#ef5350'; g.beginPath(); g.moveTo(0, 0); g.lineTo(960, 0); g.lineTo(960, 52); for (let i = 16; i >= 0; i--) g.lineTo(i * 60, 52 + (i % 2 ? 22 : 0)); g.closePath(); G.fs(g, '#ef5350', 3, null, [0, 0, 960, 70]); for (let i = 0; i < 16; i += 2) { g.fillStyle = 'rgba(255,255,255,.6)'; g.fillRect(i * 60, 0, 60, 50); } g.fillStyle = 'rgba(40,10,0,.25)'; g.fillRect(0, 54, 960, 22);
+    G.line(g, 610, 74, 610, 108, 4, '#8f95a8'); G.circ(g, 610, 112, 6, '#8f95a8', 2.5);
+    g.fillStyle = G.lin(g, 0, 300, 0, 430, ['#eccfa4', '#dcb785']); g.fillRect(0, 300, 960, 130); G.line(g, 0, 300, 960, 300, 5, '#8a5a3a'); G.line(g, 0, 330, 960, 330, 3.5, '#8a5a3a'); for (let x = 20; x < 960; x += 46) G.fillRR(g, x, 300, 10, 130, 3, '#b97b4a', 3);
+    floorTiles(g, 430, '#dcbd8e', '#b3895a', 80);
+    G.line(g, 760, 300, 760, 436, 6, '#8a5a3a'); G.line(g, 880, 300, 880, 436, 6, '#8a5a3a'); rr(g, 744, 346, 152, 12, 4, '#b97b4a', 4); rr(g, 744, 398, 152, 12, 4, '#b97b4a', 4);
+    G.ao(g, 70, 350, 110, 86); rr(g, 70, 350, 110, 18, 6, '#c8935a', 4); rr(g, 70, 292, 14, 90, 4, '#c8935a', 4); G.fillRR(g, 74, 368, 12, 66, 3, '#a0643a', 3); G.fillRR(g, 164, 368, 12, 66, 3, '#a0643a', 3); rr(g, 86, 336, 84, 16, 8, '#ff9ec0', 3);
+    G.ell(g, 440, 440, 70, 12, '#8a5a3a', 4); G.fillRR(g, 434, 396, 12, 44, 3, '#8a5a3a', 3); rr(g, 384, 380, 112, 14, 6, '#c8935a', 4);
     A.draw(g, 'nn_glass', 410, 364, 38);
+    G.amb(s, { k: 'leaves', x0: 40, x1: 920, y0: 100, y1: 420, n: 5, cols: S.dusk ? ['#9a7ac0'] : ['#8fd16a', '#c8e080'], z: 'top', seed: 4 });
+    if (!S.dusk) G.amb(s, { k: 'glow', x: 800, y: 80, r: 330, ry: 240, col: '255,236,170', a: .14, z: 'top' });
   };
 
   /* ================================================================

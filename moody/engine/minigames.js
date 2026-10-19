@@ -50,10 +50,11 @@
     cl(st.addLayer({
       z: 10, update(dt) { items.forEach(i => { if (i.wob > 0) i.wob -= dt; }); tg.forEach(t => { if (t.glow > 0) t.glow -= dt * 2; }); st.dbg = { kit: 'dragdrop', items: items.filter(i => !i.placed).map(i => { const t = tg.find(t => t.id === i.to) || tg.find(t => { try { return t.accepts && t.accepts(i); } catch (e) { return false; } }) || {}; return { id: i.id, x: i.x, y: i.y, tx: t.x, ty: t.y, needs: i.needs || null, hero: i.needs ? st.who(i.needs) : null }; }) }; },
       draw(g, t) {
-        if (o.panel) G.fillRR(g, o.panel.x, o.panel.y, o.panel.w, o.panel.h, 22, 'rgba(255,247,227,.82)', 4);
+        if (o.panel) { const pn = o.panel; g.save(); g.shadowColor = 'rgba(40,20,70,.28)'; g.shadowBlur = 18; g.shadowOffsetY = 8; G.fillRR(g, pn.x, pn.y, pn.w, pn.h, 28, 'rgba(255,250,236,.84)', 3); g.restore(); g.fillStyle = G.lin(g, 0, pn.y, 0, pn.y + pn.h * .5, ['rgba(255,255,255,.55)', 'rgba(255,255,255,0)']); g.save(); G.rr(g, pn.x + 4, pn.y + 4, pn.w - 8, pn.h - 8, 24); g.clip(); g.fillRect(pn.x, pn.y, pn.w, pn.h * .5); g.restore(); }
         tg.forEach(tt => {
           g.save(); g.translate(tt.x, tt.y); const k = 1 + Math.max(0, tt.glow) * .12; g.scale(k, k);
-          if (tt.draw) tt.draw(g, tt); else if (tt.art) A.draw(g, tt.art, 0, 0, tt.s || Math.max(tt.w, tt.h) * 1.1); else { G.fillRR(g, -tt.w / 2, -tt.h / 2, tt.w, tt.h, 18, 'rgba(255,255,255,.7)', 3.5); }
+          if (tt.draw) tt.draw(g, tt); else if (tt.art) A.draw(g, tt.art, 0, 0, tt.s || Math.max(tt.w, tt.h) * 1.1); else { G.fillRR(g, -tt.w / 2, -tt.h / 2, tt.w, tt.h, 22, 'rgba(255,255,255,.72)', 3); }
+          if (!drag.size) { g.save(); g.strokeStyle = 'rgba(255,255,255,' + (.55 + .3 * Math.sin(t * 3)) + ')'; g.lineWidth = 4; g.setLineDash([10, 9]); G.rr(g, -tt.w / 2 - 6, -tt.h / 2 - 6, tt.w + 12, tt.h + 12, 24); g.stroke(); g.restore(); }
           if (drag.size && [...drag.values()].some(d => Math.abs(d.x - tt.x) < tt.w / 2 + 16 && Math.abs(d.y - tt.y) < tt.h / 2 + 16)) { g.strokeStyle = '#ffc93c'; g.lineWidth = 6; g.setLineDash([12, 8]); G.rr(g, -tt.w / 2 - 8, -tt.h / 2 - 8, tt.w + 16, tt.h + 16, 22); g.stroke(); g.setLineDash([]); }
           if (tt.label) G.text(g, tt.label, 0, tt.h / 2 + 18, { size: 22, color: '#fff', stroke: M.OL, sw: 6 });
           g.restore();
@@ -128,7 +129,7 @@
       if (busy || closed) return; busy = true; const opt = o.options[i]; tries++; picked.push(i);
       try {
         if (opt.good) {
-          card.style.background = '#c9f5cf'; ctx.sfx('good'); ui.close(); closed = true;
+          card.classList.add('picked'); UI.sparkEl && UI.sparkEl(card, { n: 12, r: 90 }); ctx.sfx('good'); ui.close(); closed = true;
           if (opt.reply) for (const l of opt.reply) await ctx.say(l[0], l[1], l[2]);
           ctx.react('good', 'both'); await ctx.wait(.5); done({ good: true, firstTry: tries === 1, tries, picked, index: i });
         } else {
@@ -154,11 +155,11 @@
     function tapCard(i, c) {
       if (busy) return; sk.poke();
       if (i === next) {
-        ctx.sfx('pop'); const sl = slots[next]; sl.className = 'slot full'; sl.textContent = ''; const s = steps[i]; if (s.art) sl.append(ico(s.art, 54)); sl.append(h('div', { style: 'font-size:16px;line-height:1.1' }, M.fmt(s.label || ''))); c.classList.add('used'); c.classList.remove('glow'); next++;
+        ctx.sfx('pop'); const sl = slots[next]; sl.className = 'slot full'; sl.textContent = ''; const s = steps[i]; if (s.art) sl.append(ico(s.art, 54)); sl.append(h('div', { style: 'font-size:16px;line-height:1.1' }, M.fmt(s.label || ''))); c.classList.add('used'); c.classList.remove('glow'); UI.sparkEl && UI.sparkEl(sl, { n: 8, r: 50 }); next++;
         ctx.stage.burst(480, 300, { n: 6, kind: 'spark', max: 120 });
         if (next >= n) { busy = true; ctx.react('good', 'both'); M.wait(1.1).then(() => done({ mistakes: misses })); }
       } else {
-        misses++; sk.fail(); ctx.sfx('wrong'); c.style.animation = 'none'; void c.offsetWidth; c.style.animation = 'shake .4s'; ctx.stage.bubble('aboody', 'مش دلوقتي.. فكّر في الأول', 1.6);
+        misses++; sk.fail(); ctx.sfx('wrong'); c.style.animation = 'none'; void c.offsetWidth; c.style.animation = 'shake .45s'; ctx.stage.bubble('aboody', 'مش دلوقتي.. فكّر في الأول', 1.6);
         if (misses >= 2) { const nc = cards.find(x => +x.dataset.i === next); if (nc) nc.classList.add('glow'); }
       }
     }
@@ -177,7 +178,7 @@
       if (lock || b.classList.contains('match') || !b.classList.contains('back')) return; ctx.sfx('flip'); b.classList.remove('back'); b.textContent = ''; b.append(ico(c.a, 80)); sk.poke();
       if (!first) { first = { b, c }; return; }
       moves++; const f = first; first = null;
-      if (f.c.a === c.a) { matched++; f.b.classList.add('match'); b.classList.add('match'); ctx.sfx('good'); ctx.stage.burst(480, 300, { n: 10, kind: 'star' }); if (matched === pairs.length && !finished) { finished = true; clearInterval(iv); ctx.react('good', 'both'); ctx.skill('memory'); M.wait(1).then(() => done({ moves, timeUp: false, matched })); } }
+      if (f.c.a === c.a) { matched++; f.b.classList.add('match'); b.classList.add('match'); UI.sparkEl && (UI.sparkEl(f.b, { n: 8, r: 50 }), UI.sparkEl(b, { n: 8, r: 50 })); ctx.sfx('good'); ctx.stage.burst(480, 300, { n: 10, kind: 'star' }); if (matched === pairs.length && !finished) { finished = true; clearInterval(iv); ctx.react('good', 'both'); ctx.skill('memory'); M.wait(1).then(() => done({ moves, timeUp: false, matched })); } }
       else { lock = true; sk.fail(); setTimeout(() => { [f.b, b].forEach(x => { x.classList.add('back'); x.textContent = ''; }); lock = false; }, 850); }
     }
   };
@@ -294,8 +295,8 @@
 
   /* ================= RITUAL (a big tap: bismillah / alhamdulillah / thanks) ================= */
   K.ritual = function (ctx, o, done, cl) {
-    let fin = false; const b = h('button', { class: 'btn big pink', style: 'position:absolute;left:0;right:0;margin:0 auto;width:fit-content;bottom:' + (o.bottom == null ? 150 : o.bottom) + 'px;animation:pulse 1.2s infinite;font-size:54px;min-height:120px;z-index:4;white-space:nowrap' }, o.text, o.sub ? h('small', { style: 'font-size:22px;display:block' }, M.fmt(o.sub)) : null);
-    b.onclick = () => { if (fin) return; fin = true; ctx.sfx('bell'); ctx.stage.burst(480, 360, { n: 18, kind: 'spark', max: 300 }); ctx.stage.play(o.who || 'moody', 'cheer', 1); ctx.stage.play(ctx.stage.other(o.who || 'moody').id, 'cheer', 1); b.remove(); M.wait(.9).then(() => done({})); };
+    let fin = false; const b = h('button', { class: 'btn big pink shine' + (o.tone === 'call' ? ' call' : ''), 'aria-label': o.text, style: 'position:absolute;left:0;right:0;margin:0 auto;width:fit-content;bottom:' + (o.bottom == null ? 150 : o.bottom) + 'px;animation:pulse 1.2s infinite;font-size:54px;min-height:120px;z-index:4;white-space:nowrap' }, o.icon ? UI.i(o.icon, 54) : null, h('span', { style: 'display:block;text-align:center;line-height:1.1' }, o.text, o.sub ? h('small', null, M.fmt(o.sub)) : null));
+    b.onclick = () => { if (fin) return; fin = true; ctx.sfx('bell'); UI.sparkEl && UI.sparkEl(b, { n: 14, r: 120 }); ctx.stage.burst(480, 360, { n: 18, kind: 'spark', max: 300 }); ctx.stage.play(o.who || 'moody', 'cheer', 1); ctx.stage.play(ctx.stage.other(o.who || 'moody').id, 'cheer', 1); b.remove(); M.wait(.9).then(() => done({})); };
     UI.over.append(b); cl(() => b.remove());
     ctx.stage.dbg = { kit: 'ritual' }; cl(() => { ctx.stage.dbg = null; });
   };

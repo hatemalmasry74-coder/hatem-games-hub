@@ -61,7 +61,7 @@
       return mk(done => {
         const apply = () => { stage.bg = typeof bg === 'string' ? M.rooms[bg] : bg; stage.state = o.state || {}; stage.layout(o.heroes || 'floor'); stage.floorY = o.floorY || 480; stage.layers.length = 0; stage.input = null; stage.parts.length = 0; UI.hud.setPrompt(null); };
         if (o.instant) { apply(); done(); return; }
-        fade(true, 220).then(() => { if (aborted) return; apply(); return fade(false, 260); }).then(() => done());
+        stage.transition(() => { if (!aborted) apply(); }, { style: o.transition }).then(() => done());   // iris + zoom, skippable (engine/stage.js)
       });
     };
     ctx.heroes = l => stage.layout(l);
@@ -71,15 +71,16 @@
     ctx.banner = ctx.prompt;
     ctx.titleCard = (t, sub) => mk((done, cl) => {
       const el = UI.h('div', { class: 'panel', style: 'position:absolute;left:150px;right:150px;top:170px;padding:20px;text-align:center;animation:popin .4s;z-index:40' }, UI.h('div', { class: 'title', style: 'font-size:56px' }, t), sub ? UI.h('div', { style: 'font-size:30px;font-weight:bold;margin-top:12px' }, M.fmt(sub)) : null);
-      UI.over.append(el); cl(() => el.remove()); M.voice.speak(t + '. ' + (sub || ''), { speaker: 'narrator' }); M.wait(2.3).then(() => done());
+      UI.over.append(el); stage.setMood(true); cl(() => { el.remove(); stage.setMood(false); }); M.voice.speak(t + '. ' + (sub || ''), { speaker: 'narrator' }); M.wait(2.3).then(() => done());
     });
     ctx.say = function (who, text, o) {
       o = o || {};
       return mk((done, cl) => {
         let close; const hero = stage.heroes[who];
         if (hero && o.anim) stage.play(who, o.anim, o.animT || 1.2);
+        const relEmo = M.chars.line ? M.chars.line(who, text, o) : null;   // emotion while the line is shown (o.emote or inferred from the text)
         UI.say({ who, text, name: o.name, icon: o.icon, face: o.face || (o.anim && ['cry', 'scream', 'phone'].indexOf(o.anim) >= 0 ? o.anim : null), onTalk: v => { if (hero) hero.talk = v ? 999 : 0; }, register: c => { close = c; } }).then(() => done());
-        cl(() => { if (close) close(); if (hero) hero.talk = 0; });
+        cl(() => { if (close) close(); if (hero) hero.talk = 0; if (relEmo) relEmo(); });
       });
     };
     ctx.dialog = async function (lines) { for (const l of lines) await ctx.say(l[0], l[1], l[2]); };
@@ -116,7 +117,7 @@
     ctx.sticker = { give(id) { ctx.stickerList.push(id); } };
     ctx.value = t => { if (ctx.valueList.indexOf(t) < 0) ctx.valueList.push(t); };
     ctx.skill = t => { const s = M.save.data.skills; s[t] = (s[t] || 0) + 1; M.save.commit(); };
-    ctx.fx = { burst: (x, y, o) => stage.burst(x, y, o), float: (t, x, y, c) => stage.float(t, x, y, c), shake: a => stage.shake(a), flash: (c, a) => stage.flash(c, a), confetti: () => stage.confetti() };
+    ctx.fx = { sparkle: (x, y, o) => stage.sparkle(x, y, o), reward: (x, y) => stage.reward(x, y), glow: (x, y, r, c) => stage.addGlow(x, y, r, c), doorOpen: (x, y, w, h, o) => stage.doorOpen(x, y, w, h, o), burst: (x, y, o) => stage.burst(x, y, o), float: (t, x, y, c) => stage.float(t, x, y, c), shake: a => stage.shake(a), flash: (c, a) => stage.flash(c, a), confetti: () => stage.confetti() };
     ctx.nav = { complete(o) { ctx.endOpts = o || {}; throw COMPLETE; }, quit() { run.quit(); } };
 
     /* skip safety net used by kits: shows "تخطّي" after a long idle time or 3 failures */

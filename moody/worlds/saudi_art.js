@@ -193,285 +193,273 @@
     g.restore();
   }
   function wallPanel(g, c1, c2, y1) { g.fillStyle = G.lin(g, 0, 0, 0, y1, [c1, c2]); g.fillRect(0, 0, 960, y1); }
+  const RK = G.room;
+  G.views.cairo = (c, x, y, w, h) => { cairoSky(c, x, y, w, h, 0, false); G.glowAt(c, x + w * .78, y + h * .3, h * .6, '255,246,200', .6); };
+  G.views.caironight = (c, x, y, w, h) => { cairoSky(c, x, y, w, h, 0, true); };
+  G.views.abhawin = (c, x, y, w, h) => { G.sky(c, x, y, w, h, ['#9fd0ee', '#e4f0f3', '#f4f3e6']); G.glowAt(c, x + w * .75, y + h * .25, h * .6, '255,248,210', .7); ridge(c, y + h * .66, h * .24, .014, 3, 0, '#a7bfd0', 0); ridge(c, y + h * .8, h * .17, .02, 1, 0, '#86a98e', 0); village(c, y + h * .9, x, x + w, 7, .55, 0, { lw: 0, nowin: true, minaret: true }); c.fillStyle = 'rgba(255,255,255,.4)'; c.fillRect(x, y + h * .62, w, h * .1); };
+  G.views.airfield = (c, x, y, w, h) => { G.sky(c, x, y, w, h, ['#79bdea', '#c3e4f6', '#eef8ff']); G.glowAt(c, x + w * .85, y + h * .22, h * .5, '255,248,210', .7); c.fillStyle = G.lin(c, 0, y + h * .7, 0, y + h, ['#cfd3da', '#b4bac6']); c.fillRect(x, y + h * .7, w, h * .3); c.fillStyle = 'rgba(255,255,255,.7)'; for (let xx = x + 10; xx < x + w; xx += 70) c.fillRect(xx, y + h * .85, 36, 3); };
+  M.look.setAll({
+    saudiHome: { tod: 'morning', floor: 430, live: ['suitcase', 'caseX', 'caseY', 'dim'], lightX: 480, vig: .26 },
+    saudiAirport: s => ({ tod: s.state.abha ? 'morning' : 'day', floor: 430, live: ['doors', 'green', 'stamped', 'mx', 'my'], lightX: 300, vig: .22 }),
+    saudiCabin: { tod: 'cool', floor: 700, ao: 0, live: ['b', 'belts', 'seated', 'dim'], vig: .3 },
+    saudiSky: { tod: 'day', floor: 700, ao: 0, indoor: false, live: ['prog', 'dusk'], vig: .3 },
+    saudiRoad: { tod: 'morning', indoor: false, floor: 700, ao: 0, live: ['speed', 'fog', 'carX', 'faces', 'lights', 'dusk', 'scroll', '_t'], vig: .24 },
+    saudiCable: { tod: 'morning', indoor: false, floor: 700, ao: 0, live: ['prog', 'fog'], vig: .22 },
+    saudiPeak: { tod: 'morning', indoor: false, floor: 700, ao: 0, live: ['cold'], vig: .22, lightX: 760 },
+    saudiDinner: s => ({ tod: s.state.night ? 'warm' : 'day', floor: 400, live: ['dim'], lightX: 480, vig: .32 })
+  });
 
   R.saudiHome = function (g, t, s) {
     const S0 = s.state;
-    wallPanel(g, '#ffe7c9', '#ffd8b0', 430);
-    g.fillStyle = 'rgba(255,255,255,.12)'; for (let i = 0; i < 12; i++) g.fillRect(i * 90, 0, 40, 430);
-    // floor
-    g.fillStyle = G.lin(g, 0, 430, 0, 540, ['#d9a66e', '#b57e4a']); g.fillRect(0, 430, 960, 110); G.line(g, 0, 430, 960, 430, 4);
-    g.strokeStyle = 'rgba(90,50,20,.18)'; g.lineWidth = 2; for (let i = 0; i < 12; i++) { g.beginPath(); g.moveTo(i * 90 - 20, 430); g.lineTo(i * 150 - 300, 540); g.stroke(); }
-    // window with Cairo skyline
-    const wx = 380, wy = 110, ww = 200, wh = 170; cairoSky(g, wx, wy, ww, wh, t, S0.night); g.lineWidth = 6; g.strokeStyle = OL; g.strokeRect(wx, wy, ww, wh); G.line(g, wx + ww / 2, wy, wx + ww / 2, wy + wh, 5); G.line(g, wx, wy + wh / 2, wx + ww, wy + wh / 2, 5);
-    [[wx - 36, '#ff9ec0'], [wx + ww - 6, '#ff9ec0']].forEach(c => { g.beginPath(); g.moveTo(c[0], wy - 12); g.lineTo(c[0] + 42, wy - 12); g.quadraticCurveTo(c[0] + 54, wy + wh / 2, c[0] + 42, wy + wh + 10); g.lineTo(c[0], wy + wh + 10); g.closePath(); G.fs(g, c[1], 3.5); });
-    G.line(g, wx - 48, wy - 12, wx + ww + 48, wy - 12, 7, '#8a5a3a');
-    // high shelf (needs a tall hero) + wardrobe
-    rr(g, 700, 150, 200, 12, 4, '#b97b4a', 4); rr(g, 690, 162, 14, 30, 2, '#b97b4a', 3.5); rr(g, 886, 162, 14, 30, 2, '#b97b4a', 3.5);
-    A.draw(g, 'book', 730, 128, 44); A.draw(g, 'plant', 866, 126, 46);
-    // sofa with a narrow gap beneath
-    A.draw(g, 'sofa', 160, 388, 190); g.fillStyle = 'rgba(60,30,10,.32)'; g.fillRect(70, 424, 180, 8);
-    // rug
-    G.ell(g, 480, 482, 250, 34, '#ff9ec0', 4); G.ell(g, 480, 482, 190, 24, '#ffd0e0', 3); G.ell(g, 480, 482, 110, 14, '#ff9ec0', 0);
-    // posters
-    rr(g, 230, 110, 100, 120, 6, '#fff', 4); A.draw(g, 'saudi_plane', 280, 150, 70); G.line(g, 245, 195, 315, 195, 4, '#9fd8f4'); G.line(g, 245, 208, 300, 208, 4, '#9fd8f4');
-    rr(g, 80, 120, 110, 80, 6, '#fff', 4); A.draw(g, 'saudi_mountain', 135, 160, 62);
-    // open suitcase (big) + state: how many items in
-    const sc = S0.suitcase || 'open';
-    if (sc !== 'none') {
-      const cx = S0.caseX == null ? 190 : S0.caseX, cy = S0.caseY == null ? 380 : S0.caseY;
-      if (sc === 'closed') { A.draw(g, 'saudi_suitcase:teal:band', cx, cy + 20, 130); }
-      else { G.fillRR(g, cx - 80, cy - 50, 160, 40, 10, '#1fb5a6', 4.5); G.fillRR(g, cx - 70, cy - 42, 140, 24, 6, '#d6f3ee', 2.5); G.fillRR(g, cx - 86, cy - 14, 172, 62, 12, '#1fb5a6', 4.5); G.fillRR(g, cx - 74, cy - 4, 148, 44, 8, '#fff3d6', 3); G.fillRR(g, cx - 14, cy - 18, 28, 8, 3, '#d9a84a', 2.5); }
-    }
-    if (S0.dim) { g.fillStyle = 'rgba(20,30,70,' + S0.dim + ')'; g.fillRect(0, 0, 960, 540); }
+    RK.wall(g, 430, '#ffe9cd', '#ffd8b0', { pattern: 'stripes', pw: 90, dado: { h: 64, c: '#f4c892' } }); RK.floor(g, 430, '#dba670', '#a8733f', { kind: 'wood' });
+    G.window(g, s, 380, 110, 200, 170, { view: S0.night ? 'caironight' : 'cairo', night: S0.night, curtains: '#ff8fb8', floor: 430, dir: .3, tod: 'morning' });
+    RK.shelf(g, 700, 150, 200); A.draw(g, 'book', 730, 128, 44); A.draw(g, 'plant', 866, 126, 46);
+    A.draw(g, 'sofa', 160, 388, 190); g.fillStyle = G.lin(g, 0, 424, 0, 436, ['rgba(40,20,5,.4)', 'rgba(40,20,5,.08)']); g.fillRect(70, 424, 180, 12);
+    RK.rug(g, 480, 482, 250, 34, '#ff9ec0', '#ffd0e0', { star: true });
+    RK.frame(g, 230, 110, 100, 120, { frame: '#fff', bg: '#cfeaff', draw: (g, x, y, w, h) => { A.draw(g, 'saudi_plane', x + w / 2, y + 40, 70); G.line(g, x + 14, y + 85, x + w - 14, y + 85, 4, '#9fd8f4'); G.line(g, x + 14, y + 98, x + w - 30, y + 98, 4, '#9fd8f4'); } });
+    RK.frame(g, 80, 120, 110, 80, { frame: '#fff', bg: '#eaf6ff', draw: (g, x, y, w, h) => { A.draw(g, 'saudi_mountain', x + w / 2, y + h / 2, 62); } });
+    G.live(g, s, (g, t) => {
+      const sc = S0.suitcase || 'open';
+      if (sc !== 'none') {
+        const cx = S0.caseX == null ? 190 : S0.caseX, cy = S0.caseY == null ? 380 : S0.caseY;
+        if (sc === 'closed') { A.draw(g, 'saudi_suitcase:teal:band', cx, cy + 20, 130); }
+        else { G.fillRR(g, cx - 80, cy - 50, 160, 40, 10, '#1fb5a6', 3.5); G.fillRR(g, cx - 70, cy - 42, 140, 24, 6, '#d6f3ee', 2); G.fillRR(g, cx - 86, cy - 14, 172, 62, 12, '#1fb5a6', 3.5); G.fillRR(g, cx - 74, cy - 4, 148, 44, 8, '#fff3d6', 2.5); G.fillRR(g, cx - 14, cy - 18, 28, 8, 3, '#d9a84a', 2); }
+      }
+      if (S0.dim) { g.fillStyle = 'rgba(20,30,70,' + S0.dim + ')'; g.fillRect(0, 0, 960, 540); }
+    }, 'top');
   };
 
   /* ---- AIRPORT : kinds hall | security | passport | belt | arrivals ; state.abha = Abha airport look ---- */
   function asiriBand(g, y, h, x0, x1, t) {
-    // Al-Qatt Al-Asiri inspired geometric band (colourful triangles + diamonds)
     const cols = ['#d8453a', '#f0b429', '#2f9e6a', '#2f6fe0', '#fff'];
-    rr(g, x0, y, x1 - x0, h, 0, '#fff7e3', 3);
-    for (let x = x0 + 8, i = 0; x < x1 - 14; x += 26, i++) { G.poly(g, [[x, y + h - 4], [x + 13, y + 4], [x + 26, y + h - 4]], cols[i % 4], 2); G.poly(g, [[x + 13, y + 10], [x + 18, y + h / 2], [x + 13, y + h - 10], [x + 8, y + h / 2]], cols[(i + 2) % 4], 1.5); }
+    rr(g, x0, y, x1 - x0, h, 0, '#fff7e3', 2.5);
+    for (let x = x0 + 8, i = 0; x < x1 - 14; x += 26, i++) { G.poly(g, [[x, y + h - 4], [x + 13, y + 4], [x + 26, y + h - 4]], cols[i % 4], 1.6); G.poly(g, [[x + 13, y + 10], [x + 18, y + h / 2], [x + 13, y + h - 10], [x + 8, y + h / 2]], cols[(i + 2) % 4], 1.2); }
   }
   R.saudiAirport = function (g, t, s) {
     const S0 = s.state, kind = S0.kind || 'hall', abha = !!S0.abha;
-    // ceiling + wall
-    g.fillStyle = G.lin(g, 0, 0, 0, 380, abha ? ['#f3e6d0', '#fbf3e4'] : ['#e6edf6', '#f6f9fc']); g.fillRect(0, 0, 960, 380);
-    for (let i = 0; i < 7; i++) { rr(g, 40 + i * 140, 4, 100, 12, 6, '#fffbe0', 2.5); }
-    // big window wall (left to centre)
-    if (kind !== 'security' || true) {
-      const wx = 40, wy = 100, ww = kind === 'hall' || kind === 'arrivals' ? 520 : 400, wh = 210;
-      g.save(); g.beginPath(); g.rect(wx, wy, ww, wh); g.clip();
-      if (abha) {
-        g.fillStyle = G.lin(g, 0, wy, 0, wy + wh, ['#a9d6ee', '#eaf3f4']); g.fillRect(wx, wy, ww, wh);
-        ridge(g, wy + 140, 50, .014, 3, 0, '#9fb6c9', 0); ridge(g, wy + 170, 36, .02, 1, 0, '#7fa08a', 0);
-        village(g, wy + 190, wx, wx + ww, 7, .55, 0, { lw: 0, nowin: true, minaret: true }); mist(g, t, wy + 150, 14, .5, 6, 2);
-      } else {
-        g.fillStyle = G.lin(g, 0, wy, 0, wy + wh, ['#8fd6ff', '#e9f6ff']); g.fillRect(wx, wy, ww, wh); G.sun(g, wx + ww - 60, wy + 40, 12, t); G.cloud(g, wx + ((t * 8) % (ww + 80)) - 40, wy + 50, .7);
-        g.fillStyle = '#c9ced6'; g.fillRect(wx, wy + 150, ww, 60); G.line(g, wx, wy + 150, wx + ww, wy + 150, 3);
-      }
-      // parked plane + taxiing one
-      const px = wx + ((t * 22) % (ww + 200)) - 100; A.draw(g, 'saudi_plane', px, wy + 150, 90);
-      A.draw(g, 'saudi_plane', wx + ww * .25, wy + 168, 70);
-      g.restore();
-      g.lineWidth = 6; g.strokeStyle = OL; g.strokeRect(wx, wy, ww, wh); for (let x = wx + ww / 4; x < wx + ww - 10; x += ww / 4) G.line(g, x, wy, x, wy + wh, 4);
-    }
-    // wall base & floor
-    g.fillStyle = abha ? '#e9d8bd' : '#d5dde8'; g.fillRect(0, 312, 960, 118);
+    g.fillStyle = G.lin(g, 0, 0, 0, 380, abha ? ['#f1e2c8', '#fbf3e4'] : ['#e3ebf5', '#f6f9fc']); g.fillRect(0, 0, 960, 380);
+    for (let i = 0; i < 7; i++) { rr(g, 40 + i * 140, 4, 100, 12, 6, '#fffbe0', 2); }
+    const wx = 40, wy = 100, ww = kind === 'hall' || kind === 'arrivals' ? 520 : 400, wh = 210;
+    G.far(g, s, c => { G.view(c, abha ? 'abhawin' : 'airfield', wx, wy, ww, wh, 16); A.draw(c, 'saudi_plane', wx + ww * .25, wy + 168, 70); });
+    G.hole(g, s, wx, wy, ww, wh);
+    g.fillStyle = G.lin(g, 0, wy, 0, wy + 50, ['rgba(20,10,0,.25)', 'rgba(20,10,0,0)']); g.fillRect(wx, wy, ww, 50); g.fillStyle = 'rgba(255,255,255,.16)'; g.beginPath(); g.moveTo(wx + ww * .15, wy + wh); g.lineTo(wx + ww * .3, wy); g.lineTo(wx + ww * .42, wy); g.lineTo(wx + ww * .27, wy + wh); g.fill();
+    g.lineWidth = 6; g.strokeStyle = 'rgba(90,70,60,.8)'; g.strokeRect(wx, wy, ww, wh); for (let x = wx + ww / 4; x < wx + ww - 10; x += ww / 4) G.line(g, x, wy, x, wy + wh, 4, 'rgba(90,70,60,.8)');
+    G.amb(s, { k: 'clouds', x0: wx - 60, x1: wx + ww + 60, y0: wy + 10, y1: wy + 80, n: 3, speed: 5, sc: .4, seed: 8, clip: [wx, wy, ww, wh] });
+    G.amb(s, { k: 'cars', y: wy + 175, n: 1, speed: 24, sc: 1.6, cols: ['#e8eef5'], clip: [wx, wy, ww, wh], seed: 2, z: 'far' });
+    g.fillStyle = abha ? '#eddcc0' : '#d9e1ec'; g.fillRect(0, 312, 960, 118); g.fillStyle = 'rgba(255,255,255,.3)'; g.fillRect(0, 312, 960, 3);
     if (abha) { asiriBand(g, 322, 28, 0, 960, t); }
-    g.fillStyle = G.lin(g, 0, 430, 0, 540, abha ? ['#e8d4ae', '#d5bd8e'] : ['#dfe5ee', '#c2cddb']); g.fillRect(0, 430, 960, 110); G.line(g, 0, 430, 960, 430, 4);
-    g.strokeStyle = 'rgba(100,110,140,.16)'; g.lineWidth = 2; for (let i = 0; i < 14; i++) { g.beginPath(); g.moveTo(i * 80 - 40, 430); g.lineTo(i * 160 - 480, 540); g.stroke(); }
-    for (let i = 1; i < 4; i++) { g.beginPath(); g.moveTo(0, 430 + i * i * 7); g.lineTo(960, 430 + i * i * 7); g.stroke(); }
-    // signs hanging
-    function sign(x, y, w, icon, txt, col) { G.line(g, x - w / 3, 20, x - w / 3, y, 3, '#6e7791'); G.line(g, x + w / 3, 20, x + w / 3, y, 3, '#6e7791'); rr(g, x - w / 2, y, w, 52, 10, col, 4.5); A.draw(g, icon, x - w / 2 + 28, y + 26, 38); G.text(g, txt, x + 20, y + 27, { size: 22, color: '#fff', stroke: 'rgba(0,0,0,.25)', sw: 3 }); }
+    RK.floor(g, 430, abha ? '#ead6b0' : '#e2e8f1', abha ? '#d2b98a' : '#bfcadb', { kind: 'tile', alt: 'rgba(255,255,255,.3)', line: 'rgba(100,110,140,.2)' });
+    function sign(x, y, w, icon, txt, col) { G.line(g, x - w / 3, 20, x - w / 3, y, 2.5, '#6e7791'); G.line(g, x + w / 3, 20, x + w / 3, y, 2.5, '#6e7791'); rr(g, x - w / 2, y, w, 52, 10, col, 3.5); A.draw(g, icon, x - w / 2 + 28, y + 26, 38); G.text(g, txt, x + 20, y + 27, { size: 22, color: '#fff', stroke: 'rgba(0,0,0,.25)', sw: 3 }); }
     const nm = abha ? 'مطار أبها' : 'مطار القاهرة';
     if (kind === 'hall') {
       sign(790, 98, 250, 'saudi_ticket', 'تسجيل السفر', '#2f6fe0');
-      // check-in counter
-      rr(g, 640, 300, 290, 130, 8, '#fff', 4.5); rr(g, 640, 300, 290, 22, 6, '#4a8dff', 4); rr(g, 650, 330, 270, 8, 2, '#cfd6e6', 0);
-      G.fillRR(g, 700, 252, 70, 50, 6, '#3a3f55', 4.5); G.fillRR(g, 706, 258, 58, 34, 3, S0.green ? '#7be08a' : '#ffb2a8', 2.5); if (S0.green) A.draw(g, 'check', 735, 275, 26); else G.text(g, '...', 735, 275, { size: 26, color: '#2b3a67' });
-      A.draw(g, 'saudi_scale', 840, 284, 72);
-      G.text(g, nm, 780, 311, { size: 17, color: '#fff' });
-      // queue posts + tape
-      const post = x => { G.ell(g, x, 470, 14, 5, 'rgba(40,40,60,.3)', 0); rr(g, x - 3, 412, 6, 58, 2, '#6e7791', 3); G.circ(g, x, 410, 6, '#e0b23c', 2.5); };
-      [60, 220, 380, 540].forEach(post); [[60, 220], [220, 380], [380, 540]].forEach(p => { g.beginPath(); g.moveTo(p[0], 414); g.quadraticCurveTo((p[0] + p[1]) / 2, 436, p[1], 414); g.lineWidth = 5; g.strokeStyle = '#d8453a'; g.stroke(); });
+      G.ao(g, 640, 300, 290, 130); rr(g, 640, 300, 290, 130, 8, '#fff', 4); rr(g, 640, 300, 290, 22, 6, '#4a8dff', 3.5); rr(g, 650, 330, 270, 8, 2, '#cfd6e6', 0);
+      G.fillRR(g, 700, 252, 70, 50, 6, '#3a3f55', 3.5); A.draw(g, 'saudi_scale', 840, 284, 72); G.text(g, nm, 780, 311, { size: 17, color: '#fff' });
+      const post = x => { G.ell(g, x, 470, 14, 5, 'rgba(40,40,60,.3)', 0); rr(g, x - 3, 412, 6, 58, 2, '#6e7791', 2.5); G.circ(g, x, 410, 6, '#e0b23c', 2); };
+      [60, 220, 380, 540].forEach(post); [[60, 220], [220, 380], [380, 540]].forEach(p => { g.beginPath(); g.moveTo(p[0], 414); g.quadraticCurveTo((p[0] + p[1]) / 2, 436, p[1], 414); g.lineWidth = 4; g.strokeStyle = '#d8453a'; g.stroke(); });
+      G.live(g, s, g => { G.fillRR(g, 706, 258, 58, 34, 3, S0.green ? '#7be08a' : '#ffb2a8', 2); if (S0.green) A.draw(g, 'check', 735, 275, 26); else G.text(g, '...', 735, 275, { size: 26, color: '#2b3a67' }); });
     } else if (kind === 'security') {
       sign(660, 98, 280, 'saudi_tray', 'الفحص الأمني', '#d8453a');
-      // x-ray tunnel + belt
-      rr(g, 520, 270, 280, 110, 14, '#4a5470', 4.5); rr(g, 540, 292, 240, 68, 10, '#1f2740', 3); G.text(g, 'X', 660, 326, { size: 30, color: '#6fd0ff' });
-      rr(g, 380, 388, 560, 30, 6, '#3a3f55', 4.5); for (let x = 390; x < 930; x += 20) G.line(g, x - ((t * 20) % 20), 392, x - ((t * 20) % 20) - 4, 414, 2, '#5b6485');
-      // metal detector arch
-      rr(g, 70, 190, 22, 240, 6, '#cfd6e6', 4.5); rr(g, 250, 190, 22, 240, 6, '#cfd6e6', 4.5); rr(g, 70, 180, 202, 24, 8, '#cfd6e6', 4.5); G.circ(g, 171, 192, 7, S0.green ? '#5cc96b' : '#ffb347', 2.5);
+      rr(g, 520, 270, 280, 110, 14, '#4a5470', 4); rr(g, 540, 292, 240, 68, 10, '#1f2740', 3); G.text(g, 'X', 660, 326, { size: 30, color: '#6fd0ff' });
+      rr(g, 380, 388, 560, 30, 6, '#3a3f55', 4);
+      rr(g, 70, 190, 22, 240, 6, '#cfd6e6', 4); rr(g, 250, 190, 22, 240, 6, '#cfd6e6', 4); rr(g, 70, 180, 202, 24, 8, '#cfd6e6', 4);
+      G.live(g, s, (g, t) => { for (let x = 390; x < 930; x += 20) G.line(g, x - ((t * 20) % 20), 392, x - ((t * 20) % 20) - 4, 414, 2, '#5b6485'); G.circ(g, 171, 192, 7, S0.green ? '#5cc96b' : '#ffb347', 2); });
     } else if (kind === 'passport') {
       sign(725, 98, 280, 'saudi_pass', 'الجوازات', '#2b7a78');
-      // booth with officer
-      rr(g, 560, 180, 330, 250, 10, abha ? '#e9d8bd' : '#dfe8f0', 4.5); rr(g, 580, 200, 290, 130, 8, '#bfe8ff', 4); G.line(g, 725, 200, 725, 330, 4);
-      A.draw(g, 'saudi_officer', 650, 280, 120); rr(g, 565, 330, 320, 100, 6, '#fff', 4.5); rr(g, 565, 330, 320, 16, 5, '#2b7a78', 4);
+      G.ao(g, 560, 180, 330, 250); rr(g, 560, 180, 330, 250, 10, abha ? '#e9d8bd' : '#dfe8f0', 4); rr(g, 580, 200, 290, 130, 8, '#bfe8ff', 3.5); g.fillStyle = 'rgba(255,255,255,.3)'; g.beginPath(); g.moveTo(590, 330); g.lineTo(640, 200); g.lineTo(670, 200); g.lineTo(620, 330); g.fill(); G.line(g, 725, 200, 725, 330, 3.5);
+      A.draw(g, 'saudi_officer', 650, 280, 120); rr(g, 565, 330, 320, 100, 6, '#fff', 4); rr(g, 565, 330, 320, 16, 5, '#2b7a78', 3.5);
       if (abha) asiriBand(g, 354, 26, 575, 875, t);
-      if (S0.stamped) { A.draw(g, 'saudi_stampmark:blue', S0.mx || 720, S0.my || 392, 70); }
+      G.live(g, s, g => { if (S0.stamped) { A.draw(g, 'saudi_stampmark:blue', S0.mx || 720, S0.my || 392, 70); } });
     } else if (kind === 'belt') {
       sign(820, 98, 270, 'saudi_suitcase:blue:stripe', 'استلام الأمتعة', '#2f6fe0');
-      // carousel belt (moving)
-      rr(g, 50, 300, 860, 58, 24, '#3a3f55', 4.5); rr(g, 60, 308, 840, 42, 18, '#4f5875', 0); for (let x = 70; x < 900; x += 30) G.line(g, x + ((t * 40) % 30), 312, x + ((t * 40) % 30) - 6, 346, 2, '#69729a');
-      rr(g, 50, 358, 860, 36, 8, '#8d94ab', 4.5);
+      rr(g, 50, 300, 860, 58, 24, '#3a3f55', 4); rr(g, 60, 308, 840, 42, 18, '#4f5875', 0); rr(g, 50, 358, 860, 36, 8, '#8d94ab', 4);
+      G.live(g, s, (g, t) => { for (let x = 70; x < 900; x += 30) G.line(g, x + ((t * 40) % 30), 312, x + ((t * 40) % 30) - 6, 346, 2, '#69729a'); });
     } else if (kind === 'arrivals') {
       sign(750, 98, 300, 'heartbig', 'القادمون', '#2f9e6a');
-      // glass sliding doors
-      rr(g, 600, 160, 300, 270, 8, '#bfe8ff', 4.5); G.line(g, 750, 160, 750, 430, 5); rr(g, 600, 160, 300, 18, 4, '#6e7791', 3.5);
-      const o = Math.min(1, S0.doors || 0) * 38; g.fillStyle = 'rgba(255,255,255,.35)'; g.fillRect(606 + 0, 180, 140 - o, 248); g.fillRect(754 + o, 180, 140 - o, 248);
-      // welcome balloons
-      [[580, 250, '#ff6f91'], [620, 230, '#ffd23c'], [545, 224, '#4a8dff']].forEach((b, i) => { const y = b[1] + Math.sin(t * 1.6 + i) * 4; G.line(g, b[0], y + 26, 585, 420, 1.8, '#9a8a7a'); G.ell(g, b[0], y, 17, 22, b[2], 3.5); });
+      rr(g, 600, 160, 300, 270, 8, '#bfe8ff', 4); G.line(g, 750, 160, 750, 430, 4); rr(g, 600, 160, 300, 18, 4, '#6e7791', 3);
       if (abha) asiriBand(g, 324, 28, 0, 960, t);
+      G.live(g, s, (g, t) => {
+        const o = Math.min(1, S0.doors || 0) * 38; g.fillStyle = 'rgba(255,255,255,.35)'; g.fillRect(606, 180, 140 - o, 248); g.fillRect(754 + o, 180, 140 - o, 248);
+        [[580, 250, '#ff6f91'], [620, 230, '#ffd23c'], [545, 224, '#4a8dff']].forEach((b, i) => { const y = b[1] + Math.sin(t * 1.6 + i) * 4; G.line(g, b[0], y + 26, 585, 420, 1.8, '#9a8a7a'); G.ell(g, b[0], y, 17, 22, b[2], 3); });
+      });
     }
-    // soft light
-    sunGlow(g, 300, 120, 360, .12);
+    G.amb(s, { k: 'shaft', pts: [[wx + 60, wy + wh], [wx + ww - 100, wy + wh], [wx + ww - 20, 440], [wx - 40, 440]], col: '255,246,210', a: .14, z: 'top' }); G.amb(s, { k: 'dust', box: [wx, 250, ww, 190], n: 14, z: 'top', seed: 9 });
   };
 
   /* ---- CABIN of the plane ---- */
   const SEATX = [190, 380, 570, 760];
   R.saudiCabin = function (g, t, s) {
-    const S0 = s.state; g.fillStyle = G.lin(g, 0, 0, 0, 540, ['#dfe8f2', '#c4d2e4']); g.fillRect(0, 0, 960, 540);
-    // ceiling bins
-    g.fillStyle = '#f4f7fb'; g.beginPath(); g.moveTo(0, 0); g.lineTo(960, 0); g.lineTo(960, 112); g.quadraticCurveTo(480, 150, 0, 112); g.closePath(); G.fs(g, '#f4f7fb', 4.5);
-    for (let i = 0; i < 6; i++) { const x = 20 + i * 156; rr(g, x, 26, 140, 54, 14, '#e6edf6', 3.5); rr(g, x + 40, 62, 60, 8, 4, '#b8c4d8', 2.5); }
-    // seat sign
-    G.circ(g, 480, 126, 11, S0.belts >= 4 ? '#5cc96b' : (Math.sin(t * 6) > 0 ? '#ffd23c' : '#d9b94a'), 3); A.draw(g, 'saudi_seatbelt', 480, 126, 20);
-    // wall + windows
-    rr(g, 0, 150, 960, 150, 0, '#d2dceb', 0); G.line(g, 0, 150, 960, 150, 3);
+    const S0 = s.state; g.fillStyle = G.lin(g, 0, 0, 0, 540, ['#e4ecf5', '#c4d2e4']); g.fillRect(0, 0, 960, 540);
+    g.fillStyle = '#f4f7fb'; g.beginPath(); g.moveTo(0, 0); g.lineTo(960, 0); g.lineTo(960, 112); g.quadraticCurveTo(480, 150, 0, 112); g.closePath(); G.fs(g, '#f4f7fb', 3, null, [0, 0, 960, 130]);
+    for (let i = 0; i < 6; i++) { const x = 20 + i * 156; rr(g, x, 26, 140, 54, 14, '#e6edf6', 3); rr(g, x + 40, 62, 60, 8, 4, '#b8c4d8', 2); }
+    g.fillStyle = G.lin(g, 0, 150, 0, 300, ['#d8e1ee', '#c9d5e6']); g.fillRect(0, 150, 960, 150); G.line(g, 0, 150, 960, 150, 2.5, 'rgba(90,100,130,.5)');
     SEATX.forEach((x, i) => {
       const wx = x - 58, wy = 170, ww = 116, wh = 100;
-      g.save(); G.rr(g, wx, wy, ww, wh, 44); g.clip(); g.fillStyle = G.lin(g, 0, wy, 0, wy + wh, ['#6fb9ee', '#d8f0ff']); g.fillRect(wx, wy, ww, wh);
-      for (let k = 0; k < 2; k++) G.cloud(g, wx + (((t * (14 + k * 6)) + i * 70 + k * 90) % (ww + 100)) - 40, wy + 40 + k * 32, .5);
-      g.restore(); G.fillRR(g, wx, wy, ww, wh, 44, null, 5); G.fillRR(g, wx - 8, wy - 8, ww + 16, wh + 16, 50, null, 3, '#b7c3d6');
+      G.far(g, s, c => { G.view(c, 'day', wx, wy, ww, wh, 10); }); G.hole(g, s, wx, wy, ww, wh, 44);
+      G.amb(s, { k: 'clouds', x0: wx - 40, x1: wx + ww + 40, y0: wy + 20, y1: wy + 80, n: 2, speed: 22 + i * 4, sc: .32, seed: i + 2, clip: [wx, wy, ww, wh] });
+      g.save(); G.rr(g, wx, wy, ww, wh, 44); g.clip(); g.fillStyle = G.lin(g, 0, wy, 0, wy + 40, ['rgba(20,30,60,.25)', 'rgba(20,30,60,0)']); g.fillRect(wx, wy, ww, 40); g.restore();
+      G.fillRR(g, wx, wy, ww, wh, 44, null, 4); G.fillRR(g, wx - 8, wy - 8, ww + 16, wh + 16, 50, null, 3, '#b7c3d6');
     });
-    // seats: headrests + backs
-    const occ = S0.seated ? ['toota', 'nemo', 'moody', 'aboody'] : [];
-    SEATX.forEach((x, i) => {
-      rr(g, x - 74, 330, 148, 230, 30, '#3a6fd8', 4.5); rr(g, x - 54, 310, 108, 60, 22, '#5b8ae8', 4.5); rr(g, x - 44, 300, 88, 48, 16, '#fff', 3.5);
-      if (occ[i]) { const bob = Math.sin(t * 1.4 + i) * 2; M.chars.portrait(g, occ[i], x, 292 + bob, 36); }
-      // belt on lap
-      const on = S0.b ? !!S0.b[i] : (S0.belts || 0) > i;
-      rr(g, x - 66, 436, 132, 26, 8, '#2f5ab8', 3.5);
-      if (on) { G.line(g, x - 62, 449, x + 62, 449, 8, '#4a4a55'); rr(g, x - 12, 439, 24, 20, 4, '#ef5350', 3.5); } else { G.line(g, x - 62, 449, x - 22, 449, 8, '#4a4a55'); G.line(g, x + 62, 449, x + 22, 449, 8, '#4a4a55'); }
+    SEATX.forEach((x, i) => { G.ao(g, x - 74, 330, 148, 210); rr(g, x - 74, 330, 148, 230, 30, '#3a6fd8', 4); rr(g, x - 54, 310, 108, 60, 22, '#5b8ae8', 4); rr(g, x - 44, 300, 88, 48, 16, '#fff', 3); rr(g, x - 66, 436, 132, 26, 8, '#2f5ab8', 3); });
+    G.live(g, s, (g, t) => {
+      G.circ(g, 480, 126, 11, S0.belts >= 4 ? '#5cc96b' : (Math.sin(t * 6) > 0 ? '#ffd23c' : '#d9b94a'), 3); A.draw(g, 'saudi_seatbelt', 480, 126, 20);
+      const occ = S0.seated ? ['toota', 'nemo', 'moody', 'aboody'] : [];
+      SEATX.forEach((x, i) => {
+        if (occ[i]) { const bob = Math.sin(t * 1.4 + i) * 2; M.chars.portrait(g, occ[i], x, 292 + bob, 36); }
+        const on = S0.b ? !!S0.b[i] : (S0.belts || 0) > i;
+        if (on) { G.line(g, x - 62, 449, x + 62, 449, 8, '#4a4a55'); rr(g, x - 12, 439, 24, 20, 4, '#ef5350', 3); } else { G.line(g, x - 62, 449, x - 22, 449, 8, '#4a4a55'); G.line(g, x + 62, 449, x + 22, 449, 8, '#4a4a55'); }
+      });
+      if (S0.dim) { g.fillStyle = 'rgba(20,30,60,' + S0.dim + ')'; g.fillRect(0, 0, 960, 540); }
     });
-    if (S0.dim) { g.fillStyle = 'rgba(20,30,60,' + S0.dim + ')'; g.fillRect(0, 0, 960, 540); }
   };
 
   /* ---- SKY through the window (state.prog 0 Cairo .. 1 Abha) ---- */
   function groundFeatures(g, wx, wy, ww, wh, t, prog) {
     const gy = wy + wh * .72, sc = t * 20;
     const a1 = Math.max(0, 1 - Math.abs(prog - .1) * 5), a2 = Math.max(0, 1 - Math.abs(prog - .35) * 4), a3 = Math.max(0, 1 - Math.abs(prog - .56) * 4.2), a4 = Math.max(0, Math.min(1, (prog - .66) * 4));
-    // base colour by progress
     const stops = [[0, [127, 199, 106]], [.18, [140, 190, 100]], [.3, [226, 200, 142]], [.45, [226, 205, 150]], [.55, [66, 160, 196]], [.65, [74, 164, 198]], [.8, [118, 156, 112]], [1, [104, 148, 98]]];
     let c = stops[0][1]; for (let i = 1; i < stops.length; i++) { if (prog <= stops[i][0]) { const k = (prog - stops[i - 1][0]) / (stops[i][0] - stops[i - 1][0]), a = stops[i - 1][1], b = stops[i][1]; c = a.map((v, j) => Math.round(v + (b[j] - v) * k)); break; } c = stops[i][1]; }
-    g.fillStyle = 'rgb(' + c.join(',') + ')'; g.fillRect(wx, gy, ww, wh); G.line(g, wx, gy, wx + ww, gy, 2.5, 'rgba(60,60,80,.35)');
+    g.fillStyle = G.lin(g, 0, gy, 0, wy + wh, ['rgb(' + c.join(',') + ')', 'rgb(' + c.map(v => Math.round(v * .82)).join(',') + ')']); g.fillRect(wx, gy, ww, wh);
     if (a1 > 0) { g.save(); g.globalAlpha = a1; g.strokeStyle = '#4aa8e8'; g.lineWidth = 12; g.beginPath(); g.moveTo(wx - 20, gy + 40); for (let x = wx - 20; x <= wx + ww + 20; x += 20) g.lineTo(x, gy + 38 + Math.sin((x + sc) * .02) * 10); g.stroke(); [60, 160, 260, 360].forEach(x => { g.fillStyle = '#5fae56'; g.fillRect(wx + ((x - sc * .5) % ww + ww) % ww, gy + 8, 40, 14); }); g.restore(); }
     if (a2 > 0) { g.save(); g.globalAlpha = a2; g.fillStyle = '#d9b775'; for (let i = 0; i < 6; i++) { const x = wx + (((i * 170 - sc * .8) % (ww + 200)) + ww + 200) % (ww + 200) - 100; g.beginPath(); g.ellipse(x, gy + 28 + (i % 3) * 14, 70, 9, 0, 0, 6.3); g.fill(); } g.restore(); }
     if (a3 > 0) { g.save(); g.globalAlpha = a3; g.strokeStyle = 'rgba(255,255,255,.7)'; g.lineWidth = 3; for (let i = 0; i < 7; i++) { const y = gy + 10 + i * 10, x0 = wx + (((i * 130 + sc * (i % 2 ? 1 : .6)) % (ww + 120)) + ww + 120) % (ww + 120) - 100; g.beginPath(); g.moveTo(x0, y); g.quadraticCurveTo(x0 + 20, y - 5, x0 + 40, y); g.stroke(); } g.restore(); }
-    if (a4 > 0) { g.save(); g.globalAlpha = a4; ridge(g, gy + 40, 46, .02, 4, sc * 2, '#8a8f5a', 3); ridge(g, gy + 66, 36, .03, 2, sc * 3, '#6f9a58', 3); terraces(g, wx, wx + ww, gy + 52, 3, 14, sc * 3, .03, 2, 2); g.restore(); }
+    if (a4 > 0) { g.save(); g.globalAlpha = a4; ridge(g, gy + 40, 46, .02, 4, sc * 2, '#8a8f5a', 0); ridge(g, gy + 66, 36, .03, 2, sc * 3, '#6f9a58', 0); terraces(g, wx, wx + ww, gy + 52, 3, 14, sc * 3, .03, 2, 0); g.restore(); }
   }
   R.saudiSky = function (g, t, s) {
-    const S0 = s.state, prog = S0.prog || 0; g.fillStyle = G.lin(g, 0, 0, 0, 540, ['#dfe8f2', '#b8c6da']); g.fillRect(0, 0, 960, 540);
+    const S0 = s.state; g.fillStyle = G.lin(g, 0, 0, 0, 540, ['#e4ecf5', '#b8c6da']); g.fillRect(0, 0, 960, 540);
     const wx = 90, wy = 108, ww = 780, wh = 290;
-    g.save(); G.rr(g, wx, wy, ww, wh, 70); g.clip();
-    g.fillStyle = G.lin(g, 0, wy, 0, wy + wh, [S0.dusk ? '#f8b070' : '#5fb2ee', S0.dusk ? '#ffe3b8' : '#d3eefd']); g.fillRect(wx, wy, ww, wh);
-    G.sun(g, wx + 600, wy + 60, 22, t); sunGlow(g, wx + 600, wy + 60, 150, .5);
-    groundFeatures(g, wx, wy, ww, wh, t, prog);
-    // clouds parallax
-    [[60, 90, 1.2, 28], [330, 150, .9, 38], [560, 70, 1.4, 22], [180, 230, .8, 50], [470, 240, 1.1, 44], [700, 160, 1, 34]].forEach((c, i) => { const x = wx + (((c[0] - t * c[3]) % (ww + 260)) + ww + 260) % (ww + 260) - 130; G.cloud(g, x, wy + c[1], c[2] * 1.4, .95); });
-    // wing
-    g.beginPath(); g.moveTo(wx - 10, wy + wh + 10); g.lineTo(wx + 40, wy + wh - 40 + Math.sin(t * 2) * 2); g.lineTo(wx + 420, wy + wh - 70 + Math.sin(t * 2) * 3); g.lineTo(wx + 470, wy + wh + 10); g.closePath(); G.fs(g, '#dfe6f0', 4.5);
-    G.poly(g, [[wx + 400, wy + wh - 66], [wx + 438, wy + wh - 96], [wx + 446, wy + wh - 62]], '#ef5350', 3); G.circ(g, wx + 438, wy + wh - 96, 4, Math.sin(t * 8) > 0 ? '#ff6a6a' : '#fff', 1);
-    g.restore(); G.fillRR(g, wx, wy, ww, wh, 70, null, 7); G.fillRR(g, wx - 12, wy - 12, ww + 24, wh + 24, 80, null, 4, '#b7c3d6');
-    // shade handle
-    rr(g, wx + ww / 2 - 40, wy - 22, 80, 12, 6, '#eef2f8', 3.5);
-    // seats at the bottom with portraits
-    SEATX.forEach((x, i) => { rr(g, x - 74, 428, 148, 140, 28, '#3a6fd8', 4.5); rr(g, x - 44, 410, 88, 40, 16, '#fff', 3.5); M.chars.portrait(g, ['toota', 'nemo', 'moody', 'aboody'][i], x, 408 + Math.sin(t * 1.4 + i) * 2, 30); });
+    G.hole(g, s, wx, wy, ww, wh, 70);
+    G.live(g, s, (g, t) => {
+      const prog = S0.prog || 0; g.save(); G.rr(g, wx, wy, ww, wh, 70); g.clip();
+      g.fillStyle = G.lin(g, 0, wy, 0, wy + wh, [S0.dusk ? '#f8a870' : '#4fa8ea', S0.dusk ? '#ffe3b8' : '#d3eefd']); g.fillRect(wx, wy, ww, wh);
+      G.glowAt(g, wx + 600, wy + 60, 170, '255,248,200', .8); g.fillStyle = '#fff6c8'; g.beginPath(); g.arc(wx + 600, wy + 60, 22, 0, 6.3); g.fill();
+      groundFeatures(g, wx, wy, ww, wh, t, prog);
+      [[60, 90, 1.2, 28], [330, 150, .9, 38], [560, 70, 1.4, 22], [180, 230, .8, 50], [470, 240, 1.1, 44], [700, 160, 1, 34]].forEach((c, i) => { const x = wx + (((c[0] - t * c[3]) % (ww + 260)) + ww + 260) % (ww + 260) - 130, w = 220 * c[2] * .8; g.globalAlpha = .95; g.drawImage(G.cloudSprite(i % 3), x - w / 2, wy + c[1] - w * .25, w, w * .5); g.globalAlpha = 1; });
+      g.beginPath(); g.moveTo(wx - 10, wy + wh + 10); g.lineTo(wx + 40, wy + wh - 40 + Math.sin(t * 2) * 2); g.lineTo(wx + 420, wy + wh - 70 + Math.sin(t * 2) * 3); g.lineTo(wx + 470, wy + wh + 10); g.closePath(); const gw = g.createLinearGradient(0, wy + wh - 80, 0, wy + wh + 10); gw.addColorStop(0, '#f2f5fa'); gw.addColorStop(1, '#c2ccdb'); g.fillStyle = gw; g.fill(); g.lineWidth = 2; g.strokeStyle = 'rgba(60,70,100,.55)'; g.stroke();
+      G.poly(g, [[wx + 400, wy + wh - 66], [wx + 438, wy + wh - 96], [wx + 446, wy + wh - 62]], '#ef5350', 2); G.circ(g, wx + 438, wy + wh - 96, 4, Math.sin(t * 8) > 0 ? '#ff6a6a' : '#fff', 0);
+      g.restore();
+    }, 'far');
+    G.fillRR(g, wx, wy, ww, wh, 70, null, 6); G.fillRR(g, wx - 12, wy - 12, ww + 24, wh + 24, 80, null, 3, '#b7c3d6');
+    g.save(); G.rr(g, wx, wy, ww, wh, 70); g.clip(); g.fillStyle = G.lin(g, 0, wy, 0, wy + 60, ['rgba(20,30,60,.25)', 'rgba(20,30,60,0)']); g.fillRect(wx, wy, ww, 60); g.fillStyle = 'rgba(255,255,255,.12)'; g.beginPath(); g.moveTo(wx + 120, wy + wh); g.lineTo(wx + 300, wy); g.lineTo(wx + 380, wy); g.lineTo(wx + 200, wy + wh); g.fill(); g.restore();
+    rr(g, wx + ww / 2 - 40, wy - 22, 80, 12, 6, '#eef2f8', 3);
+    SEATX.forEach((x, i) => { rr(g, x - 74, 428, 148, 140, 28, '#3a6fd8', 4); rr(g, x - 44, 410, 88, 40, 16, '#fff', 3); });
+    G.live(g, s, (g, t) => { SEATX.forEach((x, i) => { M.chars.portrait(g, ['toota', 'nemo', 'moody', 'aboody'][i], x, 408 + Math.sin(t * 1.4 + i) * 2, 30); }); });
   };
 
-  /* ---- ROAD through the Abha mountains (parallax) ---- */
+  /* ---- ROAD through the Abha mountains: seamless scrolling parallax tiles (each layer is baked once, painted, and wrapped) ---- */
+  const PT = 1920;
+  function ridgeP(c, base, amp, k, seed, fill, bump, lw) {
+    const kq = G.kq(k, PT); c.beginPath(); c.moveTo(0, 700);
+    for (let x = 0; x <= PT; x += 8) { let y = base - amp * (.55 + .45 * G.nzp(x, kq, seed)); if (bump) { let d = (x - bump[0]) / bump[1]; y -= bump[2] * Math.exp(-d * d); d = (x - bump[0] - PT) / bump[1]; y -= bump[2] * Math.exp(-d * d); } c.lineTo(x, y); }
+    c.lineTo(PT, 700); c.closePath(); const gr = c.createLinearGradient(0, base - amp - 40, 0, base + 40); gr.addColorStop(0, G.tones(fill)[0]); gr.addColorStop(1, fill); c.fillStyle = gr; c.fill(); if (lw) { c.lineWidth = lw; c.strokeStyle = G.tones(fill)[3]; c.stroke(); }
+  }
+  function villageP(c, y, seed, scale, o) {
+    o = o || {}; const step0 = 74 * scale, n = Math.round(PT / step0), step = PT / n;
+    for (let i = -1; i <= n; i++) {
+      const idx = ((i % n) + n) % n, x = i * step, r = Math.abs(Math.sin(idx * 12.9 + seed) * 43758.5) % 1; if (r < .22) continue;
+      const w = (34 + r * 26) * scale, nn = 2 + Math.floor(r * 3.2), by = y + Math.sin(idx * 2.1 + seed) * 8 * scale;
+      if (r > .86 && o.minaret !== false) minaret(c, x + 6, by, 92 * scale, scale * .95, o.lw); else tower(c, x + r * 14 * scale, by, w, nn, Object.assign({ fh: 28 * scale, lw: o.lw, nowin: o.nowin, door: r > .5 && scale > .8 }, o.col || {}));
+    }
+  }
+  function terracesP(c, ytop, rows, rh, k, seed) {
+    const kq = G.kq(k, PT);
+    for (let r = 0; r < rows; r++) {
+      const y0 = ytop + r * rh, cols = ['#7fca62', '#5db856', '#8bd36a', '#49a64a'], col = cols[(r + (seed | 0)) % 4];
+      c.beginPath(); c.moveTo(0, y0 + rh + 40); for (let x = 0; x <= PT; x += 12) c.lineTo(x, y0 + Math.sin(x * kq + r * 1.7 + seed) * 5 + Math.sin(x * kq * 2 + r) * 3); c.lineTo(PT, y0 + rh + 40); c.closePath();
+      const gr = c.createLinearGradient(0, y0 - 8, 0, y0 + rh + 30); gr.addColorStop(0, G.tones(col)[0]); gr.addColorStop(1, G.tones(col)[2]); c.fillStyle = gr; c.fill(); c.lineWidth = 1.5; c.strokeStyle = 'rgba(40,100,40,.5)'; c.stroke();
+      c.strokeStyle = 'rgba(40,100,40,.4)'; c.lineWidth = 1.6; for (let x = 8; x < PT; x += 22) { const yy = y0 + 12 + Math.sin(x * kq + r * 1.7 + seed) * 5; c.beginPath(); c.moveTo(x, yy); c.lineTo(x + 8, yy + 5); c.stroke(); }
+    }
+  }
+  function treesP(c, base, n, sz) { for (let i = 0; i < n; i++) { const x = i * (PT / n) + 40; tree(c, x, base - Math.abs(G.nzp(x, G.kq(.02, PT), 4)) * 6, sz + (i % 3) * .2, 2.4); } }
   R.saudiRoad = function (g, t, s) {
-    const S0 = s.state, sc = ar(S0, t), fog = S0.fog == null ? .35 : S0.fog, dusk = S0.dusk || 0;
-    g.fillStyle = G.lin(g, 0, 0, 0, 340, dusk ? ['#f4b97a', '#ffe9c8'] : ['#8fc8ea', '#e8f3f4']); g.fillRect(0, 0, 960, 560);
-    sunGlow(g, 780, 130, 260, .55); G.circ(g, 780, 130, 26, '#fff4c0', 0);
-    [[100, 80, 1.1, 5], [420, 60, .9, 7], [650, 110, 1.3, 4]].forEach(c => { const x = (((c[0] - t * c[3]) % 1200) + 1200) % 1200 - 120; G.cloud(g, x, c[1], c[2], .8); });
-    const bump = [((560 - sc * .03) % 1400 + 1400) % 1400, 70, 70];
-    ridge(g, 250, 90, .006, 1, sc * .04, '#b8c9db', 0, bump);
-    ridge(g, 270, 70, .009, 5, sc * .1, '#9fb7c6', 0);
-    mist(g, t, 250, 18, .35 + fog * .25, 5, 1);
-    // far village on ridge
-    village(g, 286, -40, 1000, 3, .5, sc * .22, { lw: 1.4, nowin: true });
-    ridge(g, 300, 54, .012, 9, sc * .25, '#86b08e', 0);
-    // terraces mid
-    g.save(); terraces(g, -10, 970, 292, 4, 18, sc * .35, .015, 2, 2.2); g.restore();
-    village(g, 330, -40, 1000, 11, .78, sc * .45, { lw: 2.6 });
-    mist(g, t, 312, 20, .28 + fog * .5, 9, 3);
-    // near slope with trees + towers
-    ridge(g, 352, 30, .02, 4, sc * .7, '#5aa356', 3);
-    for (let i = 0; i < 9; i++) { const x = (((i * 190 - sc * .7) % 1500) + 1500) % 1500 - 200; tree(g, x, 346 - Math.abs(nz((x + sc * .7) * .02, 4)) * 6, 1.2 + (i % 3) * .2, 3); }
-    // road
-    g.fillStyle = '#6e6a66'; g.fillRect(0, 372, 960, 60); G.line(g, 0, 372, 960, 372, 4); G.line(g, 0, 432, 960, 432, 4);
-    g.fillStyle = '#fffaf0'; for (let x = -((sc * 1) % 90); x < 980; x += 90) g.fillRect(x, 400, 46, 6);
-    g.fillStyle = '#8a8478'; g.fillRect(0, 432, 960, 120); g.fillStyle = 'rgba(0,0,0,.12)'; for (let x = -((sc * 1.3) % 70); x < 980; x += 70) g.fillRect(x, 448, 38, 5);
-    // guard stones along the road edge
-    for (let x = -((sc * 1.1) % 60); x < 980; x += 60) { rr(g, x, 360, 36, 14, 4, '#e8e0cc', 3); }
-    // the family car
-    const cx = S0.carX == null ? 430 : S0.carX, bob = Math.sin(t * 9) * (S0.speed > 5 ? 1.4 : 0);
-    G.ell(g, cx, 424, 90, 9, 'rgba(0,0,0,.22)', 0);
-    g.save(); g.translate(cx, 372 + bob); A.draw(g, 'saudi_van', 0, 0, 190, { faces: S0.faces === false ? [] : ['baba', 'toota', 'nemo', 'moody', 'aboody'] }); g.restore();
-    if (S0.lights) { g.save(); g.fillStyle = 'rgba(255,240,150,.45)'; g.beginPath(); g.moveTo(cx + 92, 376); g.lineTo(cx + 300, 340); g.lineTo(cx + 300, 420); g.closePath(); g.fill(); g.restore(); }
-    // foreground mist
-    mist(g, t, 438, 20, fog * .5, 14, 5);
-    g.fillStyle = 'rgba(240,248,250,' + fog * .14 + ')'; g.fillRect(0, 0, 960, 540);
+    const S0 = s.state;
+    // static far layer: the sky; everything that scrolls is drawn live from baked tiles
+    G.live(g, s, (g, t) => {
+      const sc = ar(S0, t), fog = S0.fog == null ? .35 : S0.fog, dusk = S0.dusk || 0;
+      g.fillStyle = G.lin(g, 0, -10, 0, 340, dusk ? ['#e98f78', '#f6b98a', '#ffe9c8'] : ['#6fb3e6', '#a8d4ee', '#e8f3f4']); g.fillRect(-10, -10, 980, 380);
+      G.glowAt(g, 780, 130, 270, dusk ? '255,200,130' : '255,248,200', .8); g.fillStyle = '#fff4c0'; g.beginPath(); g.arc(780, 130, 24, 0, 6.3); g.fill();
+      [[100, 80, 1.1, 5], [420, 60, .9, 7], [650, 110, 1.3, 4]].forEach((c, i) => { const x = (((c[0] - t * c[3]) % 1200) + 1200) % 1200 - 120, w = 220 * c[2] * .8; g.globalAlpha = .85; g.drawImage(G.cloudSprite(i), x - w / 2, c[1] - w * .25, w, w * .5); g.globalAlpha = 1; });
+      const T = (key, y0, y1, res, fn) => G.tile('sr_' + key, PT, y0, y1, res, fn);
+      G.drawTile(g, T('r1', 100, 330, .5, c => ridgeP(c, 250, 90, .006, 1, '#aebfd3', [560, 70, 70])), sc * .04);
+      G.drawTile(g, T('r2', 130, 350, .5, c => ridgeP(c, 270, 70, .009, 5, '#92aebf')), sc * .1);
+      mist(g, t, 250, 18, .3 + fog * .25, 5, 1);
+      G.drawTile(g, T('v1', 150, 330, .6, c => villageP(c, 286, 3, .5, { lw: 0, nowin: true })), sc * .22);
+      G.drawTile(g, T('r3', 190, 380, .6, c => ridgeP(c, 300, 54, .012, 9, '#7fa98a')), sc * .25);
+      G.drawTile(g, T('t1', 250, 400, .8, c => terracesP(c, 292, 4, 18, .015, 2)), sc * .35);
+      G.drawTile(g, T('v2', 220, 372, 1, c => villageP(c, 330, 11, .78, { lw: 2 })), sc * .45);
+      mist(g, t, 312, 20, .24 + fog * .5, 9, 3);
+      G.drawTile(g, T('r4', 300, 400, 1, c => { ridgeP(c, 352, 30, .02, 4, '#56a052', null, 2); treesP(c, 346, 10, 1.2); }), sc * .7);
+      // road
+      g.fillStyle = G.lin(g, 0, 372, 0, 432, ['#7d7873', '#5e5a57']); g.fillRect(0, 372, 960, 60); g.fillStyle = 'rgba(255,255,255,.3)'; g.fillRect(0, 372, 960, 3); g.fillStyle = 'rgba(0,0,0,.25)'; g.fillRect(0, 430, 960, 4);
+      g.fillStyle = '#fffaf0'; for (let x = -((sc * 1) % 90); x < 980; x += 90) g.fillRect(x, 400, 46, 6);
+      g.fillStyle = G.lin(g, 0, 432, 0, 540, ['#9a9486', '#7d776b']); g.fillRect(0, 432, 960, 120); g.fillStyle = 'rgba(0,0,0,.1)'; for (let x = -((sc * 1.3) % 70); x < 980; x += 70) g.fillRect(x, 448, 38, 5);
+      for (let x = -((sc * 1.1) % 60); x < 980; x += 60) { rr(g, x, 360, 36, 14, 4, '#ece5d2', 2); }
+      const cx = S0.carX == null ? 430 : S0.carX, bob = Math.sin(t * 9) * (S0.speed > 5 ? 1.4 : 0);
+      G.ell(g, cx, 424, 90, 9, 'rgba(0,0,0,.25)', 0);
+      g.save(); g.translate(cx, 372 + bob); A.draw(g, 'saudi_van', 0, 0, 190, { faces: S0.faces === false ? [] : ['baba', 'toota', 'nemo', 'moody', 'aboody'] }); g.restore();
+      if (S0.lights) { g.save(); g.fillStyle = 'rgba(255,240,150,.45)'; g.beginPath(); g.moveTo(cx + 92, 376); g.lineTo(cx + 300, 340); g.lineTo(cx + 300, 420); g.closePath(); g.fill(); g.restore(); }
+      mist(g, t, 438, 20, fog * .5, 14, 5);
+      g.fillStyle = 'rgba(240,248,250,' + fog * .14 + ')'; g.fillRect(0, 0, 960, 540);
+    }, 'mid');
   };
 
   /* ---- CABLE CAR over the valley (state.prog 0..1 along the line) ---- */
   R.saudiCable = function (g, t, s) {
-    const S0 = s.state, prog = S0.prog || 0, fog = S0.fog == null ? .3 : S0.fog;
-    g.fillStyle = G.lin(g, 0, 0, 0, 400, ['#8fc8ea', '#eaf4f4']); g.fillRect(0, 0, 960, 540); sunGlow(g, 190, 130, 250, .5); G.circ(g, 190, 130, 24, '#fff4c0', 0);
-    [[500, 70, 1.2, 4], [800, 120, 1, 6]].forEach(c => { const x = (((c[0] - t * c[3]) % 1200) + 1200) % 1200 - 120; G.cloud(g, x, c[1], c[2], .85); });
-    ridge(g, 250, 80, .007, 2, 0, '#b8c9db', 0, [700, 90, 80]); ridge(g, 285, 60, .01, 6, 0, '#97b2c4', 0);
-    mist(g, t, 270, 16, .4, 6, 1);
-    // far shore village
-    village(g, 322, 520, 1000, 5, .7, 0, { lw: 2 });
-    ridge(g, 350, 46, .013, 3, 40, '#6fae62', 3); terraces(g, -10, 970, 340, 3, 22, 0, .02, 3, 2.4);
-    village(g, 392, -20, 420, 8, .9, 0, { lw: 3 });
-    mist(g, t, 330, 22, .22 + fog * .4, 8, 2);
-    // valley bottom trees
-    ridge(g, 440, 24, .03, 7, 0, '#3f8f4a', 3.5); for (let i = 0; i < 10; i++) tree(g, 60 + i * 96, 458 + (i % 3) * 8, 1.5, 3.5);
-    // cable line: from top-left (60,150) to bottom-right (880,300) gentle sag
+    const S0 = s.state;
+    G.far(g, s, c => { G.view(c, 'plainsky', 0, 0, 960, 380, 20); });
+    G.amb(s, { k: 'clouds', x0: -140, x1: 1100, y0: 40, y1: 150, n: 4, speed: 5, sc: .8, seed: 4 }); G.amb(s, { k: 'birds', y: 150, n: 3, speed: 16, sc: 1.2, seed: 6 });
+    ridge(g, 250, 80, .007, 2, 0, '#b4c7d9', 0, [700, 90, 80]); ridge(g, 285, 60, .01, 6, 0, '#92aebf', 0);
+    village(g, 322, 520, 1000, 5, .7, 0, { lw: 1.6 });
+    ridge(g, 350, 46, .013, 3, 40, '#68ab5e', 2.4); terraces(g, -10, 970, 340, 3, 22, 0, .02, 3, 1.8);
+    village(g, 392, -20, 420, 8, .9, 0, { lw: 2.4 });
+    ridge(g, 440, 24, .03, 7, 0, '#3f8f4a', 3); for (let i = 0; i < 10; i++) tree(g, 60 + i * 96, 458 + (i % 3) * 8, 1.5, 2.6);
     const P = k => { const x = 50 + k * 860, y = 150 + k * 140 + Math.sin(k * 3.14) * 24; return [x, y]; };
-    g.beginPath(); for (let k = 0; k <= 1.001; k += .02) { const p = P(k); k === 0 ? g.moveTo(p[0], p[1]) : g.lineTo(p[0], p[1]); } g.lineWidth = 7; g.strokeStyle = OL; g.stroke(); g.lineWidth = 3; g.strokeStyle = '#8c93a6'; g.stroke();
-    // pylons
-    [.0, .5, 1].forEach(k => { const p = P(k); G.poly(g, [[p[0] - 8, p[1] + 280], [p[0] - 3, p[1] - 6], [p[0] + 3, p[1] - 6], [p[0] + 8, p[1] + 280]], '#9aa0b5', 4); G.line(g, p[0] - 16, p[1] - 2, p[0] + 16, p[1] - 2, 5); });
-    // station boxes
-    rr(g, 10, 120, 90, 56, 8, '#fff', 4.5); G.poly(g, [[0, 120], [55, 92], [110, 120]], '#c46b3a', 4.5); rr(g, 860, 280, 96, 60, 8, '#fff', 4.5); G.poly(g, [[850, 280], [908, 250], [966, 280]], '#c46b3a', 4.5);
-    // the cabin
-    const p = P(Math.max(0, Math.min(1, prog))); g.save(); g.translate(p[0], p[1] + 40); g.rotate(Math.sin(t * 1.6) * .02); A.draw(g, 'saudi_cablecar', 0, 0, 120); ['moody', 'aboody'].forEach((k, i) => { M.chars.portrait(g, k, -12 + i * 24, 6, 8.5); }); g.restore();
-    // an opposing cabin
-    const q = P(1 - Math.max(0, Math.min(1, prog))); g.save(); g.translate(q[0], q[1] + 40); A.draw(g, 'saudi_cablecar', 0, 0, 84); g.restore();
-    mist(g, t, 410, 18, fog * .4, 12, 4);
+    [.0, .5, 1].forEach(k => { const p = P(k); G.poly(g, [[p[0] - 8, p[1] + 280], [p[0] - 3, p[1] - 6], [p[0] + 3, p[1] - 6], [p[0] + 8, p[1] + 280]], '#9aa0b5', 3); G.line(g, p[0] - 16, p[1] - 2, p[0] + 16, p[1] - 2, 4, '#7d849b'); });
+    g.beginPath(); for (let k = 0; k <= 1.001; k += .02) { const p = P(k); k === 0 ? g.moveTo(p[0], p[1]) : g.lineTo(p[0], p[1]); } g.lineWidth = 5; g.strokeStyle = '#4a5066'; g.stroke(); g.lineWidth = 2; g.strokeStyle = '#aeb5c6'; g.stroke();
+    rr(g, 10, 120, 90, 56, 8, '#fff', 3.5); G.poly(g, [[0, 120], [55, 92], [110, 120]], '#c46b3a', 3.5); rr(g, 860, 280, 96, 60, 8, '#fff', 3.5); G.poly(g, [[850, 280], [908, 250], [966, 280]], '#c46b3a', 3.5);
+    G.live(g, s, (g, t) => {
+      const prog = S0.prog || 0, fog = S0.fog == null ? .3 : S0.fog;
+      mist(g, t, 270, 16, .35, 6, 1); mist(g, t, 330, 22, .18 + fog * .4, 8, 2);
+      const p = P(Math.max(0, Math.min(1, prog))); g.save(); g.translate(p[0], p[1] + 40); g.rotate(Math.sin(t * 1.6) * .02); A.draw(g, 'saudi_cablecar', 0, 0, 120); ['moody', 'aboody'].forEach((k, i) => { M.chars.portrait(g, k, -12 + i * 24, 6, 8.5); }); g.restore();
+      const q = P(1 - Math.max(0, Math.min(1, prog))); g.save(); g.translate(q[0], q[1] + 40); A.draw(g, 'saudi_cablecar', 0, 0, 84); g.restore();
+      mist(g, t, 410, 18, fog * .4, 12, 4);
+    });
   };
 
   /* ---- PEAK viewpoint above the clouds ---- */
   R.saudiPeak = function (g, t, s) {
-    const S0 = s.state; g.fillStyle = G.lin(g, 0, 0, 0, 330, ['#6fb4ea', '#dff0fb']); g.fillRect(0, 0, 960, 560); sunGlow(g, 760, 120, 280, .6); G.sun(g, 760, 120, 24, t);
-    ridge(g, 260, 80, .006, 8, 0, '#a9bfd6', 0); ridge(g, 290, 60, .011, 3, 70, '#8fabc2', 0);
-    // sea of clouds below
-    for (let k = 0; k < 3; k++) mist(g, t, 320 + k * 26, 30 + k * 6, .85 - k * .12, 6 + k * 3, k + 1);
-    // mountain top in front
-    g.beginPath(); g.moveTo(-10, 560); g.lineTo(-10, 360); g.quadraticCurveTo(160, 330, 330, 372); g.quadraticCurveTo(520, 340, 700, 380); g.quadraticCurveTo(860, 350, 980, 390); g.lineTo(980, 560); g.closePath(); G.fs(g, '#8d8a7a', 5);
-    g.fillStyle = 'rgba(255,255,255,.14)'; g.fillRect(0, 372, 960, 8);
-    // rock texture
-    g.strokeStyle = 'rgba(60,50,40,.3)'; g.lineWidth = 3; [[80, 420, 150, 440], [300, 450, 400, 430], [560, 430, 660, 450], [800, 440, 900, 420]].forEach(l => { g.beginPath(); g.moveTo(l[0], l[1]); g.lineTo(l[2], l[3]); g.stroke(); });
-    // railing
-    G.line(g, 40, 384, 920, 396, 6); for (let x = 60; x < 930; x += 90) G.line(g, x, 384 + (x - 40) * .0136, x, 424 + (x - 40) * .0136, 5); G.line(g, 40, 406, 920, 418, 4);
-    // stone viewpoint building + flag + sign
-    tower(g, 880, 392, 80, 2, { fh: 40, lw: 3.5, door: true }); G.line(g, 880, 292, 880, 244, 4); g.beginPath(); g.moveTo(880, 246); g.quadraticCurveTo(900, 238, 916, 248); g.quadraticCurveTo(900, 260, 880, 258); g.closePath(); G.fs(g, '#2f9e6a', 3);
-    rr(g, 620, 318, 180, 56, 8, '#fff', 4.5); G.line(g, 650, 374, 650, 404, 5); G.line(g, 770, 374, 770, 404, 5); G.text(g, 'جبال السودة', 710, 346, { size: 28, color: '#2b3a67' });
-    if (S0.cold) { g.fillStyle = 'rgba(255,255,255,.8)'; for (let i = 0; i < 16; i++) { const x = (i * 97 + t * 14) % 980, y = (i * 53 + t * 20) % 380; g.beginPath(); g.arc(x, y, 2.6, 0, 6.3); g.fill(); } }
+    const S0 = s.state;
+    G.far(g, s, c => { G.view(c, 'plainsky', 0, 0, 960, 380, 20); c.fillStyle = 'rgba(80,140,210,.25)'; c.fillRect(0, 0, 960, 120); });
+    G.amb(s, { k: 'clouds', x0: -140, x1: 1100, y0: 40, y1: 160, n: 3, speed: 6, sc: .9, seed: 3, a: .9 });
+    G.far(g, s, c => { ridge(c, 260, 80, .006, 8, 0, '#a9bfd6', 0); ridge(c, 290, 60, .011, 3, 70, '#8fabc2', 0); });
+    for (let k = 0; k < 3; k++) G.live(g, s, (g, t) => mist(g, t, 320 + k * 26, 30 + k * 6, .85 - k * .12, 6 + k * 3, k + 1), 'far');
+    g.beginPath(); g.moveTo(-10, 560); g.lineTo(-10, 360); g.quadraticCurveTo(160, 330, 330, 372); g.quadraticCurveTo(520, 340, 700, 380); g.quadraticCurveTo(860, 350, 980, 390); g.lineTo(980, 560); g.closePath(); G.fs(g, '#8d8a7a', 3, null, [0, 330, 960, 230]);
+    g.fillStyle = 'rgba(255,255,255,.18)'; g.fillRect(0, 372, 960, 8);
+    g.strokeStyle = 'rgba(60,50,40,.3)'; g.lineWidth = 2.5; [[80, 420, 150, 440], [300, 450, 400, 430], [560, 430, 660, 450], [800, 440, 900, 420]].forEach(l => { g.beginPath(); g.moveTo(l[0], l[1]); g.lineTo(l[2], l[3]); g.stroke(); });
+    G.line(g, 40, 384, 920, 396, 5, '#6a4a2a'); for (let x = 60; x < 930; x += 90) G.line(g, x, 384 + (x - 40) * .0136, x, 424 + (x - 40) * .0136, 4, '#6a4a2a'); G.line(g, 40, 406, 920, 418, 3, '#6a4a2a');
+    tower(g, 880, 392, 80, 2, { fh: 40, lw: 3, door: true }); G.line(g, 880, 292, 880, 244, 3, '#6a4a2a'); G.amb(s, { k: 'flag', x: 880, y: 246, w: 38, h: 12, z: 'mid' });
+    rr(g, 620, 318, 180, 56, 8, '#fff', 4); G.line(g, 650, 374, 650, 404, 4, '#6a4a2a'); G.line(g, 770, 374, 770, 404, 4, '#6a4a2a'); G.text(g, 'جبال السودة', 710, 346, { size: 28, color: '#2b3a67' });
+    G.amb(s, { k: 'glow', x: 760, y: 110, r: 360, ry: 260, col: '255,244,200', a: .16, z: 'top' });
+    G.live(g, s, (g, t) => { if (S0.cold) { g.fillStyle = 'rgba(255,255,255,.85)'; for (let i = 0; i < 18; i++) { const x = (i * 97 + t * 14) % 980, y = (i * 53 + t * 20) % 380; g.beginPath(); g.arc(x, y, 2.6, 0, 6.3); g.fill(); } } }, 'top');
   };
 
   /* ---- DINNER with Baba in an Asiri majlis ---- */
   R.saudiDinner = function (g, t, s) {
     const S0 = s.state, night = !!S0.night;
     g.fillStyle = G.lin(g, 0, 0, 0, 430, night ? ['#f2d9aa', '#e7bf86'] : ['#f6e6c8', '#ecd2a2']); g.fillRect(0, 0, 960, 430);
-    // wall: ochre with white painted bands and Asiri colourful frieze
     g.fillStyle = 'rgba(160,110,50,.12)'; for (let i = 0; i < 16; i++) g.fillRect(i * 64, 0, 30, 430);
     asiriBand(g, 126, 34, 0, 960, t); asiriBand(g, 290, 22, 0, 960, t);
-    // two windows with white-painted frames & night/day view
-    [[120, 160], [700, 160]].forEach(w => { const x = w[0], y = w[1], ww = 130, wh = 110; g.save(); g.beginPath(); g.rect(x, y, ww, wh); g.clip(); g.fillStyle = night ? G.lin(g, 0, y, 0, y + wh, ['#18224d', '#34457f']) : G.lin(g, 0, y, 0, y + wh, ['#8fd6ff', '#e7f6ff']); g.fillRect(x, y, ww, wh); if (night) { for (let i = 0; i < 9; i++) G.sparkle(g, x + 10 + (i * 37) % (ww - 14), y + 10 + (i * 29) % (wh - 20), 2.5 + i % 3, '#fff6a8', .5 + .4 * Math.sin(t * 2 + i)); A.draw(g, 'moon', x + ww - 36, y + 30, 38); ridge(g, y + 100, 30, .02, 3, 0, '#2c3a6a', 0); } else { ridge(g, y + 90, 36, .02, 3, 0, '#9fb7c6', 0); ridge(g, y + 106, 22, .03, 1, 0, '#6fae62', 0); } g.restore(); g.lineWidth = 5; g.strokeStyle = OL; g.strokeRect(x, y, ww, wh);
-      rr(g, x - 12, y - 14, ww + 24, 14, 3, ST.white, 3.5); rr(g, x - 10, y + wh, ww + 20, 12, 3, ST.white, 3.5); rr(g, x - 12, y - 14, 12, wh + 26, 3, ST.white, 3.5); rr(g, x + ww, y - 14, 12, wh + 26, 3, ST.white, 3.5); G.line(g, x + ww / 2, y, x + ww / 2, y + wh, 4); });
-    // hanging lamps
-    [300, 480, 660].forEach((x, i) => { G.line(g, x, 0, x, 70 + i % 2 * 8, 3); G.poly(g, [[x - 18, 100 + i % 2 * 8], [x + 18, 100 + i % 2 * 8], [x + 10, 72 + i % 2 * 8], [x - 10, 72 + i % 2 * 8]], '#e0a23c', 3.5); G.circ(g, x, 106 + i % 2 * 8, 6, '#fff3a0', 0); sunGlow(g, x, 110, 90, .35); });
-    // floor + big rug
-    g.fillStyle = G.lin(g, 0, 400, 0, 540, ['#b9855a', '#8f6038']); g.fillRect(0, 400, 960, 140); G.line(g, 0, 400, 960, 400, 4);
-    G.ell(g, 480, 470, 440, 70, '#a8372f', 5); G.ell(g, 480, 470, 400, 60, '#c9483d', 3); G.ell(g, 480, 470, 330, 48, '#f0c445', 3); G.ell(g, 480, 470, 300, 42, '#a8372f', 0);
-    for (let i = 0; i < 14; i++) { const a = i / 14 * 6.2832; G.poly(g, [[480 + Math.cos(a) * 270, 470 + Math.sin(a) * 36 - 5], [480 + Math.cos(a) * 270 + 7, 470 + Math.sin(a) * 36 + 5], [480 + Math.cos(a) * 270 - 7, 470 + Math.sin(a) * 36 + 5]], '#fff', 1.5); }
-    // cushions along the wall
-    [[110, '#2f9e6a'], [260, '#d8453a'], [700, '#2f6fe0'], [850, '#f0b429']].forEach(c => rr(g, c[0] - 56, 340, 112, 64, 18, c[1], 4.5));
-    // low table with food
-    g.save(); g.translate(150, 0); rr(g, 340, 392, 280, 22, 8, '#8a5a3a', 4.5); G.ell(g, 480, 392, 150, 20, '#a0643a', 4.5);
+    [[120, 160], [700, 160]].forEach(w => { const x = w[0], y = w[1], ww = 130, wh = 110;
+      G.window(g, s, x, y, ww, wh, { view: night ? 'night' : 'abhawin', night, frame: ST.white, curtains: null, shaft: false, floor: 400 });
+      G.fillRR(g, x - 12, y - 14, ww + 24, 14, 3, ST.white, 2.5); });
+    [300, 480, 660].forEach((x, i) => { G.line(g, x, 0, x, 70 + i % 2 * 8, 3); G.poly(g, [[x - 18, 100 + i % 2 * 8], [x + 18, 100 + i % 2 * 8], [x + 10, 72 + i % 2 * 8], [x - 10, 72 + i % 2 * 8]], '#e0a23c', 3); G.circ(g, x, 106 + i % 2 * 8, 6, '#fff3a0', 0); G.amb(s, { k: 'glow', x, y: 112, r: 130, col: '255,225,140', a: night ? .6 : .35, flick: .04, ph: i, z: 'top' }); });
+    RK.floor(g, 400, '#bf8c5e', '#8c5d36', { kind: 'wood' });
+    RK.rug(g, 480, 470, 440, 70, '#a8372f', '#c9483d'); G.ell(g, 480, 470, 330, 48, '#f0c445', 2.5); G.ell(g, 480, 470, 300, 42, '#a8372f', 0);
+    for (let i = 0; i < 14; i++) { const a = i / 14 * 6.2832; G.poly(g, [[480 + Math.cos(a) * 270, 470 + Math.sin(a) * 36 - 5], [480 + Math.cos(a) * 270 + 7, 470 + Math.sin(a) * 36 + 5], [480 + Math.cos(a) * 270 - 7, 470 + Math.sin(a) * 36 + 5]], '#fff', 1.2); }
+    [[110, '#2f9e6a'], [260, '#d8453a'], [700, '#2f6fe0'], [850, '#f0b429']].forEach(c => rr(g, c[0] - 56, 340, 112, 64, 18, c[1], 3.5));
+    g.save(); g.translate(150, 0); rr(g, 340, 392, 280, 22, 8, '#8a5a3a', 4); G.ell(g, 480, 392, 150, 20, '#a0643a', 4);
     A.draw(g, 'saudi_kabsa', 450, 378, 104); A.draw(g, 'dates', 540, 384, 46); A.draw(g, 'saudi_dallah', 380, 370, 54); A.draw(g, 'saudi_juice', 575, 370, 44); A.draw(g, 'saudi_basbousa', 500, 394, 42); g.restore();
-    if (S0.dim) { g.fillStyle = 'rgba(20,20,60,' + S0.dim + ')'; g.fillRect(0, 0, 960, 540); }
+    G.amb(s, { k: 'steam', x: 600, y: 366, sc: 1.2, n: 4, z: 'mid' }); G.amb(s, { k: 'dust', box: [200, 120, 600, 280], n: 10, z: 'top', seed: 12 });
+    G.live(g, s, g => { if (S0.dim) { g.fillStyle = 'rgba(20,20,60,' + S0.dim + ')'; g.fillRect(0, 0, 960, 540); } }, 'top');
   };
 })();
