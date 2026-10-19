@@ -62,7 +62,7 @@ function makeBot(p, ctx, o) {
 
   async function play(opts) {
     opts = opts || {}; const t0 = Date.now(), seen = new Set(), kitLog = []; let lastSig = '', same = 0; const cnt = {};
-    const wrongFirst = opts.wrongFirst; let s = null;
+    const wrongFirst = opts.wrongFirst; let s = null, rbH = null;
     while (Date.now() - t0 < (opts.timeout || 300000)) {
       s = await state();
       if (s.result || s.celebrate) return { ok: true, secs: (Date.now() - t0) / 1000, kits: kitLog };
@@ -92,6 +92,7 @@ function makeBot(p, ctx, o) {
       if (s.ritual) { await tapSel('#over .btn.big.pink:not(.pkcnt)'); await sleep(1200); continue; }
       const d = s.dbg;
       if (d && d.kit && opts.custom && opts.custom[d.kit]) { await opts.custom[d.kit]({ d, s, tapLogical, dragLogical, tapSel, sleep, p }); continue; }
+      if (d && d.kit === 'runner3d') { rbH = rbH || require('./runner_bot.js').runnerHandler({ p, ctx, kind: touch ? 'phone' : 'desk' }, { wrongFirst }); await rbH({ d, s, tapLogical, dragLogical, tapSel, sleep, p }); continue; }
       const needHero = async (h, need) => { const hh = h || need; if (hh && s.active !== hh && await p.evaluate(x => !!document.querySelector(x), heroBtn(hh))) { await tapSel(heroBtn(hh)); await sleep(300); } };
       if (d && d.kit === 'dragdrop') {
         const it = d.items[0]; if (!it) { await sleep(300); continue; }
