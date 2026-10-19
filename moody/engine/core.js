@@ -3,7 +3,7 @@
 (function () {
   'use strict';
   const M = window.Moody = window.Moody || {};
-  M.W = 960; M.H = 540; M.VERSION = 4; M.SAVE_KEY = 'hub_moody_v1';
+  M.W = 960; M.H = 540; M.VERSION = 5; M.SAVE_KEY = 'hub_moody_v1';
   M.FONT = 'Tahoma, Arial, sans-serif';
   M.OL = '#4a2e1c';           // outline colour (warm dark brown)
   M.pal = { ink: '#3a2a1e', cream: '#fff7e3', orange: '#ff8a2a', teal: '#1fb5a6', pink: '#ff6f91', yellow: '#ffc93c', navy: '#2b3a67', green: '#5cc96b', purple: '#8a6bd6', sky: '#8fd6ff', red: '#ef5350', brown: '#8a5a3a' };
