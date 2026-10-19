@@ -147,7 +147,7 @@ function buildDictionaries(c) {
   return { general, homeScope, destScope, pairs, destPairs };
 }
 const HOME_FILES = new Set(['worlds/saudi.js', 'worlds/saudi_art.js', 'content/q_saudi.js']);
-const DEST_FILES = new Set(['worlds/saudi.js', 'worlds/saudi_art.js', 'content/q_saudi.js', 'content/baba_calls.js', 'engine/call.js', 'worlds/registry.js', 'worlds/nana.js', 'worlds/home.js']);
+const DEST_FILES = new Set(['worlds/runs.js', 'content/q_runs.js', 'worlds/saudi.js', 'worlds/saudi_art.js', 'content/q_saudi.js', 'content/baba_calls.js', 'engine/call.js', 'worlds/registry.js', 'worlds/nana.js', 'worlds/home.js']);
 
 /* ------------------------------------------------------------------ text pass */
 const LET = '\\u0621-\\u063A\\u0641-\\u064A\\u0671-\\u06D3';
@@ -259,8 +259,56 @@ function stripOwnerFamilyStories(P, c) {
   P.rep(S, "\n          await ctx.say('aboody', 'وسلّم لي على لوكا! قول له عبودي بيسلّم عليك.');", '', { what: 'greeting to Luka', exact: 1 });
   P.rep(S, /\n[ \t]*await ctx\.say\('kamal',[^\n]*/g, '', { what: 'Uncle Kamal lines', exact: 9 });
   P.rep(S, /, kamal: \{ x: 880, y: 490, dir: -1 \}/g, '', { what: 'uncle position in the scenes', exact: 3 });
+  pruneRuns(P, c);
   /* guard: no extended-family id may survive in any story/engine file (stage.js keeps harmless slot tables) */
+  for (const [f, src] of P.files) if (/@owner-family/.test(src)) throw new Error('@owner-family tag left in ' + f + ' (a level could not be cut: tag must sit on a mission object of worlds/runs.js)');
   for (const [f, src] of P.files) if (/^(worlds|content)\//.test(f)) { const m = /'(toti|amani|nada|kamal|luka|beno|medo)'|face:(toti|amani|nada|kamal|luka|beno|medo)/.exec(src); if (m) throw new Error('EXTENDED FAMILY LEFT in ' + f + ': ' + m[0]); }
+}
+
+/* ------------------------------------------------------------------ world 11 «سباق المغامرة»: levels that belong to the owner's family are cut
+   A level is removed when (a) its object carries the literal comment  / * @owner-family * /  (anywhere inside the object or in the comment block right before it), or
+   (b) it needs scenes of a world this edition does not have (grandma's house: nn_* rooms / 'nana' goal; trip world: saudi* rooms / theme 'abha').
+   Stickers and values only the removed levels used are removed too; if no level is left the whole world goes. Works for any number of levels. */
+function splitArrayObjects(src, openIdx) {
+  const segs = scan(src); let pos = 0, depth = 0, started = false; const objs = []; let cur = null, close = -1;
+  for (const sg of segs) {
+    if (sg.type === 'code') for (let i = 0; i < sg.text.length && close < 0; i++) {
+      const ch = sg.text[i], at = pos + i;
+      if (!started) { if (at === openIdx) started = true; continue; }
+      if (ch === '{' || ch === '[' || ch === '(') { if (depth === 0 && ch === '{') cur = { start: at }; depth++; }
+      else if (ch === '}' || ch === ')' || ch === ']') { if (depth === 0 && ch === ']') { close = at; break; } depth--; if (depth === 0 && cur) { cur.end = at + 1; objs.push(cur); cur = null; } }
+    }
+    pos += sg.text.length;
+  }
+  if (close < 0) throw new Error('runs.js: missions array not closed');
+  return { objs, close };
+}
+function pruneRuns(P, c) {
+  const F = 'worlds/runs.js'; if (!P.files.has(F)) return;
+  let src = P.get(F); const key = 'missions: [', k0 = src.indexOf(key); if (k0 < 0) throw new Error('PATCH DRIFT in ' + F + ': "missions: [" not found');
+  const open = k0 + key.length - 1, { objs, close } = splitArrayObjects(src, open);
+  const nanaGone = !(c.grandparent.exists && c.grandparent.sameBuilding), saudiGone = c.dad.status === 'home';
+  const items = []; let prevEnd = open + 1;
+  for (const o of objs) { items.push({ gap: src.slice(prevEnd, o.start).replace(/^\s*,/, ''), obj: src.slice(o.start, o.end) }); prevEnd = o.end; }
+  const why = it => { const t = it.gap + it.obj;
+    if (/@owner-family/.test(t)) return 'tagged @owner-family';
+    if (nanaGone && /\bnn_[a-z]|run_goal_nana|who: 'nana'/.test(it.obj)) return 'needs the grandparent-house scenes';
+    if (saudiGone && /\bsaudi[A-Z]\w*|theme: 'abha'/.test(it.obj)) return 'needs the trip-world scenes';
+    return null; };
+  const keep = [], dropped = [];
+  items.forEach(it => { const w = why(it); if (w) dropped.push({ id: (/id: '([^']+)'/.exec(it.obj) || [])[1], title: (/title: '([^']+)'/.exec(it.obj) || [])[1], why: w, obj: it.obj }); else keep.push(it); });
+  if (!dropped.length) return;
+  src = src.slice(0, open + 1) + keep.map((it, i) => (i ? ',' : '') + it.gap + it.obj).join('') + src.slice(prevEnd);
+  const used = (re, text) => new Set([...text.matchAll(re)].map(m => m[1]));
+  const keptText = keep.map(k => k.obj).join('\n');
+  dropped.forEach(d => { const st = (/sticker: '([^']+)'/.exec(d.obj) || [])[1]; if (st && !new RegExp("sticker: '" + st + "'").test(keptText)) src = src.replace(new RegExp("[ \\t]*\\{ id: '" + st + "'[^}]*\\},?[ \\t]*\\n?"), ''); });
+  const stillUsed = new Set([...keptText.matchAll(/values: \[([^\]]*)\]/g)].flatMap(m => [...m[1].matchAll(/'([^']+)'/g)].map(x => x[1])));
+  const outside = src.replace(/M\.registerValue\([^\n]*/g, '');
+  dropped.forEach(d => { for (const m of d.obj.matchAll(/values: \[([^\]]*)\]/g)) for (const v of m[1].matchAll(/'([^']+)'/g)) if (!stillUsed.has(v[1]) && !new RegExp("'" + v[1] + "'").test(outside)) src = src.replace(new RegExp("\\n[ \\t]*M\\.registerValue\\('" + v[1] + "'[^\\n]*"), ''); });
+  P.files.set(F, src); P.log.review.push('runs world: removed level(s) ' + dropped.map(d => d.id + ' «' + d.title + '» (' + d.why + ')').join(', ') + '; kept ' + keep.length);
+  P.log.patches.push({ file: F, what: 'runs levels removed: ' + dropped.map(d => d.id + ':' + d.why).join(', '), n: dropped.length });
+  if (saudiGone && P.files.has('content/q_runs.js')) P.rep('content/q_runs.js', /\n[ \t]*q\('b\d', \d, '[a-z_]+', \['runs_abha'\][^\n]*/g, '', { what: 'runs: questions of the removed trip level', optional: true });
+  if (!keep.length) removeWorld(P, 'runs', ['worlds/runs.js', 'worlds/runs_art.js', 'content/q_runs.js'], /\n\s*\{ id: 'runs', order: 11[^\n]*\},?/, /\n\s*M\.load\.push\('content\/q_runs\.js'[^\n]*/);
 }
 
 /* ------------------------------------------------------------------ main build steps */
@@ -278,8 +326,8 @@ function genericPatches(P, c) {
   /* --- titles --- */
   const title = c.edition.title || (k[0].nick + ' و' + k[1].nick), sub = c.edition.subtitle || 'يوميات ومغامرات';
   P._title = title;
-  P.rep('engine/ui.js', /\{ class: 'title', style: 'font-size:78px;white-space:nowrap' \}, 'مودي وعبودي'\)/, (m) => m.replace("'مودي وعبودي'", jsq(title)).replace("font-size:78px", 'font-size:' + (title.length > 14 ? Math.max(40, Math.floor(1100 / title.length)) : 78) + 'px'), { what: 'title screen' });
-  P.rep('engine/ui.js', "}, 'يوميات ومغامرات')", '}, ' + jsq(sub) + ')', { what: 'title screen subtitle' });
+  P.rep('engine/ui.js', "h('div', { class: 'title' }, 'مودي وعبودي')", "h('div', { class: 'title'" + (title.length > 14 ? ", style: 'font-size:" + Math.max(40, Math.floor(1100 / title.length)) + "px;white-space:nowrap'" : '') + ' }, ' + jsq(title) + ')', { what: 'title screen' });
+  P.rep('engine/ui.js', "h('div', { class: 'ttl-tag' }, 'يوميات ومغامرات')", "h('div', { class: 'ttl-tag' }, " + jsq(sub) + ')', { what: 'title screen subtitle' });
   if (c.edition.versionLabel) P.rep('engine/ui.js', "'الإصدار ١'", jsq(c.edition.versionLabel), { what: 'version label' });
   P.rep('index.html', /<title>[^<]*<\/title>/, '<title>' + title + '</title>', { what: 'html title' });
   P.rep('index.html', /apple-mobile-web-app-title" content="[^"]*"/, 'apple-mobile-web-app-title" content="' + title + '"', { what: 'ios app title' });
@@ -292,6 +340,14 @@ function genericPatches(P, c) {
   const vo = (s, big) => { const g = s === 'nana' ? c.grandparent.gender : c.kids[SLOTS.indexOf(s)].gender; return g === 'f' ? (big ? 'girl_big' : 'girl_small') : (big ? 'boy_big' : 'boy_small'); };
   P.rep('engine/voice.js', "moody: 'boy_big', aboody: 'boy_small', mama: 'mama', baba: 'baba', toota: 'girl_big', nemo: 'girl_small', nana: 'nana',",
     'moody: ' + jsq(vo('moody', true)) + ', aboody: ' + jsq(vo('aboody', false)) + ", mama: 'mama', baba: 'baba', toota: " + jsq(vo('toota', true)) + ', nemo: ' + jsq(vo('nemo', false)) + ', nana: ' + jsq(c.grandparent.gender === 'f' ? 'nana' : 'baba') + ',', { what: 'speaker -> voice id by gender' });
+  /* --- automatic reactions (content/reactions.js): each hero speaks from the pool of its VOICE class, so a girl in a boy slot gets the girls' pool (no text rewriting) --- */
+  const VK = { moody: vo('moody', true), aboody: vo('aboody', false), toota: vo('toota', true), nemo: vo('nemo', false) };
+  const v2id = { boy_big: 'moody', boy_small: 'aboody', girl_big: 'toota', girl_small: 'nemo' };   // classic defaults, kept when no hero uses a class
+  SLOTS.slice().reverse().forEach(s => { v2id[VK[s]] = s; });                                  // first slot (in order) wins a shared class
+  P.rep('content/reactions.js', "const V2ID = { boy_big: 'moody', boy_small: 'aboody', girl_big: 'toota', girl_small: 'nemo',", 'const V2ID = { boy_big: ' + jsq(v2id.boy_big) + ', boy_small: ' + jsq(v2id.boy_small) + ', girl_big: ' + jsq(v2id.girl_big) + ', girl_small: ' + jsq(v2id.girl_small) + ',', { what: 'reactions: voice class -> hero', exact: 1 });
+  P.rep('content/reactions.js', "const ID2V = { moody: 'boy_big', aboody: 'boy_small', toota: 'girl_big', nemo: 'girl_small',", 'const ID2V = { moody: ' + jsq(VK.moody) + ', aboody: ' + jsq(VK.aboody) + ', toota: ' + jsq(VK.toota) + ', nemo: ' + jsq(VK.nemo) + ',', { what: 'reactions: hero -> voice class', exact: 1 });
+  P.rep('content/reactions.js', /, ofa: 'boy_big', beno: 'boy_big', medo: 'boy_big', luka: 'boy_small', toti: 'girl_small'/, '', { what: 'reactions: no relatives', exact: 1 });
+  P.rep('content/reactions.js', 'const BOYS = { moody: 1, aboody: 1 };', 'const BOYS = { ' + SLOTS.filter((s, i) => k[i].gender === 'm').map(s => s + ': 1').join(', ') + ' };', { what: 'reactions: lines for boys only', exact: 1 });
   /* --- school signboard fits the name --- */
   const sn = c.school.name;
   P.rep('worlds/school_art.js', /G\.text\(g, 'مدرسة آل زياد الابتدائية', 465, 217, \{ size: 17,/, () => 'G.text(g, ' + jsq('مدرسة آل زياد الابتدائية') + ', 465, 217, { size: ' + Math.min(17, Math.floor(214 / (sn.length * .58))) + ',', { what: 'school sign (front)' });
@@ -354,7 +410,7 @@ function optionalWorlds(P, c) {
   } else floorPatches(P, c);
   if (c.dad.status === 'home') {
     removeWorld(P, 'saudi', ['worlds/saudi.js', 'worlds/saudi_art.js', 'content/q_saudi.js'], /\n\s*\{ id: 'saudi', order: 8[^\n]*\},?/, /\n\s*M\.load\.push\('content\/q_saudi\.js'[^\n]*/);
-    P.rep('engine/ui.js', "tile('بابا بيتصل', 'phone', '#2fb86a', f.call, M.callPending && M.callPending()), ", '', { what: 'no daily call button' });
+    P.rep('engine/ui.js', /tile\('بابا بيتصل', 'phone', .*?f\.call, M\.callPending && M\.callPending\(\)\), /, '', { what: 'no daily call button', exact: 1 });
   }
 }
 
@@ -390,6 +446,7 @@ function destinationQuestions(P, c) {
   // f4: sea on the route
   if (d.seaOnRoute) R(9, 'f4', line(9, 'f4', 3, 'geography', 'الطيارة من ' + c.home.country + ' ' + AR.attach('ل', country) + ' بتعدّي فوق أنهي بحر؟', [d.seaOnRoute, 'البحر الأسود', 'بحر البلطيق'].filter((x, i, a) => a.indexOf(x) === i), 'اتفرجنا على البحر من الشباك', "{ emoji: '🌊', explain: " + jsq(d.seaOnRoute + ' على طريقنا') + ' }'));
   else { R(9, 'f4', line(9, 'f4', 3, 'general', 'الطيارة بتهبط في؟', ['المطار', 'الشارع', 'البحر'], 'مكان مخصوص للطيارات', "{ emoji: '🛬', explain: 'الطيارة بتهبط في المطار' }")); review.push('f4: no destination.seaOnRoute -> neutral "planes land at the airport" question used'); }
+  if (P.files.has('content/q_runs.js')) { P.rep('content/q_runs.js', /\n[ \t]*q\('b[24]', 9,[^\n]*/g, '', { what: 'runs: factual questions about the old destination (climate, houses)', exact: 2 }); review.push('runs world: two factual destination questions removed (b2, b4); the other runs_abha questions are generic mountain/cable-car questions'); }
   review.push('story/art scenery of the trip world is still a cool misty mountain town with a cable car, stone towers and a gift scene (see build-report "scenery").');
   return review;
 }
@@ -529,7 +586,7 @@ function build(configFile, outDir, flags) {
   fs.writeFileSync(path.join(outDir, 'robots.txt'), 'User-agent: *\nDisallow: /\n');
   fs.mkdirSync(path.join(outDir, 'assets', 'voice'), { recursive: true }); fs.writeFileSync(path.join(outDir, 'assets', 'voice', 'manifest.json'), '{}');
   report.syntax = syntaxCheck(P); report.leaks = leakScan(P, c, outDir); report.scenery = reviewScenery(P, c);
-  report.gender = P.log.gender; report.genderMixed = P.log.genderMixed; report.patches = P.log.patches; report.review = destReview;
+  report.gender = P.log.gender; report.genderMixed = P.log.genderMixed; report.patches = P.log.patches; report.review = P.log.review.concat(destReview);
   const defaults = { names: { m: c.kids[0].nick, a: c.kids[1].nick, t: c.kids[2].nick, n: c.kids[3].nick, me: 'يا بطل' }, speakers: { moody: P.files.get('engine/voice.js').match(/moody: '(\w+)'/)[1], aboody: P.files.get('engine/voice.js').match(/aboody: '(\w+)'/)[1], toota: P.files.get('engine/voice.js').match(/toota: '(\w+)'/)[1], nemo: P.files.get('engine/voice.js').match(/nemo: '(\w+)'/)[1], nana: P.files.get('engine/voice.js').match(/nana: '(\w+)'/)[1] }, title: P._title };
   const meta = outDir + '.meta'; fs.mkdirSync(meta, { recursive: true });
   fs.writeFileSync(path.join(meta, 'review-gender.txt'), report.gender.map(g => g.file + '\n  قبل: ' + g.before + '\n  بعد: ' + g.after).join('\n\n') + '\n\n--- unresolved (mixed) ---\n' + report.genderMixed.map(g => g.file + ': ' + g.text).join('\n'));
@@ -545,7 +602,7 @@ function build(configFile, outDir, flags) {
   }
   return report;
 }
-module.exports = { build, loadConfig, buildDictionaries, ROOT };
+module.exports = { build, loadConfig, buildDictionaries, ROOT, pruneRuns, splitArrayObjects, Project };
 if (require.main === module) {
   const a = parseArgs(process.argv.slice(2));
   if (a._.length < 2) { console.log('usage: node tools/family/build.js <config.json> <outdir> [--force] [--no-icons] [--quiet]'); process.exit(1); }

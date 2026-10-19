@@ -49,6 +49,20 @@ t('supplied avatar: refused without the cartoon confirmation, re-encoded without
   assert(r.avatars.some(a => a.slot === 'moody' && a.source === 'file') && r.avatars.some(a => a.slot === 'aboody' && a.source === 'generated'));
 });
 
+t('runs levels tagged @owner-family are cut (any number of levels), stickers/values stay consistent', () => {
+  const { pruneRuns, Project } = require('./build');
+  const mk = (tag2, tag1) => `(function () {\n  const M = {}; M.registerValue('a', { label: 'x' });\n  M.registerValue('b', { label: 'y' });\n  M.registerWorld({ id: 'runs', stickers: [\n    { id: 's_a', title: 't', art: 'x' }, { id: 's_b', title: 't', art: 'x' }, { id: 's_runs', title: 'z', art: 'w' }\n  ],\n    missions: [\n      /* ==== 1) ==== */\n      {\n        id: 'r1', ${tag1 || ''} title: 'one', values: ['a'], sticker: 's_a',\n        async run(ctx) { const s = '}{ ]'; return ctx.nav.complete(); }\n      },\n      /* ==== 2) ==== */\n      {\n        id: 'r2', ${tag2 || ''} title: 'two', values: ['b'], sticker: 's_b',\n        async run(ctx) { return 1; }\n      }\n    ]\n  });\n})();`;
+  const cfg = { grandparent: { exists: true, sameBuilding: true }, dad: { status: 'abroad' } };
+  let P = new Project(); P.files.set('worlds/runs.js', mk('/* @owner-family */')); pruneRuns(P, cfg);
+  let out = P.get('worlds/runs.js'); new vm.Script(out);
+  assert(/id: 'r1'/.test(out) && !/id: 'r2'/.test(out) && !/s_b/.test(out) && !/registerValue\('b'/.test(out) && /registerValue\('a'/.test(out) && /s_runs/.test(out), out);
+  P = new Project(); P.files.set('worlds/runs.js', mk('/* @owner-family */', '/* @owner-family */'));
+  P.files.set('worlds/registry.js', "M.plan([\n    { id: 'habits', order: 9 },\n    { id: 'runs', order: 11, title: 'x' }\n  ]);\n  M.load.push('content/q_runs.js', 'worlds/runs_art.js', 'worlds/runs.js');\n");
+  ['worlds/runs_art.js', 'content/q_runs.js'].forEach(f => P.files.set(f, ''));
+  pruneRuns(P, cfg); assert(!P.files.has('worlds/runs.js') && !/runs/.test(P.get('worlds/registry.js')), 'world must go when no level is left');
+  P = new Project(); P.files.set('worlds/runs.js', mk('', '')); pruneRuns(P, cfg); assert(/id: 'r2'/.test(P.get('worlds/runs.js')), 'untagged levels stay');
+});
+
 const scratch = process.argv[2] || fs.mkdtempSync(path.join(os.tmpdir(), 'fam_test_'));
 for (const [cfg, name] of [['family.example.json', 'sample'], ['examples/variant_home_dad_no_grandparent.json', 'dad-home-no-grandparent'], ['examples/variant_other_country_grandpa.json', 'oman-grandpa-4kids']]) {
   t('build ' + name + ': no old-family text, valid JS', () => {

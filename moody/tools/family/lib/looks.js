@@ -2,9 +2,9 @@
 'use strict';
 const { shade } = require('./charspatch');
 const HAIR = '#3b2417';
-const TOPS = ['placket', 'vneck', 'polo', 'crew', 'dress', 'blouse', 'floral', 'hoodie'];
+const TOPS = ['placket', 'vneck', 'polo', 'crew', 'dress', 'blouse', 'floral', 'hoodie', 'cardigan'];   // cardigan = the v3 long jacket of the older sister
 const HAIRS = ['curly', 'ponytail', 'pigtails', 'bob', 'scarf', 'short'];
-const GIRL_KEYS_OFF = { skirt: null, keepSkirt: null, flowers: null, scarf: null, under: null, ruffle: null, sleeveLong: null, lash: null, neckPhones: null, bag: null, sunhat: null, bunny: null, smile: null, legC: null, legW: null, trim: null, belt: null, tie: null };
+const GIRL_KEYS_OFF = { v3: null, pk: null, hijab: null, pin: null, cuff: null, shoeAcc: null, braid: null, stitch: null, ribbon: null, charm: null, hat: null, iris: null, belt: null, skirt: null, keepSkirt: null, flowers: null, scarf: null, under: null, ruffle: null, sleeveLong: null, lash: null, neckPhones: null, bag: null, sunhat: null, bunny: null, smile: null, legC: null, legW: null, trim: null, belt: null, tie: null };
 /* what to apply when the gender differs from the base character of that slot */
 function genderPreset(slot, gender, skin) {
   if (gender === 'f') {   // boy slot -> girl
@@ -25,7 +25,7 @@ function lookProps(look, ctx) {
   if (look.hairColor) set('hairC', look.hairColor);
   if (look.outfit) { if (!TOPS.includes(look.outfit)) throw new Error('look.outfit must be one of ' + TOPS.join('|') + ' (got ' + look.outfit + ')'); set('top', look.outfit); }
   if (look.shirt) set('shirt', look.shirt);
-  if (look.bottom) { if (/^(dress|blouse|floral)$/.test(look.outfit || ctx.top)) { set('skirt', look.bottom); set('keepSkirt', true); } else set('pants', look.bottom); }
+  if (look.bottom) { if (/^(dress|blouse|floral|cardigan)$/.test(look.outfit || ctx.top)) { set('skirt', look.bottom); set('keepSkirt', true); } else set('pants', look.bottom); }
   if (look.shoe) set('shoe', look.shoe);
   if (look.shirt && !look.bottom && /^(dress|floral)$/.test(look.outfit || ctx.top)) set('skirt', look.shirt);   // one-piece dress: skirt follows the colour
   if (look.glasses === false) set('glasses', null); else if (look.glasses) set('glasses', look.glasses === true ? '#5a4636' : look.glasses);
@@ -37,6 +37,9 @@ function lookProps(look, ctx) {
   if (look.beard === false) set('beard', null); else if (look.beard) set('beard', look.beard === true ? (look.hairColor || '#17120e') : look.beard);
   if (look.lashes === true) set('lash', true); if (look.lashes === false) set('lash', null);
   if (look.extra && typeof look.extra === 'object') Object.keys(look.extra).forEach(k => set(k, look.extra[k]));
+  // characters v3 keep colour aliases next to the classic keys: hijab == scarf, hat == sunhat; pin belongs to the hijab
+  if ('scarf' in p) { p.hijab = p.scarf; if (p.scarf === null) p.pin = null; }
+  if ('sunhat' in p) p.hat = p.sunhat;
   return p;
 }
 module.exports = { genderPreset, lookProps, TOPS, HAIRS };

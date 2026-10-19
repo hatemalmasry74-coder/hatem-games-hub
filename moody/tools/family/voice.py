@@ -29,12 +29,20 @@ BASE_ROOT = os.path.abspath(os.path.join(HERE, '..', '..'))
 BASE_STRINGS = os.path.join(BASE_ROOT, 'tools', 'voice_strings.json')
 BASE_VOICE_DIR = os.path.join(BASE_ROOT, 'assets', 'voice')      # read-only source of unchanged clips (--reuse-base)
 
-# speaker id -> (azure/edge voice, rate, pitch)   (same character voices as tools/gen_voice.py)
+# speaker id -> (voice, rate %, pitch Hz).  The base game's voice-v2 profiles (tools/voice2/profiles.py) are the source of truth when importable
+# (so a customer edition sounds like the owner's), with this inline copy as a fallback.
+VOICE2 = os.path.join(BASE_ROOT, 'tools', 'voice2')
 M = 'ar-EG-ShakirNeural'; F = 'ar-EG-SalmaNeural'
-VOICES = {'narrator': (F, '+0%', '+0Hz'), 'mama': (F, '-4%', '-3Hz'), 'baba': (M, '-2%', '-2Hz'),
-          'boy_big': (M, '+2%', '+22Hz'), 'boy_small': (M, '+4%', '+38Hz'),
-          'girl_big': (F, '+2%', '+8Hz'), 'girl_small': (F, '+4%', '+20Hz'), 'nana': (F, '-12%', '-14Hz')}
-SPEAKER_LABEL = {'narrator': 'الراوي', 'mama': 'ماما', 'baba': 'بابا', 'boy_big': 'ولد كبير', 'boy_small': 'ولد صغير', 'girl_big': 'بنت كبيرة', 'girl_small': 'بنت صغيرة', 'nana': 'الجدة'}
+VOICES = {'narrator': (F, 0, 0), 'mama': (F, -4, -3), 'baba': (M, -2, -2), 'boy_big': (M, 2, 22), 'boy_small': (M, 4, 38),
+          'girl_big': (F, 2, 8), 'girl_small': (F, 4, 20), 'nana': (F, -12, -14)}
+EMO_DELTA = {'neutral': (0, 0), 'question': (-2, 3), 'excl': (4, 5), 'praise': (-1, 5), 'warm': (-3, 3), 'gentle': (-7, -5), 'tip': (-4, -2), 'excited': (7, 8), 'calm': (-5, -3), 'sad': (-9, -7)}
+try:
+    sys.path.insert(0, VOICE2)
+    import profiles as _pf
+    VOICES = {k: (v[0], v[1], v[2]) for k, v in _pf.PROFILES.items()}; EMO_DELTA = {k: (v[0], v[1]) for k, v in _pf.EMO.items()}
+except Exception:
+    pass
+SPEAKER_LABEL = {'narrator': 'الراوي', 'mama': 'ماما', 'baba': 'بابا', 'boy_big': 'ولد كبير', 'boy_small': 'ولد صغير', 'girl_big': 'بنت كبيرة', 'girl_small': 'بنت صغيرة', 'nana': 'الجدة', 'boy_mid': 'صديق'}
 AZURE_USD_PER_MILLION_CHARS = 16.0     # approximate neural price; CHECK the current Azure pricing page before quoting a customer
 
 # ----------------------------------------------------------------------------- hash (twin of Moody.voice.hash, with per-edition default names)
@@ -98,21 +106,33 @@ def to_clip(src, dst):
     if r.returncode != 0: raise RuntimeError('ffmpeg: ' + r.stderr[-300:])
 
 # ----------------------------------------------------------------------------- providers
-def synth_azure(text, speaker, dst):
+def synth_azure(it, dst):
     key = os.environ.get('AZURE_SPEECH_KEY'); region = os.environ.get('AZURE_SPEECH_REGION')
     if not key or not region: raise SystemExit('azure provider: set AZURE_SPEECH_KEY and AZURE_SPEECH_REGION in the environment')
-    voice, rate, pitch = VOICES.get(speaker, VOICES['narrator'])
-    esc = text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
-    ssml = ('<speak version="1.0" xml:lang="ar-EG" xmlns="http://www.w3.org/2001/10/synthesis"><voice name="%s"><prosody rate="%s" pitch="%s">%s</prosody></voice></speak>' % (voice, rate, pitch, esc)).encode('utf-8')
+    voice, rate, pitch = VOICES.get(it['speaker'], VOICES['narrator']); dr, dp = EMO_DELTA.get(it.get('emo') or 'neutral', (0, 0))
+    rate = rate + dr * 0.4; pitch = pitch + dp       # same emotion deltas as voice v2 (rate share 0.4)
+    esc = it['say'].replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+    ssml = ('<speak version="1.0" xml:lang="ar-EG" xmlns="http://www.w3.org/2001/10/synthesis"><voice name="%s"><prosody rate="%+.0f%%" pitch="%+.0fHz">%s</prosody></voice></speak>' % (voice, rate, pitch, esc)).encode('utf-8')
     req = urllib.request.Request('https://%s.tts.speech.microsoft.com/cognitiveservices/v1' % region, data=ssml, method='POST', headers={
         'Ocp-Apim-Subscription-Key': key, 'Content-Type': 'application/ssml+xml', 'X-Microsoft-OutputFormat': 'audio-24khz-48kbitrate-mono-mp3', 'User-Agent': 'family-edition-builder'})
     with urllib.request.urlopen(req, timeout=60) as r: data = r.read()    # urllib honours HTTPS_PROXY / SSL_CERT_FILE
     with open(dst, 'wb') as f: f.write(data)
+    return False     # raw mp3: needs to_clip()
 
-def synth_edge(text, speaker, dst):
-    import asyncio, edge_tts
-    voice, rate, pitch = VOICES.get(speaker, VOICES['narrator'])
-    asyncio.run(edge_tts.Communicate(text, voice, rate=rate, pitch=pitch, proxy=os.environ.get('HTTPS_PROXY')).save(dst))
+def synth_edge(it, dst):
+    """PREVIEW ONLY. Uses the base game's voice-v2 synthesiser (phrase-level prosody) when its dependencies exist, else a flat edge-tts call."""
+    import asyncio
+    proxy = os.environ.get('HTTPS_PROXY')
+    try:
+        import synth                                  # tools/voice2/synth.py (needs numpy, pyloudnorm, av)
+        async def go():
+            x, _ = await synth.build(it['say'], it['speaker'], emo=it.get('emo'), seed=int(it['hash'], 16) & 0xffffffff, proxy=proxy)
+            await asyncio.get_running_loop().run_in_executor(synth.POOL, synth.encode, x, dst, 40)
+        asyncio.run(go()); return True                # already polished mp3
+    except ImportError:
+        import edge_tts
+        voice, rate, pitch = VOICES.get(it['speaker'], VOICES['narrator'])
+        asyncio.run(edge_tts.Communicate(it['say'], voice, rate='%+d%%' % rate, pitch='%+dHz' % pitch, proxy=proxy).save(dst)); return False
 
 PROVIDERS = {'azure': synth_azure, 'edge': synth_edge}
 
@@ -123,7 +143,10 @@ def gen_one(args):
     err = None
     for k in range(4):
         try:
-            tmp = out + '.tmp.mp3'; fn(it['say'], it['speaker'], tmp); to_clip(tmp, out); os.remove(tmp); return it, 'ok', None
+            tmp = out + '.tmp.mp3'; done = fn(it, tmp)
+            if done: os.replace(tmp, out)
+            else: to_clip(tmp, out); os.remove(tmp)
+            return it, 'ok', None
         except SystemExit: raise
         except Exception as e:
             err = e; time.sleep(1 + 2 * k)
@@ -139,7 +162,7 @@ def cmd_plan(a):
     print('to generate / record%s : %d strings, %d characters' % (' (--all)' if a.all else '', len(need), chars))
     for s, (n, c) in sorted(by.items()): print('   %-10s %5d lines %7d chars' % (s, n, c))
     print('Azure neural estimate: about $%.2f at $%.0f per 1M characters (check current pricing). Free tier / credits may cover it.' % (chars / 1e6 * AZURE_USD_PER_MILLION_CHARS, AZURE_USD_PER_MILLION_CHARS))
-    json.dump([{'hash': i['hash'], 'speaker': i['speaker'], 'text': i['say']} for i in need], open(os.path.join(ctx.meta, 'voice_todo.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
+    json.dump([{'hash': i['hash'], 'speaker': i['speaker'], 'emo': i.get('emo'), 'text': i['say']} for i in need], open(os.path.join(ctx.meta, 'voice_todo.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     print('list written to', os.path.join(ctx.meta, 'voice_todo.json'))
 
 def cmd_gen(a):
