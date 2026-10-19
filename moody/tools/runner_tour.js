@@ -5,7 +5,7 @@
 const { launch, sleep } = require('./botlib.js');
 const SH = process.env.SHOTS || '/tmp/claude-0/-home-user/53a3c7d8-c487-5827-a402-36d70899f068/scratchpad/shots/tour/';
 require('fs').mkdirSync(SH, { recursive: true });
-const kind = process.argv[2] || 'desk', only = (process.argv[3] || 'r1,r2,r3').split(','), hero = process.argv[4] || 'moody', PORT = process.env.PORT || 8841;
+const kind = process.argv[2] || 'desk', only = (process.argv[3] || 'r1,r2,r3').split(','), hero = process.argv[4] || 'moody', PORT = process.env.PORT || 8842;
 (async () => {
   const env = await launch({ kind, url: 'http://localhost:' + PORT + '/moody/index.html?unlock=1' }), p = env.p, bot = env.bot;
   await bot.startGame(); await sleep(400);

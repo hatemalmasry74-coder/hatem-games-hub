@@ -34,7 +34,7 @@
     missions: [
       /* ============ 1) عيش ننا زوزا ============ */
       {
-        id: 'r1', title: 'عيش ننا زوزا', intro: 'العيش لسه سخن.. يلا نجري ونوصّله!', values: ['trust', 'help', 'kindness'], sticker: 's_run_bread',
+        id: 'r1', /* @owner-family */ title: 'عيش ننا زوزا', intro: 'العيش لسه سخن.. يلا نجري ونوصّله!', values: ['trust', 'help', 'kindness'], sticker: 's_run_bread',
         wisdom: 'اللي يوصّل الأمانة لصاحبها.. ربنا يوصّله لأحلى حاجة', diary: { pic: 'run_bread', text: 'جرينا في السوق ووصّلنا العيش السخن لننا زوزا' },
         async run(ctx) {
           await ctx.scene('kitchen', { heroes: { moody: { x: 330, y: 484, dir: 1 }, aboody: { x: 450, y: 494, dir: 1 } } });
@@ -98,7 +98,7 @@
       },
       /* ============ 3) الطيّارة لبابا (أبها) ============ */
       {
-        id: 'r3', title: 'الطيّارة لبابا', intro: 'بابا نسي الهدية.. والتلفريك هيتحرك!', values: ['love', 'trust', 'kindness'], sticker: 's_run_gift',
+        id: 'r3', /* @owner-family */ title: 'الطيّارة لبابا', intro: 'بابا نسي الهدية.. والتلفريك هيتحرك!', values: ['love', 'trust', 'kindness'], sticker: 's_run_gift',
         wisdom: 'الهدية الصغيرة بتعمل فرحة كبيرة', diary: { pic: 'run_giftbag', text: 'جرينا في جبال أبها ووصّلنا هدية بابا قبل التلفريك' },
         async run(ctx) {
           ctx.stage.setCast(['moody', 'aboody'], ['moody', 'aboody', 'toota', 'nemo']); UI_rebuild();
@@ -130,5 +130,8 @@
       }
     ]
   });
+  /* shared with worlds/runs2.js (stages r4..r15, loaded right after the art + questions through Moody.load, which boot.js re-reads while loading) */
+  M.runsKit = { award, F, who, UI_rebuild };
+  M.load.push('content/q_runs2.js', 'worlds/runs_art2.js', 'worlds/runs2.js');
   function UI_rebuild() { try { M.ui.hud.rebuild(); M.ui.hud.showSwitch(true); } catch (e) { } }
 })();

@@ -4,7 +4,7 @@
    CPU throttle (CDP Emulation.setCPUThrottlingRate) simulates a slower phone: 4 = "mid phone".  Headless Chromium uses a software canvas, so the absolute numbers are pessimistic. */
 const { launch, sleep } = require('./botlib.js');
 const { runnerHandler } = require('./runner_bot.js');
-const kind = process.argv[2] || 'desk', theme = process.argv[3] || 'market', thr = +(process.argv[4] || 1), PORT = process.env.PORT || 8841;
+const kind = process.argv[2] || 'desk', theme = process.argv[3] || 'market', thr = +(process.argv[4] || 1), PORT = process.env.PORT || 8842;
 (async () => {
   const env = await launch({ kind, url: 'http://localhost:' + PORT + '/moody/index.html?unlock=1' }), p = env.p, bot = env.bot; await bot.startGame(); await sleep(300);
   if (thr > 1) { const c = await env.ctx.newCDPSession(p); await c.send('Emulation.setCPUThrottlingRate', { rate: thr }); }

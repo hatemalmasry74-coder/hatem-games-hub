@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* Runner rule checks (hero abilities, power-ups, obstacle kinds, assist): node tools/runner_unit.js
    Each case starts an empty track (coins only), injects ONE obstacle / item through Moody.runner.objs and sends real key events. Prints PASS / FAIL per case. */
-const { launch, sleep } = require('./botlib.js'); const PORT = process.env.PORT || 8841;
+const { launch, sleep } = require('./botlib.js'); const PORT = process.env.PORT || 8842;
 (async () => {
   const env = await launch({ kind: 'desk', url: 'http://localhost:' + PORT + '/moody/index.html?unlock=1' }), p = env.p, bot = env.bot; await bot.startGame(); await sleep(300);
   await p.evaluate(() => { Moody.registerWorld({ id: 'tst', order: 50, title: 't', icon: 'home', heroes: ['moody', 'aboody'], control: ['moody', 'aboody', 'toota', 'nemo'], missions: [{ id: 'a', title: 't', intro: 'x', hideTitle: true, async run(ctx) { window.__res = await ctx.games.runner3d({ theme: 'market', length: 0, seed: 1, prompt: 't', plan: [{ rest: 6 }] }); return ctx.nav.complete(); } }] }); });
@@ -43,5 +43,17 @@ const { launch, sleep } = require('./botlib.js'); const PORT = process.env.PORT 
   await start('moody'); for (let i = 0; i < 3; i++) { await p.keyboard.press('ArrowLeft'); await sleep(120); } s = await st(); ok('lane clamps at the left edge', Math.round(s.x) === -1, s);
   /* 10 WASD + Space keys */
   await start('moody'); await p.keyboard.press('d'); await sleep(400); let x1 = (await st()).x; await p.keyboard.press('Space'); await sleep(140); s = await st(); ok('D = right lane, Space = jump', Math.round(x1) === 1 && s.y > .1, { x1, y: s.y });
+  /* 11 speed pad: k 'b' -> S.pad set, faster than baseline */
+  await start('moody'); await add({ k: 'b', z: 6, lane: 0, got: false }); await waitZ(8); s = await p.evaluate(() => ({ pad: Moody.runner.cur.pad, got: Moody.runner.objs.some(e => e.k === 'b' && e.got) })); ok('speed pad triggers (S.pad>0 / got)', s.got, s);
+  /* 12 validators + themes + world size + family tags */
+  const meta = await p.evaluate(() => { const R = Moody.runner; return { val: R.validate(), fair: R.fair(), themes: Object.keys(R.themes || {}).length, n: Moody.getWorld('runs').missions.length, tunnel: !!R.chunks, voice: R.voiceStrings().length }; });
+  ok('validate() and fair() report no unsafe chunks', meta.val.length === 0 && meta.fair.length === 0, meta);
+  ok('world runs has 15 missions, >=12 themes', meta.n === 15 && meta.themes >= 12, meta);
+  const src = await (await fetch('http://localhost:' + PORT + '/moody/worlds/runs.js')).text() + await (await fetch('http://localhost:' + PORT + '/moody/worlds/runs2.js')).text();
+  const fam = [...src.matchAll(/id:\s*'(r\d+)'\s*,?\s*(\/\* @owner-family \*\/)?/g)].filter(m => m[2]).map(m => m[1]);
+  ok('@owner-family on the right ids (r1,r3,r5,r9,r10,r12,r13,r14)', ['r1', 'r3', 'r5', 'r9', 'r10', 'r12', 'r13', 'r14'].every(i => fam.includes(i)) && fam.length === 8, fam);
+  /* 13 parent switch cycles auto -> on -> off -> auto */
+  const cyc = await p.evaluate(() => { const sd = Moody.save.data; delete sd.settings.runAssist; const seq = []; for (let i = 0; i < 3; i++) { const v = sd.settings.runAssist; if (v === undefined) sd.settings.runAssist = true; else if (v === true) sd.settings.runAssist = false; else delete sd.settings.runAssist; seq.push(String(sd.settings.runAssist)); } return seq; });
+  ok('parent assist tri-state cycle', cyc.join() === 'true,false,undefined', cyc);
   console.log('FAILS', fails, 'ERRORS', JSON.stringify(env.errs.slice(0, 6))); await env.b.close(); process.exit(fails ? 1 : 0);
 })().catch(e => { console.error(e); process.exit(2); });

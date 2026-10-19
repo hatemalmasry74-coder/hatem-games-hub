@@ -67,6 +67,7 @@
       line(x, -sw + 3, ty + T * .7, sw - 3, ty + T * .7, 2, 'rgba(30,5,0,.1)');
       x.restore();
       if (dressy) { /* waist ribbon of the blouse */ line(x, -sw + 2, ty + T - 1, sw - 2, ty + T - 1, 3, G.shade(sh, -.22)); }
+      if (d.backpack) { rr(x, -sw + 3, ty + 6, sw * 2 - 6, T * .7, 9, d.backpack, 1.8); line(x, 0, ty + 8, 0, ty + T * .7, 1.6, 'rgba(0,0,0,.2)'); rr(x, -sw + 8, ty + T * .5, sw * 2 - 16, T * .22, 5, G.shade(d.backpack, -.15), 1.4); }
       /* hoodie hood bunched behind the neck (nemo) */
       if (d.top === 'hoodie') { ell(x, 0, ty + 3, sw * .62, 9, G.shade(sh, -.1), 1.6); line(x, -4, ty + 8, -5, ty + 24, 2.6, '#fff'); line(x, 4, ty + 8, 5, ty + 24, 2.6, '#fff'); dot(x, -5, ty + 25, 2.4, '#fff'); dot(x, 5, ty + 25, 2.4, '#fff'); }
       /* neck */
@@ -97,6 +98,9 @@
         [-1, 1].forEach(s => { x.beginPath(); x.moveTo(s * R * 0.2, by + R * .14); x.lineTo(s * R * 1.1, by + R * .7); x.lineTo(s * R * .95, by - R * .12); x.closePath(); shade(x, rib, [s * R * .1, by - R * .1, R, R * .8], 1.4); });
         cap(x, 0, by + R * .14, R * .17, G.shade(rib, -.1));
         [-1, 1].forEach(s => line(x, s * R * .1, by + R * .2, s * R * .45, by + R * 1.35, 3.4, rib));
+      } else if (d.hair === 'short') {   // short hair (cousins): smooth dome, ears, small quiff
+        ell(x, 0, hy + R * .04, rx * 1.0, R * .98, hairC, 1.6); ell(x, -rx * .25, hy - R * .55, rx * .6, R * .38, G.shade(hairC, .16), 0);
+        [-1, 1].forEach(sg => ell(x, sg * rx * .98, hy + R * .38, R * .17, R * .24, skin, 1.2)); if (d.quiff) ell(x, 0, hy - R * 1.05, rx * .55, R * .3, hairC, 1.4);
       } else {                    // curly hair (moody / aboody) - back of the head
         const cr = R * (d.curl || .3);
         ell(x, 0, hy, rx * 1.0, R * .98, hairC, 0);
