@@ -3,7 +3,7 @@
 const { launch, sleep } = require('./botlib.js');
 const kind = process.argv[2] || 'desk', wrong = process.argv[3] === 'wrong', only = (process.argv[4] || '').split(',').filter(Boolean);
 (async () => {
-  const env = await launch({ kind, url: 'http://localhost:8765/moody/index.html?unlock=1' }), p = env.p, bot = env.bot;
+  const env = await launch({ kind, url: process.env.MOODY_URL || 'http://localhost:8765/moody/index.html?unlock=1' }), p = env.p, bot = env.bot;
   await bot.startGame(); await sleep(400);
   const worlds = await p.evaluate(() => Moody.worlds.filter(w => !w.soon && !w.hidden).map(w => [w.id, w.missions.map(m => m.id)]));
   let fails = 0;

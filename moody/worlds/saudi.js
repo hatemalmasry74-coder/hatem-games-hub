@@ -296,7 +296,7 @@
           await ctx.say('toota', 'بيوت الحجر بشبابيكها البيضا حلوة أوي! شبه حواديت.');
           await ctx.say('baba', 'ده الطراز العسيري. بنبني بالحجر وبنطلي الشبابيك بالأبيض.');
           M.tw(st.state, { fog: .88 }, 3.5, 'inOut');
-          await ctx.say('narrator', 'وفجأة.. الضباب زاد جدًا على الطريق!');
+          await ctx.say('narrator', 'وفجأة.. الضباب زاد أوي على الطريق!');
           const fg = await choiceQ(ctx, {
             prompt: 'الضباب كتير. بابا يعمل إيه؟', options: sh([
               { text: 'يشغّل أنوار الضباب', art: 'saudi_lights', good: true, reply: [['baba', 'تمام! الأنوار بتخلّي العربيات تشوفنا.']] },

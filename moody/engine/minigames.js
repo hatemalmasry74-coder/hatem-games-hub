@@ -6,7 +6,7 @@
   const M = window.Moody, UI = M.ui, G = M.gfx, U = M.util, A = M.art, K = M.kits, h = UI.h, ico = UI.ico;
   const hint = (ctx, msg, who) => { ctx.stage.bubble(who || ctx.stage.active, msg, 2.2); };
   const hitR = s => Math.max(s / 2 + 8, 36);
-  const needMsg = (st, need) => { const k = st.who(need), n = (M.save.data.names[k] || M.chars.defs[k].name); return need === 'moody' || need === 'strong' ? 'ده تقيل أوي! محتاجين ' + n : 'محتاجين ' + n + '!'; };
+  const needMsg = (st, need) => { const k = st.who(need), rx = M.reactions && M.reactions.pick(need === 'moody' || need === 'strong' ? 'needstrong' : 'needhelp', { speaker: st.active, helper: k }); if (rx) return rx; const n = (M.save.data.names[k] || M.chars.defs[k].name); return need === 'moody' || need === 'strong' ? 'ده تقيل أوي! محتاجين ' + n : 'محتاجين ' + n + '!'; };
   const badge = (g, need, x, y, r, fs) => { const b = M.chars.badge(need); G.circ(g, x, y, r, b[1], 3); G.text(g, b[0], x, y + 1, { size: fs, color: '#fff', stroke: M.OL, sw: 3 }); };
 
   /* ================= DRAG & DROP ================= */
@@ -36,7 +36,7 @@
         const t = tg.find(t => Math.abs(it.x - t.x) < t.w / 2 + 16 && Math.abs(it.y - t.y) < t.h / 2 + 16);
         if (!t) { back(it); return; }
         const ok = it.to === t.id || (t.accepts && t.accepts(it));
-        if (ok) place(it, t); else { M.audio.sfx('wrong'); ctx.mistake(); sk.fail(); hint(ctx, it.hint || t.wrongHint || o.wrongHint || 'مش هنا.. جرّب مكان تاني'); st.play(st.active, 'oops', .9); back(it); }
+        if (ok) place(it, t); else { M.audio.sfx('wrong'); ctx.mistake(); sk.fail(); hint(ctx, it.hint || t.wrongHint || o.wrongHint || (M.reactions && M.reactions.pick('misplace', { speaker: st.active, hero: M.reactions.buddy(st.active) })) || 'مش هنا.. جرّب مكان تاني'); st.play(st.active, 'oops', .9); back(it); }
       }
     };
     function back(it) { it.busy = true; M.tw(it, { x: it.home.x, y: it.home.y }, .35, 'outBack').then(() => { it.busy = false; }); }
@@ -131,7 +131,7 @@
         if (opt.good) {
           card.classList.add('picked'); UI.sparkEl && UI.sparkEl(card, { n: 12, r: 90 }); ctx.sfx('good'); ui.close(); closed = true;
           if (opt.reply) for (const l of opt.reply) await ctx.say(l[0], l[1], l[2]);
-          ctx.react('good', 'both'); await ctx.wait(.5); done({ good: true, firstTry: tries === 1, tries, picked, index: i });
+          ctx.react('good', 'both', { nopraise: true }); await ctx.wait(.5); done({ good: true, firstTry: tries === 1, tries, picked, index: i });
         } else {
           ui.el.style.display = 'none'; ctx.mistake();
           if (typeof opt.consequence === 'function') await opt.consequence(ctx);

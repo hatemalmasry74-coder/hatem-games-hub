@@ -1919,10 +1919,6 @@
   "voice": "baba",
   "text": "لأ يا {a}! الماية بتعمّق بسرعة. لازم حد كبير يكون معانا."
  },
- "38d3e28ac5ee": {
-  "voice": "boy_big",
-  "text": "ده خطر! الكورة ممكن نجيب غيرها.. لكن نفسنا أغلى."
- },
  "e132ef366ea8": {
   "voice": "baba",
   "text": "شاطر يا {a}! أنا هجيبها."
@@ -7935,10 +7931,6 @@
   "voice": "narrator",
   "text": "٢٠٠"
  },
- "185f0f48e483": {
-  "voice": "narrator",
-  "text": "الماية الساخنة جدًا"
- },
  "3e71ada976a0": {
   "voice": "narrator",
   "text": "نهر الخير"
@@ -11931,10 +11923,6 @@
   "voice": "baba",
   "text": "مع السلامة يا حبايبي، سلّموا لي على ماما. أشوفكم بكره إن شاء الله!"
  },
- "06fb57c37c7c": {
-  "voice": "baba",
-  "text": "في أمان الله يا أبطال. بابا بيحبكم جداً!"
- },
  "6dc420a2f1c1": {
   "voice": "baba",
   "text": "الحمد لله! ربنا يديكم الصحة ويفرّح قلوبكم."
@@ -12882,10 +12870,6 @@
  "657e706af0ca": {
   "voice": "narrator",
   "text": "بس نستخبّى فين يا جماعة؟"
- },
- "5e4c85266a2a": {
-  "voice": "narrator",
-  "text": "بعيد جدًا ورا المبنى"
  },
  "e72145a19136": {
   "voice": "narrator",
@@ -14942,10 +14926,6 @@
  "f64ba07a14bf": {
   "voice": "baba",
   "text": "ده الطراز العسيري. بنبني بالحجر وبنطلي الشبابيك بالأبيض."
- },
- "faa5661ab828": {
-  "voice": "narrator",
-  "text": "وفجأة.. الضباب زاد جدًا على الطريق!"
  },
  "1e83a6fdf157": {
   "voice": "baba",
@@ -18662,5 +18642,3117 @@
  "63cd6f14053f": {
   "voice": "narrator",
   "text": "نجري حوالين البوتجاز"
+ },
+ "d1a229df0c23": {
+  "voice": "boy_big",
+  "text": "aboody"
+ },
+ "08c65859932e": {
+  "voice": "baba",
+  "text": "kamal"
+ },
+ "bd22b027f7b9": {
+  "voice": "girl_tiny",
+  "text": "nada"
+ },
+ "d0fc2fe633a0": {
+  "voice": "girl_tiny",
+  "text": "luka"
+ },
+ "4c803fdbce0f": {
+  "voice": "aunt_n",
+  "text": "toti"
+ },
+ "d3b96db3d695": {
+  "voice": "boy_mid",
+  "text": "amani"
+ },
+ "110a30bac6c8": {
+  "voice": "teen_a",
+  "text": "toota"
+ },
+ "a63a822b68c7": {
+  "voice": "aunt_a",
+  "text": "ofa"
+ },
+ "761c203dfdc6": {
+  "voice": "narrator",
+  "text": "بابا وعمو كمال وصلوا! والعيلة كلها مستنية عند ننا."
+ },
+ "9e7bcb0a9cf0": {
+  "voice": "narrator",
+  "text": "عمتو أماني طبخت لـ١٥ نفر.. نحضّر السفرة بأدب!"
+ },
+ "e68481b9da80": {
+  "voice": "narrator",
+  "text": "توتي بتعيّط وبتزعّق! نهدّيها بلُطف ونلعب معاها."
+ },
+ "0acf3b953c92": {
+  "voice": "narrator",
+  "text": "عمتو ندى والموبايل صحاب! نعزمها بلُطف للعبة العيلة."
+ },
+ "85e5f6816474": {
+  "voice": "narrator",
+  "text": "ثلاث فرق: الصغيرين والشباب والكبار! مين الفايز؟"
+ },
+ "932b1e4358a8": {
+  "voice": "narrator",
+  "text": "نقف كلنا في صورة واحدة.. الصغير قدّام والطويل ورا!"
+ },
+ "d53774705f94": {
+  "voice": "baba",
+  "text": "وجزاكم الله خير على أدبكم."
+ },
+ "b07c5beb9dff": {
+  "voice": "boy_big",
+  "text": "الغريب ممكن يعرف الاسم. لازم كلمة السر."
+ },
+ "3b9f0c4860a5": {
+  "voice": "girl_small",
+  "text": "لأ! معلوماتنا مش للغريب."
+ },
+ "2ccb8ef0c670": {
+  "voice": "girl_big",
+  "text": "الكبار بيدوّروا مع كبار. مش بيطلبوا من الأطفال يروحوا معاهم."
+ },
+ "64f4c79d26dc": {
+  "voice": "boy_big",
+  "text": "منخدش حاجة من حد منعرفوش."
+ },
+ "e04460f5c84a": {
+  "voice": "girl_small",
+  "text": "ده بيضيّع الشرح وبيضايق المدرّس."
+ },
+ "c0174c288068": {
+  "voice": "girl_big",
+  "text": "نرفع إيدنا ونستنى دورنا."
+ },
+ "d90d57580d7f": {
+  "voice": "baba",
+  "text": "تستاهلوا اللعب."
+ },
+ "88130deae538": {
+  "voice": "narrator",
+  "text": "بابا بيعلّمنا الوضوء خطوة خطوة.. بالترتيب وبهدوء!"
+ },
+ "f9df3a0e51ef": {
+  "voice": "narrator",
+  "text": "خمس صلوات في اليوم.. نعرف أسماءها ومواعيدها ونتعلم الأدب."
+ },
+ "0e99f4dddf2e": {
+  "voice": "narrator",
+  "text": "يوم كامل مع كلمات حلوة بنقولها لربنا."
+ },
+ "1d96c5732c2a": {
+  "voice": "narrator",
+  "text": "توتا المدرّبة النهاردة.. تمرين وأكل صحي ونوم بدري!"
+ },
+ "06fbca71a2aa": {
+  "voice": "narrator",
+  "text": "مواقف جديدة: عربية بتقف، وحد بيقول ماما بعتتني.. نعمل إيه؟"
+ },
+ "6f0848865076": {
+  "voice": "narrator",
+  "text": "توتا ونيمو وبابا بيعلّمونا نذاكر صح ونبقى من المتفوقين!"
+ },
+ "4970ce69f551": {
+  "voice": "baba",
+  "text": "برافو عليكم! ده أدب جميل. بوسوا إيدها كمان بدالي."
+ },
+ "97ce6da410b8": {
+  "voice": "narrator",
+  "text": "من الدور السادس للدور التالت.. بالأمان!"
+ },
+ "25ba2cbe0e51": {
+  "voice": "narrator",
+  "text": "باب ننا زوزا.. الأدب أولًا!"
+ },
+ "1880e12fb2e1": {
+  "voice": "narrator",
+  "text": "نساعد ننا في المطبخ.. نعدّ ونرتّب ونحضّر السفرة!"
+ },
+ "c7d02f602843": {
+  "voice": "narrator",
+  "text": "ننا بتحكي حكايات الصور القديمة.. بس الألبوم مستخبّي!"
+ },
+ "c3f392b2185f": {
+  "voice": "narrator",
+  "text": "نسقي نباتات ننا ونفكّرها بميعاد الدوا."
+ },
+ "f21ceb9c8c56": {
+  "voice": "narrator",
+  "text": "الوقت جه نطلع.. نسيب لننا كارت حلو، وبابا بيتصل!"
+ },
+ "78f65b8525aa": {
+  "voice": "boy_small",
+  "text": "moody"
+ },
+ "be6c607fbc69": {
+  "voice": "narrator",
+  "text": "وفجأة.. الضباب زاد أوي على الطريق!"
+ },
+ "47d6c0844ff8": {
+  "voice": "girl_big",
+  "text": "nemo"
+ },
+ "97fff40b7ab8": {
+  "voice": "narrator",
+  "text": "بكرة هنسافر لبابا في السعودية.. يلا نجهّز الشنطة!"
+ },
+ "b2390ed51176": {
+  "voice": "narrator",
+  "text": "الطابور والجوازات والفحص.. كل خطوة ليها قواعد!"
+ },
+ "4bba5695a509": {
+  "voice": "narrator",
+  "text": "نربط الحزام، نقول دعاء السفر، ونطير فوق السحاب!"
+ },
+ "e56b8facea54": {
+  "voice": "narrator",
+  "text": "الهبوط، ختم الجواز، وشنطتنا على السير!"
+ },
+ "87970b0cd22d": {
+  "voice": "narrator",
+  "text": "أخيرًا بابا! وبعدين رحلة بالعربية وسط الضباب والجبال."
+ },
+ "32b1c4fa5513": {
+  "voice": "narrator",
+  "text": "تلفريك وجبال السودة وجو بارد.. نلبس إيه؟"
+ },
+ "10fa937aaca2": {
+  "voice": "narrator",
+  "text": "عشاء وهدايا وشكر.. وتصبحوا على خير."
+ },
+ "ba15f09305c5": {
+  "voice": "boy_big",
+  "text": "ده خطر! الكورة ممكن نجيب غيرها.. بس نفسنا أغلى."
+ },
+ "638de1876d46": {
+  "voice": "narrator",
+  "text": "الماية الساخنة أوي"
+ },
+ "fb094584404e": {
+  "voice": "baba",
+  "text": "بابا فخور بيكم أوي!"
+ },
+ "7f8b19c9be40": {
+  "voice": "baba",
+  "text": "الله يبارك فيكم يا أبطالي."
+ },
+ "6f49a1ae7743": {
+  "voice": "baba",
+  "text": "بجد عملتوها زي الكبار!"
+ },
+ "fea7ede13181": {
+  "voice": "baba",
+  "text": "ده اللي بحبه فيكم، تعبتوا وجتهدتوا."
+ },
+ "e6a9134ce6c3": {
+  "voice": "baba",
+  "text": "ما شاء الله، هتبقوا ناس كبار!"
+ },
+ "ffa6cde9542d": {
+  "voice": "baba",
+  "text": "أحلى أولاد في الدنيا!"
+ },
+ "e9cf5d9fcf71": {
+  "voice": "baba",
+  "text": "شاطرين يا أبطال! كمّلوا كده."
+ },
+ "1d3421819111": {
+  "voice": "baba",
+  "text": "بابا بيفتخر بيكم قدّام الناس كلها!"
+ },
+ "88cb668aea11": {
+  "voice": "baba",
+  "text": "في أمان الله يا أبطال. بابا بيحبكم أوي!"
+ },
+ "de0bdf1428e7": {
+  "voice": "baba",
+  "text": "يلا يا حبايبي، هسيبكم دلوقتي. ما تنسوش تساعدوا ماما!"
+ },
+ "5519272f26a9": {
+  "voice": "baba",
+  "text": "ربنا يحفظكم ليّ. نتكلّم بكره إن شاء الله!"
+ },
+ "4dfef5fc7e06": {
+  "voice": "baba",
+  "text": "مع السلامة يا أبطالي. وحشتوني، وهشوفكم قريب!"
+ },
+ "924301377d4a": {
+  "voice": "narrator",
+  "text": "برافو!"
+ },
+ "f90ab10caa35": {
+  "voice": "narrator",
+  "text": "صح!"
+ },
+ "8852b791eb57": {
+  "voice": "narrator",
+  "text": "صح كده!"
+ },
+ "fd7833a9e563": {
+  "voice": "narrator",
+  "text": "تمام!"
+ },
+ "f6c3ce4bf922": {
+  "voice": "narrator",
+  "text": "إجابة صح!"
+ },
+ "42b0ca4f00df": {
+  "voice": "narrator",
+  "text": "ممتاز!"
+ },
+ "b90e43f6e557": {
+  "voice": "narrator",
+  "text": "يا سلام عليك!"
+ },
+ "95551086d6cc": {
+  "voice": "narrator",
+  "text": "أحسنت!"
+ },
+ "b6262be0291b": {
+  "voice": "narrator",
+  "text": "ولا غلطة!"
+ },
+ "ab6e733c7c95": {
+  "voice": "narrator",
+  "text": "من أول مرة!"
+ },
+ "e8a2b8b94ec2": {
+  "voice": "narrator",
+  "text": "عملتها من أول مرة!"
+ },
+ "e4965fb03903": {
+  "voice": "narrator",
+  "text": "دماغك شغّالة النهاردة!"
+ },
+ "bdb8a8b246f9": {
+  "voice": "narrator",
+  "text": "ركّزت وجاوبت صح!"
+ },
+ "d797ae1707ce": {
+  "voice": "narrator",
+  "text": "إجابة تحفة!"
+ },
+ "4168bb50e09f": {
+  "voice": "narrator",
+  "text": "ده بالظبط!"
+ },
+ "8a35f3300cdd": {
+  "voice": "narrator",
+  "text": "بالظبط كده!"
+ },
+ "22c2fdfc320c": {
+  "voice": "narrator",
+  "text": "كده عرفتها!"
+ },
+ "b9e4bc991072": {
+  "voice": "narrator",
+  "text": "جامد أوي!"
+ },
+ "41bc5b18afad": {
+  "voice": "narrator",
+  "text": "حلوة أوي الإجابة دي!"
+ },
+ "535a507848eb": {
+  "voice": "narrator",
+  "text": "ما شاء الله!"
+ },
+ "bf8e088549ab": {
+  "voice": "narrator",
+  "text": "تسلم إيدك!"
+ },
+ "b11cb25eb763": {
+  "voice": "narrator",
+  "text": "مظبوط!"
+ },
+ "b1526fdb3d46": {
+  "voice": "narrator",
+  "text": "إنت فاهمها كويس!"
+ },
+ "d453b26864e7": {
+  "voice": "narrator",
+  "text": "الله عليك!"
+ },
+ "5fd60ce99081": {
+  "voice": "narrator",
+  "text": "فكّرت صح!"
+ },
+ "bd5659fad9ec": {
+  "voice": "narrator",
+  "text": "أيوه كده!"
+ },
+ "09ce8050185c": {
+  "voice": "narrator",
+  "text": "هو ده!"
+ },
+ "14ac7528eb0f": {
+  "voice": "narrator",
+  "text": "برافو عليك!"
+ },
+ "87428b94e6d7": {
+  "voice": "narrator",
+  "text": "ما شاء الله، سريع!"
+ },
+ "4dfdd53343f0": {
+  "voice": "narrator",
+  "text": "ده اللي كنت مستنيه!"
+ },
+ "785c44d98a7e": {
+  "voice": "narrator",
+  "text": "هايل!"
+ },
+ "01864ba369ed": {
+  "voice": "narrator",
+  "text": "كده الشطارة!"
+ },
+ "e606d436e91d": {
+  "voice": "narrator",
+  "text": "برافو يا {m}!"
+ },
+ "04f644850589": {
+  "voice": "narrator",
+  "text": "برافو يا {a}!"
+ },
+ "a819938527f8": {
+  "voice": "narrator",
+  "text": "برافو يا {t}!"
+ },
+ "3ebb1a5c60b6": {
+  "voice": "narrator",
+  "text": "برافو يا {n}!"
+ },
+ "815cac7c489c": {
+  "voice": "narrator",
+  "text": "صح يا {m}، عملتها!"
+ },
+ "06ea4c59ae89": {
+  "voice": "narrator",
+  "text": "صح يا {a}، عملتها!"
+ },
+ "7af9b3519786": {
+  "voice": "narrator",
+  "text": "صح يا {t}، عملتها!"
+ },
+ "fd85c98e9677": {
+  "voice": "narrator",
+  "text": "صح يا {n}، عملتها!"
+ },
+ "9808207f5f4d": {
+  "voice": "narrator",
+  "text": "يا سلام عليك يا {m}!"
+ },
+ "0cdc14f00a00": {
+  "voice": "narrator",
+  "text": "يا سلام عليك يا {a}!"
+ },
+ "c035070cd6bb": {
+  "voice": "narrator",
+  "text": "يا سلام عليك يا {t}!"
+ },
+ "0c28b6b15388": {
+  "voice": "narrator",
+  "text": "يا سلام عليك يا {n}!"
+ },
+ "5df7994c6fe6": {
+  "voice": "narrator",
+  "text": "تسلم إيدك يا {m}!"
+ },
+ "3360af6bce55": {
+  "voice": "narrator",
+  "text": "تسلم إيدك يا {a}!"
+ },
+ "71796b976489": {
+  "voice": "narrator",
+  "text": "تسلم إيدك يا {t}!"
+ },
+ "6b6f3c1a3df2": {
+  "voice": "narrator",
+  "text": "تسلم إيدك يا {n}!"
+ },
+ "552ac8aba372": {
+  "voice": "narrator",
+  "text": "عاش يا {m}!"
+ },
+ "1b4665547a17": {
+  "voice": "narrator",
+  "text": "عاش يا {a}!"
+ },
+ "50504f007981": {
+  "voice": "narrator",
+  "text": "عاش يا {t}!"
+ },
+ "8a91d28da734": {
+  "voice": "narrator",
+  "text": "عاش يا {n}!"
+ },
+ "aa50c3390488": {
+  "voice": "narrator",
+  "text": "الله عليك يا {m}!"
+ },
+ "02afd3f20e0a": {
+  "voice": "narrator",
+  "text": "الله عليك يا {a}!"
+ },
+ "0039c9eae2ec": {
+  "voice": "narrator",
+  "text": "الله عليك يا {t}!"
+ },
+ "415c2a73d076": {
+  "voice": "narrator",
+  "text": "الله عليك يا {n}!"
+ },
+ "c479b5edca63": {
+  "voice": "narrator",
+  "text": "برافو يا بطل!"
+ },
+ "ae15307f982e": {
+  "voice": "narrator",
+  "text": "صح أوي!"
+ },
+ "98077ca86971": {
+  "voice": "narrator",
+  "text": "حلو أوي!"
+ },
+ "add9f229f2ca": {
+  "voice": "narrator",
+  "text": "أيوه! هي دي!"
+ },
+ "e653015e9c0c": {
+  "voice": "narrator",
+  "text": "هيييه! صح!"
+ },
+ "f335dadfb4ba": {
+  "voice": "narrator",
+  "text": "عرفتها!"
+ },
+ "55bcf8c73dc5": {
+  "voice": "narrator",
+  "text": "جميل أوي!"
+ },
+ "44773f5b8788": {
+  "voice": "narrator",
+  "text": "تمام يا بطل!"
+ },
+ "eb7eb8b61d4c": {
+  "voice": "narrator",
+  "text": "إجابتك صح!"
+ },
+ "d89ef6358cb6": {
+  "voice": "narrator",
+  "text": "ممتاز يا بطل!"
+ },
+ "13448844d979": {
+  "voice": "narrator",
+  "text": "صح صح صح!"
+ },
+ "7d8a1f7b66c6": {
+  "voice": "narrator",
+  "text": "يا سلام يا بطل!"
+ },
+ "c4435225eb5c": {
+  "voice": "narrator",
+  "text": "تفكير سليم!"
+ },
+ "90fc953f0e05": {
+  "voice": "narrator",
+  "text": "إنت بتحلّل صح!"
+ },
+ "4544c191fa60": {
+  "voice": "narrator",
+  "text": "بالظبط! تفكيرك ماشي صح."
+ },
+ "b9d5939c29a9": {
+  "voice": "narrator",
+  "text": "ولا حاجة تقف قدامك!"
+ },
+ "c304eaaba137": {
+  "voice": "narrator",
+  "text": "استنتاج ممتاز!"
+ },
+ "674177deffa7": {
+  "voice": "narrator",
+  "text": "مظبوط، وده مش سهل!"
+ },
+ "1436a474b6f4": {
+  "voice": "narrator",
+  "text": "عقلك سريع النهاردة!"
+ },
+ "0996ece59cf4": {
+  "voice": "narrator",
+  "text": "ركّزت في التفاصيل، برافو!"
+ },
+ "dd670f71e59b": {
+  "voice": "narrator",
+  "text": "أيوه كده، كمّل!"
+ },
+ "ce51fa0c1058": {
+  "voice": "narrator",
+  "text": "إجابة محترمة!"
+ },
+ "df4545a1cff1": {
+  "voice": "narrator",
+  "text": "دي كانت صعبة وعملتها!"
+ },
+ "2b748d7cffe5": {
+  "voice": "narrator",
+  "text": "شغل مخ حلو!"
+ },
+ "9235f31d2721": {
+  "voice": "narrator",
+  "text": "شاطر!"
+ },
+ "ad027854472e": {
+  "voice": "narrator",
+  "text": "شاطر أوي!"
+ },
+ "180b891a1ded": {
+  "voice": "narrator",
+  "text": "بطل والله!"
+ },
+ "f40cbb33c692": {
+  "voice": "narrator",
+  "text": "إنت شاطر يا بطل!"
+ },
+ "dbdcfb5b7b98": {
+  "voice": "boy_big",
+  "text": "جامد يا {m}!"
+ },
+ "18334d04ae39": {
+  "voice": "boy_big",
+  "text": "جامد يا {a}!"
+ },
+ "4743e3700fe7": {
+  "voice": "boy_big",
+  "text": "جامد يا {t}!"
+ },
+ "e4326bbd2ddf": {
+  "voice": "boy_big",
+  "text": "جامد يا {n}!"
+ },
+ "85da6b455a5e": {
+  "voice": "boy_big",
+  "text": "ده أنا ما كنتش هعرفها!"
+ },
+ "bf99d446f2bd": {
+  "voice": "boy_big",
+  "text": "عملتها! حلو أوي!"
+ },
+ "b3bbe80ef107": {
+  "voice": "boy_big",
+  "text": "أنا قلت إنك هتعرفها!"
+ },
+ "965ecce8072d": {
+  "voice": "boy_big",
+  "text": "صح! تعالى نكمّل!"
+ },
+ "d249fad4158e": {
+  "voice": "boy_big",
+  "text": "إنت ذكي أوي!"
+ },
+ "c659edc0e48d": {
+  "voice": "boy_big",
+  "text": "تحفة!"
+ },
+ "b7622d426708": {
+  "voice": "boy_big",
+  "text": "ده كان سهل عليك!"
+ },
+ "6095357555fb": {
+  "voice": "boy_big",
+  "text": "ما شاء الله عليك!"
+ },
+ "92dccd2f31f1": {
+  "voice": "boy_big",
+  "text": "ولا غلطة، حلو!"
+ },
+ "e0da309e26df": {
+  "voice": "boy_big",
+  "text": "كده نتعلم صح!"
+ },
+ "f2509e709c72": {
+  "voice": "boy_big",
+  "text": "شغل نضيف يا {m}!"
+ },
+ "30169147eb93": {
+  "voice": "boy_big",
+  "text": "شغل نضيف يا {a}!"
+ },
+ "8b86c7d31229": {
+  "voice": "boy_big",
+  "text": "شغل نضيف يا {t}!"
+ },
+ "12ce1eae3c5f": {
+  "voice": "boy_big",
+  "text": "شغل نضيف يا {n}!"
+ },
+ "3cd6f01cd90d": {
+  "voice": "boy_big",
+  "text": "بصراحة عجبتني!"
+ },
+ "cc29f5adcb31": {
+  "voice": "boy_big",
+  "text": "من أول مرة؟ جامد!"
+ },
+ "70c9f5cd70a6": {
+  "voice": "boy_big",
+  "text": "ده انت مخك سريع!"
+ },
+ "c76e837441b6": {
+  "voice": "boy_big",
+  "text": "حلو! كمّل على كده!"
+ },
+ "ed7c732d974b": {
+  "voice": "boy_small",
+  "text": "يا سلام يا {m}! إنت عبقري!"
+ },
+ "c8cbf4b8cae1": {
+  "voice": "boy_small",
+  "text": "يا سلام يا {a}! إنت عبقري!"
+ },
+ "09d3e45ca63b": {
+  "voice": "boy_small",
+  "text": "يا سلام يا {t}! إنت عبقري!"
+ },
+ "825de9275bbc": {
+  "voice": "boy_small",
+  "text": "يا سلام يا {n}! إنت عبقري!"
+ },
+ "50a34eb3cd2a": {
+  "voice": "boy_small",
+  "text": "هييه! صح!"
+ },
+ "a8c54816658a": {
+  "voice": "boy_small",
+  "text": "أنا كمان كنت هقول كده!"
+ },
+ "1769dec68a93": {
+  "voice": "boy_small",
+  "text": "إنت بتعرف كل حاجة!"
+ },
+ "d055fc48e093": {
+  "voice": "boy_small",
+  "text": "جامد أوي أوي!"
+ },
+ "0bc1d2fcd9f1": {
+  "voice": "boy_small",
+  "text": "الله! صح!"
+ },
+ "e35e609c9854": {
+  "voice": "boy_small",
+  "text": "عملتها عملتها!"
+ },
+ "f1814799235c": {
+  "voice": "boy_small",
+  "text": "ده حلو أوي!"
+ },
+ "5a0f2174a7a8": {
+  "voice": "boy_small",
+  "text": "إنت أحسن واحد!"
+ },
+ "973f0e998b89": {
+  "voice": "boy_small",
+  "text": "ياااه! صح من أول مرة!"
+ },
+ "f1479c14087c": {
+  "voice": "boy_small",
+  "text": "أنا فرحان أوي!"
+ },
+ "65f380219f85": {
+  "voice": "boy_small",
+  "text": "برافو برافو برافو!"
+ },
+ "555b5b0381bd": {
+  "voice": "boy_small",
+  "text": "عاش عاش يا {m}!"
+ },
+ "cff64abc7a3e": {
+  "voice": "boy_small",
+  "text": "عاش عاش يا {a}!"
+ },
+ "4c7e04586ebb": {
+  "voice": "boy_small",
+  "text": "عاش عاش يا {t}!"
+ },
+ "22af0cb59492": {
+  "voice": "boy_small",
+  "text": "عاش عاش يا {n}!"
+ },
+ "5f6b8979ec32": {
+  "voice": "boy_small",
+  "text": "حلو أوي يا {m}!"
+ },
+ "eaf92ab27af0": {
+  "voice": "boy_small",
+  "text": "حلو أوي يا {a}!"
+ },
+ "16b3b12ad615": {
+  "voice": "boy_small",
+  "text": "حلو أوي يا {t}!"
+ },
+ "4c6ee9b39782": {
+  "voice": "boy_small",
+  "text": "حلو أوي يا {n}!"
+ },
+ "ee6e054eabee": {
+  "voice": "girl_big",
+  "text": "برافو، كمّل كده."
+ },
+ "119f3df26556": {
+  "voice": "girl_big",
+  "text": "تفكيرك حلو."
+ },
+ "e9cf5c532d89": {
+  "voice": "girl_big",
+  "text": "ده بالظبط اللي كنت فاكراه."
+ },
+ "62e4eb2315ce": {
+  "voice": "girl_big",
+  "text": "أيوه كده، دماغك حلوة."
+ },
+ "a7f1c1f2081a": {
+  "voice": "girl_big",
+  "text": "فخورة بيك!"
+ },
+ "7782ec7ba8f8": {
+  "voice": "girl_big",
+  "text": "ممتاز، وبدون مجهود!"
+ },
+ "686b97a4fb32": {
+  "voice": "girl_big",
+  "text": "حلو أوي يا {m}."
+ },
+ "edf92f6b6ff0": {
+  "voice": "girl_big",
+  "text": "حلو أوي يا {a}."
+ },
+ "09b39cb3e315": {
+  "voice": "girl_big",
+  "text": "حلو أوي يا {t}."
+ },
+ "596efe2a9282": {
+  "voice": "girl_big",
+  "text": "حلو أوي يا {n}."
+ },
+ "934f34a9c086": {
+  "voice": "girl_small",
+  "text": "ياااه! صح!"
+ },
+ "00dc866c141c": {
+  "voice": "girl_small",
+  "text": "أنا حبيتها دي!"
+ },
+ "904a9e3f68b1": {
+  "voice": "girl_small",
+  "text": "أيوه أيوه أيوه!"
+ },
+ "7dd204fb9a79": {
+  "voice": "girl_small",
+  "text": "عملتها يا بطل!"
+ },
+ "1150c9cd74c7": {
+  "voice": "girl_small",
+  "text": "إنت جامد أوي!"
+ },
+ "e6279bc41bac": {
+  "voice": "girl_small",
+  "text": "يا نهار أبيض! صح!"
+ },
+ "acc90793133d": {
+  "voice": "girl_small",
+  "text": "بجد حلو يا {m}!"
+ },
+ "8559b54cd093": {
+  "voice": "girl_small",
+  "text": "بجد حلو يا {a}!"
+ },
+ "c0c293686a6e": {
+  "voice": "girl_small",
+  "text": "بجد حلو يا {t}!"
+ },
+ "24d6af45c3ac": {
+  "voice": "girl_small",
+  "text": "بجد حلو يا {n}!"
+ },
+ "15e99d814ad0": {
+  "voice": "narrator",
+  "text": "حلو! حاولت لحد ما وصلت!"
+ },
+ "3d329bee4823": {
+  "voice": "narrator",
+  "text": "برافو، ما استسلمتش!"
+ },
+ "8cb21e18fec7": {
+  "voice": "narrator",
+  "text": "أهو! وصلت للإجابة."
+ },
+ "582763f61bab": {
+  "voice": "narrator",
+  "text": "كده أحسن! المحاولة بتفيد."
+ },
+ "57fc2b02c7a7": {
+  "voice": "narrator",
+  "text": "صح! والمهم إنك كمّلت."
+ },
+ "e647294e9594": {
+  "voice": "narrator",
+  "text": "حلو إنك كمّلت!"
+ },
+ "5e66ff294e3a": {
+  "voice": "narrator",
+  "text": "المحاولة التانية دايمًا أحسن!"
+ },
+ "351f145c7444": {
+  "voice": "narrator",
+  "text": "كده وصلنا!"
+ },
+ "67adcda4708e": {
+  "voice": "narrator",
+  "text": "ممتاز، أخدت وقتك وفكّرت."
+ },
+ "7d4a64c4b1ec": {
+  "voice": "narrator",
+  "text": "الغلط بيعلّمنا! وبرافو عليك."
+ },
+ "51f5336591ff": {
+  "voice": "narrator",
+  "text": "أهو عرفتها!"
+ },
+ "4b0c8275fbf1": {
+  "voice": "narrator",
+  "text": "تمام، المهم إنك فهمتها."
+ },
+ "e776ce7958bf": {
+  "voice": "narrator",
+  "text": "ما شاء الله، صبرك حلو!"
+ },
+ "34474555db88": {
+  "voice": "narrator",
+  "text": "بالصبر عرفتها!"
+ },
+ "1e68a17fca7a": {
+  "voice": "narrator",
+  "text": "عادي، التانية بقت صح!"
+ },
+ "28d61830737c": {
+  "voice": "narrator",
+  "text": "شفت؟ وصلت في الآخر!"
+ },
+ "c0d8891ea0c6": {
+  "voice": "narrator",
+  "text": "ما فيش أحلى من إنك تجرّب تاني!"
+ },
+ "614ec8208821": {
+  "voice": "narrator",
+  "text": "صح كده، وإنت اتعلمت حاجة جديدة!"
+ },
+ "be6b1570d320": {
+  "voice": "narrator",
+  "text": "أيوه! صح! برافو إنك جرّبت تاني!"
+ },
+ "18a9c42d685f": {
+  "voice": "narrator",
+  "text": "هيييه! عرفتها!"
+ },
+ "1accbcfe20f3": {
+  "voice": "narrator",
+  "text": "شفت؟ لما جرّبت تاني عرفتها!"
+ },
+ "248c6ec69d8f": {
+  "voice": "narrator",
+  "text": "صح! إنت ما زعلتش وكمّلت!"
+ },
+ "7b653944b5d9": {
+  "voice": "narrator",
+  "text": "تعديلك للإجابة كان ذكي!"
+ },
+ "32ec33e842b8": {
+  "voice": "narrator",
+  "text": "راجعت نفسك وطلعت بالصح، ده مهم!"
+ },
+ "2da0df45659f": {
+  "voice": "narrator",
+  "text": "التعلّم من الغلط هو أحسن تعلّم."
+ },
+ "dad01f3bd918": {
+  "voice": "narrator",
+  "text": "غيّرت تفكيرك ووصلت، ده شغل شاطرين!"
+ },
+ "6a99d9134e23": {
+  "voice": "boy_big",
+  "text": "شفت؟ في التانية عرفتها!"
+ },
+ "93047526f38b": {
+  "voice": "boy_big",
+  "text": "ولا يهمك، المهم إنها طلعت صح!"
+ },
+ "c01679f8c150": {
+  "voice": "boy_big",
+  "text": "كمّلت لحد ما عرفتها، برافو عليك!"
+ },
+ "019c099487c3": {
+  "voice": "boy_big",
+  "text": "أهو يا {m}! قلت لك هتعرفها!"
+ },
+ "67a516ab30d0": {
+  "voice": "boy_big",
+  "text": "أهو يا {a}! قلت لك هتعرفها!"
+ },
+ "eb71fd2326de": {
+  "voice": "boy_big",
+  "text": "أهو يا {t}! قلت لك هتعرفها!"
+ },
+ "13e03dca2568": {
+  "voice": "boy_big",
+  "text": "أهو يا {n}! قلت لك هتعرفها!"
+ },
+ "fe65c8bbf707": {
+  "voice": "boy_big",
+  "text": "مش مهم المرة الأولى، المهم الأخيرة!"
+ },
+ "3f23af1fb2d4": {
+  "voice": "boy_big",
+  "text": "حلو إنك ما زهقتش!"
+ },
+ "577268154716": {
+  "voice": "boy_small",
+  "text": "هييه! أخيرًا صح!"
+ },
+ "dc1d34d30035": {
+  "voice": "boy_small",
+  "text": "أنا كنت متأكد إنك هتعرفها!"
+ },
+ "30f32421e07f": {
+  "voice": "boy_small",
+  "text": "جامد إنك ما زعلتش!"
+ },
+ "71b68dddddd8": {
+  "voice": "boy_small",
+  "text": "برافو يا {m}، كمّلت وعملتها!"
+ },
+ "113d94668a4f": {
+  "voice": "boy_small",
+  "text": "برافو يا {a}، كمّلت وعملتها!"
+ },
+ "0da49b664987": {
+  "voice": "boy_small",
+  "text": "برافو يا {t}، كمّلت وعملتها!"
+ },
+ "840ce75f7b00": {
+  "voice": "boy_small",
+  "text": "برافو يا {n}، كمّلت وعملتها!"
+ },
+ "409f7805245e": {
+  "voice": "boy_small",
+  "text": "ياااه، طلعت صح! أنا فرحان!"
+ },
+ "d06adf0736b8": {
+  "voice": "boy_small",
+  "text": "شفت؟ مش صعبة أوي!"
+ },
+ "b4e2010625ce": {
+  "voice": "girl_big",
+  "text": "كده تمام، الصبر حلو."
+ },
+ "d6105562c306": {
+  "voice": "girl_big",
+  "text": "حلو إنك فكّرت تاني."
+ },
+ "bed7ffa263e4": {
+  "voice": "girl_big",
+  "text": "أهو، وصلنا بالراحة."
+ },
+ "c5a450f5d38e": {
+  "voice": "girl_small",
+  "text": "أيوه! عرفتها في الآخر!"
+ },
+ "466da6bdc69f": {
+  "voice": "girl_small",
+  "text": "يا سلام على الصبر!"
+ },
+ "906ff5630877": {
+  "voice": "girl_small",
+  "text": "برافو إنك جرّبت تاني!"
+ },
+ "c1d78462ad57": {
+  "voice": "narrator",
+  "text": "هممم، مش بالظبط. جرّب تاني."
+ },
+ "72e5b7108d7b": {
+  "voice": "narrator",
+  "text": "ولا يهمك، فكّر تاني شوية."
+ },
+ "a26fa7355c78": {
+  "voice": "narrator",
+  "text": "قرّبت! كمّل."
+ },
+ "d2fa65f6d7dd": {
+  "voice": "narrator",
+  "text": "تقريبًا! جرّب إجابة تانية."
+ },
+ "f751b2333c84": {
+  "voice": "narrator",
+  "text": "مفيش مشكلة، جرّب مرة كمان."
+ },
+ "6f3cc4eb7ddc": {
+  "voice": "narrator",
+  "text": "قريب أوي! كمّل."
+ },
+ "656db19c3df9": {
+  "voice": "narrator",
+  "text": "اختيار حلو، بس مش ده. جرّب تاني."
+ },
+ "1189c7ce7489": {
+  "voice": "narrator",
+  "text": "أوه! مش دي. تعالى نفكّر تاني."
+ },
+ "234b04cb4644": {
+  "voice": "narrator",
+  "text": "لسه بدري! جرّب تاني."
+ },
+ "a3838bee245a": {
+  "voice": "narrator",
+  "text": "استنى، ركّز في السؤال تاني."
+ },
+ "385b8b0c8dd0": {
+  "voice": "narrator",
+  "text": "قرّب من الإجابة. جرّب كمان."
+ },
+ "8a3beddc2c4a": {
+  "voice": "narrator",
+  "text": "مش مشكلة، نجرّب تاني."
+ },
+ "7c9bead8b7a3": {
+  "voice": "narrator",
+  "text": "فكّر بهدوء وجرّب تاني."
+ },
+ "e4d6e5183b17": {
+  "voice": "narrator",
+  "text": "ولا يهمك، الغلط بيعلّمنا."
+ },
+ "ef8edb822499": {
+  "voice": "narrator",
+  "text": "تقريبًا وصلت! كمّل."
+ },
+ "5391e69cf511": {
+  "voice": "narrator",
+  "text": "هممم، ممكن نشوف الاختيار التاني؟"
+ },
+ "68970f56abf2": {
+  "voice": "narrator",
+  "text": "عادي، حاول تاني."
+ },
+ "1946665f2551": {
+  "voice": "narrator",
+  "text": "مش ده. جرّب واحد تاني!"
+ },
+ "a31fd493cd99": {
+  "voice": "narrator",
+  "text": "أوبس! جرّب تاني يا بطل."
+ },
+ "735d83a7584c": {
+  "voice": "narrator",
+  "text": "قريب! دوس على واحد تاني."
+ },
+ "d6e6e00f7ceb": {
+  "voice": "narrator",
+  "text": "ولا يهمك! نجرّب تاني."
+ },
+ "7166ba281bd2": {
+  "voice": "narrator",
+  "text": "مش ده يا بطل، شوف الباقي."
+ },
+ "14aab29a500b": {
+  "voice": "narrator",
+  "text": "مش دقيق. راجع السؤال وجرّب تاني."
+ },
+ "4e6786d654c6": {
+  "voice": "narrator",
+  "text": "فكّر في الشرط تاني، وإنت هتوصل."
+ },
+ "b9ab17f338e3": {
+  "voice": "narrator",
+  "text": "قريب، بس في تفصيلة صغيرة. ركّز."
+ },
+ "4039bb623412": {
+  "voice": "narrator",
+  "text": "إجابة معقولة، بس مش دي. اقرا السؤال تاني."
+ },
+ "2982ccd0b1e3": {
+  "voice": "narrator",
+  "text": "استبعدها وفكّر في الباقي."
+ },
+ "4ecd3bb39a8f": {
+  "voice": "boy_big",
+  "text": "ولا يهمك يا {m}، جرّب تاني!"
+ },
+ "c31e4d48a63b": {
+  "voice": "boy_big",
+  "text": "ولا يهمك يا {a}، جرّب تاني!"
+ },
+ "19d5cd50926d": {
+  "voice": "boy_big",
+  "text": "ولا يهمك يا {t}، جرّب تاني!"
+ },
+ "b1221bf5e9ff": {
+  "voice": "boy_big",
+  "text": "ولا يهمك يا {n}، جرّب تاني!"
+ },
+ "18c854b4d146": {
+  "voice": "boy_big",
+  "text": "أنا غلطت في زيها قبل كده."
+ },
+ "a431e21ff075": {
+  "voice": "boy_big",
+  "text": "ركّز كده وهتعرفها."
+ },
+ "268ed9a36904": {
+  "voice": "boy_big",
+  "text": "قريب! كمّل!"
+ },
+ "bca14f7688a1": {
+  "voice": "boy_big",
+  "text": "مش مشكلة، ده بيحصل."
+ },
+ "1d17374fcadf": {
+  "voice": "boy_big",
+  "text": "استنى، فكّر معايا."
+ },
+ "17ab089ea17e": {
+  "voice": "boy_big",
+  "text": "هنوصل لها، متقلقش."
+ },
+ "51fb70bf2d05": {
+  "voice": "boy_small",
+  "text": "أوووه! قريب! جرّب تاني!"
+ },
+ "59d7e14942bf": {
+  "voice": "boy_small",
+  "text": "مش مشكلة يا {m}!"
+ },
+ "6dd53642ce91": {
+  "voice": "boy_small",
+  "text": "مش مشكلة يا {a}!"
+ },
+ "eebf01fa33f7": {
+  "voice": "boy_small",
+  "text": "مش مشكلة يا {t}!"
+ },
+ "d1f273036ccc": {
+  "voice": "boy_small",
+  "text": "مش مشكلة يا {n}!"
+ },
+ "157b7b227aff": {
+  "voice": "boy_small",
+  "text": "جرّب التاني، أنا واثق فيك!"
+ },
+ "9a15de363e31": {
+  "voice": "boy_small",
+  "text": "ما تزعلش، كمّل!"
+ },
+ "185ac57bebc4": {
+  "voice": "boy_small",
+  "text": "أوبس! لسه فيها حاجات تانية!"
+ },
+ "3cf143f1e64d": {
+  "voice": "boy_small",
+  "text": "إنت لسه هتعرفها!"
+ },
+ "b8a7f1e88906": {
+  "voice": "girl_big",
+  "text": "خد وقتك، مفيش استعجال."
+ },
+ "312fd1a27917": {
+  "voice": "girl_big",
+  "text": "جرّب تاني، إنت تقدر."
+ },
+ "15a6560a5a32": {
+  "voice": "girl_big",
+  "text": "ولا يهمك، فكّر براحة."
+ },
+ "5ccbdffdc139": {
+  "voice": "girl_small",
+  "text": "قريب أوي! كمّل كمّل!"
+ },
+ "3228f17a6494": {
+  "voice": "girl_small",
+  "text": "ما تقلقش، جرّب تاني!"
+ },
+ "126eb838cb1e": {
+  "voice": "girl_small",
+  "text": "أوه، قرّبت!"
+ },
+ "046a0c9a50eb": {
+  "voice": "narrator",
+  "text": "خد تلميح صغير:"
+ },
+ "dca577b123c9": {
+  "voice": "narrator",
+  "text": "تعالى نفكّر سوا:"
+ },
+ "ff2eb1f86166": {
+  "voice": "narrator",
+  "text": "ركّز معايا:"
+ },
+ "f547d983a9a6": {
+  "voice": "narrator",
+  "text": "أديك تلميح:"
+ },
+ "173f2db96258": {
+  "voice": "narrator",
+  "text": "ده هيساعدك:"
+ },
+ "f1374f91bea9": {
+  "voice": "narrator",
+  "text": "اسمع التلميح:"
+ },
+ "30bd583c32c5": {
+  "voice": "narrator",
+  "text": "فكّر في ده:"
+ },
+ "7a1d1ae1e09d": {
+  "voice": "narrator",
+  "text": "معلومة هتفيدك:"
+ },
+ "b2d023217f1c": {
+  "voice": "narrator",
+  "text": "خلّي بالك من ده:"
+ },
+ "9e30c9412822": {
+  "voice": "narrator",
+  "text": "يمكن ده يساعد:"
+ },
+ "40a23c7867fc": {
+  "voice": "boy_big",
+  "text": "استنى، هقولك حاجة:"
+ },
+ "9f5694f82779": {
+  "voice": "boy_big",
+  "text": "بص كده على ده:"
+ },
+ "1a7cc602330c": {
+  "voice": "boy_big",
+  "text": "خد التلميح ده:"
+ },
+ "a9fcc58c9581": {
+  "voice": "boy_small",
+  "text": "أنا عندي فكرة:"
+ },
+ "285bc1bdcdf8": {
+  "voice": "boy_small",
+  "text": "تعالى أقولك حاجة:"
+ },
+ "b06890e65ec7": {
+  "voice": "narrator",
+  "text": "فكّر بهدوء وجرّب تاني"
+ },
+ "13b1472f305a": {
+  "voice": "narrator",
+  "text": "خد نفس عميق وركّز في السؤال"
+ },
+ "fa4983b978cc": {
+  "voice": "narrator",
+  "text": "اقرا السؤال تاني براحة"
+ },
+ "a8f1a30ddb16": {
+  "voice": "narrator",
+  "text": "استبعد اللي مش مظبوط وجرّب"
+ },
+ "ac0723301703": {
+  "voice": "narrator",
+  "text": "بص على كل اختيار كويس"
+ },
+ "db5117566a95": {
+  "voice": "narrator",
+  "text": "خد وقتك، مفيش استعجال"
+ },
+ "12972674ba74": {
+  "voice": "narrator",
+  "text": "سؤال حلو، فكّر فيه تاني"
+ },
+ "af04ea73088a": {
+  "voice": "narrator",
+  "text": "إنت تقدر، فكّر معايا"
+ },
+ "e065b109472f": {
+  "voice": "boy_big",
+  "text": "ركّز كده وهتلاقيها"
+ },
+ "53be70ca78e3": {
+  "voice": "boy_big",
+  "text": "فكّر خطوة خطوة"
+ },
+ "1a60a8d10b01": {
+  "voice": "boy_small",
+  "text": "بص تاني براحة"
+ },
+ "79d910876cde": {
+  "voice": "boy_small",
+  "text": "أنا معاك، فكّر"
+ },
+ "48f00853818e": {
+  "voice": "narrator",
+  "text": "مفيش مشكلة، هنعرفها سوا."
+ },
+ "49f520621314": {
+  "voice": "narrator",
+  "text": "خليني أوريك الإجابة، بص كده."
+ },
+ "2e809bc78733": {
+  "voice": "narrator",
+  "text": "دي الإجابة، شوفها بتلمع!"
+ },
+ "753ca956d71f": {
+  "voice": "narrator",
+  "text": "تعالى نتعلمها مع بعض."
+ },
+ "9d786203aa13": {
+  "voice": "narrator",
+  "text": "ولا يهمك، المرة الجاية هتعرفها."
+ },
+ "567ca53513a2": {
+  "voice": "narrator",
+  "text": "دوس على اللي بيلمع."
+ },
+ "4b7ecb51616d": {
+  "voice": "narrator",
+  "text": "الإجابة اللي بتلمع هي الصح."
+ },
+ "03a3308ec4a3": {
+  "voice": "narrator",
+  "text": "مرات بنتعلم من الغلط، تعالى نشوف."
+ },
+ "4446e1eca2a7": {
+  "voice": "narrator",
+  "text": "خلّينا نشوفها مع بعض."
+ },
+ "e377a7eb999d": {
+  "voice": "boy_big",
+  "text": "تعالى أوريك، سهلة أوي!"
+ },
+ "1092f74d2f0b": {
+  "voice": "boy_big",
+  "text": "ما تزعلش، هنحلها سوا."
+ },
+ "ee962456dd1f": {
+  "voice": "boy_big",
+  "text": "بص على اللي بيلمع ده."
+ },
+ "3fb928c537aa": {
+  "voice": "boy_small",
+  "text": "الإجابة بتلمع! دوس عليها!"
+ },
+ "679fbb8c86ed": {
+  "voice": "boy_small",
+  "text": "أنا شايفها! تعالى!"
+ },
+ "48177b739df6": {
+  "voice": "boy_small",
+  "text": "هنعملها سوا!"
+ },
+ "3300d9e1efbc": {
+  "voice": "narrator",
+  "text": "تلات إجابات صح ورا بعض!"
+ },
+ "520ddd0844d2": {
+  "voice": "narrator",
+  "text": "إيه ده! سلسلة نجاح!"
+ },
+ "0b6058420357": {
+  "voice": "narrator",
+  "text": "إنت مولّع النهاردة!"
+ },
+ "6a26586c538f": {
+  "voice": "narrator",
+  "text": "ماشي زي الفل!"
+ },
+ "4d9ae8024842": {
+  "voice": "narrator",
+  "text": "التركيز عالي!"
+ },
+ "a9b388815419": {
+  "voice": "narrator",
+  "text": "تلاتة صح ورا بعض، ما شاء الله!"
+ },
+ "718d7d2633fb": {
+  "voice": "narrator",
+  "text": "ولا غلطة لحد دلوقتي!"
+ },
+ "bbc0484c659e": {
+  "voice": "narrator",
+  "text": "حلو أوي، كمّل كده!"
+ },
+ "378a96a47fae": {
+  "voice": "boy_big",
+  "text": "تلاتة ورا بعض؟ ده انت نار!"
+ },
+ "a50ab60aedb4": {
+  "voice": "boy_big",
+  "text": "إنت ماشي كويس أوي!"
+ },
+ "07530eba1296": {
+  "voice": "boy_big",
+  "text": "كمّل كمّل، ده انت مولّع!"
+ },
+ "fc38687087ba": {
+  "voice": "boy_small",
+  "text": "هييه! تلاتة صح ورا بعض!"
+ },
+ "6a1098d8c3dd": {
+  "voice": "boy_small",
+  "text": "إنت مش بتغلط!"
+ },
+ "8d6ffbc2f287": {
+  "voice": "boy_small",
+  "text": "أنا بعدّ، تلاتة!"
+ },
+ "b20c17c2198e": {
+  "voice": "narrator",
+  "text": "خمسة ورا بعض! خرافي!"
+ },
+ "81f47965dbca": {
+  "voice": "narrator",
+  "text": "إنت بطل بجد!"
+ },
+ "c54243c62697": {
+  "voice": "narrator",
+  "text": "ما شاء الله، ولا غلطة!"
+ },
+ "48382eaa588a": {
+  "voice": "narrator",
+  "text": "خمس إجابات صح! مين يوقّفك؟"
+ },
+ "ebf10589d549": {
+  "voice": "narrator",
+  "text": "سلسلة طويلة! كمّل كده!"
+ },
+ "b2d616233458": {
+  "voice": "narrator",
+  "text": "مستوى عالي النهاردة!"
+ },
+ "9d3d521d0812": {
+  "voice": "boy_big",
+  "text": "خمسة؟! ده انت أسطورة!"
+ },
+ "0ca1486bcb23": {
+  "voice": "boy_big",
+  "text": "ده شغل أبطال حقيقي!"
+ },
+ "967d243b701c": {
+  "voice": "boy_small",
+  "text": "واااو! خمسة! خمسة!"
+ },
+ "ac6f5b3c381f": {
+  "voice": "boy_small",
+  "text": "إنت أقوى واحد في الدنيا!"
+ },
+ "50e7842b6148": {
+  "voice": "narrator",
+  "text": "تمانية صح ورا بعض! أسطورة!"
+ },
+ "4fb1ad01050b": {
+  "voice": "narrator",
+  "text": "مش ممكن! إنت عبقري النهاردة!"
+ },
+ "03ccf672ec81": {
+  "voice": "narrator",
+  "text": "رقم قياسي! برافو عليك!"
+ },
+ "b78bb1523969": {
+  "voice": "narrator",
+  "text": "ما شاء الله، دماغك صاروخ!"
+ },
+ "0dd504396dfa": {
+  "voice": "narrator",
+  "text": "سلسلة جامدة أوي!"
+ },
+ "f1d1010dfd7d": {
+  "voice": "boy_big",
+  "text": "ده مش معقول، تمانية!"
+ },
+ "95a1181f8c0e": {
+  "voice": "boy_small",
+  "text": "أنا مش مصدق! تمانية!"
+ },
+ "42f7f569e274": {
+  "voice": "narrator",
+  "text": "عظمة عليكم!"
+ },
+ "054043051e94": {
+  "voice": "narrator",
+  "text": "أبطال بجد!"
+ },
+ "af4672cb752b": {
+  "voice": "narrator",
+  "text": "إنجاز جامد!"
+ },
+ "31590fd3b2f1": {
+  "voice": "narrator",
+  "text": "تحفة! تلات نجوم!"
+ },
+ "5be73c6b66c0": {
+  "voice": "narrator",
+  "text": "ما شاء الله عليكم!"
+ },
+ "a73bee6f0aa3": {
+  "voice": "narrator",
+  "text": "خلّصتوها زي الأبطال!"
+ },
+ "29d1c8402dee": {
+  "voice": "narrator",
+  "text": "يا سلام عليكم!"
+ },
+ "1f31dea774a6": {
+  "voice": "narrator",
+  "text": "مهمة ممتازة!"
+ },
+ "ceaec8e5e65e": {
+  "voice": "narrator",
+  "text": "فريق جامد!"
+ },
+ "46d36635a57b": {
+  "voice": "narrator",
+  "text": "شغل جميل!"
+ },
+ "842ff3a0fe6d": {
+  "voice": "narrator",
+  "text": "نجمتين حلوين!"
+ },
+ "cdba269a2131": {
+  "voice": "narrator",
+  "text": "برافو عليكم!"
+ },
+ "1ff67d4a744f": {
+  "voice": "narrator",
+  "text": "قريب من الكمال!"
+ },
+ "515cb2117111": {
+  "voice": "narrator",
+  "text": "مجهود حلو!"
+ },
+ "a359791646cc": {
+  "voice": "narrator",
+  "text": "عملتوها!"
+ },
+ "5cf4f3267b34": {
+  "voice": "narrator",
+  "text": "كمّلتوا المهمة!"
+ },
+ "99281b12b016": {
+  "voice": "narrator",
+  "text": "بداية حلوة!"
+ },
+ "50f83a3400d8": {
+  "voice": "narrator",
+  "text": "المهم إنكم خلّصتوا!"
+ },
+ "69915060a63b": {
+  "voice": "narrator",
+  "text": "المرة الجاية أحلى!"
+ },
+ "c0091c09603b": {
+  "voice": "narrator",
+  "text": "ما استسلمتوش، برافو!"
+ },
+ "5a9c716f83e2": {
+  "voice": "narrator",
+  "text": "تمام يا أبطال!"
+ },
+ "9b68963b9170": {
+  "voice": "narrator",
+  "text": "خطوة حلوة!"
+ },
+ "44e0b6a948a6": {
+  "voice": "boy_big",
+  "text": "عملناها!"
+ },
+ "639c9568b692": {
+  "voice": "boy_big",
+  "text": "كده الشطارة بجد!"
+ },
+ "cc2240ba203c": {
+  "voice": "boy_big",
+  "text": "جامد أوي ده!"
+ },
+ "1bccd0463eae": {
+  "voice": "boy_big",
+  "text": "تمام كده!"
+ },
+ "83de616cc09c": {
+  "voice": "boy_big",
+  "text": "ده أنا فرحان!"
+ },
+ "d17baea174c2": {
+  "voice": "boy_big",
+  "text": "شغل نضيف!"
+ },
+ "b2b7ef6d149c": {
+  "voice": "boy_big",
+  "text": "يلا على اللي بعده!"
+ },
+ "269c0629bf2a": {
+  "voice": "boy_big",
+  "text": "حلو أوي ده!"
+ },
+ "2f80798d8855": {
+  "voice": "boy_big",
+  "text": "يا سلام على الشغل ده!"
+ },
+ "55e471f91f96": {
+  "voice": "boy_big",
+  "text": "برافو عليك يا {m}!"
+ },
+ "94090baa3e81": {
+  "voice": "boy_big",
+  "text": "برافو عليك يا {t}!"
+ },
+ "69d5e63317c3": {
+  "voice": "boy_big",
+  "text": "برافو عليك يا {n}!"
+ },
+ "0970a7532e57": {
+  "voice": "boy_big",
+  "text": "عظمة يا {m}!"
+ },
+ "dbcd8d8c1b1d": {
+  "voice": "boy_big",
+  "text": "عظمة يا {a}!"
+ },
+ "b80c5d281e2c": {
+  "voice": "boy_big",
+  "text": "عظمة يا {t}!"
+ },
+ "0a6bdd0560f2": {
+  "voice": "boy_big",
+  "text": "عظمة يا {n}!"
+ },
+ "e38f17bc8067": {
+  "voice": "boy_big",
+  "text": "تسلم إيدك يا {m}، جامد!"
+ },
+ "0de0b249688a": {
+  "voice": "boy_big",
+  "text": "تسلم إيدك يا {a}، جامد!"
+ },
+ "537cc6a52db4": {
+  "voice": "boy_big",
+  "text": "تسلم إيدك يا {t}، جامد!"
+ },
+ "368c05de4210": {
+  "voice": "boy_big",
+  "text": "تسلم إيدك يا {n}، جامد!"
+ },
+ "7e8c8bf34302": {
+  "voice": "boy_big",
+  "text": "فريق جامد إحنا!"
+ },
+ "adb4b9cd10e2": {
+  "voice": "boy_big",
+  "text": "ده انت بتفهم!"
+ },
+ "ff81bba965cf": {
+  "voice": "boy_small",
+  "text": "هيييه!"
+ },
+ "f68e9018132c": {
+  "voice": "boy_small",
+  "text": "عملناها عملناها!"
+ },
+ "87505d43a6d3": {
+  "voice": "boy_small",
+  "text": "حلو حلو حلو!"
+ },
+ "048afc2e16c0": {
+  "voice": "boy_small",
+  "text": "يا سلاااام!"
+ },
+ "e2ba86a8066e": {
+  "voice": "boy_small",
+  "text": "جامد أوي يا {m}!"
+ },
+ "ae4e64efa2b3": {
+  "voice": "boy_small",
+  "text": "جامد أوي يا {a}!"
+ },
+ "7709522b304f": {
+  "voice": "boy_small",
+  "text": "جامد أوي يا {t}!"
+ },
+ "950140b6375f": {
+  "voice": "boy_small",
+  "text": "جامد أوي يا {n}!"
+ },
+ "e12f16bc55c9": {
+  "voice": "boy_small",
+  "text": "ده أحلى!"
+ },
+ "52a15d0ec132": {
+  "voice": "boy_small",
+  "text": "برافو علينا!"
+ },
+ "4f072e982d7a": {
+  "voice": "boy_small",
+  "text": "إحنا أبطال!"
+ },
+ "ea272bb412cb": {
+  "voice": "boy_small",
+  "text": "تعالوا نعملها تاني!"
+ },
+ "68ea4a7cd98d": {
+  "voice": "girl_big",
+  "text": "شغل حلو يا شباب."
+ },
+ "c0ba12231631": {
+  "voice": "girl_big",
+  "text": "برافو عليكم."
+ },
+ "6b7850bbfb14": {
+  "voice": "girl_big",
+  "text": "كده الترتيب!"
+ },
+ "08642ee62b60": {
+  "voice": "girl_big",
+  "text": "ما شاء الله عليكم يا شباب!"
+ },
+ "6b2a8d2a5656": {
+  "voice": "girl_big",
+  "text": "تعاونكم حلو."
+ },
+ "04a956f1b46a": {
+  "voice": "girl_small",
+  "text": "ياااي! حلو!"
+ },
+ "637dd6247b1b": {
+  "voice": "girl_small",
+  "text": "برافو برافو!"
+ },
+ "01c995c95b0d": {
+  "voice": "girl_small",
+  "text": "إيه الجمال ده!"
+ },
+ "c14f92c054d1": {
+  "voice": "girl_small",
+  "text": "أحلى فريق!"
+ },
+ "8ba076739d1f": {
+  "voice": "girl_small",
+  "text": "يا سلام عليكم يا جماعة!"
+ },
+ "22cb130715ac": {
+  "voice": "mama",
+  "text": "يا حبايبي، فرحتوني!"
+ },
+ "d98ff23f25a2": {
+  "voice": "mama",
+  "text": "ما شاء الله عليكم يا حبايبي!"
+ },
+ "07b5d8bbbe3a": {
+  "voice": "mama",
+  "text": "ربنا يحفظكم!"
+ },
+ "0a94d5620dd9": {
+  "voice": "mama",
+  "text": "تسلم إيديكم!"
+ },
+ "8083db3efeb7": {
+  "voice": "baba",
+  "text": "ما شاء الله يا أبطال!"
+ },
+ "2fcca81f9a02": {
+  "voice": "baba",
+  "text": "فخور بيكم والله!"
+ },
+ "4f5e35bd77be": {
+  "voice": "baba",
+  "text": "ده الشغل اللي بحبه!"
+ },
+ "9e059ddca086": {
+  "voice": "nana",
+  "text": "ما شاء الله يا حبايبي!"
+ },
+ "69ca3b17035f": {
+  "voice": "nana",
+  "text": "ربنا يبارك فيكم!"
+ },
+ "11037374316f": {
+  "voice": "nana",
+  "text": "كده يا أحفادي، الله يفرّحكم!"
+ },
+ "beeee9e40dbd": {
+  "voice": "boy_big",
+  "text": "مش هنا.. جرّب في مكان تاني"
+ },
+ "a46834f41648": {
+  "voice": "boy_big",
+  "text": "هممم، مش المكان ده."
+ },
+ "12f32a205de3": {
+  "voice": "boy_big",
+  "text": "لأ، ده مش مكانه. شوف مكان تاني."
+ },
+ "dedbc10a6136": {
+  "voice": "boy_big",
+  "text": "استنى، فكّر هو بيتحط فين؟"
+ },
+ "2d2daf97f180": {
+  "voice": "boy_big",
+  "text": "قريب، بس مش هنا."
+ },
+ "1997015812a1": {
+  "voice": "boy_big",
+  "text": "جرّب مكان تاني يا {m}."
+ },
+ "9e29532754a7": {
+  "voice": "boy_big",
+  "text": "جرّب مكان تاني يا {a}."
+ },
+ "744f6f7ff03c": {
+  "voice": "boy_big",
+  "text": "جرّب مكان تاني يا {t}."
+ },
+ "5767dd8e4bcc": {
+  "voice": "boy_big",
+  "text": "جرّب مكان تاني يا {n}."
+ },
+ "9e9d7dee8e96": {
+  "voice": "boy_small",
+  "text": "أوبس! مش هنا!"
+ },
+ "60323fa9c242": {
+  "voice": "boy_small",
+  "text": "ممكن في مكان تاني؟"
+ },
+ "ffe9c6bfd4c9": {
+  "voice": "boy_small",
+  "text": "لأ لأ، مش هنا يا {m}!"
+ },
+ "3d29bab0b4d2": {
+  "voice": "boy_small",
+  "text": "لأ لأ، مش هنا يا {a}!"
+ },
+ "cb99594c4c13": {
+  "voice": "boy_small",
+  "text": "لأ لأ، مش هنا يا {t}!"
+ },
+ "4b0363f1892f": {
+  "voice": "boy_small",
+  "text": "لأ لأ، مش هنا يا {n}!"
+ },
+ "c50cc40378cd": {
+  "voice": "boy_small",
+  "text": "جرّب هناك!"
+ },
+ "c8c23b5383c8": {
+  "voice": "boy_small",
+  "text": "مش هنا، هو بيحب مكان تاني."
+ },
+ "b8a6632bc59a": {
+  "voice": "girl_big",
+  "text": "مش هنا. فكّر هو مكانه فين."
+ },
+ "15641a0172ba": {
+  "voice": "girl_big",
+  "text": "جرّب مكان تاني."
+ },
+ "4c16f5c57969": {
+  "voice": "girl_big",
+  "text": "استنى، بص تاني على الأماكن."
+ },
+ "95bb066b867c": {
+  "voice": "girl_small",
+  "text": "أوبس، مش هنا!"
+ },
+ "b3b8d64a62cc": {
+  "voice": "girl_small",
+  "text": "قريب! جرّب مكان تاني!"
+ },
+ "707f930cbdc5": {
+  "voice": "girl_small",
+  "text": "هممم، دوّر على مكان تاني!"
+ },
+ "d95dc767ed58": {
+  "voice": "boy_big",
+  "text": "محتاجين {m}!"
+ },
+ "4ffa5ce8c40a": {
+  "voice": "boy_big",
+  "text": "محتاجين {a}!"
+ },
+ "70460ab433f9": {
+  "voice": "boy_big",
+  "text": "محتاجين {t}!"
+ },
+ "42363f89b4e1": {
+  "voice": "boy_big",
+  "text": "محتاجين {n}!"
+ },
+ "36edb1d6350f": {
+  "voice": "boy_big",
+  "text": "بدّل لـ{m} من فوق."
+ },
+ "5a0936ed80c3": {
+  "voice": "boy_big",
+  "text": "بدّل لـ{a} من فوق."
+ },
+ "8e5790ede261": {
+  "voice": "boy_big",
+  "text": "بدّل لـ{t} من فوق."
+ },
+ "02d6c8184eba": {
+  "voice": "boy_big",
+  "text": "بدّل لـ{n} من فوق."
+ },
+ "d84923490fc2": {
+  "voice": "boy_big",
+  "text": "خلّي {m} يجرّب!"
+ },
+ "24f07cc482d0": {
+  "voice": "boy_big",
+  "text": "خلّي {a} يجرّب!"
+ },
+ "2e9d198ce017": {
+  "voice": "boy_big",
+  "text": "خلّي {t} يجرّب!"
+ },
+ "e80cad2bbbe2": {
+  "voice": "boy_big",
+  "text": "خلّي {n} يجرّب!"
+ },
+ "cc5feb6bf7bb": {
+  "voice": "boy_big",
+  "text": "ده شغل {m}!"
+ },
+ "8148069496d6": {
+  "voice": "boy_big",
+  "text": "ده شغل {a}!"
+ },
+ "2b5efbc0ffa2": {
+  "voice": "boy_big",
+  "text": "ده شغل {t}!"
+ },
+ "0109464dfdaf": {
+  "voice": "boy_big",
+  "text": "ده شغل {n}!"
+ },
+ "40d9716203b9": {
+  "voice": "boy_big",
+  "text": "تعالى يا {m}، ده عليك!"
+ },
+ "c7cd74e50fdf": {
+  "voice": "boy_big",
+  "text": "تعالى يا {a}، ده عليك!"
+ },
+ "8e8c7721ccc0": {
+  "voice": "boy_big",
+  "text": "تعالى يا {t}، ده عليك!"
+ },
+ "71bcb4f07964": {
+  "voice": "boy_big",
+  "text": "تعالى يا {n}، ده عليك!"
+ },
+ "2a1fd13da913": {
+  "voice": "boy_small",
+  "text": "محتاجين {m} هنا!"
+ },
+ "2d53335c61af": {
+  "voice": "boy_small",
+  "text": "محتاجين {a} هنا!"
+ },
+ "655028a8d7ee": {
+  "voice": "boy_small",
+  "text": "محتاجين {t} هنا!"
+ },
+ "1d8388f723c1": {
+  "voice": "boy_small",
+  "text": "محتاجين {n} هنا!"
+ },
+ "38a0370bc856": {
+  "voice": "boy_small",
+  "text": "نادي {m}، هو يعرف!"
+ },
+ "c48bc69c4355": {
+  "voice": "boy_small",
+  "text": "نادي {a}، هو يعرف!"
+ },
+ "7a2b94b47bcc": {
+  "voice": "boy_small",
+  "text": "نادي {t}، هو يعرف!"
+ },
+ "fc3d2a15d489": {
+  "voice": "boy_small",
+  "text": "نادي {n}، هو يعرف!"
+ },
+ "6eb7d0bc4adf": {
+  "voice": "boy_small",
+  "text": "ده شغل {m}، بدّل له!"
+ },
+ "5417efbfb87c": {
+  "voice": "boy_small",
+  "text": "ده شغل {a}، بدّل له!"
+ },
+ "ee09a42323a4": {
+  "voice": "boy_small",
+  "text": "ده شغل {t}، بدّل له!"
+ },
+ "185f1a9e5361": {
+  "voice": "boy_small",
+  "text": "ده شغل {n}، بدّل له!"
+ },
+ "4de511f45b6d": {
+  "voice": "boy_small",
+  "text": "خلّي {m} يساعدنا!"
+ },
+ "4caadfc5f3b0": {
+  "voice": "boy_small",
+  "text": "خلّي {a} يساعدنا!"
+ },
+ "0d3a355d24b9": {
+  "voice": "boy_small",
+  "text": "خلّي {t} يساعدنا!"
+ },
+ "d23fad5239e4": {
+  "voice": "boy_small",
+  "text": "خلّي {n} يساعدنا!"
+ },
+ "a4a0c5c875a0": {
+  "voice": "girl_big",
+  "text": "ده محتاج {m}، بدّل له."
+ },
+ "f72b7ccb3fb6": {
+  "voice": "girl_big",
+  "text": "ده محتاج {a}، بدّل له."
+ },
+ "6c68c9bb87ca": {
+  "voice": "girl_big",
+  "text": "ده محتاج {t}، بدّل له."
+ },
+ "7f8f5572b0a3": {
+  "voice": "girl_big",
+  "text": "ده محتاج {n}، بدّل له."
+ },
+ "6e545c83dce2": {
+  "voice": "girl_big",
+  "text": "خلّينا نجيب {m} يساعد."
+ },
+ "73beb25e4a5f": {
+  "voice": "girl_big",
+  "text": "خلّينا نجيب {a} يساعد."
+ },
+ "7f292eb6fea8": {
+  "voice": "girl_big",
+  "text": "خلّينا نجيب {t} يساعد."
+ },
+ "d59f5f45afac": {
+  "voice": "girl_big",
+  "text": "خلّينا نجيب {n} يساعد."
+ },
+ "f58454588533": {
+  "voice": "girl_big",
+  "text": "مش هينفع أنا، نادي {m}."
+ },
+ "920e5e27b740": {
+  "voice": "girl_big",
+  "text": "مش هينفع أنا، نادي {a}."
+ },
+ "503cc27fd1d4": {
+  "voice": "girl_big",
+  "text": "مش هينفع أنا، نادي {t}."
+ },
+ "3355308e48bd": {
+  "voice": "girl_big",
+  "text": "مش هينفع أنا، نادي {n}."
+ },
+ "8d6c685e30bb": {
+  "voice": "girl_small",
+  "text": "أنا مش هعرف، نادي {m}!"
+ },
+ "da6c1dfd986d": {
+  "voice": "girl_small",
+  "text": "أنا مش هعرف، نادي {a}!"
+ },
+ "e49d812d9a0d": {
+  "voice": "girl_small",
+  "text": "أنا مش هعرف، نادي {t}!"
+ },
+ "3ddaf574f796": {
+  "voice": "girl_small",
+  "text": "أنا مش هعرف، نادي {n}!"
+ },
+ "afe25a00681d": {
+  "voice": "girl_small",
+  "text": "ده من شغل {m}!"
+ },
+ "7d135d97792e": {
+  "voice": "girl_small",
+  "text": "ده من شغل {a}!"
+ },
+ "85f144e3bee6": {
+  "voice": "girl_small",
+  "text": "ده من شغل {t}!"
+ },
+ "b3a43b3ec43e": {
+  "voice": "girl_small",
+  "text": "ده من شغل {n}!"
+ },
+ "c0ba6280876e": {
+  "voice": "girl_small",
+  "text": "تعالى يا {m}، محتاجينك!"
+ },
+ "98bf0371a98f": {
+  "voice": "girl_small",
+  "text": "تعالى يا {a}، محتاجينك!"
+ },
+ "29049cd5c3ba": {
+  "voice": "girl_small",
+  "text": "تعالى يا {t}، محتاجينك!"
+ },
+ "7d2fc856cff8": {
+  "voice": "girl_small",
+  "text": "تعالى يا {n}، محتاجينك!"
+ },
+ "a7de565fdabb": {
+  "voice": "boy_small",
+  "text": "ده تقيل أوي! محتاجين {a}"
+ },
+ "02203b978ef6": {
+  "voice": "boy_small",
+  "text": "ده تقيل أوي! محتاجين {t}"
+ },
+ "49570158b573": {
+  "voice": "boy_small",
+  "text": "ده تقيل أوي! محتاجين {n}"
+ },
+ "fd922561f85a": {
+  "voice": "boy_small",
+  "text": "ده أكبر مني! نادي {m}!"
+ },
+ "523dfa0ac1fc": {
+  "voice": "boy_small",
+  "text": "ده أكبر مني! نادي {a}!"
+ },
+ "98336072ce69": {
+  "voice": "boy_small",
+  "text": "ده أكبر مني! نادي {t}!"
+ },
+ "733ce86bfc1c": {
+  "voice": "boy_small",
+  "text": "ده أكبر مني! نادي {n}!"
+ },
+ "3c43fef3e2fd": {
+  "voice": "boy_small",
+  "text": "مش قادر أشيله! عايزين {m}."
+ },
+ "45e6d6dc207d": {
+  "voice": "boy_small",
+  "text": "مش قادر أشيله! عايزين {a}."
+ },
+ "1e72657ce57a": {
+  "voice": "boy_small",
+  "text": "مش قادر أشيله! عايزين {t}."
+ },
+ "37f965ad0e20": {
+  "voice": "boy_small",
+  "text": "مش قادر أشيله! عايزين {n}."
+ },
+ "27e955043db6": {
+  "voice": "boy_small",
+  "text": "محتاج {m} يساعدني!"
+ },
+ "0e1b18794ad7": {
+  "voice": "boy_small",
+  "text": "محتاج {a} يساعدني!"
+ },
+ "1044f1159c82": {
+  "voice": "boy_small",
+  "text": "محتاج {t} يساعدني!"
+ },
+ "02d39a2ad6e6": {
+  "voice": "boy_small",
+  "text": "محتاج {n} يساعدني!"
+ },
+ "d855e8894e76": {
+  "voice": "boy_small",
+  "text": "ده فوق مني! بدّل لـ{m}."
+ },
+ "f3140bdac591": {
+  "voice": "boy_small",
+  "text": "ده فوق مني! بدّل لـ{a}."
+ },
+ "c68af73ed739": {
+  "voice": "boy_small",
+  "text": "ده فوق مني! بدّل لـ{t}."
+ },
+ "54ae318beb4d": {
+  "voice": "boy_small",
+  "text": "ده فوق مني! بدّل لـ{n}."
+ },
+ "3b1cbc9de08c": {
+  "voice": "girl_small",
+  "text": "ده تقيل عليّ! نادي {m}!"
+ },
+ "8cb0f11e271f": {
+  "voice": "girl_small",
+  "text": "ده تقيل عليّ! نادي {a}!"
+ },
+ "654a3676d43b": {
+  "voice": "girl_small",
+  "text": "ده تقيل عليّ! نادي {t}!"
+ },
+ "2b7e66b7bf60": {
+  "voice": "girl_small",
+  "text": "ده تقيل عليّ! نادي {n}!"
+ },
+ "3619338cd0d5": {
+  "voice": "girl_small",
+  "text": "محتاجين {m} القوي!"
+ },
+ "f963e5f54511": {
+  "voice": "girl_small",
+  "text": "محتاجين {a} القوي!"
+ },
+ "7efadbd9522e": {
+  "voice": "girl_small",
+  "text": "محتاجين {t} القوي!"
+ },
+ "b696f9b6134d": {
+  "voice": "girl_small",
+  "text": "محتاجين {n} القوي!"
+ },
+ "89460a3e4134": {
+  "voice": "girl_big",
+  "text": "ده تقيل، محتاجين {m}."
+ },
+ "8d85bfede9b3": {
+  "voice": "girl_big",
+  "text": "ده تقيل، محتاجين {a}."
+ },
+ "98b0de719880": {
+  "voice": "girl_big",
+  "text": "ده تقيل، محتاجين {t}."
+ },
+ "7d15044ca6d3": {
+  "voice": "girl_big",
+  "text": "ده تقيل، محتاجين {n}."
+ },
+ "a47278282ab6": {
+  "voice": "girl_big",
+  "text": "نادي {m}، هو أقوى مني."
+ },
+ "5bf9cb45046c": {
+  "voice": "girl_big",
+  "text": "نادي {a}، هو أقوى مني."
+ },
+ "de2da6fd276c": {
+  "voice": "girl_big",
+  "text": "نادي {t}، هو أقوى مني."
+ },
+ "5fd6ec16b4f6": {
+  "voice": "girl_big",
+  "text": "نادي {n}، هو أقوى مني."
+ },
+ "785679f162c1": {
+  "voice": "boy_big",
+  "text": "ده تقيل حتى عليّ! محتاجين {m}."
+ },
+ "d1d0e2524ec2": {
+  "voice": "boy_big",
+  "text": "ده تقيل حتى عليّ! محتاجين {a}."
+ },
+ "0b730fe6acbe": {
+  "voice": "boy_big",
+  "text": "ده تقيل حتى عليّ! محتاجين {t}."
+ },
+ "b6b003837122": {
+  "voice": "boy_big",
+  "text": "ده تقيل حتى عليّ! محتاجين {n}."
+ },
+ "7ced0a26a67b": {
+  "voice": "boy_big",
+  "text": "بص حواليك كويس، في حاجة مستنياك."
+ },
+ "dc7d2dad252b": {
+  "voice": "boy_big",
+  "text": "خد وقتك، ومفيش استعجال."
+ },
+ "4429d26a64d6": {
+  "voice": "boy_big",
+  "text": "لو عايز تسمع التعليمات، دوس على الزرار الأخضر."
+ },
+ "2d0c9daab078": {
+  "voice": "boy_big",
+  "text": "ركّز في الصورة كويس."
+ },
+ "396ba2a04ed4": {
+  "voice": "boy_big",
+  "text": "فكّر معايا، إحنا هنعملها."
+ },
+ "f91c89e559f0": {
+  "voice": "boy_big",
+  "text": "في حاجة بتلمع؟ دوّر عليها."
+ },
+ "eaabf034fcfe": {
+  "voice": "boy_small",
+  "text": "أنا مستني، خد وقتك."
+ },
+ "6d60e52a15b2": {
+  "voice": "boy_small",
+  "text": "إحنا هنعملها سوا."
+ },
+ "6ae93ca24810": {
+  "voice": "boy_small",
+  "text": "طب بص هنا كده."
+ },
+ "81196939d957": {
+  "voice": "boy_small",
+  "text": "أنا شايف حاجة! دوّر معايا."
+ },
+ "1d8124c3e839": {
+  "voice": "boy_small",
+  "text": "هو الزرار الأخضر بيقول التعليمات تاني!"
+ },
+ "0c7cc4913114": {
+  "voice": "girl_big",
+  "text": "اهدا وفكّر، مفيش مشكلة."
+ },
+ "8939d6874b9f": {
+  "voice": "girl_big",
+  "text": "لو محتاجين مساعدة، اضغطوا على الزرار الأخضر."
+ },
+ "c3a7edb3bc1b": {
+  "voice": "girl_big",
+  "text": "ركّزوا في التفاصيل."
+ },
+ "2caa7b0283ec": {
+  "voice": "girl_small",
+  "text": "أنا معاكم! جرّبوا حاجة!"
+ },
+ "1cd1d773af2f": {
+  "voice": "girl_small",
+  "text": "هو في حاجة بتلمع هناك؟"
+ },
+ "e7cec395be0a": {
+  "voice": "girl_small",
+  "text": "ما تقلقوش، هنلاقيها!"
+ },
+ "47e2270e582f": {
+  "voice": "boy_big",
+  "text": "يلا بينا!"
+ },
+ "a31cf45da207": {
+  "voice": "boy_big",
+  "text": "جاهز! نبدأ؟"
+ },
+ "1b09a91bbb5e": {
+  "voice": "boy_big",
+  "text": "المهمة دي هتكون حلوة!"
+ },
+ "01b13e97e620": {
+  "voice": "boy_big",
+  "text": "تعالى نشوف هنعمل إيه."
+ },
+ "c1ac1fff6de0": {
+  "voice": "boy_big",
+  "text": "أنا حاسس إننا هنعملها!"
+ },
+ "3bfed79ffe3e": {
+  "voice": "boy_small",
+  "text": "يلا يلا يلا!"
+ },
+ "45daca1caeb8": {
+  "voice": "boy_small",
+  "text": "أنا متحمّس أوي!"
+ },
+ "41125c768abe": {
+  "voice": "boy_small",
+  "text": "يلا نلعب!"
+ },
+ "7b44a9b7f73b": {
+  "voice": "girl_big",
+  "text": "يلا نبدأ، واحدة واحدة."
+ },
+ "2faec9944be4": {
+  "voice": "girl_big",
+  "text": "تعالوا نركّز."
+ },
+ "111043a5107b": {
+  "voice": "girl_small",
+  "text": "أنا جاهزة!"
+ },
+ "38c7378b88b8": {
+  "voice": "girl_small",
+  "text": "يلا نبدأ المغامرة!"
+ },
+ "02ded8862579": {
+  "voice": "mama",
+  "text": "فرحتوني أوي يا حبايبي!"
+ },
+ "f1b841c7efc6": {
+  "voice": "mama",
+  "text": "ما شاء الله عليكم، ربنا يحفظكم."
+ },
+ "18d970b748e1": {
+  "voice": "mama",
+  "text": "أنا فخورة بيكم جدًا!"
+ },
+ "98e8fe11d3e6": {
+  "voice": "mama",
+  "text": "تسلم إيديكم يا أبطال."
+ },
+ "14a2bc07b08e": {
+  "voice": "mama",
+  "text": "ده اللي كنت متوقعاه منكم!"
+ },
+ "15a53a71eaff": {
+  "voice": "mama",
+  "text": "يا قلبي عليكم، شاطرين!"
+ },
+ "e7aba819a02b": {
+  "voice": "mama",
+  "text": "حلو أوي يا حبايبي، كمّلوا كده."
+ },
+ "6b6a7d634edb": {
+  "voice": "nana",
+  "text": "ما شاء الله يا حبايبي، ربنا يخليكم."
+ },
+ "a456981f6c48": {
+  "voice": "nana",
+  "text": "قلبي فرحان بيكم أوي!"
+ },
+ "42d326316710": {
+  "voice": "nana",
+  "text": "الله يفتح عليكم يا ولاد."
+ },
+ "f15463d81761": {
+  "voice": "nana",
+  "text": "تعالوا في حضني، شاطرين!"
+ },
+ "49437fc47ada": {
+  "voice": "nana",
+  "text": "حلو كده يا أحفادي، ربنا يبارككم."
+ },
+ "896e9b6367a7": {
+  "voice": "narrator",
+  "text": "حسبتها صح!"
+ },
+ "c4b9406b9123": {
+  "voice": "narrator",
+  "text": "الأرقام معاك النهاردة!"
+ },
+ "44364688a92e": {
+  "voice": "narrator",
+  "text": "حساب سريع وصح!"
+ },
+ "430c1ab3037c": {
+  "voice": "narrator",
+  "text": "حسابك مظبوط!"
+ },
+ "3bdfec188999": {
+  "voice": "narrator",
+  "text": "عدّيتها صح!"
+ },
+ "8157450f8580": {
+  "voice": "narrator",
+  "text": "الأرقام بتحبك!"
+ },
+ "99ef73dcc939": {
+  "voice": "narrator",
+  "text": "عرفت الكلمة صح!"
+ },
+ "b6d88adbcab8": {
+  "voice": "narrator",
+  "text": "لغتك حلوة!"
+ },
+ "4f1472ea148a": {
+  "voice": "narrator",
+  "text": "فكّيت اللغز بسرعة!"
+ },
+ "c9837db21b69": {
+  "voice": "narrator",
+  "text": "الحروف بتحبك!"
+ },
+ "514882c25db6": {
+  "voice": "narrator",
+  "text": "كلمة في محلها!"
+ },
+ "3ef5253498df": {
+  "voice": "narrator",
+  "text": "الكلام بيحبك!"
+ },
+ "b8b351c6ddd5": {
+  "voice": "narrator",
+  "text": "معلوماتك عن الدنيا حلوة!"
+ },
+ "f117e0c21a90": {
+  "voice": "narrator",
+  "text": "إنت عارف الطبيعة كويس!"
+ },
+ "b3518d5bc781": {
+  "voice": "narrator",
+  "text": "عالم صغير شاطر!"
+ },
+ "e73dd32183d1": {
+  "voice": "narrator",
+  "text": "معلومة مظبوطة عن الدنيا!"
+ },
+ "5660672d9920": {
+  "voice": "narrator",
+  "text": "عينك على التفاصيل!"
+ },
+ "c76222e0e304": {
+  "voice": "narrator",
+  "text": "عينك حلوة في التفاصيل!"
+ },
+ "2ceba3a9e5dc": {
+  "voice": "narrator",
+  "text": "لقيت النمط!"
+ },
+ "bd6a6ad44ad4": {
+  "voice": "narrator",
+  "text": "شفت السر!"
+ },
+ "e20a56930bd4": {
+  "voice": "narrator",
+  "text": "منطقك مظبوط!"
+ },
+ "98e407484ab1": {
+  "voice": "narrator",
+  "text": "ترتيب أفكارك حلو!"
+ },
+ "ce7773c891da": {
+  "voice": "narrator",
+  "text": "ملاحظة ذكية!"
+ },
+ "9c8fbe6ba068": {
+  "voice": "narrator",
+  "text": "ده اللي بيعمله الشاطرين!"
+ },
+ "6d603fe70819": {
+  "voice": "narrator",
+  "text": "تصرّف حلو!"
+ },
+ "21f5d053203c": {
+  "voice": "narrator",
+  "text": "معلومة حلوة في دماغك!"
+ },
+ "d0944c46deaa": {
+  "voice": "narrator",
+  "text": "فاهم الصح كويس!"
+ },
+ "0633168e3a7d": {
+  "voice": "narrator",
+  "text": "ده أدب وذوق!"
+ },
+ "5062915942a8": {
+  "voice": "narrator",
+  "text": "إيه ده!"
+ },
+ "af91697a68c2": {
+  "voice": "narrator",
+  "text": "يا سلام يا سلام!"
+ },
+ "6534d40967fc": {
+  "voice": "narrator",
+  "text": "ماشي كده!"
+ },
+ "e5736df75705": {
+  "voice": "narrator",
+  "text": "الله!"
+ },
+ "7a6f1506245d": {
+  "voice": "narrator",
+  "text": "ياااه!"
+ },
+ "97cbcba7ee53": {
+  "voice": "boy_big",
+  "text": "إيه ده يا جدعان!"
+ },
+ "2c5d374c0cde": {
+  "voice": "boy_big",
+  "text": "الله عليه!"
+ },
+ "6e34e2346efc": {
+  "voice": "boy_big",
+  "text": "ماشي كده."
+ },
+ "3faea08aeb93": {
+  "voice": "boy_big",
+  "text": "جامد!"
+ },
+ "5a8c76ce8f10": {
+  "voice": "boy_big",
+  "text": "ياه!"
+ },
+ "ab0c13c39223": {
+  "voice": "boy_small",
+  "text": "واااو!"
+ },
+ "56978a17b2cc": {
+  "voice": "boy_small",
+  "text": "يا خبر!"
+ },
+ "1b9a2a72afdb": {
+  "voice": "boy_small",
+  "text": "ياه ياه!"
+ },
+ "7561c7b2bbec": {
+  "voice": "boy_small",
+  "text": "جامد جامد!"
+ },
+ "5f95a398a8b3": {
+  "voice": "girl_big",
+  "text": "أوه!"
+ },
+ "6d3f4e674b81": {
+  "voice": "girl_big",
+  "text": "ما شاء الله، حلو!"
+ },
+ "3340d9391ee2": {
+  "voice": "girl_big",
+  "text": "حلو!"
+ },
+ "1e8a5aafd07c": {
+  "voice": "girl_small",
+  "text": "ياااي!"
+ },
+ "00077af53ef0": {
+  "voice": "girl_small",
+  "text": "أيوه!"
+ },
+ "81b4ac52ef6a": {
+  "voice": "girl_small",
+  "text": "إيه ده يا جماعة!"
+ },
+ "1183a5f75f50": {
+  "voice": "narrator",
+  "text": "هممم."
+ },
+ "ec0030135236": {
+  "voice": "narrator",
+  "text": "آه."
+ },
+ "7da400a0d164": {
+  "voice": "narrator",
+  "text": "استنى."
+ },
+ "cbc34dd17286": {
+  "voice": "boy_big",
+  "text": "همم."
+ },
+ "319c6f51dd82": {
+  "voice": "boy_big",
+  "text": "أها."
+ },
+ "93eafccbff17": {
+  "voice": "boy_big",
+  "text": "ممم."
+ },
+ "5e95a205a5b3": {
+  "voice": "boy_small",
+  "text": "أوه."
+ },
+ "5489575c5b28": {
+  "voice": "boy_small",
+  "text": "أممم."
+ },
+ "fe81e482022e": {
+  "voice": "boy_small",
+  "text": "هاه."
+ },
+ "b3827ddcf3f4": {
+  "voice": "girl_big",
+  "text": "همم، لحظة."
+ },
+ "09253e4391c7": {
+  "voice": "girl_small",
+  "text": "أوه، لأ."
+ },
+ "d84eb6f7bed8": {
+  "voice": "boy_big",
+  "text": "برافو عليك والله يا {m}!"
+ },
+ "6f9b95f871fa": {
+  "voice": "boy_big",
+  "text": "برافو عليك والله يا {a}!"
+ },
+ "14b83a041bd6": {
+  "voice": "boy_big",
+  "text": "برافو عليك والله يا {t}!"
+ },
+ "f34a96d9d4d7": {
+  "voice": "boy_big",
+  "text": "برافو عليك والله يا {n}!"
+ },
+ "7cd4f1ca85a7": {
+  "voice": "narrator",
+  "text": "هي دي الإجابة الصح!"
+ },
+ "facb9cfc83bf": {
+  "voice": "narrator",
+  "text": "اختيار موفّق!"
+ },
+ "7461af344807": {
+  "voice": "narrator",
+  "text": "شكلك عارفها كويس!"
+ },
+ "bcb6a95d9daa": {
+  "voice": "narrator",
+  "text": "كده إنت ماشي صح!"
+ },
+ "73a8f869d2b0": {
+  "voice": "narrator",
+  "text": "وقعت على الصح!"
+ },
+ "3203105bcc6c": {
+  "voice": "narrator",
+  "text": "تفكير حلو!"
+ },
+ "7ae839ea9e08": {
+  "voice": "narrator",
+  "text": "حلو الاختيار ده!"
+ },
+ "ed2b3098bdef": {
+  "voice": "narrator",
+  "text": "أحلى إجابة!"
+ },
+ "dbac2bb9bf2c": {
+  "voice": "narrator",
+  "text": "صح عليك!"
+ },
+ "6ba91cb4be6e": {
+  "voice": "narrator",
+  "text": "مخك سريع!"
+ },
+ "7c98d76fc435": {
+  "voice": "narrator",
+  "text": "ركّزت وجبتها!"
+ },
+ "0a55e8449ac4": {
+  "voice": "narrator",
+  "text": "بالظبط، زي ما توقّعت!"
+ },
+ "10d32b796956": {
+  "voice": "narrator",
+  "text": "عرفتها لوحدك!"
+ },
+ "6bf6557f9401": {
+  "voice": "narrator",
+  "text": "هيييه! جبتها صح!"
+ },
+ "17f08d5b1898": {
+  "voice": "narrator",
+  "text": "برافو يا بطل، حلو أوي!"
+ },
+ "9518a81f3a3b": {
+  "voice": "narrator",
+  "text": "إنت قدّها يا بطل!"
+ },
+ "d185fa061662": {
+  "voice": "narrator",
+  "text": "تحليل مظبوط!"
+ },
+ "dc1cbab440fb": {
+  "voice": "narrator",
+  "text": "ربطت المعلومات صح!"
+ },
+ "f9ea603a5749": {
+  "voice": "narrator",
+  "text": "ده ذكاء بجد!"
+ },
+ "cfe4671221f7": {
+  "voice": "narrator",
+  "text": "خطوة بخطوة ووصلت!"
+ },
+ "b17cec31a5a0": {
+  "voice": "narrator",
+  "text": "إجابة بتدل على تركيز عالي!"
+ },
+ "8ff61a620f3b": {
+  "voice": "boy_big",
+  "text": "جامد! إنت ركّزت!"
+ },
+ "3b91860d8f60": {
+  "voice": "boy_big",
+  "text": "ده اللي كنت هقوله!"
+ },
+ "d1d346b26c87": {
+  "voice": "boy_big",
+  "text": "أنا كنت هقول نفس الإجابة!"
+ },
+ "e8167dc42cb6": {
+  "voice": "boy_big",
+  "text": "كمّل كده والله!"
+ },
+ "87a769e2e12e": {
+  "voice": "boy_big",
+  "text": "حلو أوي، أنا استفدت!"
+ },
+ "45290859531e": {
+  "voice": "boy_big",
+  "text": "ماشي كده، دماغك حلوة!"
+ },
+ "c9b0a10be37f": {
+  "voice": "boy_small",
+  "text": "أنا قلت كده بالظبط!"
+ },
+ "4c2e60220d4c": {
+  "voice": "boy_small",
+  "text": "صح صح صح صح!"
+ },
+ "b5377a6d4ce6": {
+  "voice": "boy_small",
+  "text": "إنت بتفهم في كل حاجة!"
+ },
+ "b6f3910ae1f4": {
+  "voice": "boy_small",
+  "text": "جامد جامد جامد!"
+ },
+ "c057fb446ab0": {
+  "voice": "boy_small",
+  "text": "ده انت أحسن حاجة!"
+ },
+ "8f6ced211096": {
+  "voice": "girl_big",
+  "text": "كمّل كده يا {m}، أنا معاك."
+ },
+ "86c70c36678d": {
+  "voice": "girl_big",
+  "text": "كمّل كده يا {a}، أنا معاك."
+ },
+ "f9bd83828a72": {
+  "voice": "girl_big",
+  "text": "كمّل كده يا {t}، أنا معاك."
+ },
+ "1069b043d0fc": {
+  "voice": "girl_big",
+  "text": "كمّل كده يا {n}، أنا معاك."
+ },
+ "6634343f4c08": {
+  "voice": "girl_big",
+  "text": "خطوة حلوة أوي."
+ },
+ "7bbe3f5645c8": {
+  "voice": "girl_big",
+  "text": "تحسّن واضح، برافو."
+ },
+ "472071b4c90a": {
+  "voice": "girl_small",
+  "text": "صح صح! أنا كنت متأكدة!"
+ },
+ "d7b1fd61ab43": {
+  "voice": "girl_small",
+  "text": "ياي ياي! حلو أوي!"
+ },
+ "97e323c16095": {
+  "voice": "girl_small",
+  "text": "أحلى إجابة في الدنيا!"
+ },
+ "93e3f6a42ecd": {
+  "voice": "narrator",
+  "text": "مش مهم بدأت إزاي، المهم وصلت!"
+ },
+ "572699e57dbb": {
+  "voice": "narrator",
+  "text": "تعبت شوية وعرفتها، برافو!"
+ },
+ "19c596a950ea": {
+  "voice": "narrator",
+  "text": "كل مرة بتقرّب أكتر، وأهو وصلت!"
+ },
+ "a00c05c6420b": {
+  "voice": "narrator",
+  "text": "عرفتها بعد تفكير، وده أحلى!"
+ },
+ "8d310881ee38": {
+  "voice": "boy_big",
+  "text": "أهو وصلت! وده المهم."
+ },
+ "884bf4b13faf": {
+  "voice": "boy_big",
+  "text": "كل غلطة بتقرّبنا للصح."
+ },
+ "79000f38cd98": {
+  "voice": "boy_small",
+  "text": "أنا فرحان إنك ما استسلمتش!"
+ },
+ "ae84c369fee1": {
+  "voice": "boy_small",
+  "text": "شفت؟ كنت قريب من الأول!"
+ },
+ "1dfeea1d650d": {
+  "voice": "narrator",
+  "text": "ولا يهمك، كل واحد بيغلط."
+ },
+ "675df5629713": {
+  "voice": "narrator",
+  "text": "مش ده، بس إنت قريب."
+ },
+ "150910ce2cdd": {
+  "voice": "narrator",
+  "text": "ياه، كان قريب! جرّب كمان."
+ },
+ "09d23c09b037": {
+  "voice": "narrator",
+  "text": "فكّر في اللي بنسأل عليه تاني."
+ },
+ "b202fe2aad92": {
+  "voice": "narrator",
+  "text": "خد نفس وجرّب من جديد."
+ },
+ "83dab067fc4d": {
+  "voice": "narrator",
+  "text": "في احتمال تاني أحسن."
+ },
+ "8a475af31eaf": {
+  "voice": "narrator",
+  "text": "حاول تاني، إنت تقدر."
+ },
+ "eddab7fab03e": {
+  "voice": "narrator",
+  "text": "اتأكد من الاختيار وجرّب تاني."
+ },
+ "56f209bcb8e8": {
+  "voice": "narrator",
+  "text": "يلا جرّب واحد غيره!"
+ },
+ "4615adc9807e": {
+  "voice": "narrator",
+  "text": "مش مشكلة يا بطل، جرّب!"
+ },
+ "6e1e1ba88b9c": {
+  "voice": "narrator",
+  "text": "مش ده! بس لسه في فرصة."
+ },
+ "d77aae54c68d": {
+  "voice": "narrator",
+  "text": "راجع المعطيات تاني بهدوء."
+ },
+ "c4505d7451ef": {
+  "voice": "narrator",
+  "text": "اتحقق من السؤال وجرّب تاني."
+ },
+ "540510dfa7b2": {
+  "voice": "narrator",
+  "text": "قرّبت، بس محتاج تدقّق أكتر."
+ },
+ "a68e27b887d2": {
+  "voice": "boy_big",
+  "text": "خلّينا نشوف السؤال تاني سوا."
+ },
+ "3d7bd985ba4d": {
+  "voice": "boy_big",
+  "text": "ولا يهمك، ده كان صعب شوية."
+ },
+ "7bdba158fc9c": {
+  "voice": "boy_big",
+  "text": "أنا بقول تقرا الاختيارات تاني."
+ },
+ "8187903b5fa1": {
+  "voice": "boy_small",
+  "text": "أوه لأ! بس جرّب غيره!"
+ },
+ "8f413e143639": {
+  "voice": "boy_small",
+  "text": "ما تزعلش، هتعرفها!"
+ },
+ "8bb1dea37eb7": {
+  "voice": "narrator",
+  "text": "اقرا الاختيارات كلها قبل ما تختار"
+ },
+ "2b1acee194e3": {
+  "voice": "narrator",
+  "text": "شوف الصورة كويس يمكن تساعدك"
+ },
+ "acbbfd598022": {
+  "voice": "narrator",
+  "text": "فكّر في اللي تعرفه عن الموضوع ده"
+ },
+ "99a2973ddedd": {
+  "voice": "narrator",
+  "text": "متقلقش، خد وقتك"
+ },
+ "101ebb911114": {
+  "voice": "narrator",
+  "text": "مفيش حد بيعرف كل حاجة من أول مرة."
+ },
+ "3eb28611e575": {
+  "voice": "narrator",
+  "text": "خلّي عينك على اللي بيلمع."
+ },
+ "06c6a41c3b17": {
+  "voice": "boy_big",
+  "text": "مش بطّال خالص!"
+ },
+ "f45c1e66ac96": {
+  "voice": "boy_big",
+  "text": "كده نبقى فريق!"
+ },
+ "d27de7799584": {
+  "voice": "boy_big",
+  "text": "تعاون حلو!"
+ },
+ "0f2685f2740e": {
+  "voice": "boy_small",
+  "text": "ده كان ممتع!"
+ },
+ "0e5db4615eb1": {
+  "voice": "boy_small",
+  "text": "أنا بحب نشتغل سوا!"
+ },
+ "8272d428eedf": {
+  "voice": "boy_small",
+  "text": "يلا يلا، عظمة!"
+ },
+ "44491213deff": {
+  "voice": "girl_big",
+  "text": "أنا فخورة بيكم!"
+ },
+ "e7a22b6ed88f": {
+  "voice": "girl_big",
+  "text": "شغل نضيف ومرتب."
+ },
+ "fb7f18f9d044": {
+  "voice": "girl_small",
+  "text": "ياي ياي ياي!"
+ },
+ "cf7bc39d3ef4": {
+  "voice": "girl_small",
+  "text": "أنا فرحانة بيكم!"
+ },
+ "cfda326bb89a": {
+  "voice": "boy_big",
+  "text": "مفيش استعجال، فكّر براحتك."
+ },
+ "c0a0157d5fbb": {
+  "voice": "boy_big",
+  "text": "دوس على زرار السماعة لو عايز تسمع تاني."
+ },
+ "743e4226c733": {
+  "voice": "boy_big",
+  "text": "يمكن لو بصيت بصة تانية تلاقيها."
+ },
+ "efd84d97548a": {
+  "voice": "boy_big",
+  "text": "أنا واثق إنك هتلاقيها."
+ },
+ "986ebfa3b41d": {
+  "voice": "boy_small",
+  "text": "ممكن نبص تحت؟ يمكن فيه حاجة!"
+ },
+ "0b7087d889b4": {
+  "voice": "boy_small",
+  "text": "ما تقلقش، هنلاقيها سوا."
+ },
+ "c9ae42df4d86": {
+  "voice": "boy_small",
+  "text": "أنا بدوّر معاك."
+ },
+ "5dbe9cbb1379": {
+  "voice": "girl_big",
+  "text": "خدوا وقتكم، كل حاجة هتبقى كويسة."
+ },
+ "d774c1ab4d53": {
+  "voice": "girl_small",
+  "text": "أنا شايفة حاجة بتتحرك! بصّوا!"
  }
 }

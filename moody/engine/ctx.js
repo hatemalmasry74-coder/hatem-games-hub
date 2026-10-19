@@ -87,10 +87,14 @@
     ctx.bubble = (who, text, dur) => stage.bubble(who, text, dur);
     ctx.walk = (who, x, y) => mk(done => { stage.walk(who, x, y).then(() => done()); });
     ctx.anim = (who, a, s) => mk(done => { stage.play(who, a, s).then(() => done()); });
-    ctx.react = function (kind, who) {
+    ctx.react = function (kind, who, ro) {
       const a = kind === 'good' ? 'cheer' : kind, ts = (who === 'both' || !who) ? stage.present() : [who];
       ts.forEach(k => stage.play(k, a, 1.3));
       if (a === 'cheer') { M.audio.sfx('good'); } else if (a === 'oops') M.audio.sfx('wrong');
+      /* a short spoken cheer from one of the controllable heroes after a finished puzzle (about every other time) */
+      if (a === 'cheer' && M.reactions && !(ro && ro.nopraise) && Math.random() < .5) {
+        const w = who && who !== 'both' ? who : U.pick(stage.control.length ? stage.control : ['moody', 'aboody']), t = M.reactions.pick('praise', { speaker: w, hero: M.reactions.buddy(w), maxLen: 24 }); if (t) stage.bubble(w, t, 1.8);
+      }
     };
     /* heroes on stage: ctx.cast(['moody','aboody','toota','nemo'], controllable?)  (see DEV.md) */
     ctx.cast = (list, control) => { stage.setCast(list, control); UI.hud.rebuild(); };
@@ -99,7 +103,7 @@
     /* a companion gives a light hint: ctx.tip('جرّب الكرسي!') */
     ctx.tip = (text, who) => { const w = who || stage.present().find(k => stage.control.indexOf(k) < 0) || stage.present().find(k => k !== stage.active); if (w) { stage.bubble(w, text, 2.6); stage.play(w, 'wave', .9); } };
     ctx.speak = (text, o) => M.voice.speak(text, Object.assign({ speaker: 'narrator' }, o));
-    ctx.praise = function (who) { const w = who || stage.active, t = U.pick(PRAISE).replace('{m}', M.save.data.names.moody); stage.bubble(w, t.replace('عبودي', M.save.data.names.aboody), 1.8); stage.play(w, 'cheer', 1.1); M.audio.sfx('good'); };
+    ctx.praise = function (who) { const w = who || stage.active, R = M.reactions, t0 = R && R.pick('praise', { speaker: w, hero: R.buddy(w) }), t = t0 || U.pick(PRAISE).replace('{m}', M.save.data.names.moody); stage.bubble(w, t0 || t.replace('عبودي', M.save.data.names.aboody), 1.8); stage.play(w, 'cheer', 1.1); M.audio.sfx('good'); };
     ctx.requireHero = function (id, msg) {
       return mk((done, cl) => {
         if (stage.active === id) { done(); return; }
@@ -122,9 +126,11 @@
 
     /* skip safety net used by kits: shows "تخطّي" after a long idle time or 3 failures */
     ctx.skipper = function (done, cl, o) {
-      o = o || {}; let fails = 0, tm = null; const show = () => UI.skip.show(() => done({ skipped: true })); tm = setTimeout(show, (o.after || 45) * 1000);
-      cl(() => { clearTimeout(tm); UI.skip.hide(); });
-      return { fail() { fails++; ctx.mistakes++; if (fails >= (o.fails || 3)) show(); }, poke() { clearTimeout(tm); tm = setTimeout(show, (o.after || 45) * 1000); } };
+      o = o || {}; let fails = 0, tm = null, nt = null, nudges = 0; const show = () => UI.skip.show(() => done({ skipped: true })); tm = setTimeout(show, (o.after || 45) * 1000);
+      const nudge = () => { if (nudges >= 3 || !M.reactions) return; if (M.paused) { nt = setTimeout(nudge, 5000); return; } const t = M.reactions.pick('nudge', { speaker: stage.active, hero: M.reactions.buddy(stage.active) }); if (t) { nudges++; stage.bubble(stage.active, t, 3.4); } nt = setTimeout(nudge, 30000); };
+      nt = setTimeout(nudge, (o.nudge || 24) * 1000);
+      cl(() => { clearTimeout(tm); clearTimeout(nt); UI.skip.hide(); });
+      return { fail() { fails++; ctx.mistakes++; if (fails >= (o.fails || 3)) show(); }, poke() { clearTimeout(tm); tm = setTimeout(show, (o.after || 45) * 1000); clearTimeout(nt); nt = setTimeout(nudge, (o.nudge || 24) * 1000); } };
     };
 
     /* quiz API */

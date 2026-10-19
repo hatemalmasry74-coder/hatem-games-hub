@@ -158,7 +158,7 @@
           const c1 = await ctx.games.choice({
             prompt: '{a} شاف الكورة بتبعد في الماية. يعمل إيه؟', options: sh([
               { text: 'يجري وراها لوحده', art: 'sa_ball', good: false, consequence: [['baba', 'لأ يا {a}! الماية بتعمّق بسرعة. لازم حد كبير يكون معانا.', { name: 'بابا' }]] },
-              { text: 'ينزل المية العميقة عشان يلحقها', art: 'sa_dolphin', good: false, consequence: [['moody', 'ده خطر! الكورة ممكن نجيب غيرها.. لكن نفسنا أغلى.']] },
+              { text: 'ينزل المية العميقة عشان يلحقها', art: 'sa_dolphin', good: false, consequence: [['moody', 'ده خطر! الكورة ممكن نجيب غيرها.. بس نفسنا أغلى.']] },
               { text: 'يقول لبابا وبابا يجيبها', art: 'baba', good: true, reply: [['baba', 'شاطر يا {a}! أنا هجيبها.', { name: 'بابا' }]] }])
           });
           if (c1.firstTry) ctx.reward.star(1); ctx.value('beachsafety');

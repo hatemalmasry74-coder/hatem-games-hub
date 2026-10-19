@@ -341,15 +341,16 @@
       if (idx === q.answer) {
         done = true; b.classList.add('right'); M.audio.sfx('good'); btns.forEach(x => { if (x !== b) { x.classList.add('gone'); x.style.animation = 'none'; } });
         const r = b.getBoundingClientRect(), [cx, cy] = toLogical(r.left + r.width / 2, r.top + r.height / 2); UI.sparks(cx, cy, { n: 12, r: 90 });
-        hint.textContent = q.explain ? M.fmt(q.explain) : 'برافو!'; hint.style.color = '#1d7f33'; if (q.explain) M.voice.speak(q.explain, { speaker: 'narrator' });
+        const rx = M.reactions && M.reactions.react(misses ? 'correct2' : 'correct', { hero: o.who, tier: o.who === 'aboody' ? 6 : o.who === 'moody' ? 9 : undefined, cat: q.category, attempt: misses + 1 });
+        hint.textContent = q.explain ? M.fmt(q.explain) : (rx ? M.fmt(rx.text) : 'برافو!'); hint.style.color = '#1d7f33'; if (q.explain) M.voice.speak(q.explain, { speaker: 'narrator' }); else if (rx) M.voice.speakSeq(rx.seq, { speaker: rx.speaker });
         UI.hud.step(1);
-        setTimeout(() => { if (!closed) { close(); o.onDone && o.onDone({ correct: true, tries: misses + 1, misses, revealed: misses >= 3 }); } }, q.explain ? 1700 : 750);
+        setTimeout(() => { if (!closed) { close(); o.onDone && o.onDone({ correct: true, tries: misses + 1, misses, revealed: misses >= 3 }); } }, q.explain ? 1700 : rx ? (rx.seq.length > 1 ? 2300 : 1500) : 750);
       } else {
         misses++; M.audio.sfx('wrong'); b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong'); b.classList.add('gone'); b.style.pointerEvents = 'none';
         o.onMiss && o.onMiss(misses);
-        if (misses === 1) { const c = U.pick(CLOSE); hint.textContent = c; M.voice.speak(c, { speaker: 'narrator' }); }
-        else if (misses === 2) { hint.textContent = 'تلميح: ' + M.fmt(q.hint || 'فكّر تاني بهدوء'); M.voice.speak(q.hint || 'فكّر تاني بهدوء', { speaker: 'narrator' }); }
-        else { hint.textContent = 'تعالوا نشوفها سوا!'; M.voice.speak('تعالوا نشوفها سوا!', { speaker: 'narrator' }); btns.forEach(x => { if (x.dataset.correct === '1') x.style.animation = 'pulse .8s infinite'; }); }
+        if (misses === 1) { const rx = M.reactions && M.reactions.react('wrong1', { hero: o.who, tier: o.who === 'aboody' ? 6 : o.who === 'moody' ? 9 : undefined }), c = rx ? rx.text : U.pick(CLOSE); hint.textContent = M.fmt(c); M.voice.speakSeq(rx ? rx.seq : [c], { speaker: rx ? rx.speaker : 'narrator' }); }
+        else if (misses === 2) { const R = M.reactions, ht = q.hint || (R && R.pick('hintless', {})) || 'فكّر تاني بهدوء', lead = q.hint && R ? R.pick('leadhint', {}) : ''; hint.textContent = 'تلميح: ' + M.fmt(ht); M.voice.speakSeq(lead ? [lead, ht] : [ht], { speaker: 'narrator' }); }
+        else { const rv = M.reactions && M.reactions.react('reveal', { hero: o.who }), rt = rv ? rv.text : 'تعالوا نشوفها سوا!'; hint.textContent = M.fmt(rt); M.voice.speak(rt, { speaker: rv ? rv.speaker : 'narrator' }); btns.forEach(x => { if (x.dataset.correct === '1') x.style.animation = 'pulse .8s infinite'; }); }
         const left = btns.filter(x => x.dataset.correct !== '1' && !x.classList.contains('gone'));
         if (misses === 2 && left.length > 1) { const r = U.pick(left); r.classList.add('gone'); }
         hint.style.color = '#b8520a';
@@ -440,7 +441,7 @@
   UI.result = function (r, f) {
     const coinsNow = M.save.data.coins, prevCoins = Math.max(0, coinsNow - (r.coins || 0));
     try { if (r.world && r.mission && lastBeats > 1) learn(r.world.id + '/' + r.mission.id, Math.max(3, Math.round(lastBeats))); } catch (e) { }
-    const head = r.stars >= 3 ? 'برافو! ممتاز!' : r.stars === 2 ? 'شاطرين أوي!' : 'أحسنتم!';
+    const head = (M.reactions && M.reactions.pick('end' + Math.max(1, Math.min(3, r.stars || 1)), {})) || (r.stars >= 3 ? 'برافو! ممتاز!' : r.stars === 2 ? 'شاطرين أوي!' : 'أحسنتم!');
     const sts = h('div', { class: 'res-stars', role: 'img', 'aria-label': ar(r.stars) + ' من ٣ نجوم' });
     for (let i = 0; i < 3; i++) { const dl = .5 + i * .4, earn = i < r.stars; const s = h('div', { class: 'res-star' + (earn ? ' earn' : ''), style: '--dl:' + dl + 's' }, h('div', { class: 'off' }, I('star', 96, { off: true })), h('div', { class: 'on' }, I('star', 96)), h('i', { class: 'flash' })); sts.append(s); if (earn) { setTimeout(() => M.audio.sfx('star'), dl * 1000 + 150); setTimeout(() => { const rr = s.getBoundingClientRect(); const [x, y] = toLogical(rr.left + rr.width / 2, rr.top + rr.height / 2); UI.sparks(x, y, { n: 10, r: 70 }); }, dl * 1000 + 250); } }
     const hero = (id, side) => h('div', { class: 'res-hero', style: side + ':26px' }, h('img', { class: 'av', src: M.chars.avatar(id) + '?v=1', style: 'width:112px;height:112px', alt: '' }));

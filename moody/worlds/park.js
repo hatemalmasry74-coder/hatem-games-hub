@@ -231,7 +231,7 @@
             prompt: 'نستخبّى فين؟', options: sh([
               { text: 'ورا الشجرة قدام ماما', art: 'pk_tree', good: true, reply: [['mama', 'برافو! قريبين من ماما ومن عينها.', { name: 'ماما' }]] },
               { text: 'بره بوابة الحديقة', art: 'x', good: false, consequence: [['mama', 'لأ يا حبيبي! بره البوابة في عربيات. الحديقة بس، وقدام عيني.', { name: 'ماما' }]] },
-              { text: 'بعيد جدًا ورا المبنى', art: 'sad', good: false, consequence: [['moody', 'لو بعدنا هنتوه عن ماما.. نستخبّى جنبها.']] }])
+              { text: 'بعيد أوي ورا المبنى', art: 'sad', good: false, consequence: [['moody', 'لو بعدنا هنتوه عن ماما.. نستخبّى جنبها.']] }])
           });
           if (c.firstTry) ctx.reward.star(1);
           await ctx.say('moody', 'يلا! أنا هغمّض عيني وأعدّ.. واحد، اتنين..');
