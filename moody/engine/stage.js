@@ -3,7 +3,7 @@
    the two heroes (always present), particles, bubbles. Missions normally talk to it through ctx. */
 (function () {
   'use strict';
-  const M = window.Moody, G = M.gfx, U = M.util, FX = M.fx;
+  const M = window.Moody, G = M.gfx, U = M.util, FX = M.fx, Q = M.quality;
 
   function Stage() {
     this.t = 0; this.bg = null; this.layers = []; this.parts = []; this.floats = []; this.state = {};
@@ -77,13 +77,13 @@
   P.flash = function (col, a) { this.flashC = col || '#fff'; this.flashA = a || .6; };
   P.float = function (text, x, y, col, size) { this.floats.push({ text, x, y, col: col || '#ffc93c', t: 0, size: size || 34 }); };
   P.burst = function (x, y, o) {
-    o = o || {}; const n = o.n || 14, cols = o.cols || ['#ffc93c', '#ff6f91', '#4aa8e8', '#5cc96b', '#ff8a2a', '#8a6bd6'];
-    for (let i = 0; i < n && this.parts.length < 400; i++) {
+    o = o || {}; const n = Math.max(2, Math.round((o.n || 14) * (FX.parts || 1))), cols = o.cols || ['#ffc93c', '#ff6f91', '#4aa8e8', '#5cc96b', '#ff8a2a', '#8a6bd6'];
+    for (let i = 0; i < n && this.parts.length < 400 * (FX.parts || 1); i++) {
       const a = U.rnd(0, 6.283), sp = U.rnd(o.min || 80, o.max || 260);
       this.parts.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - (o.up || 80), g: o.g == null ? 520 : o.g, life: 0, max: U.rnd(.6, 1.2), kind: o.kind || 'conf', col: o.col || U.pick(cols), s: U.rnd(4, 8) * (o.size || 1), rot: U.rnd(0, 6), vr: U.rnd(-8, 8) });
     }
   };
-  P.confetti = function () { for (let i = 0; i < 40; i++) this.parts.push({ x: U.rnd(0, 960), y: U.rnd(-60, -5), vx: U.rnd(-40, 40), vy: U.rnd(60, 160), g: 40, life: 0, max: U.rnd(2.5, 4), kind: 'conf', col: U.pick(['#ffc93c', '#ff6f91', '#4aa8e8', '#5cc96b', '#ff8a2a', '#8a6bd6']), s: U.rnd(5, 9), rot: U.rnd(0, 6), vr: U.rnd(-6, 6) }); };
+  P.confetti = function () { for (let i = 0, n = Math.round(40 * (FX.parts || 1)); i < n; i++) this.parts.push({ x: U.rnd(0, 960), y: U.rnd(-60, -5), vx: U.rnd(-40, 40), vy: U.rnd(60, 160), g: 40, life: 0, max: U.rnd(2.5, 4), kind: 'conf', col: U.pick(['#ffc93c', '#ff6f91', '#4aa8e8', '#5cc96b', '#ff8a2a', '#8a6bd6']), s: U.rnd(5, 9), rot: U.rnd(0, 6), vr: U.rnd(-6, 6) }); };
 
   P.update = function (dt) {
     this.t += dt;
@@ -107,9 +107,41 @@
   };
 
   P.heroAnim = function (h) { return h.fa || (h.tx != null ? 'walk' : (h.anim || 'idle')); };
-  P.drawHero = function (g, h) {
-    if (!h.visible) return; const eq = M.save.data.cosm.eq[h.id] || {};
-    M.chars.draw(g, h.id, h.x, h.y - h.jy, { anim: this.heroAnim(h), t: h.t, dir: h.dir, sc: h.sc, hat: eq.hat, shirtId: eq.shirt, carry: h.carry, talk: h.talk > 0, noShadow: FX.shadows });
+  /* Actor impostors (quality 'medium'/'low', or crowds of 8+ visible actors): every actor that is not the centre of attention (not the active hero, not talking, not walking / playing a
+     gesture, no bubble) is rendered by Moody.chars.draw into its own small offscreen canvas only every 2nd/3rd frame (staggered) and blitted in between with ONE drawImage.
+     chars.js sees the offscreen context as Moody.g for the duration of the call, so its per-actor state (position, tap-reaction visibility, gaze) is updated exactly as for a direct draw. */
+  /* Per-actor impostor canvases, blitted 1:1 (same pixel density as the main canvas, device-pixel aligned): measured 2.5x cheaper than drawing the vector actor every frame
+     (a shared atlas or scaled blits are NOT: each frame then pays a full-texture copy / resample). */
+  const IMP = new Map(); let DF = 0;
+  M.stageImpostors = IMP; let warmT = 0;
+  Q.on(() => {   // quality changed: the canvas density changed too -> drop the impostors and pre-bake the visible actors' sprite sets (one per 80 ms, so no single big hitch)
+    IMP.clear(); clearTimeout(warmT); warmT = setTimeout(() => { try { const sc = M.scene, ids = sc && sc.present ? sc.present() : []; let i = 0; const nx = () => { if (i >= ids.length) return; try { M.chars.warm([ids[i++]]); } catch (e) { } warmT = setTimeout(nx, 80); }; nx(); } catch (e) { } }, 400);
+  });
+  function impFor(id, hgt, k) {
+    const lw = Math.ceil(hgt * 1.2 + 110), top = Math.ceil(hgt * 1.36 + 16), lh = top + 24; let im = IMP.get(id);
+    if (!im || im.k !== k || im.lw < lw || im.lh < lh) { const c = G.mkCanvas(Math.ceil(lw * k), Math.ceil(lh * k)); im = { c, g: c.getContext('2d'), lw: c.width / k, lh: c.height / k, ax: Math.round(lw * k / 2) / k, ay: Math.round(top * k) / k, k, sig: '', fr: -99 }; IMP.set(id, im); }
+    return im;
+  }
+  P.drawHero = function (g, h, idx, nVis) {
+    if (!h.visible || h.x < -120 || h.x > 1080) return;   // hidden / off-screen actors cost nothing
+    const eq = M.save.data.cosm.eq[h.id] || {}, anim = this.heroAnim(h), every0 = FX.idleEvery || 1, V = M.voice;
+    const opts = { anim, t: h.t, dir: h.dir, sc: h.sc, hat: eq.hat, shirtId: eq.shirt, carry: h.carry, talk: h.talk > 0, noShadow: FX.shadows };
+    const crowd = nVis >= 8;   // 8+ visible actors: background actors are refreshed less often at every level (FX.crowdAdd), plus an adaptive extra (this.ie) while the frame rate is poor
+    let every = every0 >= 2 ? every0 + (crowd ? FX.crowdAdd || 1 : 0) : (crowd ? 2 : 1); if (every > 1 || crowd) every += this.ie | 0;
+    if (every > 1) {
+      const busy = h.talk > 0 || h.tx != null || h.fa || h.bubble || h.carry || (V && V.speaker === h.id) || this.tr || this.mood > 0;
+      if (busy) every = Math.min(every, FX.fgEvery || 1);                                            // walking / talking / gesturing: full rate (high, medium) or 30 fps (low)
+      else if (h.id === this.active) every = Math.min(every, (FX.fgEvery || 1) + (FX.idleEvery >= 4 ? 1 : 0));   // the hero the child controls, standing still: low = 20 fps
+      if (h.carry) every = 1;
+    }
+    const y = h.y - h.jy;
+    if (every <= 1 || this.impMode === 'off') { M.chars.draw(g, h.id, h.x, y, opts); return; }
+    const k = M.cv.width / 960, im = impFor(h.id, M.chars.height(h.id) * h.sc, k), sig = anim + '|' + h.dir + '|' + h.sc + '|' + eq.hat + '|' + eq.shirt + '|' + (h.talk > 0 ? 1 : 0);
+    if (im.sig !== sig || DF - im.fr >= every || (DF + idx) % every === 0) {
+      const cg = im.g; cg.setTransform(1, 0, 0, 1, 0, 0); cg.clearRect(0, 0, im.c.width, im.c.height); cg.setTransform(k, 0, 0, k, (im.ax - h.x) * k, (im.ay - y) * k); cg.lineJoin = 'round'; cg.lineCap = 'round'; cg.direction = 'rtl';
+      const og = M.g; M.g = cg; try { M.chars.draw(cg, h.id, h.x, y, opts); } finally { M.g = og; } im.sig = sig; im.fr = DF;
+    }
+    g.drawImage(im.c, Math.round((h.x - im.ax) * k) / k, Math.round((y - im.ay) * k) / k, im.lw, im.lh);
   };
   P.drawBubble = function (g, h) {
     if (!h.bubble || !h.visible) return; const txt = h.bubble.text, hh = M.chars.height(h.id) * h.sc;
@@ -151,21 +183,21 @@
   P.ensureBake = function () {
     const bg = this.bg, cv = M.cv, W = cv.width, H = cv.height, rn = roomOf(bg);
     if (!rn || this._raw === bg || (LOOK.table[rn] && LOOK.table[rn].raw)) return null;
-    const sig = this._sig(); if (POOL.owner === this && POOL.bg === bg && POOL.W === W && !this._dirty && sig === POOL.st) return this._meta;
+    const qk = Q.level + '|' + FX.bake, sig = this._sig(); if (POOL.owner === this && POOL.bg === bg && POOL.W === W && POOL.qk === qk && !this._dirty && sig === POOL.st) return this._meta;
     // too many rebakes per second (a kit mutating the state every frame) -> fall back to the raw drawer for this bg
     const now = performance.now(); this._bkTimes.push(now); while (this._bkTimes.length && now - this._bkTimes[0] > 1500) this._bkTimes.shift();
     if (this._bkTimes.length > 6 && POOL.owner === this) { this._raw = bg; return null; }
-    this._dirty = false; const k = W / 960, kf = k * .5;
-    if (POOL.W !== W || POOL.H !== H || !POOL.mid) {
+    this._dirty = false; const k = W / 960, bs = FX.bake || .5, kf = k * bs;
+    if (POOL.W !== W || POOL.H !== H || !POOL.mid || POOL.bs !== bs) {
       const fw = (960 + FM * 2) * k, fh = (540 + FM * 2) * k;
-      POOL.W = W; POOL.H = H; POOL.mid = G.mkCanvas(W, H); POOL.far = G.mkCanvas(fw, fh); POOL.near = G.mkCanvas(fw, fh); POOL.tf = G.mkCanvas(fw / 2, fh / 2); POOL.tn = G.mkCanvas(fw / 2, fh / 2);
+      POOL.W = W; POOL.H = H; POOL.bs = bs; POOL.cm = null; POOL.mid = G.mkCanvas(W, H); POOL.far = G.mkCanvas(fw, fh); POOL.near = G.mkCanvas(fw, fh); POOL.tf = G.mkCanvas(fw * bs, fh * bs); POOL.tn = G.mkCanvas(fw * bs, fh * bs);
       POOL.mc = POOL.mid.getContext('2d'); POOL.fc = POOL.tf.getContext('2d', { willReadFrequently: true }); POOL.nc = POOL.tn.getContext('2d', { willReadFrequently: true });   // far/near are painted at half resolution (soft depth-of-field) and upscaled ONCE into the full-res canvases
     }
     const mc = POOL.mc, fc = POOL.fc, nc = POOL.nc, meta = LOOK.get(rn, this); this._meta = meta;
     [mc, fc, nc].forEach(c => { c.setTransform(1, 0, 0, 1, 0, 0); c.globalCompositeOperation = 'source-over'; c.globalAlpha = 1; c.clearRect(0, 0, c.canvas.width, c.canvas.height); c.lineJoin = 'round'; c.lineCap = 'round'; c.direction = 'rtl'; });
     mc.setTransform(k, 0, 0, k, 0, 0); fc.setTransform(kf, 0, 0, kf, kf * FM, kf * FM); nc.setTransform(kf, 0, 0, kf, kf * FM, kf * FM);
     this._amb = []; this._tg = { mid: mc, far: fc, near: nc, usedFar: false, usedNear: false };
-    G.paint = true; G.floorY = meta.floor; G.lightX = meta.lightX || 480; G.artDepth = 0;
+    G.paint = FX.paint !== false; G.floorY = meta.floor; G.lightX = meta.lightX || 480; G.artDepth = 0;
     try { bg(mc, 0, this); } catch (e) { this._raw = bg; console.error(e); } finally { G.paint = false; G.artDepth = 0; }
     mc.setTransform(k, 0, 0, k, 0, 0); G.gradeMid(mc, meta, 960, 540);
     if (this._tg.usedFar) { fc.setTransform(kf, 0, 0, kf, kf * FM, kf * FM); fc.globalCompositeOperation = 'source-atop'; fc.fillStyle = meta.haze || 'rgba(222,236,255,.12)'; fc.fillRect(-FM, -FM, 960 + FM * 2, 540 + FM * 2); fc.globalCompositeOperation = 'source-over'; }
@@ -175,7 +207,18 @@
     this._hasFar = this._tg.usedFar; this._tg = null; POOL.farR = this._hasFar ? occRects(POOL.tf, 6) : null; POOL.nearR = occRects(POOL.tn, 3);
     const A = this._amb; this._aF = A.filter(a => a.z === 'far'); this._aM = A.filter(a => a.z === 'mid'); this._aT = A.filter(a => a.z === 'top');
     this._liveSet = null; if (meta.live && meta.live.length) { this._liveSet = {}; meta.live.forEach(k => { this._liveSet[k] = 1; }); }
-    POOL.owner = this; POOL.bg = bg; POOL.st = this._sig(); POOL.rn = rn; return meta;
+    // low quality (no parallax): fold the far layer + its frozen decorative ambient into ONE canvas with the room, so a frame needs a single blit instead of tiles + ambient + mid
+    this._merged = false;
+    if (!FX.parallax && !this._aF.some(a => a.k === 'live') && (this._hasFar || this._aF.length)) {
+      try {
+        const cm = POOL.cm || (POOL.cm = G.mkCanvas(W, H)), x = cm.getContext('2d'); x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, W, H);
+        if (this._hasFar) x.drawImage(POOL.far, -FM * k, -FM * k);
+        x.setTransform(k, 0, 0, k, 0, 0); x.lineJoin = 'round'; x.lineCap = 'round'; ambDraw(x, this._aF, 0, false, this); x.drawImage(POOL.mid, 0, 0, 960, 540);
+        const frozen = this._aM.filter(a => a.k === 'curtain' || a.k === 'waves'); if (frozen.length) { ambDraw(x, frozen, 0, false, this); this._aM = this._aM.filter(a => frozen.indexOf(a) < 0); }   // swaying curtains / wave lines stand still at 'low': baked once
+        this._merged = true;
+      } catch (e) { this._merged = false; }
+    }
+    POOL.owner = this; POOL.bg = bg; POOL.st = this._sig(); POOL.rn = rn; POOL.qk = qk; return meta;
   };
   const GEN = { W: 0, c: null };
   function genericNear(W) { if (GEN.W === W) return GEN.c; const kf = W / 960 * .5, t = G.mkCanvas((960 + FM * 2) * kf, (540 + FM * 2) * kf), x = t.getContext('2d'); x.setTransform(kf, 0, 0, kf, kf * FM, kf * FM); G.gradeNear(x, LOOK.get('', null), 960, 540); const c = GEN.c = G.mkCanvas((960 + FM * 2) * kf * 2, (540 + FM * 2) * kf * 2); c.getContext('2d').drawImage(t, 0, 0, c.width, c.height); GEN.W = W; return c; }
@@ -185,6 +228,7 @@
     const meta = this.bg ? this.ensureBake() : null; this._cur = meta;
     if (!this.bg) return;
     if (!meta) { this.bg(g, this.t, this); return; }
+    if (this._merged && POOL.cm && POOL.owner === this) { g.drawImage(POOL.cm, 0, 0, 960, 540); if (this._aM.length) ambDraw(g, this._aM, FX.motion ? this.t : 0, FX.motion, this); return; }
     const motion = FX.motion, at = motion ? this.t : 0, px = FX.parallax && motion ? this.par.x * meta.par : 0, py = FX.parallax && motion ? this.par.y * meta.par : 0;
     const kq = M.cv.width / 960, Q = v => Math.round(v * kq) / kq; if (this._hasFar) blitRects(g, POOL.far, POOL.farR, Q(-FM - px * 9), Q(-FM - py * 4), kq);
     if (FX.ambient || true) { if (this._aF.length) ambDraw(g, this._aF, at, motion, this); }
@@ -209,13 +253,13 @@
     this.idleT += dt;
     const k2 = Math.min(dt, .04); let z = 1;
     if (this.moodOn) { this.mood = Math.min(1, this.mood + k2 * 3); this.moodT += k2; } else if (this.mood > 0) { this.mood = Math.max(0, this.mood - k2 * 3); if (!this.mood) this.moodT = 0; }
-    if (this.mood > 0 && FX.motion) z += .035 * Math.min(1, this.moodT / 3.5);
+    if (this.mood > 0 && FX.motion && FX.trans === 'full') z += .035 * Math.min(1, this.moodT / 3.5);
     const tr = this.tr;
     if (tr) {
       tr.t += k2 * 1000;
       if (tr.ph === 0 && tr.t >= tr.dc) { tr.ph = 1; tr.t = 0; try { tr.apply(); } catch (e) { console.error(e); } this._cam = null; if (this.bg && !this._skipBake) { try { this.ensureBake(); } catch (e) { } } }
       else if (tr.ph === 1 && tr.t >= tr.do) { this.tr = null; tr.res(); }
-      if (this.tr && this.tr.ph === 1 && FX.motion) { const e = U.ease.outCubic(Math.min(1, tr.t / tr.do)); z += .05 * (1 - e); }
+      if (this.tr && this.tr.ph === 1 && FX.motion && FX.trans === 'full') { const e = U.ease.outCubic(Math.min(1, tr.t / tr.do)); z += .05 * (1 - e); }
     }
     this.zoom = z;
   };
@@ -225,7 +269,7 @@
     return new Promise(res => {
       if (me.tr) { const old = me.tr; me.tr = null; try { if (old.ph === 0) old.apply(); } catch (e) { } old.res(); }
       if (o.instant || !FX.motion && o.instant !== false && false) { apply(); res(); return; }
-      const h = me.hero(); me.tr = { ph: 0, t: 0, dc: o.closeMs || 210, do: o.openMs || 300, apply, res, style: o.style || 'iris', cx: h && h.visible ? h.x : 480, cy: h && h.visible ? h.y - 80 : 300 };
+      const h = me.hero(), fast = FX.trans !== 'full' || !FX.motion; me.tr = { ph: 0, t: 0, dc: o.closeMs || (fast ? 110 : 210), do: o.openMs || (fast ? 150 : 300), fast, apply, res, style: o.style || 'iris', cx: h && h.visible ? h.x : 480, cy: h && h.visible ? h.y - 80 : 300 };
     });
   };
   P.skipTr = function () { const tr = this.tr; if (!tr) return; if (tr.ph === 0) tr.t = Math.max(tr.t, tr.dc - 1); else tr.t = Math.max(tr.t, tr.do - 1); };
@@ -236,15 +280,27 @@
     if (m > 0) { const e = U.ease.outCubic(m), bh = 44 * e; g.save(); g.fillStyle = 'rgba(20,10,30,' + (.2 * e) + ')'; g.fillRect(0, 0, 960, 540); g.fillStyle = 'rgba(10,5,20,.92)'; g.fillRect(0, 0, 960, bh); g.fillRect(0, 540 - bh, 960, bh); g.restore(); }
     if (tr) {
       const p = tr.ph === 0 ? Math.min(1, tr.t / tr.dc) : 1 - Math.min(1, tr.t / tr.do), e = U.ease.inOut(p), r = 720 * (1 - e) + 1;
+      if (tr.fast) { g.save(); g.globalAlpha = Math.min(1, e * 1.05); g.fillStyle = IRIS; g.fillRect(-60, -60, 1080, 660); g.restore(); return; }   // low quality / reduced motion: plain fade (no radial gradient, no glow pass)
       g.save(); g.globalAlpha = Math.min(1, .35 + e * .75); const ig = g.createRadialGradient(tr.cx, tr.cy, Math.max(0, r - 34), tr.cx, tr.cy, r + 26); ig.addColorStop(0, 'rgba(42,27,61,0)'); ig.addColorStop(1, IRIS); g.fillStyle = ig; g.fillRect(-60, -60, 1080, 660);
       if (e < .98) { g.globalAlpha = .25 * (1 - e); const gs = G.glowSprite('255,230,170'); g.globalCompositeOperation = 'lighter'; g.drawImage(gs, tr.cx - r * 1.08, tr.cy - r * 1.08, r * 2.16, r * 2.16); }
       g.restore();
     }
   };
-  /* contact shadow of a hero (soft, offset away from the room's key light, shrinks while jumping) */
-  P.drawShadow = function (g, h) {
-    if (!FX.shadows || !h.visible) return; const m = this._cur || LOOK.def, sc = h.sc * (1 / (1 + h.jy / 220)), w = 112 * sc, hh = 40 * sc, lx = (m.lightX || 480), ox = U.clamp((h.x - lx) * .035, -14, 14) * sc;
-    g.globalAlpha = (.95 * (m.shadow == null ? 1 : m.shadow)) / (1 + h.jy / 160); g.drawImage(G.shadowSprite(), h.x - w / 2 + ox, h.y - hh * .42, w, hh); g.globalAlpha = 1;
+  /* contact shadows of all visible actors, drawn in ONE pass before the actors: soft sprite (high/medium) or a single flat batched path (low).
+     Soft shadow is offset away from the room's key light and shrinks while jumping. */
+  P.drawShadows = function (g, hs) {
+    if (!FX.shadows) return; const m = this._cur || LOOK.def, lx = (m.lightX || 480), k = m.shadow == null ? 1 : m.shadow, flat = FX.shadowMode === 'flat';
+    if (flat) {
+      g.save(); g.fillStyle = 'rgba(40,22,8,' + (.26 * k).toFixed(3) + ')'; g.beginPath();
+      for (let i = 0; i < hs.length; i++) { const h = hs[i]; if (!h.visible || h.x < -120 || h.x > 1080) continue; const sc = h.sc * (1 / (1 + h.jy / 220)), w = 50 * sc, hh = 12 * sc; g.moveTo(h.x + w, h.y + 2); g.ellipse(h.x, h.y + 2, w, hh, 0, 0, 6.2832); }
+      g.fill(); g.restore(); return;
+    }
+    const spr = G.shadowSprite(); let ga = 1;
+    for (let i = 0; i < hs.length; i++) {
+      const h = hs[i]; if (!h.visible || h.x < -120 || h.x > 1080) continue; const sc = h.sc * (1 / (1 + h.jy / 220)), w = 112 * sc, hh = 40 * sc, ox = U.clamp((h.x - lx) * .035, -14, 14) * sc, a = (.95 * k) / (1 + h.jy / 160);
+      if (a !== ga) { g.globalAlpha = a; ga = a; } g.drawImage(spr, h.x - w / 2 + ox, h.y - hh * .42, w, hh);
+    }
+    if (ga !== 1) g.globalAlpha = 1;
   };
   /* ---- glows (what can I tap?) ---- */
   P.addGlow = function (x, y, r, col) { const o = { x, y, r: r || 40, col: col || '255,236,150' }; this.glows.push(o); const me = this; return () => { const i = me.glows.indexOf(o); if (i >= 0) me.glows.splice(i, 1); }; };
@@ -260,8 +316,8 @@
   };
   /* ---- reward / discovery effects ---- */
   P.sparkle = function (x, y, o) {
-    o = o || {}; const n = o.n || 12, cols = o.cols || ['#fff6a8', '#ffe27a', '#ffffff', '#ffc4e0', '#bfe8ff'];
-    for (let i = 0; i < n && this.parts.length < 400; i++) { const a = U.rnd(0, 6.283), sp = U.rnd(30, o.spread || 150); this.parts.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 30, g: -20, life: 0, max: U.rnd(.7, 1.4), kind: 'spark', col: U.pick(cols), s: U.rnd(3, 7) * (o.size || 1), rot: 0, vr: U.rnd(-3, 3) }); }
+    o = o || {}; const n = Math.max(2, Math.round((o.n || 12) * (FX.parts || 1))), cols = o.cols || ['#fff6a8', '#ffe27a', '#ffffff', '#ffc4e0', '#bfe8ff'];
+    for (let i = 0; i < n && this.parts.length < 400 * (FX.parts || 1); i++) { const a = U.rnd(0, 6.283), sp = U.rnd(30, o.spread || 150); this.parts.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 30, g: -20, life: 0, max: U.rnd(.7, 1.4), kind: 'spark', col: U.pick(cols), s: U.rnd(3, 7) * (o.size || 1), rot: 0, vr: U.rnd(-3, 3) }); }
     this.parts.push({ x, y, vx: 0, vy: 0, g: 0, life: 0, max: .6, kind: 'ring', col: '#fff3b0', s: o.ring || 46, rot: 0, vr: 0 });
     this.parts.push({ x, y, vx: 0, vy: 0, g: 0, life: 0, max: .5, kind: 'glow', col: '', s: o.glow || 60, rot: 0, vr: 0 });
   };
@@ -284,11 +340,17 @@
     this.drawBg(g);
     for (const l of this.layers) if (l.z < 0 && l.draw) l.draw(g, this.t, this);
     const hs = this._hs || (this._hs = []); hs.length = 0; for (const k in this.heroes) hs.push(this.heroes[k]); hs.sort((a, b) => a.y - b.y);
-    for (const h of hs) {
+    DF++; let nVis = 0; for (let i = 0; i < hs.length; i++) if (hs[i].visible) nVis++;
+    if (nVis >= 3 && (FX.idleEvery > 1 || nVis >= 8) && DF % 30 === 0) {   // adaptive crowd LOD: frame time (EMA, core.js) > 21 ms -> background actors one step less often (max +6); < 17.4 ms (full 60 fps) -> one step back
+      const ms = Q.perf.ms; if (ms > 21 && (this.ie | 0) < 6) this.ie = (this.ie | 0) + 1; else if (ms < 17.4 && this.ie > 0) this.ie--;
+    }
+    this.drawShadows(g, hs)
+    for (let i = 0; i < hs.length; i++) {
+      const h = hs[i];
       if (h.visible && this.showActive && h.id === this.active && this.control.length > 1 && this.control.every(k => this.heroes[k].visible)) {
         g.save(); g.globalAlpha = .5 + .2 * Math.sin(this.t * 5); G.ell(g, h.x, h.y + 2, 38 * h.sc, 10 * h.sc, h.id === 'moody' ? '#ffc93c' : '#4aa8e8', 0); g.restore();
       }
-      this.drawShadow(g, h); this.drawHero(g, h);
+      this.drawHero(g, h, i, nVis);
     }
     this.drawNear(g); this.drawGlows(g);
     for (const l of this.layers) if (l.z >= 0 && l.z < 50 && l.draw) l.draw(g, this.t, this);
@@ -309,8 +371,15 @@
     this.drawOverlay(g);
   };
   /* pointer routing: kit input first, otherwise tapping a hero switches it */
+  /* tap reaction for actors drawn through impostors (chars.js only reacts to actors it drew itself this/last frame; a duplicate call is a no-op thanks to chars' own cooldown) */
+  P.tapReact = function (x, y) {
+    const C = M.chars; if (!C || !C.react || C.autoTap === false || M.paused) return; let best = null;
+    for (const k in this.heroes) { const h = this.heroes[k]; if (!h.visible || h.fa || h.tx != null || h.carry || this.cast.indexOf(k) < 0) continue; const hh = C.height(k) * h.sc; if (Math.abs(x - h.x) < 36 * h.sc + 6 && y < h.y + 8 && y > h.y - hh - 6 && (!best || h.y > best.y)) best = h; }
+    if (best && C.react(best.id) && C.focus) { C.focus.x = x; C.focus.y = best.y - 90 * best.sc; C.focus.until = performance.now() / 1000 + 2.2; C.focus.id = best.id; }
+  };
   P.down = function (x, y, id, e) {
     this.idleT = 0; if (this.tr) { this.skipTr(); return; }
+    if (!this.input) this.tapReact(x, y);
     if (this.input && this.input.down && this.input.down(x, y, id, e)) return;
     for (const k of this.control) { const h = this.heroes[k]; if (!h.visible || k === this.active) continue; const hh = M.chars.height(k) * h.sc; if (Math.abs(x - h.x) < 40 && y < h.y + 6 && y > h.y - hh - 10) { this.setActive(k); return; } }
   };

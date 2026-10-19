@@ -1,6 +1,7 @@
 {
  "name": "مودي وعبودي",
  "short_name": "مودي وعبودي",
+ "description": "مودي وعبودي: مغامرات وألغاز وقيم للأطفال بالعربي المصري",
  "lang": "ar",
  "dir": "rtl",
  "start_url": "./?source=pwa",
@@ -13,6 +14,15 @@
  "background_color": "#0b1a33",
  "theme_color": "#0b1a33",
  "orientation": "landscape",
+ "categories": [
+  "kids",
+  "education",
+  "games"
+ ],
+ "prefer_related_applications": false,
+ "launch_handler": {
+  "client_mode": "focus-existing"
+ },
  "icons": [
   {
    "src": "icons/icon-192.png",

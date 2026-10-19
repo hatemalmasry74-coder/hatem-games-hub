@@ -4,16 +4,18 @@ const { shade } = require('./charspatch');
 const HAIR = '#3b2417';
 const TOPS = ['placket', 'vneck', 'polo', 'crew', 'dress', 'blouse', 'floral', 'hoodie', 'cardigan'];   // cardigan = the v3 long jacket of the older sister
 const HAIRS = ['curly', 'ponytail', 'pigtails', 'bob', 'scarf', 'short'];
-const GIRL_KEYS_OFF = { v3: null, pk: null, hijab: null, pin: null, cuff: null, shoeAcc: null, braid: null, stitch: null, ribbon: null, charm: null, hat: null, iris: null, belt: null, skirt: null, keepSkirt: null, flowers: null, scarf: null, under: null, ruffle: null, sleeveLong: null, lash: null, neckPhones: null, bag: null, sunhat: null, bunny: null, smile: null, legC: null, legW: null, trim: null, belt: null, tie: null };
+const GIRL_KEYS_OFF = { v3: null, v4: null, pk: null, hijab: null, pin: null, cuff: null, shoeAcc: null, braid: null, stitch: null, ribbon: null, charm: null, hat: null, iris: null, belt: null, skirt: null, keepSkirt: null, flowers: null, scarf: null, under: null, ruffle: null, sleeveLong: null, lash: null, neckPhones: null, bag: null, sunhat: null, bunny: null, smile: null, legC: null, legW: null, trim: null, belt: null, tie: null };
 /* what to apply when the gender differs from the base character of that slot */
 function genderPreset(slot, gender, skin) {
   if (gender === 'f') {   // boy slot -> girl
     const older = slot === 'moody';
-    return { top: 'dress', hair: older ? 'ponytail' : 'pigtails', hairC: HAIR, shirt: older ? '#8a6bd6' : '#ff86ad', pants: skin, legC: skin, legW: 11, lash: true, trim: '#fff', belt: '#ffd23c', shoe: '#ffffff', tie: older ? '#ff6f91' : '#ffffff', curl: null, stripes: null };
+    // characters v4 (V4P only fills fields that are undefined, so a changed style needs explicit values, not deletions)
+    const v4 = { eyeK: 'girl', browK: .85, mw: .84, shoeK: 'flat', shoeAcc: '#ffffff', hemC: older ? '#8a6bd6' : '#ff86ad', lips: false, soft: false, lines: 0, blush: .28 };
+    return Object.assign(v4, { top: 'dress', hair: older ? 'ponytail' : 'pigtails', hairC: HAIR, shirt: older ? '#8a6bd6' : '#ff86ad', pants: skin, legC: skin, legW: 11, lash: true, trim: '#fff', belt: '#ffd23c', shoe: '#ffffff', tie: older ? '#ff6f91' : '#ffffff', curl: null, stripes: null });
   }
   // girl/grandma slot -> boy/grandpa
   const base = Object.assign({}, GIRL_KEYS_OFF, { top: slot === 'nana' ? 'polo' : slot === 'toota' ? 'polo' : 'crew', hair: 'short', hairC: slot === 'nana' ? '#cfcfd6' : HAIR, shirt: slot === 'nana' ? '#8fa6b8' : '#3f86d6', pants: '#3b3f50', shoe: '#f3eee2', curl: null });
-  if (slot === 'nana') base.beard = '#cfcfd6';
+  if (slot === 'nana') Object.assign(base, { beard: '#cfcfd6', eyeK: 'man', browK: 1.1, lips: false, shoeK: 'dress', lines: 2, scarfDots: false, blush: .1 });
   return base;
 }
 /* explicit user look -> properties (null = remove the property) */

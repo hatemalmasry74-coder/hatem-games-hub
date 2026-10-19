@@ -89,13 +89,9 @@
      Rooms are baked once into offscreen canvases (far / mid / near) by Stage; this section holds the toolkit:
      painted-mode shading (above), colour grading, windows + views, light shafts, ambient animation kinds, look registry.
      ===================================================================================================== */
-  const FX = M.fx = M.fx || {};
-  FX.ambient = true; FX.parallax = true; FX.motion = true; FX.shadows = true; FX.glow = true;
-  try {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)'); FX.motion = !mq.matches;
-    const on = () => { FX.motion = !mq.matches; }; if (mq.addEventListener) mq.addEventListener('change', on); else if (mq.addListener) mq.addListener(on);
-    if (/[?&]motion=0/.test(location.search)) FX.motion = false; if (/[?&]ambient=0/.test(location.search)) FX.ambient = false;
-  } catch (e) { }
+  const FX = M.fx = M.fx || {};   // flags are owned by Moody.quality (core.js): motion, parallax, ambient, ambK, paint, shadows, ...
+  if (FX.ambient == null) FX.ambient = true; if (FX.parallax == null) FX.parallax = true; if (FX.motion == null) FX.motion = true; if (FX.shadows == null) FX.shadows = true; if (FX.glow == null) FX.glow = true; if (FX.ambK == null) FX.ambK = 1; if (FX.paint == null) FX.paint = true;
+  const AK = n => Math.max(1, Math.round(n * (FX.ambK == null ? 1 : FX.ambK)));   // ambient element count follows the quality level
   G.mkCanvas = (w, h) => { const c = document.createElement('canvas'); c.width = Math.max(1, Math.round(w)); c.height = Math.max(1, Math.round(h)); return c; };
   const rnd = seed => { let s = (seed * 9301 + 49297) % 233280; return () => { s = (s * 9301 + 49297) % 233280; return s / 233280; }; };
   G.rand = rnd;
@@ -170,9 +166,9 @@
      over x in [0,P) (P >= 960, fn must be periodic in P); G.drawTile(g, tile, scroll) blits it wrapped.  res<1 = cheaper, softer far layers. */
   const TILES = new Map();
   G.tile = function (key, P, y0, y1, res, fn) {
-    const km = M.cv ? M.cv.width / 960 : 1, k = km, kk = key + '|' + k.toFixed(2); let t = TILES.get(kk); if (t) return t;
+    const km = M.cv ? M.cv.width / 960 : 1, k = km, kk = key + '|' + k.toFixed(2) + (FX.paint === false ? '|f' : ''); let t = TILES.get(kk); if (t) return t;
     const c = G.mkCanvas(P * k, (y1 - y0) * k), x = c.getContext('2d'); x.setTransform(k, 0, 0, k, 0, -y0 * k); x.lineJoin = 'round'; x.lineCap = 'round';
-    const pp = G.paint; G.paint = true; try { fn(x); } finally { G.paint = pp; }
+    const pp = G.paint; G.paint = FX.paint !== false; try { fn(x); } finally { G.paint = pp; }
     t = { c, P, y0, h: y1 - y0, k, wpx: c.width, hpx: c.height }; TILES.set(kk, t); return t;
   };
   /* pure 1:1 integer-pixel blit of the visible 960-wide window of a wrapped tile */
@@ -245,30 +241,30 @@
     g.save(); g.globalCompositeOperation = 'lighter'; const al = sp.a * (.82 + .18 * Math.sin(t * .7 + (sp.ph || 0))); g.fillStyle = sp._gr;
     const cx = (p[0][0] + p[1][0] + p[2][0] + p[3][0]) / 4, cy = (p[0][1] + p[3][1]) / 2; for (let k = 0; k < 3; k++) { const f = 1 - k * .22; g.globalAlpha = al * (k ? .45 : .5); g.beginPath(); for (let i = 0; i < 4; i++) { const x = cx + (p[i][0] - cx) * f, y = p[i][1]; i ? g.lineTo(x, y) : g.moveTo(x, y); } g.closePath(); g.fill(); } g.restore(); } };
   K.dust = { z: 'top', opt: true, draw(g, t, sp) {
-    const b = sp.box, n = sp.n; if (!sp._p) { const R = rnd(sp.seed || 1); sp._p = []; for (let i = 0; i < n; i++) sp._p.push([R(), R(), .4 + R() * .8, R() * 6, 1.5 + R() * 2.2]); } const gs = G.glowSprite('255,244,210');
+    const b = sp.box, n = AK(sp.n); if (!sp._p) { const R = rnd(sp.seed || 1); sp._p = []; for (let i = 0; i < sp.n; i++) sp._p.push([R(), R(), .4 + R() * .8, R() * 6, 1.5 + R() * 2.2]); } const gs = G.glowSprite('255,244,210');
     g.save(); g.globalCompositeOperation = 'lighter';
     for (let i = 0; i < n; i++) { const p = sp._p[i], px = b[0] + (((p[0] + Math.sin(t * .25 * p[2] + p[3]) * .04 + t * .004 * p[2]) % 1) + 1) % 1 * b[2], py = b[1] + (((p[1] - t * .012 * p[2] * 1) % 1) + 1) % 1 * b[3], tw = .5 + .5 * Math.sin(t * 1.3 * p[2] + p[3]); g.globalAlpha = .22 + .5 * tw; g.drawImage(gs, px - p[4] * 2, py - p[4] * 2, p[4] * 4, p[4] * 4); }
     g.restore(); } };
   K.glow = { z: 'top', draw(g, t, sp) { const f = sp.flick ? 1 - sp.flick * (.5 + .5 * Math.sin(t * 9 + (sp.ph || 0)) * Math.sin(t * 3.7)) : 1; g.save(); g.globalCompositeOperation = 'lighter'; g.globalAlpha = (sp.a == null ? .5 : sp.a) * f * (sp.pulse ? .85 + .15 * Math.sin(t * 2.2) : 1); const r = sp.r; g.drawImage(G.glowSprite(sp.col), sp.x - r, sp.y - (sp.ry || r), r * 2, (sp.ry || r) * 2); g.restore(); } };
   K.clouds = { z: 'far', draw(g, t, sp) {
-    if (!sp._c) { const R = rnd(sp.seed || 1); sp._c = []; for (let i = 0; i < sp.n; i++) sp._c.push([R(), sp.y0 + R() * (sp.y1 - sp.y0), .6 + R() * .7, Math.floor(R() * 3)]); }
+    const ncl = AK(sp.n); if (!sp._c) { const R = rnd(sp.seed || 1); sp._c = []; for (let i = 0; i < sp.n; i++) sp._c.push([R(), sp.y0 + R() * (sp.y1 - sp.y0), .6 + R() * .7, Math.floor(R() * 3)]); }
     g.save(); if (sp.clip) { g.beginPath(); g.rect(sp.clip[0], sp.clip[1], sp.clip[2], sp.clip[3]); g.clip(); } const span = sp.x1 - sp.x0; g.globalAlpha = sp.a == null ? .9 : sp.a;
-    for (let i = 0; i < sp.n; i++) { const c = sp._c[i], x = sp.x0 + ((c[0] * span + t * sp.speed * c[2]) % span), w = 220 * sp.sc * c[2], sp1 = G.cloudSprite(c[3]); g.drawImage(sp1, x - w / 2, c[1] - w * .25, w, w * .5); }
+    for (let i = 0; i < ncl; i++) { const c = sp._c[i], x = sp.x0 + ((c[0] * span + t * sp.speed * c[2]) % span), w = 220 * sp.sc * c[2], sp1 = G.cloudSprite(c[3]); g.drawImage(sp1, x - w / 2, c[1] - w * .25, w, w * .5); }
     g.restore(); } };
   K.birds = { z: 'far', opt: true, draw(g, t, sp) {
     g.save(); if (sp.clip) { g.beginPath(); g.rect(sp.clip[0], sp.clip[1], sp.clip[2], sp.clip[3]); g.clip(); } g.strokeStyle = sp.col || 'rgba(60,50,70,.75)'; g.lineWidth = 1.6 * sp.sc; g.lineCap = 'round'; const R = rnd(sp.seed || 1), span = (sp.clip ? sp.clip[2] : 960) + 120, bx = sp.clip ? sp.clip[0] : 0;
-    for (let i = 0; i < sp.n; i++) { const o = R() * span, x = bx - 40 + ((o + t * sp.speed * (1 + i * .15)) % span), y = sp.y + Math.sin(t * .8 + i * 2) * 5 + i * 9, f = Math.sin(t * 7 + i * 1.7) * 5 * sp.sc; g.beginPath(); g.moveTo(x - 9 * sp.sc, y - f * .6); g.quadraticCurveTo(x - 4 * sp.sc, y - 4 * sp.sc - f, x, y); g.quadraticCurveTo(x + 4 * sp.sc, y - 4 * sp.sc - f, x + 9 * sp.sc, y - f * .6); g.stroke(); }
+    for (let i = 0; i < AK(sp.n); i++) { const o = R() * span, x = bx - 40 + ((o + t * sp.speed * (1 + i * .15)) % span), y = sp.y + Math.sin(t * .8 + i * 2) * 5 + i * 9, f = Math.sin(t * 7 + i * 1.7) * 5 * sp.sc; g.beginPath(); g.moveTo(x - 9 * sp.sc, y - f * .6); g.quadraticCurveTo(x - 4 * sp.sc, y - 4 * sp.sc - f, x, y); g.quadraticCurveTo(x + 4 * sp.sc, y - 4 * sp.sc - f, x + 9 * sp.sc, y - f * .6); g.stroke(); }
     g.restore(); } };
   K.stars = { z: 'far', draw(g, t, sp) { for (let i = 0; i < sp.pts.length; i++) { const p = sp.pts[i]; G.sparkle(g, p[0], p[1], p[2], '#fff6c8', .45 + .5 * Math.sin(t * 2 + i * 1.9) * .5 + .25); } } };
-  K.steam = { z: 'mid', opt: true, draw(g, t, sp) { const gs = G.glowSprite('255,255,255'); g.save(); for (let i = 0; i < (sp.n || 4); i++) { const u = ((t * .35 + i / (sp.n || 4)) % 1), x = sp.x + Math.sin(u * 5 + i * 2) * 9 * sp.sc * u, y = sp.y - u * 46 * sp.sc, r = (7 + u * 14) * sp.sc; g.globalAlpha = .45 * Math.sin(u * 3.14); g.drawImage(gs, x - r, y - r, r * 2, r * 2); } g.restore(); } };
+  K.steam = { z: 'mid', opt: true, draw(g, t, sp) { const gs = G.glowSprite('255,255,255'); g.save(); for (let i = 0; i < AK(sp.n || 4); i++) { const u = ((t * .35 + i / AK(sp.n || 4)) % 1), x = sp.x + Math.sin(u * 5 + i * 2) * 9 * sp.sc * u, y = sp.y - u * 46 * sp.sc, r = (7 + u * 14) * sp.sc; g.globalAlpha = .45 * Math.sin(u * 3.14); g.drawImage(gs, x - r, y - r, r * 2, r * 2); } g.restore(); } };
   K.blink = { z: 'mid', draw(g, t, sp) { const on = ((t / (sp.period || 1.2) + (sp.ph || 0)) % 1) < (sp.duty || .5); const a = sp.alwaysOn ? 1 : on ? 1 : .22; g.save(); g.globalAlpha = a; G.circ(g, sp.x, sp.y, sp.r, sp.col, 0); g.globalCompositeOperation = 'lighter'; g.globalAlpha = a * .55; g.drawImage(G.glowSprite(sp.glow || '255,230,150'), sp.x - sp.r * 4, sp.y - sp.r * 4, sp.r * 8, sp.r * 8); g.restore(); } };
   K.waves = { z: 'mid', draw(g, t, sp) { for (let k = 0; k < (sp.n || 3); k++) { const y = sp.y0 + k * (sp.h / (sp.n || 3)); g.beginPath(); for (let x = sp.x0 || 0; x <= (sp.x1 || 960); x += 16) { const yy = y + Math.sin(x * .02 + t * (1.1 + k * .3) + k * 2) * (2 + k * 1.2); x === (sp.x0 || 0) ? g.moveTo(x, yy) : g.lineTo(x, yy); } g.strokeStyle = 'rgba(255,255,255,' + (.28 - k * .04) + ')'; g.lineWidth = 2 + k * .6; g.stroke(); } } };
   K.cars = { z: 'far', draw(g, t, sp) { const R = rnd(sp.seed || 4), span = 1100; for (let i = 0; i < sp.n; i++) { const o = R() * span, dir = sp.dir || 1, x = ((o + t * sp.speed * dir) % span + span) % span - 70, col = sp.cols[i % sp.cols.length], w = 30 * sp.sc; if (sp.clip) { g.save(); g.beginPath(); g.rect(sp.clip[0], sp.clip[1], sp.clip[2], sp.clip[3]); g.clip(); } G.fillRR(g, x, sp.y - w * .45, w, w * .35, 4 * sp.sc, col, 1.2); G.fillRR(g, x + w * .2, sp.y - w * .7, w * .5, w * .3, 4 * sp.sc, G.shade(col, .25), 1.2); G.circ(g, x + w * .22, sp.y - w * .08, w * .1, '#2a2a3a', 0); G.circ(g, x + w * .78, sp.y - w * .08, w * .1, '#2a2a3a', 0); if (sp.clip) g.restore(); } } };
   K.second = { z: 'mid', draw(g, t, sp) { const a = (FX.motion ? Date.now() / 1000 : 0) % 60 / 60 * 6.2832 - 1.5708; g.save(); g.lineCap = 'round'; g.strokeStyle = '#ef5350'; g.lineWidth = Math.max(1, sp.r * .05); g.beginPath(); g.moveTo(sp.x, sp.y); g.lineTo(sp.x + Math.cos(a) * sp.r, sp.y + Math.sin(a) * sp.r); g.stroke(); g.restore(); } };
-  K.bubbles = { z: 'top', opt: true, draw(g, t, sp) { const R = rnd(sp.seed || 4); g.save(); for (let i = 0; i < sp.n; i++) { const u = ((R() + t * .05 * (.6 + R())) % 1), x = sp.x0 + R() * (sp.x1 - sp.x0) + Math.sin(t + i * 2) * 10, y = sp.y1 - u * (sp.y1 - sp.y0), r = 5 + R() * 9; g.globalAlpha = .75 * Math.sin(u * 3.1416); g.fillStyle = 'rgba(200,235,255,.35)'; g.strokeStyle = 'rgba(255,255,255,.85)'; g.lineWidth = 1.5; g.beginPath(); g.arc(x, y, r, 0, 6.2832); g.fill(); g.stroke(); g.fillStyle = 'rgba(255,255,255,.9)'; g.beginPath(); g.arc(x - r * .35, y - r * .35, r * .22, 0, 6.2832); g.fill(); } g.restore(); } };
+  K.bubbles = { z: 'top', opt: true, draw(g, t, sp) { const R = rnd(sp.seed || 4); g.save(); for (let i = 0; i < AK(sp.n); i++) { const u = ((R() + t * .05 * (.6 + R())) % 1), x = sp.x0 + R() * (sp.x1 - sp.x0) + Math.sin(t + i * 2) * 10, y = sp.y1 - u * (sp.y1 - sp.y0), r = 5 + R() * 9; g.globalAlpha = .75 * Math.sin(u * 3.1416); g.fillStyle = 'rgba(200,235,255,.35)'; g.strokeStyle = 'rgba(255,255,255,.85)'; g.lineWidth = 1.5; g.beginPath(); g.arc(x, y, r, 0, 6.2832); g.fill(); g.stroke(); g.fillStyle = 'rgba(255,255,255,.9)'; g.beginPath(); g.arc(x - r * .35, y - r * .35, r * .22, 0, 6.2832); g.fill(); } g.restore(); } };
   K.drip = { z: 'mid', draw(g, t, sp) { const u = (t * 1.5) % 1, y = sp.y + u * u * 60; g.save(); g.globalAlpha = u < .08 ? u / .08 : 1; G.ell(g, sp.x, y, 4 - u, 6 + u * 4, '#4aa8e8', 1.2); g.restore(); if (u > .9) { g.save(); g.globalAlpha = (u - .9) * 8; g.strokeStyle = 'rgba(120,190,240,.8)'; g.lineWidth = 2; g.beginPath(); g.ellipse(sp.x, sp.y + 62, (u - .9) * 90, (u - .9) * 20, 0, 0, 6.2832); g.stroke(); g.restore(); } } };
-  K.leaves = { z: 'top', opt: true, draw(g, t, sp) { const R = rnd(sp.seed || 9); for (let i = 0; i < sp.n; i++) { const o = R(), u = ((o + t * .03 * (.6 + R())) % 1), x = sp.x0 + R() * (sp.x1 - sp.x0) + Math.sin(t * .9 + i) * 24 + u * 70, y = sp.y0 + u * (sp.y1 - sp.y0), rot = t * (1 + R()) + i; g.save(); g.translate(x, y); g.rotate(rot); g.globalAlpha = .8 * Math.sin(u * 3.14); g.fillStyle = sp.cols[i % sp.cols.length]; g.beginPath(); g.ellipse(0, 0, 5, 2.4, 0, 0, 6.2832); g.fill(); g.restore(); } } };
-  K.pollen = { z: 'top', opt: true, draw(g, t, sp) { const gs = G.glowSprite('255,250,200'), R = rnd(sp.seed || 5); g.save(); g.globalCompositeOperation = 'lighter'; for (let i = 0; i < sp.n; i++) { const u = R(), v = R(), x = sp.x0 + (((u + t * .01 * (.5 + R()) + Math.sin(t * .3 + i) * .02) % 1)) * (sp.x1 - sp.x0), y = sp.y0 + (((v - t * .006 * (.5 + R())) % 1 + 1) % 1) * (sp.y1 - sp.y0), r = 2 + R() * 2.5; g.globalAlpha = .35 + .35 * Math.sin(t * 1.5 + i); g.drawImage(gs, x - r * 2, y - r * 2, r * 4, r * 4); } g.restore(); } };
+  K.leaves = { z: 'top', opt: true, draw(g, t, sp) { const R = rnd(sp.seed || 9); for (let i = 0; i < AK(sp.n); i++) { const o = R(), u = ((o + t * .03 * (.6 + R())) % 1), x = sp.x0 + R() * (sp.x1 - sp.x0) + Math.sin(t * .9 + i) * 24 + u * 70, y = sp.y0 + u * (sp.y1 - sp.y0), rot = t * (1 + R()) + i; g.save(); g.translate(x, y); g.rotate(rot); g.globalAlpha = .8 * Math.sin(u * 3.14); g.fillStyle = sp.cols[i % sp.cols.length]; g.beginPath(); g.ellipse(0, 0, 5, 2.4, 0, 0, 6.2832); g.fill(); g.restore(); } } };
+  K.pollen = { z: 'top', opt: true, draw(g, t, sp) { const gs = G.glowSprite('255,250,200'), R = rnd(sp.seed || 5); g.save(); g.globalCompositeOperation = 'lighter'; for (let i = 0; i < AK(sp.n); i++) { const u = R(), v = R(), x = sp.x0 + (((u + t * .01 * (.5 + R()) + Math.sin(t * .3 + i) * .02) % 1)) * (sp.x1 - sp.x0), y = sp.y0 + (((v - t * .006 * (.5 + R())) % 1 + 1) % 1) * (sp.y1 - sp.y0), r = 2 + R() * 2.5; g.globalAlpha = .35 + .35 * Math.sin(t * 1.5 + i); g.drawImage(gs, x - r * 2, y - r * 2, r * 4, r * 4); } g.restore(); } };
 
   /* =====================================================================================================
      ROOM KIT: painted walls, floors, rugs, frames, lights... (G.room.*, used by worlds/*_art.js; all baked, so cost is irrelevant at runtime)
@@ -368,11 +364,11 @@
   A.cacheable = function (name, o) { const b = String(name).split(':')[0]; return !A.noCache[b] && !/^face/.test(b) && b.indexOf('sun') < 0 && FXq.sprites; };
   const FXq = M.fx; FXq.sprites = !/[?&]sprites=0/.test(location.search);
   A.sprite = function (name, s, o) {
-    const k = M.cv ? M.cv.width / M.W : 1, sz = Math.max(8, Math.round((s || 100) * 2) / 2); let key; try { key = name + '|' + sz + '|' + k.toFixed(2) + (o ? '|' + JSON.stringify(o) : ''); } catch (e) { return null; }
+    const k = M.cv ? M.cv.width / M.W : 1, sz = Math.max(8, Math.round((s || 100) * 2) / 2); let key; try { key = name + '|' + sz + '|' + k.toFixed(2) + (FX.paint === false ? '|f' : '') + (o ? '|' + JSON.stringify(o) : ''); } catch (e) { return null; }
     let sp = SPR.get(key); if (sp) return sp;
     const U = 90, ppu = Math.min(sz / 100 * k, 1100 / (U * 2)), px = Math.ceil(U * 2 * ppu); if (px < 4) return null;
     const c = G.mkCanvas(px, px), x = c.getContext('2d'); x.scale(ppu, ppu); x.lineJoin = 'round'; x.lineCap = 'round'; x.direction = 'rtl';
-    const pp = G.paint; G.paint = true; try { A.drawRaw(x, name, U, U, 100, o); } finally { G.paint = pp; }
+    const pp = G.paint; G.paint = FX.paint !== false; try { A.drawRaw(x, name, U, U, 100, o); } finally { G.paint = pp; }
     sp = { c, w: U * 2 * (sz / 100) * (ppu * 100 / sz * (sz / 100)) / (ppu * 100 / sz * (sz / 100)), hx: 0, hy: 0 };
     const wl = U * 2 * sz / 100; sp.w = wl; sp.h = wl; sp.hx = wl / 2; sp.hy = wl / 2; sprPx += px * px; SPR.set(key, sp);
     if (sprPx > 60e6 || SPR.size > 400) { const it = SPR.keys().next().value, v = SPR.get(it); sprPx -= v.c.width * v.c.height; SPR.delete(it); }
@@ -393,7 +389,7 @@
   /* DOM canvas element showing an art (cached drawing, DPR aware) */
   A.el = function (name, px, o) {
     const c = document.createElement('canvas'), d = 2; c.width = c.height = px * d; c.style.width = c.style.height = px + 'px';
-    const g = c.getContext('2d'); g.scale(d, d); const pp = G.paint; G.paint = !/^face/.test(name); try { A.draw(g, name, px / 2, px / 2, px * .94, o); } finally { G.paint = pp; } return c;
+    const g = c.getContext('2d'); g.scale(d, d); const pp = G.paint; G.paint = !/^face/.test(name) && FX.paint !== false; try { A.draw(g, name, px / 2, px / 2, px * .94, o); } finally { G.paint = pp; } return c;
   };
   /* sticker: art on a round white-bordered badge */
   A.sticker = function (id, px, locked) {

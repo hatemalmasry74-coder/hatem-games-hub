@@ -72,6 +72,13 @@ for (const [cfg, name] of [['family.example.json', 'sample'], ['examples/variant
     assert(!fs.readdirSync(path.join(out, 'assets')).some(f => /cartoon/.test(f)), 'a base cartoon avatar was copied');
     assert(!fs.existsSync(path.join(out, 'tools')), 'tools/ must not ship');
     const man = JSON.parse(fs.readFileSync(path.join(out, 'assets', 'voice', 'manifest.json'), 'utf8')); assert.deepStrictEqual(man, {});
+    if (name === 'sample') {   // world 11: exactly the generic levels survive; no relative-only art/themes/stickers/questions
+      const rs = ['worlds/runs.js', 'worlds/runs2.js'].map(f => fs.readFileSync(path.join(out, f), 'utf8')).join('\n'), ids = [...rs.matchAll(/\{ id: '(r\d+)'|\n\s+id: '(r\d+)'/g)].map(m => m[1] || m[2]).sort((a, b) => a.slice(1) - b.slice(1));
+      assert.deepStrictEqual(ids, ['r2', 'r4', 'r6', 'r7', 'r8', 'r11', 'r15'], 'runs levels: ' + ids);
+      const art = fs.readFileSync(path.join(out, 'worlds', 'runs_art2.js'), 'utf8') + fs.readFileSync(path.join(out, 'worlds', 'runs_art.js'), 'utf8');
+      assert(!/run_goal_(amani|kamal)|registerTheme\('(kamal|kitchen|dusk)'/.test(art), 'art of cut levels survived');
+      assert(!/s_run_(med|kamal|lantern|cook|relay|air)\b/.test(rs), 'stickers of cut levels survived');
+    }
     // the owner's extended family never ships
     for (const f of ['worlds/gathering.js', 'worlds/gathering_art.js', 'worlds/gathering_kits.js', 'content/q_gathering.js']) assert(!fs.existsSync(path.join(out, f)), f + ' must not ship');
     const reg = fs.readFileSync(path.join(out, 'worlds', 'registry.js'), 'utf8'); assert(!/gather/.test(reg), 'gathering still in registry');

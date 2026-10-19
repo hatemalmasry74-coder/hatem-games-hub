@@ -2,12 +2,25 @@
 (function () {
   'use strict';
   const M = window.Moody;
-  let AC = null, master = null, lastCheer = -99;
+  let AC = null, master = null, lastCheer = -99, tries = 0;
+  const SILENT = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAABErAAABAAgAZGF0YQAAAAA=';
   const A = M.audio = {
+    /* create / resume the AudioContext. Safe to call from any gesture handler, any number of times. */
     init() {
       if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); master = AC.createGain(); master.gain.value = .5; master.connect(AC.destination); } catch (e) { AC = null; } }
-      if (AC && AC.state === 'suspended') { try { AC.resume(); } catch (e) { } }
+      if (AC && (AC.state === 'suspended' || AC.state === 'interrupted')) { try { const p = AC.resume(); if (p && p.catch) p.catch(() => { }); } catch (e) { } }
     },
+    ctx() { return AC; },
+    /* iOS / Android autoplay unlock: runs on the first real gesture (touchend / click / pointerup / keydown): resumes the context, plays one silent buffer, primes an HTMLAudio element */
+    unlock() {
+      if (A.unlocked) return; A.init();
+      try { if (AC) { const b = AC.createBuffer(1, 1, 22050), s = AC.createBufferSource(); s.buffer = b; s.connect(AC.destination); s.start(0); } } catch (e) { }
+      try { const a = new Audio(SILENT); a.volume = 0; a.muted = true; const p = a.play(); if (p && p.then) p.then(() => { try { a.pause(); } catch (e) { } }).catch(() => { }); } catch (e) { }
+      if (AC && AC.state === 'running') A.unlocked = true; else if (++tries > 6) A.unlocked = true;   // iOS may need a few gestures; stop trying after 6
+    },
+    /* tab hidden / portrait overlay: silence everything; resume() brings it back (iOS can leave the context 'interrupted') */
+    suspend() { try { if (AC && AC.state === 'running') AC.suspend(); } catch (e) { } },
+    resume() { try { if (AC && AC.state !== 'running' && AC.state !== 'closed') { const p = AC.resume(); if (p && p.catch) p.catch(() => { }); } } catch (e) { } },
     on() { return M.save.data.settings.sound !== false; },
     tone(f, d, type, vol, slide, delay) {
       if (!AC || !A.on()) return; try {
@@ -60,4 +73,17 @@
       } catch (e) { }
     }
   };
+  /* unlock on the first user gestures (touchend is what iOS Safari accepts; pointerup / click / keydown cover the rest); stop listening once unlocked */
+  const EV = ['touchend', 'pointerup', 'click', 'keydown'];
+  const onG = () => { A.unlock(); if (A.unlocked) EV.forEach(e => document.removeEventListener(e, onG, true)); };
+  EV.forEach(e => document.addEventListener(e, onG, true));
+  document.addEventListener('pointerdown', () => A.init(), true);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && !(M.suspended)) A.resume(); });
+  addEventListener('focus', () => { if (!M.suspended) A.resume(); });
+  /* Lip-sync analyser off (low quality): voice.js routes a clip through createMediaElementSource only to measure its loudness; refusing it makes voice.js fall back to its rhythmic talk loop
+     (its hook() is wrapped in try/catch). A clip that is already routed stays routed (a media element can only be wired once). */
+  try {
+    const C = window.AudioContext || window.webkitAudioContext;
+    if (C && C.prototype.createMediaElementSource && !C.prototype.__moodyWrapped) { const o = C.prototype.createMediaElementSource; C.prototype.createMediaElementSource = function () { if (M.fx && M.fx.lipsync === false) throw new Error('lip-sync analyser disabled (low quality)'); return o.apply(this, arguments); }; C.prototype.__moodyWrapped = true; }
+  } catch (e) { }
 })();

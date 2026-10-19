@@ -143,11 +143,12 @@ function buildDictionaries(c) {
     destPairs.push(['أبها', d.city], ['عسير', regionShort || d.city], ['السعودية', d.country]);
     if (d.country !== 'السعودية') destPairs.push(['المملكة', 'البلد']);
   }
+  if (c.dad.status === 'home') destPairs.push(['أبها', 'الجبل']);   // the mountain level of the runner keeps a board that names the city
   const destScope = AR.wordReplacer(destPairs);
   return { general, homeScope, destScope, pairs, destPairs };
 }
 const HOME_FILES = new Set(['worlds/saudi.js', 'worlds/saudi_art.js', 'content/q_saudi.js']);
-const DEST_FILES = new Set(['worlds/runs.js', 'content/q_runs.js', 'worlds/saudi.js', 'worlds/saudi_art.js', 'content/q_saudi.js', 'content/baba_calls.js', 'engine/call.js', 'worlds/registry.js', 'worlds/nana.js', 'worlds/home.js']);
+const DEST_FILES = new Set(['worlds/runs.js', 'worlds/runs2.js', 'worlds/runs_art.js', 'worlds/runs_art2.js', 'content/q_runs.js', 'content/q_runs2.js', 'worlds/saudi.js', 'worlds/saudi_art.js', 'content/q_saudi.js', 'content/baba_calls.js', 'engine/call.js', 'worlds/registry.js', 'worlds/nana.js', 'worlds/home.js']);
 
 /* ------------------------------------------------------------------ text pass */
 const LET = '\\u0621-\\u063A\\u0641-\\u064A\\u0671-\\u06D3';
@@ -225,7 +226,7 @@ function stripExtendedFamily(P, c) {
   P.rep('engine/ui.js', "{ mama: 'ماما' }[who]", "{ mama: 'ماما', friend: " + jsq(c.friendName) + " }[who]", { what: 'default name of the friend NPC' });
   /* 2. character table rows + marker comment */
   P.rep('engine/chars.js', /\n[ \t]*\/\* ---- extended family[^\n]*\*\//, '', { what: 'extended-family comment' });
-  P.rep('engine/chars.js', new RegExp('\\n[ \\t]*(?:' + EXT_IDS.join('|') + '): \\{[^\\n]*\\},?', 'g'), '', { what: 'extended-family character rows', exact: EXT_IDS.length });
+  P.rep('engine/chars.js', new RegExp('\\n[ \\t]*(?:' + EXT_IDS.join('|') + '): \\{[^\\n]*\\},?', 'g'), '', { what: 'extended-family character rows (DEFS + the V4P block)', exact: EXT_IDS.length * 2 });
   /* 3. speaker -> voice map */
   P.rep('engine/voice.js', /\n[ \t]*Object\.assign\(VOICES, \{[^\n]*\n/, '\n', { what: 'extended-family voices' });
   /* 4. family stickers of the relatives */
@@ -261,8 +262,8 @@ function stripOwnerFamilyStories(P, c) {
   P.rep(S, /, kamal: \{ x: 880, y: 490, dir: -1 \}/g, '', { what: 'uncle position in the scenes', exact: 3 });
   pruneRuns(P, c);
   /* guard: no extended-family id may survive in any story/engine file (stage.js keeps harmless slot tables) */
-  for (const [f, src] of P.files) if (/@owner-family/.test(src)) throw new Error('@owner-family tag left in ' + f + ' (a level could not be cut: tag must sit on a mission object of worlds/runs.js)');
-  for (const [f, src] of P.files) if (/^(worlds|content)\//.test(f)) { const m = /'(toti|amani|nada|kamal|luka|beno|medo)'|face:(toti|amani|nada|kamal|luka|beno|medo)/.exec(src); if (m) throw new Error('EXTENDED FAMILY LEFT in ' + f + ': ' + m[0]); }
+  for (const [f, src] of P.files) if (/\/\*\s*@owner-family\s*\*\//.test(src)) throw new Error('@owner-family tag left in ' + f + ' (a level could not be cut: tag must sit on a mission object of worlds/runs.js)');
+  for (const [f, src] of P.files) if (/^(worlds|content)\//.test(f)) { const m = /'(toti|amani|nada|kamal|luka|beno|medo)'|face:(toti|amani|nada|kamal|luka|beno|medo)/.exec(src); if (m) throw new Error('EXTENDED FAMILY LEFT in ' + f + ': ' + m[0] + ' ... ' + src.slice(Math.max(0, m.index - 80), m.index + 60).replace(/\n/g, ' ')); }
 }
 
 /* ------------------------------------------------------------------ world 11 «سباق المغامرة»: levels that belong to the owner's family are cut
@@ -283,32 +284,87 @@ function splitArrayObjects(src, openIdx) {
   if (close < 0) throw new Error('runs.js: missions array not closed');
   return { objs, close };
 }
+
+/* end index (exclusive) of the call / method starting at `from` ("name(...)" or "name(...) {...}"), including a trailing ; or , and the line break; string/comment aware */
+function balancedEnd(src, from, withBody) {
+  const segs = scan(src); let pos = 0, depth = 0, phase = 0, end = -1;   // phase 0 = in parens, 1 = waiting for '{', 2 = in body
+  for (const sg of segs) {
+    if (sg.type === 'code') for (let i = 0; i < sg.text.length && end < 0; i++) {
+      const at = pos + i; if (at < from) continue; const ch = sg.text[i];
+      if (phase === 0) { if (ch === '(') depth++; else if (ch === ')') { depth--; if (depth === 0) { if (withBody) phase = 1; else end = at + 1; } } }
+      else if (phase === 1) { if (ch === '{') { phase = 2; depth = 1; } else if (!/\s/.test(ch)) throw new Error('balancedEnd: expected a method body'); }
+      else if (ch === '{') depth++; else if (ch === '}') { depth--; if (depth === 0) end = at + 1; }
+    }
+    pos += sg.text.length; if (end >= 0) break;
+  }
+  if (end < 0) throw new Error('balancedEnd: unbalanced source');
+  const m = /^[ \t]*[;,]?[ \t]*\n?/.exec(src.slice(end)); return end + (m ? m[0].length : 0);
+}
+function cutAt(src, idx, withBody) { const lineStart = src.lastIndexOf('\n', idx) + 1, pre = src.slice(lineStart, idx), start = /^[ \t]*$/.test(pre) ? lineStart : idx; return src.slice(0, start) + src.slice(balancedEnd(src, idx, withBody)); }
+/* art of the cut runner levels: themes and goal landmarks only they used (the goal landmarks draw the relatives' names/people) */
+function pruneRunsArt(P, dropped, keptText) {
+  const files = ['worlds/runs_art.js', 'worlds/runs_art2.js'].filter(f => P.files.has(f)); if (!files.length) return [];
+  const droppedText = dropped.map(d => d.obj).join('\n'), all = () => files.map(f => P.get(f)).join('\n'), removed = [];
+  const themeNames = () => [...all().matchAll(/RN\.registerTheme\('([^']+)'/g)].map(m => m[1]);
+  let changed = true;
+  while (changed) { changed = false;
+    for (const t of themeNames()) {
+      if (!droppedText.includes("theme: '" + t + "'") || keptText.includes("theme: '" + t + "'") || all().includes("inh('" + t + "'")) continue;
+      for (const f of files) { const src = P.get(f), i = src.indexOf("RN.registerTheme('" + t + "'"); if (i >= 0) { P.files.set(f, cutAt(src, i, false)); removed.push('theme ' + t); changed = true; break; } }
+    }
+    for (const m of [...all().matchAll(/\n[ \t]*(run_goal_\w+)\(/g)]) {
+      const name = m[1]; if (!(droppedText.includes(name) || /run_goal_(amani|kamal|nana|balcony)/.test(name))) continue;
+      for (const f of files) {
+        const src = P.get(f), i = src.search(new RegExp('\\n[ \\t]*' + name + '\\(')); if (i < 0) continue;
+        const cut = cutAt(src, i + 1, true), still = (keptText + '\n' + files.map(g => g === f ? cut : P.get(g)).join('\n')).includes(name);
+        if (!still) { P.files.set(f, cut); removed.push('art ' + name); changed = true; }   // nothing else refers to it: the landmark goes with its level
+        break;
+      }
+    }
+  }
+  files.forEach(f => P.files.set(f, P.get(f).replace(/who: '(?:amani|nada|toti|beno|medo|kamal|luka|ofa)'/g, "who: 'friend'")));   // a kept theme may still name a relative as its goal person
+  return removed;
+}
+const RUNS_SOURCES = [{ file: 'worlds/runs.js', open: 'missions: [' }, { file: 'worlds/runs2.js', open: 'const S = [' }];   // levels r1..r3 are mission objects, r4..r15 rows of a data table
 function pruneRuns(P, c) {
-  const F = 'worlds/runs.js'; if (!P.files.has(F)) return;
-  let src = P.get(F); const key = 'missions: [', k0 = src.indexOf(key); if (k0 < 0) throw new Error('PATCH DRIFT in ' + F + ': "missions: [" not found');
-  const open = k0 + key.length - 1, { objs, close } = splitArrayObjects(src, open);
+  const present = RUNS_SOURCES.filter(r => P.files.has(r.file)); if (!present.length) return;
   const nanaGone = !(c.grandparent.exists && c.grandparent.sameBuilding), saudiGone = c.dad.status === 'home';
-  const items = []; let prevEnd = open + 1;
-  for (const o of objs) { items.push({ gap: src.slice(prevEnd, o.start).replace(/^\s*,/, ''), obj: src.slice(o.start, o.end) }); prevEnd = o.end; }
   const why = it => { const t = it.gap + it.obj;
     if (/@owner-family/.test(t)) return 'tagged @owner-family';
     if (nanaGone && /\bnn_[a-z]|run_goal_nana|who: 'nana'/.test(it.obj)) return 'needs the grandparent-house scenes';
-    if (saudiGone && /\bsaudi[A-Z]\w*|theme: 'abha'/.test(it.obj)) return 'needs the trip-world scenes';
+    if (saudiGone && /\bsaudi[A-Z]\w*|kit: \{ theme: 'abha'|theme: 'abha', length/.test(it.obj)) return 'needs the trip-world scenes';
     return null; };
   const keep = [], dropped = [];
-  items.forEach(it => { const w = why(it); if (w) dropped.push({ id: (/id: '([^']+)'/.exec(it.obj) || [])[1], title: (/title: '([^']+)'/.exec(it.obj) || [])[1], why: w, obj: it.obj }); else keep.push(it); });
+  for (const r of present) {
+    let src = P.get(r.file); const k0 = src.indexOf(r.open); if (k0 < 0) throw new Error('PATCH DRIFT in ' + r.file + ': "' + r.open + '" not found');
+    const open = k0 + r.open.length - 1, { objs } = splitArrayObjects(src, open), items = []; let prevEnd = open + 1;
+    for (const o of objs) { items.push({ gap: src.slice(prevEnd, o.start).replace(/^\s*,/, ''), obj: src.slice(o.start, o.end) }); prevEnd = o.end; }
+    const kept = [];
+    items.forEach(it => { const w = why(it), info = { file: r.file, id: (/id: '([^']+)'/.exec(it.obj) || [])[1], title: (/title: '([^']+)'/.exec(it.obj) || [])[1], why: w, obj: it.obj }; if (w) dropped.push(info); else { kept.push(it); keep.push(info); } });
+    if (kept.length !== items.length) { src = src.slice(0, open + 1) + kept.map((it, i) => (i ? ',' : '') + it.gap + it.obj).join('') + src.slice(prevEnd); P.files.set(r.file, src); }
+  }
   if (!dropped.length) return;
-  src = src.slice(0, open + 1) + keep.map((it, i) => (i ? ',' : '') + it.gap + it.obj).join('') + src.slice(prevEnd);
-  const used = (re, text) => new Set([...text.matchAll(re)].map(m => m[1]));
   const keptText = keep.map(k => k.obj).join('\n');
-  dropped.forEach(d => { const st = (/sticker: '([^']+)'/.exec(d.obj) || [])[1]; if (st && !new RegExp("sticker: '" + st + "'").test(keptText)) src = src.replace(new RegExp("[ \\t]*\\{ id: '" + st + "'[^}]*\\},?[ \\t]*\\n?"), ''); });
-  const stillUsed = new Set([...keptText.matchAll(/values: \[([^\]]*)\]/g)].flatMap(m => [...m[1].matchAll(/'([^']+)'/g)].map(x => x[1])));
-  const outside = src.replace(/M\.registerValue\([^\n]*/g, '');
-  dropped.forEach(d => { for (const m of d.obj.matchAll(/values: \[([^\]]*)\]/g)) for (const v of m[1].matchAll(/'([^']+)'/g)) if (!stillUsed.has(v[1]) && !new RegExp("'" + v[1] + "'").test(outside)) src = src.replace(new RegExp("\\n[ \\t]*M\\.registerValue\\('" + v[1] + "'[^\\n]*"), ''); });
-  P.files.set(F, src); P.log.review.push('runs world: removed level(s) ' + dropped.map(d => d.id + ' «' + d.title + '» (' + d.why + ')').join(', ') + '; kept ' + keep.length);
-  P.log.patches.push({ file: F, what: 'runs levels removed: ' + dropped.map(d => d.id + ':' + d.why).join(', '), n: dropped.length });
-  if (saudiGone && P.files.has('content/q_runs.js')) P.rep('content/q_runs.js', /\n[ \t]*q\('b\d', \d, '[a-z_]+', \['runs_abha'\][^\n]*/g, '', { what: 'runs: questions of the removed trip level', optional: true });
-  if (!keep.length) removeWorld(P, 'runs', ['worlds/runs.js', 'worlds/runs_art.js', 'content/q_runs.js'], /\n\s*\{ id: 'runs', order: 11[^\n]*\},?/, /\n\s*M\.load\.push\('content\/q_runs\.js'[^\n]*/);
+  const allFiles = () => present.map(r => P.get(r.file)).join('\n');
+  /* stickers only the cut levels gave: classic `{ id: 's_x', ... }` entries and table rows `['s_x', ...]` */
+  dropped.forEach(d => { const st = (/sticker: '([^']+)'/.exec(d.obj) || [])[1]; if (!st || new RegExp("sticker: '" + st + "'").test(keptText)) return;
+    present.forEach(r => P.files.set(r.file, P.get(r.file).replace(new RegExp("\\{ id: '" + st + "'[^}]*\\},? ?\\n?[ \\t]*"), '').replace(new RegExp("\\['" + st + "',[^\\]]*\\],? ?\\n?[ \\t]*"), ''))); });
+  /* values only the cut levels practised */
+  const used = new Set([...keptText.matchAll(/values: \[([^\]]*)\]/g)].flatMap(m => [...m[1].matchAll(/'([^']+)'/g)].map(x => x[1])));
+  const outside = () => allFiles().replace(/(?:M\.registerValue|reg)\('[^']+', \{[^}]*\}\);?/g, '').replace(/values: \[[^\]]*\]/g, m => keptText.includes(m) ? m : '');
+  dropped.forEach(d => { for (const m of d.obj.matchAll(/values: \[([^\]]*)\]/g)) for (const v of m[1].matchAll(/'([^']+)'/g)) if (!used.has(v[1]) && !new RegExp("'" + v[1] + "'").test(outside())) present.forEach(r => P.files.set(r.file, P.get(r.file).replace(new RegExp("(?:M\\.registerValue|reg)\\('" + v[1] + "', \\{[^}]*\\}\\);? ?\\n?"), ''))); });
+  /* gate questions (tags runs_*) only the cut levels used */
+  const tagsOf = t => new Set([...t.matchAll(/\b[gm]\('(runs_\w+)'\)|tag: '(runs_\w+)'/g)].map(m => m[1] || m[2]));
+  const keptTags = tagsOf(keptText), dropTags = new Set(); dropped.forEach(d => tagsOf(d.obj).forEach(t => { if (!keptTags.has(t)) dropTags.add(t); }));
+  dropTags.forEach(t => { ['content/q_runs.js', 'content/q_runs2.js'].forEach(f => { if (!P.files.has(f)) return; P.files.set(f, P.get(f).replace(new RegExp("\\n[ \\t]*add\\('" + t + "',[^\\n]*", 'g'), '').replace(new RegExp("\\n[ \\t]*q\\('[^']*', \\d+, '[a-z_]+', \\['" + t + "'\\][^\\n]*", 'g'), '')); }); });
+  const artCut = pruneRunsArt(P, dropped, keptText);
+  P.log.review.push('runs world: removed ' + dropped.length + ' level(s): ' + dropped.map(d => d.id + ' «' + d.title + '» (' + d.why + ')').join(', ') + '; kept ' + keep.length + ' (' + keep.map(k => k.id).join(', ') + '); question tags removed: ' + ([...dropTags].join(', ') || 'none') + '; art removed: ' + (artCut.join(', ') || 'none'));
+  P.log.patches.push({ file: 'worlds/runs*.js', what: 'runs levels removed: ' + dropped.map(d => d.id + ':' + d.why).join(', '), n: dropped.length });
+  if (saudiGone && P.files.has('content/q_runs2.js')) P.rep('content/q_runs2.js', /\['أبها في؟', \[[^\]]*\], '[^']*'\], ?/, '', { what: 'runs: question that names the trip city', optional: true });
+  if (saudiGone && P.files.has('content/q_runs.js')) P.rep('content/q_runs.js', /\n[ \t]*q\('b\d', \d, '[a-z_]+', \['runs_abha'\][^\n]*أبها[^\n]*/g, '', { what: 'runs: questions that name the trip city', optional: true });
+  if (!keep.length) {
+    removeWorld(P, 'runs', RUNS_SOURCES.map(r => r.file).concat(['worlds/runs_art.js', 'worlds/runs_art2.js', 'content/q_runs.js', 'content/q_runs2.js']), /\n\s*\{ id: 'runs', order: 11[^\n]*\},?/, /\n\s*M\.load\.push\('content\/q_runs\.js'[^\n]*/);
+  }
 }
 
 /* ------------------------------------------------------------------ main build steps */

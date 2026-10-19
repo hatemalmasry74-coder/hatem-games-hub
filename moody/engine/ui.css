@@ -108,7 +108,7 @@ a.btn{color:#fff}
 .screen.clear{pointer-events:none}.screen.clear>*{pointer-events:auto}
 .panel{position:relative;background:linear-gradient(180deg,#fffefa 0%,#fff6e0 100%);border:3px solid var(--line);border-radius:var(--r-l);
   box-shadow:0 6px 0 rgba(58,32,19,.28),0 16px 30px rgba(30,15,40,.3),inset 0 3px 0 #fff,inset 0 -5px 0 rgba(236,200,130,.3);pointer-events:auto}
-.chip{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(#fff,#fff3d6);border:3px solid var(--line);border-radius:var(--r-pill);padding:4px 16px;font:800 25px var(--font);min-height:50px;pointer-events:auto;box-shadow:0 3px 0 rgba(58,32,19,.25)}
+.chip{color:var(--ink);display:inline-flex;align-items:center;gap:8px;background:linear-gradient(#fff,#fff3d6);border:3px solid var(--line);border-radius:var(--r-pill);padding:4px 16px;font:800 25px var(--font);min-height:50px;pointer-events:auto;box-shadow:0 3px 0 rgba(58,32,19,.25)}
 .row{display:flex;gap:16px;justify-content:center;align-items:center}
 .stars{display:inline-flex;gap:3px;direction:ltr}
 .title{font-weight:900;color:#ffd23a;text-align:center;line-height:1.05;
@@ -254,7 +254,7 @@ a.btn{color:#fff}
 #qz .qhead{display:flex;align-items:center;gap:12px;min-height:56px;margin-bottom:6px}
 #qz .qt{flex:1;font-size:32px;font-weight:900;line-height:1.28;padding:0 4px}
 #qz .who{display:flex;align-items:center;gap:8px;background:linear-gradient(#5a47ad,#32286f);color:#fff;border-radius:var(--r-pill);padding:3px 14px 4px 4px;font:900 20px var(--font);flex:0 0 auto;box-shadow:0 3px 0 #1a1240;border:2px solid rgba(255,255,255,.4)}
-#qz .who img{width:46px;height:46px;border-radius:50%;object-fit:cover;object-position:50% 22%;border:3px solid #fff;background:#ffe9b8}
+#qz .who img,#qz .who canvas{width:46px;height:46px;border-radius:50%;object-fit:cover;object-position:50% 22%;border:3px solid #fff;background:#ffe9b8}
 #qz .rpl{flex:0 0 auto;width:54px;height:54px;min-width:54px;min-height:54px;padding:0;border-radius:50%}
 #qz .rpl::after{content:'';position:absolute;inset:-6px}
 #qz .vis{display:flex;justify-content:center;gap:8px;align-items:center;margin:0 0 8px;direction:ltr;flex-wrap:wrap}
@@ -383,3 +383,51 @@ body.compact .opt{min-height:70px}
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;animation-delay:0s!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
   .res-rays,.spk2,.fx{display:none!important}
 }
+
+/* ============ 20. quality + comfort settings, error overlay, update bar, fullscreen ============ */
+.qpanel{display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center;margin:4px 0}
+.qpanel .qtitle{font:900 22px var(--font);color:var(--ink)}
+.qpanel .qrow{display:flex;gap:10px;justify-content:center;flex-wrap:nowrap;width:100%}
+.qpanel .qbtn{flex:1 1 0;min-width:0;max-width:200px;flex-direction:column;gap:2px;padding:6px 8px;font-size:21px;min-height:max(70px,var(--tap));border-radius:20px;line-height:1.1}
+.qpanel .qbtn .ic{width:34px;height:34px}
+.qpanel .qnote{font:800 17px/1.35 var(--font);opacity:.78;min-height:23px}
+.qpanel .qextra{gap:10px;flex-wrap:wrap}
+.qpanel.compact{gap:6px;margin:2px 0}
+.qpanel.compact .qtitle{font-size:18px}
+.qpanel.compact .qbtn{min-height:max(58px,var(--tap));font-size:17px;padding:4px 4px}
+.qpanel.compact .qbtn .ic{width:26px;height:26px}
+.qpanel.compact .qnote{font-size:14px;min-height:0}
+.qpanel.compact .btn.sm{font-size:17px;min-height:max(48px,var(--tap));padding:2px 12px}
+.modal .pause2{display:flex;gap:26px;align-items:center;justify-content:center;text-align:center}
+.modal .pause2 .col{width:350px}.modal .pause2 .btn.big{font-size:32px;padding:8px 18px;min-height:78px}.modal .pause2 .col.side{width:380px;gap:10px}
+.modal .pause2 .col .row .btn.round{width:60px;height:60px;min-width:60px}
+#updbar{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:45;display:flex;gap:10px;align-items:center;background:linear-gradient(#fff,#fff3d6);border:3px solid var(--line);border-radius:var(--r-pill);padding:6px 10px 6px 18px;font:800 22px var(--font);box-shadow:var(--sh-2);pointer-events:auto;animation:popin .3s var(--spring)}
+#updbar .btn{min-height:46px;min-width:46px;padding:2px 16px;font-size:19px}
+#errbox{display:none!important}
+#errov{position:fixed;inset:0;z-index:200;background:radial-gradient(circle at 50% 40%,rgba(50,36,110,.82),rgba(14,8,36,.94));display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 16px;font-family:var(--font);direction:rtl}
+#errov .eb{background:linear-gradient(#fffefa,#fff6e0);border:4px solid #4a2e1c;border-radius:30px;padding:22px 26px 24px;max-width:560px;width:100%;text-align:center;box-shadow:0 8px 0 rgba(58,32,19,.3),0 22px 40px rgba(0,0,0,.4)}
+#errov .et{font:900 34px/1.2 var(--font);color:#b8520a;margin-bottom:6px}
+#errov .es{font:800 21px/1.4 var(--font);color:#3a2a1e;margin-bottom:16px}
+#errov .er{display:flex;gap:10px;flex-direction:column}
+#errov button{font:900 24px var(--font);color:#fff;border:3px solid rgba(0,0,0,.25);border-radius:22px;min-height:60px;padding:6px 18px;cursor:pointer;text-shadow:0 2px 0 rgba(0,0,0,.28);box-shadow:0 5px 0 rgba(0,0,0,.25)}
+#errov .b1{background:linear-gradient(#79e68b,#2fb24f)}#errov .b2{background:linear-gradient(#83bcff,#2f7be8)}#errov .b3{background:linear-gradient(#c9d0e4,#97a0ba)}
+#errov button:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.25)}
+/* rotate-your-device overlay */
+#rot{flex-direction:column;gap:14px}
+#rot::before{content:'';width:84px;height:130px;border:8px solid #ffd23a;border-radius:18px;box-shadow:0 0 0 4px rgba(255,255,255,.25);animation:rotphone 2.4s ease-in-out infinite}
+@keyframes rotphone{0%,25%{transform:rotate(0)}60%,100%{transform:rotate(-90deg)}}
+/* ---- reduced motion by switch (mirrors the OS media query below) ---- */
+body.reduced *,body.reduced *::before,body.reduced *::after{animation-duration:.001ms!important;animation-iteration-count:1!important;animation-delay:0s!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+body.reduced .res-rays,body.reduced .spk2,body.reduced .fx{display:none!important}
+body.reduced #rot::before{animation:none}
+/* ---- low quality: cheaper CSS (no endless decorative animations, smaller blur radii) ---- */
+body.q-low .btn.shine::after,body.q-low .ttl-play .halo,body.q-low .res-rays,body.q-low .ndot,body.q-low .btn.big.pink,body.q-low .btn.big.pink.call .ic{animation:none!important}
+body.q-low .ttl-medal,body.q-low .res-hero{animation:none!important}
+body.q-low .btn{box-shadow:0 5px 0 var(--d),inset 0 3px 0 rgba(255,255,255,.5)}
+body.q-low .btn.big{box-shadow:0 7px 0 var(--d),inset 0 4px 0 rgba(255,255,255,.5)}
+body.q-low .panel{box-shadow:0 5px 0 rgba(58,32,19,.28),inset 0 3px 0 #fff}
+body.q-low .dlg .box{box-shadow:0 5px 0 var(--sd),inset 0 3px 0 #fff}
+body.q-low #prompt .p{box-shadow:0 4px 0 rgba(58,32,19,.28)}
+body.q-low #sw .h{box-shadow:0 4px 0 rgba(20,10,50,.35)}
+body.q-low #sw .h.on{box-shadow:0 0 0 3px #fff,0 5px 0 rgba(20,10,50,.35)}
+body.q-low .card{transform:none!important}

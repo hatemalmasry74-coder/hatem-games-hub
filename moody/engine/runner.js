@@ -749,7 +749,7 @@
         const startBtn = UI.btn('يلا نجري!', 'green big shine', () => go(), 'play'); startBtn.setAttribute('id', 'rn-start'); startBtn.dataset.act = 'start';
         function paint() { ids.forEach(id => cards[id].classList.toggle('on', id === sel)); assistBtn.textContent = assistVal() ? 'مساعدة: شغّالة ✓' : 'مساعدة: مقفولة'; assistBtn.classList.toggle('green', assistVal()); assistBtn.classList.toggle('gray', !assistVal()); }
         ids.forEach(id => {
-          const d = C.defs[id], nm = M.save.data.names[id] || d.name, face = d.img ? h('img', { src: C.avatar(id) + '?v=1', alt: '' }) : A.el('face:' + id, 78);
+          const d = C.defs[id], nm = M.save.data.names[id] || d.name, face = UI.avatar ? UI.avatar(id, 78) : (d.img ? h('img', { src: C.avatar(id) + '?v=1', alt: '' }) : A.el('face:' + id, 78));
           const c = h('button', { class: 'rn-card', 'data-hero': id, 'aria-label': nm + ': ' + HEROES[id].desc, onclick: () => { sel = id; paint(); M.audio.sfx('pop'); const hh = HEROES[id]; M.voice.speak(hh.say, { speaker: id }); } }, face, h('b', null, nm), h('small', null, HEROES[id].desc));
           if (o.rec && o.rec.hero === id) c.append(h('i', { class: 'rn-rec' }, 'مناسب للمرحلة'));
           cards[id] = c; cardsEl.append(c);

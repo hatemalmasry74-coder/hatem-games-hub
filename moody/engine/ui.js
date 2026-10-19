@@ -19,7 +19,7 @@
   const root = document.getElementById('ui');
   const UI = M.ui = { previews: [], root, HUD_H: 76 };
   const ar = U.ar;
-  const reduced = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
+  const reduced = () => { if (M.reduced != null && M.save && M.save.data) return !!M.reduced; try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
   UI.reduced = reduced;
   const sc = () => M.scale || 1;
 
@@ -67,6 +67,12 @@
     minus: gl('<path d="M10 24h28" fill="none" stroke-width="7"/>'),
     whatnow: gl('<path d="M5 19h6l8-7v24l-8-7H5z"/><path d="M26 18a7 7 0 1 1 10 6.300c-2 1-3 2.400-3 5" fill="none" stroke-width="4.500"/><circle cx="33" cy="38" r="2.600"/>'),
     narr: gl('<path d="M8 9h32a4 4 0 0 1 4 4v16a4 4 0 0 1-4 4H22l-9 8v-8H8a4 4 0 0 1-4-4V13a4 4 0 0 1 4-4z"/><path d="M15 21v4M21 17v12M27 20v6M33 18v10" stroke-width="3.400" ' + cutS + '/>'),
+    fullscreen: gl('<path d="M7 17V7h10M31 7h10v10M41 31v10H31M17 41H7V31" fill="none" stroke-width="5.5"/>'),
+    'fullscreen-exit': gl('<path d="M17 7v10H7M41 17H31V7M31 41V31h10M7 31h10v10" fill="none" stroke-width="5.5"/>'),
+    qual1: gl('<rect x="9" y="28" width="8" height="12" rx="2.5"/><rect x="21" y="19" width="8" height="21" rx="2.5" opacity=".28"/><rect x="33" y="9" width="8" height="31" rx="2.5" opacity=".28"/>'),
+    qual2: gl('<rect x="9" y="28" width="8" height="12" rx="2.5"/><rect x="21" y="19" width="8" height="21" rx="2.5"/><rect x="33" y="9" width="8" height="31" rx="2.5" opacity=".28"/>'),
+    qual3: gl('<rect x="9" y="28" width="8" height="12" rx="2.5"/><rect x="21" y="19" width="8" height="21" rx="2.5"/><rect x="33" y="9" width="8" height="31" rx="2.5"/>'),
+    auto: gl('<path d="M24 7 28 19 40 24 28 29 24 41 20 29 8 24 20 19z"/>'),
     'narr-off': gl('<path d="M8 9h32a4 4 0 0 1 4 4v16a4 4 0 0 1-4 4H22l-9 8v-8H8a4 4 0 0 1-4-4V13a4 4 0 0 1 4-4z"/><path d="M15 21v4M21 17v12M27 20v6M33 18v10" stroke-width="3.400" ' + cutS + '/>') + '<path d="M7 41 41 7" fill="none" stroke="#ff4b4b" stroke-width="5" stroke-linecap="round"/>'
   };
   UI.ICONS = IC;
@@ -89,6 +95,26 @@
   const ico = (n, px, o) => CHROME[n] ? I(n, px || 36, o) : A.el(n, px || 36, o);
   UI.ico = ico;
 
+  /* ============ avatars: ONE helper for every round character face in the UI ============
+     UI.avatar(id, px, {cls, pose, still, alt}) -> element.
+       * characters with a cartoon jpg that are NOT v3 (moody, aboody, baba) keep the owner's jpg (<img>)
+       * everything else (toota, nemo = v3 drawn characters, nana, ofa, toti ... = no jpg) gets the drawn portrait on a <canvas>, animated (blink / breath / lip-sync) via Moody.chars.portraitLive
+         while it is attached, except at 'low' quality, with reduced motion, or when opts.still (then a static shaded portrait is drawn once).
+     px = css size used for the canvas backing store (CSS controls the real box in the HUD / dialog); cls = extra class (e.g. 'av' for the bordered avatar look). */
+  UI.hasJpg = id => { const d = M.chars.defs[id]; return !!(d && d.img && !d.v3); };
+  UI.avatar = function (id, px, o) {
+    o = o || {}; const d = M.chars.defs[id]; px = px || 64;
+    if (d && UI.hasJpg(id)) { const im = h('img', { src: M.chars.avatar(id) + '?v=1', alt: o.alt || '', class: o.cls || null, draggable: 'false' }); if (o.size) im.style.cssText = 'width:' + px + 'px;height:' + px + 'px'; return im; }
+    if (!d) return ico(o.icon || id, px);
+    const cv = document.createElement('canvas'), bs = Math.min(256, Math.round(px * 2)); cv.width = cv.height = bs; if (o.cls) cv.className = o.cls; if (o.size) { cv.style.width = cv.style.height = px + 'px'; }
+    if (o.alt) cv.setAttribute('aria-label', o.alt); cv.setAttribute('role', 'img');
+    const pose = o.pose || 'idle', paint = () => { try { const g = cv.getContext('2d'); g.setTransform(bs / 100, 0, 0, bs / 100, bs / 2, bs / 2); g.lineJoin = 'round'; g.lineCap = 'round'; M.chars.portrait(g, id, 0, 0, 46, { anim: pose, t: 1.3 }); } catch (e) { } };
+    paint();
+    const live = !o.still && !UI.reduced() && M.quality.level !== 'low' && M.chars.portraitLive && document.querySelectorAll('canvas[data-live]').length < 8;
+    if (live) { cv.setAttribute('data-live', '1'); try { M.chars.portraitLive(cv, id, { anim: pose, r: 46 }); } catch (e) { cv.removeAttribute('data-live'); } }
+    return cv;
+  };
+
   /* ============ environment: scale -> --us, phone class ============ */
   function fit() { const s = sc(); root.style.setProperty('--us', s.toFixed(3)); document.body.classList.toggle('compact', s < .85); }
   addEventListener('resize', fit); addEventListener('orientationchange', () => setTimeout(fit, 250)); fit();
@@ -104,7 +130,7 @@
     if (t.matches('.btn.big')) { const [x, y] = toLogical(e.clientX, e.clientY); UI.sparks(x, y, { n: 6, r: 46 }); }
   }, true);
   UI.sparks = function (x, y, o) {
-    if (reduced()) return; o = o || {}; const n = o.n || 8, cols = o.colors || ['#ffd23a', '#ff6f9b', '#4d9bff', '#4fd06a', '#ffffff'];
+    if (reduced()) return; o = o || {}; const n = Math.max(2, Math.round((o.n || 8) * (M.fx.parts || 1))), cols = o.colors || ['#ffd23a', '#ff6f9b', '#4d9bff', '#4fd06a', '#ffffff'];
     for (let i = 0; i < n; i++) {
       const a = Math.PI * 2 * i / n + Math.random() * .7, d = (o.r || 56) * (.6 + Math.random() * .7), z = 12 + Math.random() * 10;
       const s = h('i', { class: 'spk2', style: 'left:' + x + 'px;top:' + y + 'px;--dx:' + (Math.cos(a) * d).toFixed(1) + 'px;--dy:' + (Math.sin(a) * d).toFixed(1) + 'px;--c:' + cols[i % cols.length] + ';width:' + z + 'px;height:' + z + 'px' });
@@ -122,7 +148,7 @@
     el._raf = requestAnimationFrame(step);
   };
   UI.flyTo = function (kind, fx, fy, o) {
-    o = o || {}; const target = o.target || root.querySelector('[data-ctr="' + kind + '"]'), n = o.n || (kind === 'coin' ? 5 : 1);
+    o = o || {}; const target = o.target || root.querySelector('[data-ctr="' + kind + '"]'), n = Math.max(1, Math.round((o.n || (kind === 'coin' ? 5 : 1)) * Math.max(.6, M.fx.parts || 1)));
     if (!target || reduced()) { if (o.onArrive) o.onArrive(); return; }
     const tr = target.getBoundingClientRect(), [tx, ty] = toLogical(tr.left + tr.width / 2, tr.top + tr.height / 2); let arrived = 0; const sz = kind === 'star' ? 46 : 34, hs = sz / 2;
     for (let i = 0; i < n; i++) {
@@ -161,7 +187,7 @@
   UI.hideSplash = function () { const s = document.getElementById('splash'); if (!s) return; s.classList.add('gone'); setTimeout(() => s.remove(), 600); };
 
   /* ============ toasts / modals / popups ============ */
-  UI.toast = function (text, ms) { const t = h('div', { class: 'toast', role: 'status' }, M.fmt(text)); over.append(t); M.voice.speak(text, { speaker: 'narrator', soft: true }); setTimeout(() => t.remove(), ms || 2200); return t; };
+  UI.toast = function (text, ms, o) { const t = h('div', { class: 'toast', role: 'status' }, M.fmt(text)); const n = over.querySelectorAll('.toast').length; if (n) t.style.top = (84 + n * 58) + 'px'; over.append(t); if (!(o && o.silent)) M.voice.speak(text, { speaker: 'narrator', soft: true }); setTimeout(() => t.remove(), ms || 2200); return t; };
   UI.modal = function (content, o) {
     o = o || {}; const m = h('div', { class: 'modal', role: 'dialog', 'aria-modal': 'true', 'aria-label': o.label || 'نافذة' }, h('div', { class: 'panel' }, content)); over.append(m);
     const kh = e => { if (e.key === 'Escape' && o.onEsc) { o.onEsc(); return true; } return false; };
@@ -209,7 +235,7 @@
       hud.build = () => {   // 2 heroes: big avatars + swap icon; 3-4 heroes: compact row
         sw.textContent = ''; hud.btns = {}; const ids = stage.control, many = ids.length > 2; sw.className = many ? 'many' : '';
         ids.forEach((id, i) => {
-          const def = M.chars.defs[id], nm = M.save.data.names[id] || def.name, face = def.img ? h('img', { src: M.chars.avatar(id) + '?v=1', alt: '' }) : ico('face:' + id, 76);
+          const def = M.chars.defs[id], nm = M.save.data.names[id] || def.name, face = UI.avatar(id, 76);
           const b = h('button', { class: 'h', 'data-hero': id, 'aria-label': nm, onclick: () => { stage.setActive(id); } }, face, h('span', { class: 'tg' }, nm));
           hud.btns[id] = b; sw.append(b); if (!many && i === 0 && ids.length === 2) sw.append(h('div', { class: 'sw', 'aria-hidden': 'true' }, I('swap', 20)));
         });
@@ -218,10 +244,10 @@
         clearTimeout(hud.tgT); hud.tgT = setTimeout(() => { for (const k in hud.btns) hud.btns[k].classList.remove('say'); }, 2200);
       };
       hud.build(); stage.onSwitch = () => { hud.sync(true); clearTimeout(hud.tgT); hud.tgT = setTimeout(() => { for (const k in hud.btns) hud.btns[k].classList.remove('say'); }, 1600); };
-      UI._holdStar = false; UI.setSafe();
+      UI._holdStar = false; UI.setSafe(); if (M.wake) M.wake.on();
     },
     rebuild() { if (hud) hud.build(); },
-    hide() { if (hud) { lastBeats = hud.beats; clearTimeout(hud.tgT); } hudEl.style.display = 'none'; hudEl.textContent = ''; hud = null; UI.skip.hide(); UI._holdStar = false; },
+    hide() { if (hud) { lastBeats = hud.beats; clearTimeout(hud.tgT); } hudEl.style.display = 'none'; hudEl.textContent = ''; hud = null; UI.skip.hide(); UI._holdStar = false; if (M.wake) M.wake.off(); },
     setPrompt(t) {
       if (!hud) return; hud.prompt.textContent = '';
       if (t) { hud.prompt.append(h('div', { class: 'p', onclick: () => M.voice.replay() }, I('sound', 28), h('span', null, M.fmt(t)))); M.voice.setInstruction(t); if (t !== hud.lastPrompt) UI.hud.step(1); hud.lastPrompt = t; } else M.voice.clearInstruction();
@@ -262,8 +288,7 @@
     return new Promise(res => {
       const text = M.fmt(o.text), who = o.who, defs = M.chars.defs, st = M.scene, hero = st && st.heroes && who ? st.heroes[who] : null;
       let face;
-      if (defs[who] && defs[who].img) face = h('img', { src: M.chars.avatar(who) + '?v=1', alt: '' });
-      else if (defs[who] && !o.icon) face = ico('face:' + who + (o.face ? ':' + o.face : ''), 90);   // o.face = pose of the portrait, e.g. 'cry'
+      if (defs[who] && (UI.hasJpg(who) || !o.icon)) face = UI.avatar(who, 90, { pose: o.face });   // jpg for the kids / baba, drawn animated portrait for the rest (o.face = pose of the portrait, e.g. 'cry')
       else face = ico(o.icon || (who === 'narrator' || !who ? 'narrator' : who), 90);
       const name = who === 'moody' ? M.save.data.names.moody : who === 'aboody' ? M.save.data.names.aboody : (o.name || (defs[who] ? (M.save.data.names[who] || defs[who].name) : '') || { mama: 'ماما' }[who] || '');
       const col = palFor(who);
@@ -328,7 +353,7 @@
       b.addEventListener('click', () => pick(idx, b)); return b;
     });
     btns.forEach(b => ch.append(b));
-    const who = o.who ? h('div', { class: 'who' }, h('img', { src: M.chars.avatar(o.who) + '?v=1', alt: '' }), 'دور ' + M.save.data.names[o.who]) : null;
+    const who = o.who ? h('div', { class: 'who' }, UI.avatar(o.who, 46), 'دور ' + (M.save.data.names[o.who] || (M.chars.defs[o.who] || {}).name || '')) : null;
     const choiceTexts = order.map(i => { const c = q.choices[i]; return typeof c === 'string' || typeof c === 'number' ? String(c) : c.text; }).filter(Boolean);
     const rpl = h('button', { class: 'btn round green rpl', 'aria-label': 'اسمع السؤال', onclick: tap(() => M.voice.speak(q.q, { speaker: 'narrator', force: true })) }, I('sound', 30));
     const lst = h('button', { class: 'btn sm teal lst', onclick: tap(() => M.voice.speakSeq(choiceTexts, { speaker: 'narrator', force: true })) }, I('sound', 22), 'اسمع الاختيارات');
@@ -379,11 +404,11 @@
   const hubLink = () => h('a', { class: 'btn sm green', href: '../', 'aria-label': 'الصفحة الرئيسية للألعاب' }, I('home', 28), 'الصفحة الرئيسية للألعاب');
 
   UI.title = function (f) {
-    const medal = (id, side, cls) => h('div', { class: 'ttl-medal ' + cls, style: side + ':40px;animation-delay:' + (cls === 'b' ? '0s' : '-2.2s') }, h('div', { class: 'ring' }, h('img', { src: M.chars.avatar(id) + '?v=1', alt: M.chars.defs[id].name })), h('div', { class: 'nm' }, M.save.data.names[id]));
+    const medal = (id, side, cls) => h('div', { class: 'ttl-medal ' + cls, style: side + ':40px;animation-delay:' + (cls === 'b' ? '0s' : '-2.2s') }, h('div', { class: 'ring' }, UI.avatar(id, 164, { alt: M.chars.defs[id].name })), h('div', { class: 'nm' }, M.save.data.names[id]));
     const el = h('div', null, medal('moody', 'right', 'b'), medal('aboody', 'left', 'o'),
       h('div', { class: 'ttl-logo' }, h('div', { class: 'title' }, 'مودي وعبودي'), h('div', { class: 'ttl-tag' }, 'يوميات ومغامرات')),
       h('div', { class: 'ttl-play' }, h('div', { class: 'halo' }), h('button', { class: 'btn big green shine', 'aria-label': 'ابدأ اللعب', onclick: tap(f.start) }, I('play', 58), 'ابدأ')),
-      h('div', { class: 'row ttl-row' }, soundBtn(), UI.narrBtn(), h('button', { class: 'btn round purple', 'aria-label': 'ركن الأهل', onclick: tap(f.parent) }, I('parent', 38)), hubLink()),
+      h('div', { class: 'row ttl-row' }, soundBtn(), UI.narrBtn(), UI.fsBtn(), h('button', { class: 'btn round purple', 'aria-label': 'ركن الأهل', onclick: tap(f.parent) }, I('parent', 38)), hubLink()),
       h('div', { class: 'ttl-ver' }, 'الإصدار ١'));
     UI.show(el, 'clear', 0); M.backdrop.mode = 'title'; UI.hideSplash();
   };
@@ -391,7 +416,7 @@
   UI.names = function (f) {
     const d = M.save.data.names;
     const i1 = h('input', { class: 'txt', maxlength: 12, value: d.moody, placeholder: 'مودي', autocomplete: 'off', 'aria-label': 'اسم البطل الكبير' }), i2 = h('input', { class: 'txt', maxlength: 12, value: d.aboody, placeholder: 'عبودي', autocomplete: 'off', 'aria-label': 'اسم البطل الصغير' }), i3 = h('input', { class: 'txt', maxlength: 14, value: d.me || '', placeholder: 'اسمك (لو تحب)', autocomplete: 'off', 'aria-label': 'اسمك' });
-    const row = (id, inp) => h('div', { class: 'row', style: 'margin:6px 0;justify-content:flex-start;gap:14px' }, id ? h('img', { class: 'av', src: M.chars.avatar(id) + '?v=1', style: 'width:64px;height:64px;border-width:3px;box-shadow:0 0 0 3px var(--line)', alt: '' }) : h('div', { style: 'width:64px;height:64px;display:flex;align-items:center;justify-content:center' }, I('star', 52)), inp);
+    const row = (id, inp) => h('div', { class: 'row', style: 'margin:6px 0;justify-content:flex-start;gap:14px' }, id ? (() => { const a = UI.avatar(id, 64, { cls: 'av', size: true }); a.style.borderWidth = '3px'; a.style.boxShadow = '0 0 0 3px var(--line)'; return a; })() : h('div', { style: 'width:64px;height:64px;display:flex;align-items:center;justify-content:center' }, I('star', 52)), inp);
     const el = h('div', null, hdr('أهلًا بيكم!', f.back), h('div', { class: 'panel', style: 'position:absolute;left:150px;right:150px;top:100px;padding:14px 20px 16px;text-align:center' },
       h('div', { style: 'font-size:27px;font-weight:900;margin-bottom:6px' }, 'تحبوا نغيّر الأسماء؟ (اختياري)'), row('moody', i1), row('aboody', i2), row(null, i3),
       h('div', { class: 'row', style: 'margin-top:12px' }, UI.btn('يلا بينا', 'green', () => { const c = (v, dft) => (v || '').trim().slice(0, 14) || dft; d.moody = c(i1.value, 'مودي'); d.aboody = c(i2.value, 'عبودي'); d.me = c(i3.value, ''); M.save.data.named = true; M.save.commit(); f.ok(); }, 'check'))));
@@ -444,7 +469,7 @@
     const head = (M.reactions && M.reactions.pick('end' + Math.max(1, Math.min(3, r.stars || 1)), {})) || (r.stars >= 3 ? 'برافو! ممتاز!' : r.stars === 2 ? 'شاطرين أوي!' : 'أحسنتم!');
     const sts = h('div', { class: 'res-stars', role: 'img', 'aria-label': ar(r.stars) + ' من ٣ نجوم' });
     for (let i = 0; i < 3; i++) { const dl = .5 + i * .4, earn = i < r.stars; const s = h('div', { class: 'res-star' + (earn ? ' earn' : ''), style: '--dl:' + dl + 's' }, h('div', { class: 'off' }, I('star', 96, { off: true })), h('div', { class: 'on' }, I('star', 96)), h('i', { class: 'flash' })); sts.append(s); if (earn) { setTimeout(() => M.audio.sfx('star'), dl * 1000 + 150); setTimeout(() => { const rr = s.getBoundingClientRect(); const [x, y] = toLogical(rr.left + rr.width / 2, rr.top + rr.height / 2); UI.sparks(x, y, { n: 10, r: 70 }); }, dl * 1000 + 250); } }
-    const hero = (id, side) => h('div', { class: 'res-hero', style: side + ':26px' }, h('img', { class: 'av', src: M.chars.avatar(id) + '?v=1', style: 'width:112px;height:112px', alt: '' }));
+    const hero = (id, side) => h('div', { class: 'res-hero', style: side + ':26px' }, UI.avatar(id, 112, { cls: 'av', size: true }));
     const coinChip = h('div', { class: 'pill pop', style: 'animation-delay:1.4s' }, I('coin', 32), h('span', { class: 'v', 'data-v': 0 }, '+٠'));
     const total = h('div', { class: 'pill', 'data-ctr': 'coin', style: 'position:absolute;right:18px;top:14px;z-index:3', role: 'status', 'aria-label': 'العملات' }, I('coin', 30), h('span', { class: 'v', 'data-v': prevCoins }, ar(prevCoins)));
     const stk = r.sticker ? h('div', { class: 'pill pop light res-sticker', style: 'animation-delay:1.6s;padding:2px 16px 2px 8px;height:60px' }, A.sticker(r.sticker, 50), 'ملصق جديد: ' + ((M.stickers[r.sticker] || {}).title || '')) : null;
@@ -486,16 +511,16 @@
     let who = M.save.data.hero || 'moody', tab = 'hat';
     const sd = M.save.data, left = h('div', { style: 'position:absolute;left:30px;top:100px;width:290px;bottom:20px;pointer-events:none' }), right = h('div', { class: 'panel', style: 'position:absolute;right:26px;left:350px;top:100px;bottom:20px;padding:10px 14px' });
     const pv = h('canvas', { width: 580, height: 600, style: 'width:290px;height:300px;border-radius:30px;background:linear-gradient(#bfe8ff,#fff3c4);border:3px solid var(--line);box-shadow:var(--sh-2);pointer-events:auto' });
-    const g = pv.getContext('2d'); const drawPv = () => { g.setTransform(2, 0, 0, 2, 0, 0); g.clearRect(0, 0, 290, 300); const eq = sd.cosm.eq[who] || {}; G.ell(g, 145, 268, 70, 14, 'rgba(60,30,10,.2)', 0); M.chars.draw(g, who, 145, 268, { anim: 'cheer', t: M.time * .6, hat: eq.hat, shirtId: eq.shirt, sc: { moody: 1.2, aboody: 1.55, toota: 1.3, nemo: 1.55 }[who] || 1.3 }); };
+    const g = pv.getContext('2d'); const drawPv = () => { g.setTransform(2, 0, 0, 2, 0, 0); g.clearRect(0, 0, 290, 300); const eq = sd.cosm.eq[who] || {}, fit = Math.min(1.7, 215 / M.chars.height(who)); G.ell(g, 145, 268, 70, 14, 'rgba(60,30,10,.2)', 0); M.chars.draw(g, who, 145, 268, { anim: 'cheer', t: M.time * .6, hat: eq.hat, shirtId: eq.shirt, sc: fit }); };   // scale so the tallest outfit (sun hat, crown) always fits the preview
     const tabs = h('div', { class: 'row', style: 'margin-bottom:8px' }), tabsA = h('div', { class: 'row', style: 'gap:8px;margin-top:12px;pointer-events:auto' });
     const grid = h('div', { class: 'grid scroll', style: 'grid-template-columns:repeat(4,1fr);gap:12px;height:330px;align-content:start;padding:4px' });
     left.append(pv, tabsA);
     function owned(id) { return sd.cosm.owned.indexOf(id) >= 0; }
     function render() {
-      tabsA.textContent = ''; tabsA.style.flexWrap = 'wrap'; M.chars.playable().forEach(id => tabsA.append(h('button', { class: 'chip', 'data-who': id, 'aria-pressed': who === id ? 'true' : 'false', style: 'cursor:pointer;font-size:18px;min-height:46px;padding:2px 10px 2px 3px;gap:4px;' + (who === id ? 'background:linear-gradient(#ffe98a,#ffc928)' : ''), onclick: () => { who = id; M.audio.sfx('pop'); M.voice.speak(sd.names[id] || M.chars.defs[id].name, { speaker: 'narrator' }); render(); } }, M.chars.defs[id].img ? h('img', { class: 'av', src: M.chars.avatar(id) + '?v=1', style: 'width:36px;height:36px;border-width:2px;box-shadow:none' }) : ico('face:' + id, 38), sd.names[id] || M.chars.defs[id].name)));
+      tabsA.textContent = ''; tabsA.style.flexWrap = 'wrap'; M.chars.playable().forEach(id => tabsA.append(h('button', { class: 'chip', 'data-who': id, 'aria-pressed': who === id ? 'true' : 'false', style: 'cursor:pointer;font-size:18px;min-height:46px;padding:2px 10px 2px 3px;gap:4px;' + (who === id ? 'background:linear-gradient(#ffe98a,#ffc928)' : ''), onclick: () => { who = id; M.audio.sfx('pop'); M.voice.speak(sd.names[id] || M.chars.defs[id].name, { speaker: 'narrator' }); render(); } }, (() => { const a = UI.avatar(id, 36, { cls: 'av', size: true, still: true }); a.style.borderWidth = '2px'; a.style.boxShadow = 'none'; return a; })(), sd.names[id] || M.chars.defs[id].name)));
       tabs.textContent = ''; [['hat', 'القبعات'], ['shirt', 'الألوان']].forEach(t => tabs.append(h('button', { class: 'btn sm ' + (tab === t[0] ? 'orange' : 'gray'), onclick: tap(() => { tab = t[0]; render(); }) }, t[1])));
       tabs.append(h('div', { style: 'margin-right:auto' }, coinPill()));
-      grid.textContent = ''; const eq = sd.cosm.eq[who];
+      grid.textContent = ''; const eq = sd.cosm.eq[who] || (sd.cosm.eq[who] = {});
       const items = [{ id: null, name: 'من غير', price: 0 }].concat(Object.values(tab === 'hat' ? M.chars.hats : M.chars.shirts).filter(it => !it.for || it.for.indexOf(who) >= 0));
       items.forEach(it => {
         const have = it.id == null || owned(it.id), on = (eq[tab] || null) === it.id;
@@ -528,14 +553,17 @@
       h('div', { style: 'font-size:27px;font-weight:900;margin:12px 0 6px' }, 'مستوى الألغاز'), tierRow,
       h('div', { style: 'font-size:18px;opacity:.7;font-weight:800;margin:6px 0' }, 'تلقائي: عبودي (٦ سنين) بيجاوب ألغاز أسهل ومودي (٩ سنين) ألغاز أصعب.'),
       h('div', { class: 'row', style: 'margin:12px 0;flex-wrap:wrap' }, tog('الصوت', 'sound'), tog('صوت التعليمات', 'narr'), tog('تشجيع بصوت بشري', 'voice'), UI.btn('تغيير الأسماء', 'blue', f.names, 'settings')),
+      h('div', { style: 'font-size:27px;font-weight:900;margin:12px 0 6px' }, 'الأداء والرسوم'), UI.settingsPanel(),
+      h('div', { style: 'font-size:17px;opacity:.7;font-weight:800;margin:6px 0' }, 'لو اللعبة بتهنّج على الموبايل جرّبوا «منخفضة». التلقائي بيختار لوحده.'),
       h('div', { class: 'row', style: 'margin:18px 0 8px' }, UI.btn('مسح كل التقدّم', 'red', () => { UI.confirm('متأكد إنك عايز تمسح كل النجوم والملصقات واليوميات؟', 'أيوه، امسح', 'لأ').then(ok => { if (ok) { M.save.reset(); M.save.load(); UI.toast('اتمسح كل حاجة'); f.reset(); } }); })));
     UI.show(h('div', null, hdr('ركن الأهل', f.back), body), 'clear', 2); M.backdrop.mode = 'map';
   };
 
   UI.pause = function (f) {
-    const mo = UI.modal([h('h2', null, 'استراحة'), h('div', { class: 'col' },
+    const mo = UI.modal([h('h2', null, 'استراحة'), h('div', { class: 'pause2' }, h('div', { class: 'col' },
       UI.btn('كمّل اللعب', 'green big', () => { mo.close(); f.resume(); }, 'play'), UI.btn('نبدأ المهمة من جديد', 'yellow', () => { mo.close(); f.restart(); }, 'replay'), UI.btn('قائمة المهام', 'blue', () => { mo.close(); f.quit(); }, 'home'),
-      f.canSkip ? UI.btn('تخطّي المهمة', 'gray sm', () => { mo.close(); f.skip(); }) : null, h('div', { class: 'row' }, soundBtn(), UI.narrBtn(), hubLink()))], { label: 'استراحة', onEsc: () => { mo.close(); f.resume(); } });
+      f.canSkip ? UI.btn('تخطّي المهمة', 'gray sm', () => { mo.close(); f.skip(); }) : null, h('div', { class: 'row' }, soundBtn(), UI.narrBtn())),
+      h('div', { class: 'col side' }, UI.settingsPanel({ compact: true }), hubLink()))], { label: 'استراحة', onEsc: () => { mo.close(); f.resume(); } });
     return mo;
   };
 
@@ -546,6 +574,58 @@
     n.className = 'panel introcard'; n.textContent = ''; n.append(h('div', { class: 'band' }, mt[1] ? h('div', { class: 'nb' }, mt[1]) : null, h('div', null, h('div', { class: 'lb' }, 'المهمة'), h('div', { class: 'tt' }, mt[2]))), h('div', { class: 'sb' }, sub));
     UI.sparks(480, 190, { n: 10, r: 110 });
   }))).observe(over, { childList: true });
+
+
+  /* ============ graphics + comfort settings (Parents' corner AND the pause window) ============
+     UI.settingsPanel({compact}) -> element: quality selector (تلقائي + 3 big buttons), reduced-motion switch, fullscreen button (where the browser supports it).
+     Everything applies instantly (Moody.quality.set / Moody.setReduced) and is saved. */
+  const QL = [['auto', 'تلقائي', 'auto'], ['high', 'عالية', 'qual3'], ['medium', 'متوسطة', 'qual2'], ['low', 'منخفضة', 'qual1']], QN = { high: 'عالية', medium: 'متوسطة', low: 'منخفضة' };
+  UI.settingsPanel = function (o) {
+    o = o || {}; const Q = M.quality, box = h('div', { class: 'qpanel' + (o.compact ? ' compact' : ''), role: 'group', 'aria-label': 'إعدادات الرسوم' });
+    const title = h('div', { class: 'qtitle' }, 'جودة الرسوم'), row = h('div', { class: 'qrow' }), note = h('div', { class: 'qnote', role: 'status' });
+    const btns = QL.map(x => { const b = h('button', { class: 'btn qbtn gray', 'data-q': x[0], 'aria-pressed': 'false', onclick: tap(() => { Q.set(x[0]); refresh(); }) }, I(x[2], o.compact ? 26 : 34), h('span', null, x[1])); row.append(b); return b; });
+    const rm = h('button', { class: 'btn sm gray qrm', 'data-act': 'reduce', onclick: tap(() => { M.setReduced(!M.reduced); refresh(); }) });
+    const fsb = M.fs && M.fs.can() ? h('button', { class: 'btn sm blue qfs', 'data-act': 'fullscreen', onclick: tap(() => { M.fs.toggle().then(() => setTimeout(refresh, 250)); }) }) : null;
+    function refresh() {
+      if (!box.isConnected && box._seen) { off(); offR(); return; } if (box.isConnected) box._seen = true;
+      btns.forEach((b, i) => { const on = Q.setting === QL[i][0]; b.classList.toggle('green', on); b.classList.toggle('gray', !on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+      note.textContent = Q.setting === 'auto' ? 'تلقائي: دلوقتي ' + QN[Q.level] + ' (بتتظبط حسب سرعة الجهاز)' : 'الجودة ' + QN[Q.setting] + '، من غير تغيير تلقائي';
+      rm.className = 'btn sm qrm ' + (M.reduced ? 'green' : 'gray'); rm.setAttribute('aria-pressed', M.reduced ? 'true' : 'false'); rm.textContent = 'تقليل الحركة: ' + (M.reduced ? 'شغّال' : 'مقفول');
+      if (fsb) { fsb.textContent = ''; fsb.append(I(M.fs.is() ? 'fullscreen-exit' : 'fullscreen', 24), M.fs.is() ? 'خروج من الشاشة الكاملة' : 'شاشة كاملة'); }
+    }
+    const off = Q.on(refresh), offR = (() => { const f = () => refresh(); window.addEventListener('moody-reduced', f); document.addEventListener('fullscreenchange', f); return () => { window.removeEventListener('moody-reduced', f); document.removeEventListener('fullscreenchange', f); }; })();
+    box.append(title, row, note, h('div', { class: 'row qextra' }, rm, fsb)); refresh(); return box;
+  };
+  UI.fsBtn = function () {
+    if (!(M.fs && M.fs.can())) return null; const b = h('button', { class: 'btn round blue', 'data-act': 'fullscreen', 'aria-label': 'شاشة كاملة' });
+    const set = () => { b.textContent = ''; b.append(I(M.fs.is() ? 'fullscreen-exit' : 'fullscreen', 34)); }; b.onclick = () => { M.audio.sfx('tap'); M.fs.toggle().then(() => setTimeout(set, 250)); }; set(); document.addEventListener('fullscreenchange', () => { if (b.isConnected) set(); }); return b;
+  };
+  /* quality changes: rebuild the HUD chips (live portraits on/off) */
+  M.quality.on(() => { try { if (hud) UI.hud.rebuild(); } catch (e) { } });
+
+  /* ============ "new version available" (service worker -> page) ============
+     moody/sw.js posts {type:'moody-update'} when a code file changed on the network (or a new worker took over). On the title screen, while nobody is touching anything, we just reload;
+     elsewhere a small banner offers the reload so a running mission is never interrupted. */
+  UI.updateReady = false;
+  UI.offerUpdate = function () {
+    if (UI.updateReady) return; UI.updateReady = true;
+    const t0 = Date.now(); let last = Date.now(); ['pointerdown', 'keydown'].forEach(e => addEventListener(e, () => { last = Date.now(); }, true));
+    const onTitle = () => !!root.querySelector('.ttl-play') && !document.getElementById('hud').style.display.match(/block/) && !root.querySelector('.modal');
+    const iv = setInterval(() => {
+      if (document.hidden) return;
+      if (onTitle() && Date.now() - last > 9000 && Date.now() - t0 > 4000) { clearInterval(iv); try { location.reload(); } catch (e) { } return; }
+      if (!document.getElementById('updbar') && Date.now() - t0 > 2500) {
+        const bar = h('div', { id: 'updbar', role: 'status' }, h('span', null, 'في نسخة جديدة من اللعبة'), h('button', { class: 'btn sm green', onclick: () => location.reload() }, 'حدّث'), h('button', { class: 'btn sm gray', 'aria-label': 'لاحقًا', onclick: () => { bar.remove(); } }, I('x', 20)));
+        root.append(bar);
+      }
+    }, 1500);
+  };
+  try {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener('message', e => { if (e.data && e.data.type === 'moody-update') UI.offerUpdate(); });
+      const had = !!navigator.serviceWorker.controller; navigator.serviceWorker.addEventListener('controllerchange', () => { if (had) UI.offerUpdate(); });
+    }
+  } catch (e) { }
 
   /* ============ menu backdrop (canvas scene used outside missions) ============ */
   let vig = null;
