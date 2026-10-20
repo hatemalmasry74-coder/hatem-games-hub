@@ -26,7 +26,8 @@
     { id: 'saudi', order: 8, title: 'السفر لبابا في السعودية', icon: 'w_saudi', theme: { c1: '#ffe0a8', c2: '#e0a24a' } },
     { id: 'habits', order: 9, title: 'عاداتي كل يوم', icon: 'w_habits', theme: { c1: '#ffe9a0', c2: '#f0b040' } },
     { id: 'gathering', order: 10, title: 'تجمّع العائلة', icon: 'w_gather', theme: { c1: '#ffd9c0', c2: '#f08a5d' } },
-    { id: 'runs', order: 11, title: 'سباق المغامرة', icon: 'w_runs', theme: { c1: '#ffd9a8', c2: '#ff7a3c' } }
+    { id: 'runs', order: 11, title: 'سباق المغامرة', icon: 'w_runs', theme: { c1: '#ffd9a8', c2: '#ff7a3c' } },
+    { id: 'mystery', order: 12, title: 'لغز البيت القديم', icon: 'w_mystery', theme: { c1: '#cdbcf5', c2: '#6a58b0' } }
   ]);
   // engine content + worlds, loaded in this order
   M.load.push('content/baba_calls.js', 'content/reactions.js', 'content/meta.js', 'content/art_common.js', 'content/q_tier6.js', 'content/q_tier9.js', 'worlds/home_art.js', 'worlds/home.js');
@@ -38,5 +39,6 @@
   M.load.push('content/q_habits.js', 'worlds/habits_kits.js', 'worlds/habits_art.js', 'worlds/habits.js');
   M.load.push('content/q_gathering.js', 'worlds/gathering_kits.js', 'worlds/gathering_art.js', 'worlds/gathering.js');
   M.load.push('content/q_runs.js', 'worlds/runs_art.js', 'worlds/runs.js');
+  M.load.push('content/q_mystery.js', 'worlds/mystery_kits.js', 'worlds/mystery_art.js', 'worlds/mystery.js');
   M.load.push('content/dress_items.js', 'engine/dress.js', 'engine/dress_ui.js', 'worlds/rooms_art.js', 'worlds/rooms.js');
 })();
