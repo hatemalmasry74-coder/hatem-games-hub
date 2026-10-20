@@ -10,7 +10,17 @@
   if (V.collect) { window.__voiceLog = V.log; setTimeout(() => V.noteFixed && V.noteFixed(), 0); }
 
   /* ---- normalisation + hash (identical to tools/voice_hash.py) ---- */
-  V.resolve = s => String(s == null ? '' : s).replace(/\{m\}/g, DEFAULTS.m).replace(/\{a\}/g, DEFAULTS.a).replace(/\{t\}/g, DEFAULTS.t).replace(/\{n\}/g, DEFAULTS.n).replace(/\{me\}/g, DEFAULTS.me).replace(/[ \t\r\n ]+/g, ' ').trim();
+  /* NEUTRAL rendering (Play edition: Moody.voice.neutral = true).  The pre-generated clips cannot say a family's names, so every role token is spoken as a neutral word:
+     vocative ("يا {a}") -> NT.k[x][1] / NT.f[x][1], elsewhere NT.k[x][0] / NT.f[x][0];  grandparent tokens -> the TITLE the parents chose (V.vars.gm / V.vars.gf, set by engine/family.js).
+     The same table + algorithm live in tools/voice_hash.py (tools/play/check_neutral.js compares them): keep BOTH in sync.  Inert while V.neutral is false. */
+  const NT = /*NEUTRAL-TABLE*/{"k":{"m":["الكبير","يا بطل"],"a":["الصغير","يا بطل"],"t":["الكبيرة","يا بطلة"],"n":["الصغيرة","يا بطلة"]},"f":{"aunt1":["عمتو","يا عمتو"],"aunt2":["عمتو","يا عمتو"],"uncle1":["عمو","يا عمو"],"aunt1n":["عمتو","يا عمتو"],"aunt2n":["عمتو","يا عمتو"],"uncle1n":["عمو","يا عمو"],"cz1":["ابن عمك","يا صاحبي"],"cz2":["بنت عمك","يا حبيبتي"],"cz3":["ابن عمك الصغير","يا حبيبي"],"cz4":["ابن عمك الكبير","يا صاحبي"],"cz5":["ابن عمك الأكبر","يا صاحبي"],"fr":["صاحبك","يا صاحبي"],"school":["المدرسة","المدرسة"],"dcity":["مدينة بابا","مدينة بابا"],"dcountry":["بلد بابا","بلد بابا"]},"t":{"gm":"gm","gmt":"gm","gmn":"gm","gf":"gf","gft":"gf"}}/*END-NEUTRAL-TABLE*/;
+  V.neutral = false; V.vars = { gm: 'تيتة', gf: 'جدو' }; V.NT = NT;
+  const NAMES = Object.keys(NT.k).concat(Object.keys(NT.f), Object.keys(NT.t));
+  const RE_VOC = new RegExp('يا\\s+\\{(' + NAMES.join('|') + ')\\}', 'g'), RE_BARE = new RegExp('([وفبكل]{0,2}ـ?)\\{(' + NAMES.join('|') + ')\\}', 'g');
+  const nword = (k, voc) => { if (NT.k[k]) return NT.k[k][voc ? 1 : 0]; if (NT.f[k]) return NT.f[k][voc ? 1 : 0]; const t = V.vars[NT.t[k]]; return voc ? 'يا ' + t : t; };
+  V.neutralize = s => String(s == null ? '' : s).replace(/\{k([1-4])\}/g, (m, i) => '{' + 'matn'.charAt(i - 1) + '}').replace(/\{me\}/g, DEFAULTS.me)
+    .replace(RE_VOC, (m, k) => nword(k, true)).replace(RE_BARE, (m, pre, k) => { let w = nword(k, false); if (/لـ?$/.test(pre) && w.indexOf('ال') === 0) { pre = pre.replace(/ـ$/, ''); w = w.slice(1); } return pre + w; });
+  V.resolve = s => (V.neutral ? V.neutralize(s) : String(s == null ? '' : s).replace(/\{m\}/g, DEFAULTS.m).replace(/\{a\}/g, DEFAULTS.a).replace(/\{t\}/g, DEFAULTS.t).replace(/\{n\}/g, DEFAULTS.n).replace(/\{me\}/g, DEFAULTS.me)).replace(/[ \t\r\n ]+/g, ' ').trim();
   V.normalize = s => V.resolve(s).replace(/[ً-ٰٟـ]/g, '');
   function fnv(bytes, h) { for (let i = 0; i < bytes.length; i++) { h ^= bytes[i]; h = Math.imul(h, 0x01000193) >>> 0; } return h >>> 0; }
   const hex8 = n => ('00000000' + n.toString(16)).slice(-8);
@@ -28,7 +38,7 @@
   /* ---- collection harness ---- */
   V.note = function (text, speaker) {
     if (!V.collect || !text) return; const t = V.resolve(text); if (!t) return; const sp = V.voiceFor(speaker || 'narrator');
-    if (!V.log.some(e => e.text === t && e.speaker === sp)) V.log.push({ text: t, speaker: sp, hash: V.hash(t) });
+    if (!V.log.some(e => e.text === t && e.speaker === sp)) V.log.push({ text: t, raw: String(text), speaker: sp, hash: V.hash(t) });
   };
   V.dump = () => JSON.stringify(V.log);
 
@@ -104,14 +114,14 @@
   }
   V.speak = function (text, o) {
     o = o || {}; if (!text) return; const t = V.resolve(text);
-    V.note(t, o.speaker); V.last = { text: t, speaker: o.speaker || 'narrator' };
+    V.note(text, o.speaker); V.last = { text: t, speaker: o.speaker || 'narrator' };
     if (o.instruction) V.instruction = V.last;
     if (!V.enabled() && !o.force) { if (!o.soft && o.speaker && o.speaker !== 'narrator' && M.chars && M.chars.defs[o.speaker]) pseudo(o.speaker, Math.max(900, t.length * 55)); return; }   // voice off: the mouth still moves
     start([{ text: t, speaker: o.speaker }], o);
   };
   /* read several texts one after another (e.g. the answer choices) */
   V.speakSeq = function (texts, o) {
-    o = o || {}; const items = texts.filter(Boolean).map(t => { const r = V.resolve(t); V.note(r, o.speaker); return { text: r, speaker: o.speaker, gap: 450 }; });
+    o = o || {}; const items = texts.filter(Boolean).map(t => { const r = V.resolve(t); V.note(t, o.speaker); return { text: r, speaker: o.speaker, gap: 450 }; });
     if (!items.length || (!V.enabled() && !o.force)) return; start(items, o);
   };
   /* the current task instruction (HUD prompt): spoken when it appears, replayable with the "ماذا نفعل؟" button */
