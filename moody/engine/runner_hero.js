@@ -40,6 +40,8 @@
   function cap(x, cx, cy, r, col) { x.beginPath(); x.arc(cx, cy, r, 0, TAU); shade(x, col, [cx - r, cy - r, r * 2, r * 2], 1.5); }
 
   function outfit(id) {
+    const fd = M.dress && M.dress.defFor ? M.dress.defFor(id) : null;   // outfit system (engine/dress.js): the derived def carries colours, shorts, skirt length, hat, hijab, bag ...
+    if (fd) return { d: fd, shirt: fd.shirt, hat: fd._hat && C.hats[fd._hat] ? fd._hat : null, hatC: fd._hatC, key: id + '|' + fd._osig };
     const d = C.defs[id], eq = (M.save.data.cosm && M.save.data.cosm.eq && M.save.data.cosm.eq[id]) || {};
     let shirt = d.shirt; if (eq.shirt && C.shirts[eq.shirt] && (!C.shirts[eq.shirt].for || C.shirts[eq.shirt].for.indexOf(id) >= 0)) shirt = C.shirts[eq.shirt].color;
     return { d, shirt, hat: eq.hat && C.hats[eq.hat] && (!C.hats[eq.hat].for || C.hats[eq.hat].for.indexOf(id) >= 0) ? eq.hat : null, key: id + '|' + shirt + '|' + (eq.hat || '') };
@@ -112,7 +114,7 @@
         for (let i = 0; i < 5; i++) cap(x, (i - 2) * cr * 1.1, hy + R * .7 - Math.abs(i - 2) * cr * .45, cr * .95, hairC);   // nape curls
       }
       /* cosmetic hat from the shop */
-      if (O.hat && C.hats[O.hat]) { x.save(); x.translate(0, hy); try { C.hats[O.hat].draw(x, R); } catch (e) { } x.restore(); }
+      if (O.hat && C.hats[O.hat]) { x.save(); x.translate(0, hy + (d.hair === 'scarf' && O.hatC !== undefined ? -R * (C.hats[O.hat].hjDy == null ? .16 : C.hats[O.hat].hjDy) : 0)); try { C.hats[O.hat].draw(x, R, O.hatC, null, d); } catch (e) { } x.restore(); }
     });
     rig.top = rig.upper.y0;
 
@@ -121,7 +123,8 @@
     [0, 1].forEach(v => {
       rig['leg' + v] = mk(-lw2 / 2 - 6, -L - 4, lw2 / 2 + 6, 6, ppu, x => {
         const sl = 13;
-        rr(x, -lw2 / 2, -L, lw2, L - sl + 2, 6, pants, 1.6);
+        if (d.shorts && !dressy) { rr(x, -lw2 / 2 + 1, -L, lw2 - 2, L - sl + 2, 6, d.sockC || '#f4f1ea', 1.6); rr(x, -lw2 / 2 - 1.5, -L, lw2 + 3, (L - sl + 2) * d.shorts, 6, pants, 1.6); } else rr(x, -lw2 / 2, -L, lw2, L - sl + 2, 6, pants, 1.6);
+        if (d.legStripe && !dressy) x.fillStyle = d.legStripe, x.fillRect(-lw2 / 2 + 1, -L + 4, 2.4, L - sl - 6);
         if (!dressy) { x.fillStyle = 'rgba(30,5,0,.1)'; x.fillRect(lw2 * .12, -L + 6, lw2 * .38, L - sl - 4); }
         if (!v) { rr(x, -lw2 / 2 - 3, -sl, lw2 + 6, sl + 2, 6, d.shoe, 1.8); x.fillStyle = 'rgba(30,20,10,.28)'; x.fillRect(-lw2 / 2 - 3, 0, lw2 + 6, 2.4); }
         else { rr(x, -lw2 / 2 - 2, -sl, lw2 + 4, sl - 1, 5, G.shade(d.shoe, -.18), 1.8); ell(x, 0, -sl * .35, lw2 * .5, sl * .34, '#3a2a22', 1.2); ell(x, 0, -sl * .5, lw2 * .26, sl * .18, '#5b463a', 0); }
@@ -141,7 +144,7 @@
 
     /* ---------- skirt (dresses) ---------- */
     if (dressy) {
-      const wy = ty + T - 6, geo = ({ cardigan: [-L * .2, sw + 13], hoodie: [-L * .46, sw + 11], floral: [-L * .16, sw + 15], blouse: [-L * .5, sw + 8] })[d.top] || [-L * .5, sw + 17], hem = geo[0], hw0 = sw * .92, hw1 = geo[1];
+      const wy = ty + T - 6, geo = ({ cardigan: [-L * .2, sw + 13], hoodie: [-L * .46, sw + 11], floral: [-L * .16, sw + 15], blouse: [-L * .5, sw + 8] })[d.top] || [-L * .5, sw + 17], hem = d.skHem != null ? -L * d.skHem : geo[0], hw0 = sw * .92, hw1 = d.skFlare != null ? sw + d.skFlare : geo[1];
       rig.skirt = mk(-hw1 - 8, wy - 4, hw1 + 8, hem + 14, ppu, x => {
         x.beginPath(); x.moveTo(-hw0, wy); x.lineTo(hw0, wy); x.quadraticCurveTo(hw1 + 3, (wy + hem) / 2, hw1, hem); x.quadraticCurveTo(0, hem + 8, -hw1, hem); x.quadraticCurveTo(-hw1 - 3, (wy + hem) / 2, -hw0, wy); x.closePath();
         shade(x, d.skirt, [-hw1, wy, hw1 * 2, hem - wy], 1.8);
@@ -169,10 +172,11 @@
   const RC = {};   // per-hero memo: (canvas width, equipped shirt/hat) -> rig, so the hot path allocates nothing
   function rigOf(id) {
     const eq = (M.save.data.cosm && M.save.data.cosm.eq && M.save.data.cosm.eq[id]) || EMPTY, w = M.cv ? M.cv.width : 960, m = RC[id];
-    if (m && m.w === w && m.sh === eq.shirt && m.hat === eq.hat) return m.rig;
+    const dsig = M.dress && M.dress.sig ? M.dress.sig(id) : '';
+    if (m && m.w === w && m.sh === eq.shirt && m.hat === eq.hat && m.ds === dsig) return m.rig;
     const O = outfit(id), kq = w / 960, ppu = Math.max(.6, RH.scaleOf(id) * kq * 1.1), key = O.key + '|' + ppu.toFixed(2);
     let r = RIG[key]; if (!r) { r = RIG[key] = bake(id, ppu); r.k = RH.scaleOf(id); r.id = id; r.key = key; }
-    RC[id] = { w, sh: eq.shirt, hat: eq.hat, rig: r }; return r;
+    RC[id] = { w, sh: eq.shirt, hat: eq.hat, ds: dsig, rig: r }; return r;
   }
   const EMPTY = {};
   RH.warm = function (ids) { (ids || ['moody', 'aboody', 'toota', 'nemo']).forEach(id => { try { rigOf(id); } catch (e) { console.error(e); } }); };

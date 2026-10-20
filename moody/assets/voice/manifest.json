@@ -25550,5 +25550,837 @@
  "370cb6a45801": {
   "voice": "narrator",
   "text": "البطل مش اللي بيكسب بس.. البطل اللي مبيستسلمش"
+ },
+ "c6fa573975b1": {
+  "voice": "narrator",
+  "text": "اختار لبس حلو"
+ },
+ "7229d82b3994": {
+  "voice": "narrator",
+  "text": "اختاروا مين هيلبس"
+ },
+ "6315dcd7bd05": {
+  "voice": "narrator",
+  "text": "افتح الدولاب واختار لبسك"
+ },
+ "ef3f854aca46": {
+  "voice": "narrator",
+  "text": "رجعت لشكلي الأصلي"
+ },
+ "c6b08ff228db": {
+  "voice": "narrator",
+  "text": "حفظت ده كأفضل لبس!"
+ },
+ "6edf4b8b78ec": {
+  "voice": "narrator",
+  "text": "مبروك! اللبس بقى بتاعك"
+ },
+ "ccd948ee6688": {
+  "voice": "narrator",
+  "text": "بتجرّب اللبس. اشتريه عشان تحتفظ بيه"
+ },
+ "ac1c579fa0e1": {
+  "voice": "narrator",
+  "text": "يلا نرجع للخريطة"
+ },
+ "27975de84745": {
+  "voice": "narrator",
+  "text": "يلا نعمل عرض أزياء!"
+ },
+ "28a513850d29": {
+  "voice": "narrator",
+  "text": "برافو! لبس مناسب جدًا!"
+ },
+ "823f18cd5188": {
+  "voice": "narrator",
+  "text": "اختار طقم جاهز"
+ },
+ "72c90629d393": {
+  "voice": "narrator",
+  "text": "اختار الملابس"
+ },
+ "f30fdc3b5114": {
+  "voice": "narrator",
+  "text": "اختار البنطلون أو الجيبة"
+ },
+ "227918d17054": {
+  "voice": "narrator",
+  "text": "اختار الجزمة"
+ },
+ "0a2c9cd58e50": {
+  "voice": "narrator",
+  "text": "اختار القبعة"
+ },
+ "bebbb6900f07": {
+  "voice": "narrator",
+  "text": "اختار الغطا"
+ },
+ "6392a9ba6d27": {
+  "voice": "narrator",
+  "text": "اختار إكسسوار"
+ },
+ "252e1325a1f2": {
+  "voice": "narrator",
+  "text": "اختار اللون"
+ },
+ "69298f59598c": {
+  "voice": "narrator",
+  "text": "البس لبس رياضة للحديقة"
+ },
+ "f4cb7afd69a4": {
+  "voice": "narrator",
+  "text": "الجو حلو والشمس طالعة. البس بدلة رياضية للحديقة!"
+ },
+ "812392ee9c98": {
+  "voice": "narrator",
+  "text": "محتاج لبس خفيف"
+ },
+ "98f636f5f9a7": {
+  "voice": "narrator",
+  "text": "محتاج كوتشي"
+ },
+ "770016246ce3": {
+  "voice": "narrator",
+  "text": "البس لبس شتوي"
+ },
+ "f57ecbb8edea": {
+  "voice": "narrator",
+  "text": "الجو برد أوي! البس لبس شتوي دافي."
+ },
+ "730c8912e53d": {
+  "voice": "narrator",
+  "text": "محتاج لبس دافي"
+ },
+ "546c9fae2223": {
+  "voice": "narrator",
+  "text": "محتاج جزمة"
+ },
+ "2e5372fa9d47": {
+  "voice": "narrator",
+  "text": "محتاج طاقية أو شال"
+ },
+ "b173c123efbe": {
+  "voice": "narrator",
+  "text": "البس لبس للمطرة"
+ },
+ "2d67d51fbc74": {
+  "voice": "narrator",
+  "text": "الدنيا بتمطر! البس جاكيت وجزمة."
+ },
+ "e6a9c19dd214": {
+  "voice": "narrator",
+  "text": "محتاج جاكيت"
+ },
+ "8d6d794c13dd": {
+  "voice": "narrator",
+  "text": "البس لبس البحر"
+ },
+ "74ec4a63cf74": {
+  "voice": "narrator",
+  "text": "رايحين البحر! البس تيشيرت البحر وبرنيطة الشمس."
+ },
+ "8c90b6c6b315": {
+  "voice": "narrator",
+  "text": "محتاج تيشيرت البحر"
+ },
+ "cf8ecc20b40e": {
+  "voice": "narrator",
+  "text": "محتاج برنيطة"
+ },
+ "5134b23e9852": {
+  "voice": "narrator",
+  "text": "البس لبس المدرسة"
+ },
+ "f65207a6b732": {
+  "voice": "narrator",
+  "text": "النهارده مدرسة! البس لبس المدرسة وخُد الشنطة."
+ },
+ "f8ec3f798137": {
+  "voice": "narrator",
+  "text": "محتاج لبس المدرسة"
+ },
+ "c41dfcf0f57b": {
+  "voice": "narrator",
+  "text": "محتاج شنطة"
+ },
+ "cb65780f6cf9": {
+  "voice": "narrator",
+  "text": "البس لبس الحفلة"
+ },
+ "5f383d29986e": {
+  "voice": "narrator",
+  "text": "في حفلة النهارده! البس حاجة شيك."
+ },
+ "ce62aa149637": {
+  "voice": "narrator",
+  "text": "محتاج لبس حفلة"
+ },
+ "550d586d97bc": {
+  "voice": "narrator",
+  "text": "محتاج طاقية أو تاج"
+ },
+ "dff38bde2979": {
+  "voice": "boy_big",
+  "text": "بيب بوب! الروبوت صاحبي!"
+ },
+ "028010b05987": {
+  "voice": "boy_big",
+  "text": "عربية سريعة أوي!"
+ },
+ "5a661209f747": {
+  "voice": "boy_big",
+  "text": "بنيت برج عالي!"
+ },
+ "caa12b66af16": {
+  "voice": "boy_big",
+  "text": "جول! شوت جامد!"
+ },
+ "2b210ca268e6": {
+  "voice": "boy_big",
+  "text": "شفت نجوم كتير!"
+ },
+ "59005d812e5b": {
+  "voice": "boy_big",
+  "text": "الفضا حلو أوي!"
+ },
+ "8f4412964bb7": {
+  "voice": "boy_big",
+  "text": "شوف شكلي في المراية!"
+ },
+ "670db7b22f5b": {
+  "voice": "boy_big",
+  "text": "أهلًا في أوضتنا! اختار لبس حلو."
+ },
+ "bb51f5b660b6": {
+  "voice": "boy_big",
+  "text": "شكلي بقى شيك!"
+ },
+ "1bfece7d986d": {
+  "voice": "boy_big",
+  "text": "ده لبس جامد!"
+ },
+ "1887e6c1fb42": {
+  "voice": "boy_big",
+  "text": "حبيت اللبس ده!"
+ },
+ "aaaa6fa04d8e": {
+  "voice": "boy_big",
+  "text": "حلو أوي اللون ده!"
+ },
+ "eb82fe41d148": {
+  "voice": "boy_big",
+  "text": "مفاجأة! شوف شكلي!"
+ },
+ "f2a904a7416a": {
+  "voice": "boy_big",
+  "text": "يلا بينا بقى!"
+ },
+ "e050a8c98622": {
+  "voice": "boy_small",
+  "text": "الروبوت بيتكلم!"
+ },
+ "13ef1b93297f": {
+  "voice": "boy_small",
+  "text": "ورررم! عربيتي بتجري!"
+ },
+ "d62d700b9434": {
+  "voice": "boy_small",
+  "text": "أنا بعمل قلعة!"
+ },
+ "57d168c95fb5": {
+  "voice": "boy_small",
+  "text": "كورة كورة! جون!"
+ },
+ "01635de07153": {
+  "voice": "boy_small",
+  "text": "القمر قريب أوي!"
+ },
+ "8a97fe116035": {
+  "voice": "boy_small",
+  "text": "أنا بحب الأسد!"
+ },
+ "c6e61ae6f6c5": {
+  "voice": "boy_small",
+  "text": "أنا شايف نفسي أهو!"
+ },
+ "7e30c6f151ef": {
+  "voice": "boy_small",
+  "text": "أنا بحب أوضتنا يا جماعة! يلا نلبس."
+ },
+ "2b6287796881": {
+  "voice": "boy_small",
+  "text": "أنا بقيت شيك أوي!"
+ },
+ "297247286b5f": {
+  "voice": "boy_small",
+  "text": "اللبس ده حلو!"
+ },
+ "a015b4a759de": {
+  "voice": "boy_small",
+  "text": "أنا مبسوط بيه!"
+ },
+ "40b9a42458c2": {
+  "voice": "boy_small",
+  "text": "اللون ده جميل!"
+ },
+ "c4085a8d1d32": {
+  "voice": "boy_small",
+  "text": "لبس مفاجأة جامد!"
+ },
+ "8a4afb91bec0": {
+  "voice": "girl_big",
+  "text": "بيت العرايس منوّر!"
+ },
+ "1ebec913aff7": {
+  "voice": "girl_big",
+  "text": "الدبدوب حلو أوي، هحضنه!"
+ },
+ "38ead2485942": {
+  "voice": "girl_big",
+  "text": "ألوان حلوة أوي!"
+ },
+ "9fce0cbd701f": {
+  "voice": "girl_big",
+  "text": "الكتاب ده حلو!"
+ },
+ "86f3ccbb9424": {
+  "voice": "girl_big",
+  "text": "ريحة الورد حلوة!"
+ },
+ "d8c85503c362": {
+  "voice": "girl_big",
+  "text": "الأنوار الحلوة!"
+ },
+ "53a23026b6d8": {
+  "voice": "girl_big",
+  "text": "يلا نشوف نفسنا في المراية!"
+ },
+ "d51b1e73e39b": {
+  "voice": "girl_big",
+  "text": "أهلًا في أوضتنا! اختاري لبس حلو."
+ },
+ "a6aff0fde67c": {
+  "voice": "girl_big",
+  "text": "شكلي بقى حلو أوي!"
+ },
+ "6eabc2438c42": {
+  "voice": "girl_big",
+  "text": "ده لبس جميل!"
+ },
+ "d713bf99f48e": {
+  "voice": "girl_big",
+  "text": "حبيته أوي!"
+ },
+ "bec269187c8e": {
+  "voice": "girl_big",
+  "text": "اللون ده شيك أوي!"
+ },
+ "1abcc3256f67": {
+  "voice": "girl_big",
+  "text": "لبس مفاجأة، يا ترى حلو؟"
+ },
+ "2e314cfa5ae4": {
+  "voice": "girl_big",
+  "text": "كده تمام!"
+ },
+ "ba5ed3d5723b": {
+  "voice": "girl_small",
+  "text": "العرايس عايزين يلعبوا!"
+ },
+ "d27793ebd9c0": {
+  "voice": "girl_small",
+  "text": "الدبدوب بيحبني!"
+ },
+ "e412e0f728ba": {
+  "voice": "girl_small",
+  "text": "هرسم رسمة حلوة!"
+ },
+ "74907d4a8f7f": {
+  "voice": "girl_small",
+  "text": "عايزة أقرا حكاية!"
+ },
+ "408c1dcc9323": {
+  "voice": "girl_small",
+  "text": "الورد جميل أوي!"
+ },
+ "da7533c5045c": {
+  "voice": "girl_small",
+  "text": "الأنوار بتلمع!"
+ },
+ "5acdba7c4e48": {
+  "voice": "girl_small",
+  "text": "أنا في المراية!"
+ },
+ "cfe1e500842e": {
+  "voice": "girl_small",
+  "text": "أنا بحب أوضتنا! يلا نلبس."
+ },
+ "082103e122bc": {
+  "voice": "girl_small",
+  "text": "أنا حلوة أوي كده!"
+ },
+ "bee67b690159": {
+  "voice": "girl_small",
+  "text": "اللبس ده جميل!"
+ },
+ "4724f9e8108a": {
+  "voice": "girl_small",
+  "text": "أنا بحبه!"
+ },
+ "5bffd377fe51": {
+  "voice": "girl_small",
+  "text": "اللون ده جميل أوي!"
+ },
+ "a4f8c586812d": {
+  "voice": "girl_small",
+  "text": "لبس مفاجأة حلو!"
+ },
+ "a3174801466e": {
+  "voice": "girl_small",
+  "text": "كده بقيت جاهزة!"
+ },
+ "c1d9c59cfac9": {
+  "voice": "narrator",
+  "text": "ملصق جديد: نجم الأزياء"
+ },
+ "1dac54672c1d": {
+  "voice": "narrator",
+  "text": "جرّبه بس"
+ },
+ "dcc3aa9f86f3": {
+  "voice": "narrator",
+  "text": "غرفتي"
+ },
+ "35ac0f8a3c4e": {
+  "voice": "narrator",
+  "text": "غرفة الأولاد"
+ },
+ "48c3e9a7f805": {
+  "voice": "narrator",
+  "text": "غرفة البنات"
+ },
+ "f31372fbb508": {
+  "voice": "narrator",
+  "text": "عرض الأزياء"
+ },
+ "6aeba3b70e99": {
+  "voice": "narrator",
+  "text": "عشوائي"
+ },
+ "61709ba0e882": {
+  "voice": "narrator",
+  "text": "حفظ كأفضل لبس"
+ },
+ "4ed027a4b363": {
+  "voice": "narrator",
+  "text": "رجّعني لشكلي الأصلي"
+ },
+ "dd7c2b72c76c": {
+  "voice": "narrator",
+  "text": "تمام"
+ },
+ "29a71bb9cf8e": {
+  "voice": "narrator",
+  "text": "لبسي المفضل"
+ },
+ "a1021c3a4095": {
+  "voice": "narrator",
+  "text": "اشتري"
+ },
+ "67bd66ff9766": {
+  "voice": "narrator",
+  "text": "خلّصت"
+ },
+ "d7950d6a945d": {
+  "voice": "narrator",
+  "text": "تيشيرت"
+ },
+ "34cdee76db82": {
+  "voice": "narrator",
+  "text": "تيشيرت كم طويل"
+ },
+ "6dfd0d30d48e": {
+  "voice": "narrator",
+  "text": "بولو"
+ },
+ "cbcaf88c4fa0": {
+  "voice": "narrator",
+  "text": "قميص بزراير"
+ },
+ "5fa52442c8ac": {
+  "voice": "narrator",
+  "text": "هودي"
+ },
+ "0dd5c6e8defe": {
+  "voice": "narrator",
+  "text": "بلوفر"
+ },
+ "eaa3fb4afde9": {
+  "voice": "narrator",
+  "text": "فانلة رياضية"
+ },
+ "f7da84fd1f8d": {
+  "voice": "narrator",
+  "text": "جاكيت"
+ },
+ "047107eb3627": {
+  "voice": "narrator",
+  "text": "جاكيت شتوي"
+ },
+ "d3479fe60bd0": {
+  "voice": "narrator",
+  "text": "تيشيرت البحر"
+ },
+ "e7ec4700d9dd": {
+  "voice": "narrator",
+  "text": "بلوزة بكشكش"
+ },
+ "63d68b570f29": {
+  "voice": "narrator",
+  "text": "كارديجان"
+ },
+ "c382c7e99d3d": {
+  "voice": "narrator",
+  "text": "فستان ورد طويل"
+ },
+ "64e7eb0d7cfb": {
+  "voice": "narrator",
+  "text": "فستان حفلة"
+ },
+ "1f26948d5497": {
+  "voice": "narrator",
+  "text": "مريلة مدرسة"
+ },
+ "338edd2e19ef": {
+  "voice": "narrator",
+  "text": "فستان جينز طويل"
+ },
+ "c42cbeab88df": {
+  "voice": "narrator",
+  "text": "تونيك طويلة"
+ },
+ "69dab203e296": {
+  "voice": "narrator",
+  "text": "كارديجان طويل"
+ },
+ "b2398a09c785": {
+  "voice": "narrator",
+  "text": "جلابية"
+ },
+ "b5dbaf486a57": {
+  "voice": "narrator",
+  "text": "فستان نعناعي"
+ },
+ "af3862f6a0ac": {
+  "voice": "narrator",
+  "text": "فستان وردي"
+ },
+ "b06b1c5d4128": {
+  "voice": "narrator",
+  "text": "فستان أزرق"
+ },
+ "ef38a48583e2": {
+  "voice": "narrator",
+  "text": "فستان أصفر"
+ },
+ "6233b0b01552": {
+  "voice": "narrator",
+  "text": "بنطلون"
+ },
+ "ac38810b56f4": {
+  "voice": "narrator",
+  "text": "جينز"
+ },
+ "1b2354002ab8": {
+  "voice": "narrator",
+  "text": "ترينج رياضي"
+ },
+ "35d7aceb497a": {
+  "voice": "narrator",
+  "text": "شورت للركبة"
+ },
+ "7c116486b5de": {
+  "voice": "narrator",
+  "text": "بنطلون المدرسة"
+ },
+ "f74c6cce21d9": {
+  "voice": "narrator",
+  "text": "كارجو"
+ },
+ "59fd4fc20e73": {
+  "voice": "narrator",
+  "text": "بنطلون واسع"
+ },
+ "f27c0074eaad": {
+  "voice": "narrator",
+  "text": "ليجن"
+ },
+ "d129d7e68aa9": {
+  "voice": "narrator",
+  "text": "جيبة طويلة"
+ },
+ "58bd86f03dd0": {
+  "voice": "narrator",
+  "text": "جيبة للركبة وأطول"
+ },
+ "d2546ca72ff9": {
+  "voice": "narrator",
+  "text": "جيبة بليسيه"
+ },
+ "859e926ec85c": {
+  "voice": "narrator",
+  "text": "كوتشي سبورت"
+ },
+ "7c92550c5f55": {
+  "voice": "narrator",
+  "text": "جزمة المدرسة"
+ },
+ "098a03f4a483": {
+  "voice": "narrator",
+  "text": "جزمة بحزام"
+ },
+ "ac8b312d23fb": {
+  "voice": "narrator",
+  "text": "جزمة شتا"
+ },
+ "7553dd9177c1": {
+  "voice": "narrator",
+  "text": "صندل بشراب"
+ },
+ "e66c8ebe1acd": {
+  "voice": "narrator",
+  "text": "كوتشي الكورة"
+ },
+ "ea1a92920513": {
+  "voice": "narrator",
+  "text": "جزمة بالية"
+ },
+ "1e5b2ed0f5cf": {
+  "voice": "narrator",
+  "text": "كاب"
+ },
+ "f3376711f129": {
+  "voice": "narrator",
+  "text": "كاب للخلف"
+ },
+ "dfc72c1da54f": {
+  "voice": "narrator",
+  "text": "طاقية شتا"
+ },
+ "3d7d179b857d": {
+  "voice": "narrator",
+  "text": "برنيطة شمس"
+ },
+ "13d46070b785": {
+  "voice": "narrator",
+  "text": "قبعة القش الكبيرة"
+ },
+ "0d630bde65a2": {
+  "voice": "narrator",
+  "text": "طاقية"
+ },
+ "aed947de5596": {
+  "voice": "narrator",
+  "text": "رباط رياضي"
+ },
+ "6c3333768a08": {
+  "voice": "narrator",
+  "text": "خوذة العجلة"
+ },
+ "fae102a91af6": {
+  "voice": "narrator",
+  "text": "طاقية حفلة"
+ },
+ "531101e7785e": {
+  "voice": "narrator",
+  "text": "تاج ملوكي"
+ },
+ "79782d7b147e": {
+  "voice": "narrator",
+  "text": "طاقية الشيف"
+ },
+ "dadbb0687c03": {
+  "voice": "narrator",
+  "text": "فيونكة كبيرة"
+ },
+ "e3180df83e81": {
+  "voice": "narrator",
+  "text": "شرائط شعر"
+ },
+ "694b0db1e115": {
+  "voice": "narrator",
+  "text": "عصابة شعر"
+ },
+ "96f53c566da8": {
+  "voice": "narrator",
+  "text": "تاج أميرة"
+ },
+ "0d7312e1db79": {
+  "voice": "narrator",
+  "text": "تاج ورد"
+ },
+ "9e30b40292a7": {
+  "voice": "narrator",
+  "text": "مشبك ورد"
+ },
+ "3ee0660be49c": {
+  "voice": "narrator",
+  "text": "حجاب سادة"
+ },
+ "0c109a56ab7e": {
+  "voice": "narrator",
+  "text": "حجاب منقّط"
+ },
+ "bbefdfb3c2cc": {
+  "voice": "narrator",
+  "text": "حجاب مقلّم"
+ },
+ "d5014a827eaf": {
+  "voice": "narrator",
+  "text": "حجاب ورد"
+ },
+ "948f8f2d2569": {
+  "voice": "narrator",
+  "text": "حجاب نجوم"
+ },
+ "6c0956e4104c": {
+  "voice": "narrator",
+  "text": "نضارة دايرة"
+ },
+ "e9c2df4ec27c": {
+  "voice": "narrator",
+  "text": "نضارة مربعة"
+ },
+ "4d0fe7d6a8ed": {
+  "voice": "narrator",
+  "text": "نضارة قطة"
+ },
+ "790b26d4fcdf": {
+  "voice": "narrator",
+  "text": "نضارة شمس"
+ },
+ "792156a5aec6": {
+  "voice": "narrator",
+  "text": "شنطة ضهر"
+ },
+ "948bec6c596c": {
+  "voice": "narrator",
+  "text": "شنطة كتف"
+ },
+ "06120748009c": {
+  "voice": "narrator",
+  "text": "شال رقبة"
+ },
+ "8106a4e669c6": {
+  "voice": "narrator",
+  "text": "ساعة إيد"
+ },
+ "89b647bb08cf": {
+  "voice": "narrator",
+  "text": "سماعات"
+ },
+ "d4f400de4bfd": {
+  "voice": "narrator",
+  "text": "دبوس نجمة"
+ },
+ "e34ea6dec1b4": {
+  "voice": "narrator",
+  "text": "دبوس علم مصر"
+ },
+ "8dbd22de2365": {
+  "voice": "narrator",
+  "text": "دبوس قلب"
+ },
+ "7f65bcb9b06f": {
+  "voice": "narrator",
+  "text": "دبوس كورة"
+ },
+ "56f546b1099c": {
+  "voice": "narrator",
+  "text": "طقم المدرسة"
+ },
+ "761118dae526": {
+  "voice": "narrator",
+  "text": "طقم الكورة"
+ },
+ "6daf093c846d": {
+  "voice": "narrator",
+  "text": "طقم الشتا"
+ },
+ "cd0b5cf33125": {
+  "voice": "narrator",
+  "text": "طقم البحر"
+ },
+ "5b20cbfedb67": {
+  "voice": "narrator",
+  "text": "طقم العيد"
+ },
+ "6a0102e65de9": {
+  "voice": "narrator",
+  "text": "طقم الحديقة"
+ },
+ "8b921a1f8ec8": {
+  "voice": "narrator",
+  "text": "طقم الرياضة"
+ },
+ "a67f7268f75d": {
+  "voice": "narrator",
+  "text": "طقم الحفلة"
+ },
+ "3654dab358b1": {
+  "voice": "narrator",
+  "text": "نعناعي"
+ },
+ "ff3845ceef2c": {
+  "voice": "narrator",
+  "text": "تركواز"
+ },
+ "3619c16d1bbc": {
+  "voice": "narrator",
+  "text": "سماوي"
+ },
+ "eb12e74c6dda": {
+  "voice": "narrator",
+  "text": "كحلي"
+ },
+ "03c72b115e86": {
+  "voice": "narrator",
+  "text": "ليلكي"
+ },
+ "ab798c313572": {
+  "voice": "narrator",
+  "text": "وردي فاتح"
+ },
+ "5f662b9b2b13": {
+  "voice": "narrator",
+  "text": "خوخي"
+ },
+ "e4e899600477": {
+  "voice": "narrator",
+  "text": "كريمي"
+ },
+ "7429656f9407": {
+  "voice": "narrator",
+  "text": "رمادي"
+ },
+ "ab8697fd7795": {
+  "voice": "narrator",
+  "text": "بني"
+ },
+ "87a104bb129a": {
+  "voice": "narrator",
+  "text": "كاكي"
+ },
+ "9d99969b93e9": {
+  "voice": "narrator",
+  "text": "عنابي"
+ },
+ "145a30fd92de": {
+  "voice": "narrator",
+  "text": "زيتي"
+ },
+ "0798f59f127e": {
+  "voice": "narrator",
+  "text": "دهبي"
  }
 }

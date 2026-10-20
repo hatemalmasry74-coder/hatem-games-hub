@@ -20,21 +20,21 @@
      abilities: tags kits can ask for with needs:'strong' (or a hero id). speed: walking speed factor.
      optional v2 keys: iris (eye colour) */
   const DEFS = {
-    moody: { name: 'مودي', age: 9, sc: 1, L: 56, T: 58, R: 28, hr: .94, sw: 22, skin: '#dd9d6c', skinD: '#c98655', shirt: '#9ea4ab', pants: '#e7b038', shoe: '#7a5238', curl: .29, eye: 1, img: 'assets/moody_cartoon.jpg', w: 20, wf: 12, a1: 24, a2: 24, top: 'placket', hair: 'curly', hairC: HAIR, abilities: ['strong', 'tall'], ability: 'قوي وطويل', badge: ['م', '#ffc93c'], playable: true, speed: 230 },
-    aboody: { name: 'عبودي', age: 6, sc: .76, L: 44, T: 46, R: 33, hr: 1.0, sw: 21, skin: '#cf8b5a', skinD: '#b9764a', shirt: '#26396e', pants: '#cdb68b', shoe: '#f3eee2', curl: .31, eye: 1.18, img: 'assets/aboody_cartoon.jpg', w: 18, wf: 11, a1: 20, a2: 20, top: 'vneck', hair: 'curly', hairC: HAIR, abilities: ['small', 'quick'], ability: 'صغير وسريع', badge: ['ع', '#4aa8e8'], playable: true, speed: 230 },
-    toota: { name: 'توتا', full: 'تسنيم', age: 15, sc: 1.1, L: 58, T: 54, R: 30, hr: .93, sw: 19, skin: '#eebb92', skinD: '#d99c74', shirt: '#722246', skirt: '#f7ede3', keepSkirt: true, pants: '#efe2d5', legC: '#efe2d5', legW: 10, shoe: '#f4eae1', shoeAcc: '#b5456c', eye: 1.05, iris: '#6e4026', w: 14, wf: 11, a1: 13, a2: 16, top: 'cardigan', sleeveLong: true, cuff: '#fbf3ea', belt: '#c25a7e', hair: 'scarf', scarf: '#f6e4de', hijab: '#f6e4de', under: '#7d2447', pin: '#e2b05c', glasses: '#b3745f', lash: true, bag: '#cf9c8c', v3: true, pk: .9, img: 'assets/toota_cartoon.jpg', abilities: ['leader', 'order'], ability: 'قائدة ومنظمة', badge: ['ت', '#8b2346'], playable: true, speed: 230 },
-    nemo: { name: 'نيمو', full: 'ترنيم', age: 12, sc: 1.04, L: 52, T: 52, R: 30, hr: .98, sw: 19, skin: '#dba070', skinD: '#c4875a', shirt: '#f7a9c6', skirt: '#86a3dc', keepSkirt: true, stitch: true, pants: '#8fa6d9', legC: '#d9c8ef', legW: 10, shoe: '#ffffff', shoeAcc: '#ff7fae', eye: 1.05, iris: '#6a3e24', w: 15, wf: 11, a1: 15, a2: 18, top: 'hoodie', sleeveLong: true, cuff: '#ffd6e6', hair: 'bob', braid: true, hairC: '#2f1b13', sunhat: '#f8cdd8', hat: '#f8cdd8', ribbon: '#ff7fae', glasses: '#e8a38f', lash: true, smile: 'big', neckPhones: '#f6b6cd', bunny: true, charm: '#ffd23c', v3: true, pk: .78, img: 'assets/nemo_cartoon.jpg', abilities: ['curious', 'finder', 'small'], ability: 'فضولية وبتلاقي المخفي', badge: ['ن', '#ff6f91'], playable: true, speed: 230 },
-    nana: { name: 'ننا زوزا', age: 68, sc: .9, L: 50, T: 56, R: 30, hr: .96, sw: 22, skin: '#e4b58c', skinD: '#cf9f76', shirt: '#c9b6ec', skirt: '#c9b6ec', flowers: ['#ff6f91', '#ffd23c', '#ffffff'], pants: '#e4b58c', legC: '#e4b58c', legW: 11, shoe: '#6b5a74', eye: .95, w: 20, wf: 11, a1: 22, a2: 22, top: 'floral', hair: 'scarf', scarf: '#f6dfe8', hairC: '#cfcfd6', glasses: '#8a6b55', wrinkles: true, abilities: ['wise', 'kind'], ability: 'حكيمة وحنونة', badge: ['ز', '#c9b6ec'], playable: false, speed: 130, stoop: .03 },
-    baba: { name: 'بابا', age: 40, sc: 1.22, L: 58, T: 62, R: 28, hr: .96, sw: 24, skin: '#c98f5f', skinD: '#b17848', shirt: '#2b2b30', pants: '#3b3f50', shoe: '#2a2320', eye: .95, w: 22, wf: 13, a1: 24, a2: 24, top: 'crew', hair: 'curly', curl: .22, hairC: '#21170f', beard: '#5f4030', smile: 'big', browW: 5.4, watch: true, ring: true, img: 'assets/baba_cartoon.jpg', abilities: ['dad'], ability: 'بابا', badge: ['ب', '#555a6b'], playable: false, speed: 200 },
+    moody: { name: 'مودي', gender: 'm', age: 9, sc: 1, L: 56, T: 58, R: 28, hr: .94, sw: 22, skin: '#dd9d6c', skinD: '#c98655', shirt: '#9ea4ab', pants: '#e7b038', shoe: '#7a5238', curl: .29, eye: 1, img: 'assets/moody_cartoon.jpg', w: 20, wf: 12, a1: 24, a2: 24, top: 'placket', hair: 'curly', hairC: HAIR, abilities: ['strong', 'tall'], ability: 'قوي وطويل', badge: ['م', '#ffc93c'], playable: true, speed: 230 },
+    aboody: { name: 'عبودي', gender: 'm', age: 6, sc: .76, L: 44, T: 46, R: 33, hr: 1.0, sw: 21, skin: '#cf8b5a', skinD: '#b9764a', shirt: '#26396e', pants: '#cdb68b', shoe: '#f3eee2', curl: .31, eye: 1.18, img: 'assets/aboody_cartoon.jpg', w: 18, wf: 11, a1: 20, a2: 20, top: 'vneck', hair: 'curly', hairC: HAIR, abilities: ['small', 'quick'], ability: 'صغير وسريع', badge: ['ع', '#4aa8e8'], playable: true, speed: 230 },
+    toota: { name: 'توتا', gender: 'f', full: 'تسنيم', age: 15, sc: 1.1, L: 58, T: 54, R: 30, hr: .93, sw: 19, skin: '#eebb92', skinD: '#d99c74', shirt: '#722246', skirt: '#f7ede3', keepSkirt: true, pants: '#efe2d5', legC: '#efe2d5', legW: 10, shoe: '#f4eae1', shoeAcc: '#b5456c', eye: 1.05, iris: '#6e4026', w: 14, wf: 11, a1: 13, a2: 16, top: 'cardigan', sleeveLong: true, cuff: '#fbf3ea', belt: '#c25a7e', hair: 'scarf', scarf: '#f6e4de', hijab: '#f6e4de', under: '#7d2447', pin: '#e2b05c', glasses: '#b3745f', lash: true, bag: '#cf9c8c', v3: true, pk: .9, img: 'assets/toota_cartoon.jpg', abilities: ['leader', 'order'], ability: 'قائدة ومنظمة', badge: ['ت', '#8b2346'], playable: true, speed: 230 },
+    nemo: { name: 'نيمو', gender: 'f', full: 'ترنيم', age: 12, sc: 1.04, L: 52, T: 52, R: 30, hr: .98, sw: 19, skin: '#dba070', skinD: '#c4875a', shirt: '#f7a9c6', skirt: '#86a3dc', keepSkirt: true, stitch: true, pants: '#8fa6d9', legC: '#d9c8ef', legW: 10, shoe: '#ffffff', shoeAcc: '#ff7fae', eye: 1.05, iris: '#6a3e24', w: 15, wf: 11, a1: 15, a2: 18, top: 'hoodie', sleeveLong: true, cuff: '#ffd6e6', hair: 'bob', braid: true, hairC: '#2f1b13', sunhat: '#f8cdd8', hat: '#f8cdd8', ribbon: '#ff7fae', glasses: '#e8a38f', lash: true, smile: 'big', neckPhones: '#f6b6cd', bunny: true, charm: '#ffd23c', v3: true, pk: .78, img: 'assets/nemo_cartoon.jpg', abilities: ['curious', 'finder', 'small'], ability: 'فضولية وبتلاقي المخفي', badge: ['ن', '#ff6f91'], playable: true, speed: 230 },
+    nana: { name: 'ننا زوزا', gender: 'f', age: 68, sc: .9, L: 50, T: 56, R: 30, hr: .96, sw: 22, skin: '#e4b58c', skinD: '#cf9f76', shirt: '#c9b6ec', skirt: '#c9b6ec', flowers: ['#ff6f91', '#ffd23c', '#ffffff'], pants: '#e4b58c', legC: '#e4b58c', legW: 11, shoe: '#6b5a74', eye: .95, w: 20, wf: 11, a1: 22, a2: 22, top: 'floral', hair: 'scarf', scarf: '#f6dfe8', hairC: '#cfcfd6', glasses: '#8a6b55', wrinkles: true, abilities: ['wise', 'kind'], ability: 'حكيمة وحنونة', badge: ['ز', '#c9b6ec'], playable: false, speed: 130, stoop: .03 },
+    baba: { name: 'بابا', gender: 'm', age: 40, sc: 1.22, L: 58, T: 62, R: 28, hr: .96, sw: 24, skin: '#c98f5f', skinD: '#b17848', shirt: '#2b2b30', pants: '#3b3f50', shoe: '#2a2320', eye: .95, w: 22, wf: 13, a1: 24, a2: 24, top: 'crew', hair: 'curly', curl: .22, hairC: '#21170f', beard: '#5f4030', smile: 'big', browW: 5.4, watch: true, ring: true, img: 'assets/baba_cartoon.jpg', abilities: ['dad'], ability: 'بابا', badge: ['ب', '#555a6b'], playable: false, speed: 200 },
     /* ---- extended family (owner's edition only; tools/family/build.js strips these rows). All playable:false. Extra flags: phone/spoon/car/backpack/apron = props, idle = default idle pose, bow/quiff/part/fringe = hair details, fidget/curious = idle behaviour ---- */
-    ofa: { name: 'أوفا', age: 10, sc: .98, L: 54, T: 56, R: 28, hr: .95, sw: 21, skin: '#d79a68', skinD: '#c0834f', shirt: '#3fae6a', pants: '#4a5f8c', shoe: '#f3eee2', eye: 1.02, w: 19, wf: 12, a1: 24, a2: 24, top: 'crew', hair: 'short', hairC: '#2a1a10', fringe: true, smile: 'big', abilities: ['cousin', 'friendly'], ability: 'ابن عمتهم المرح', badge: ['أ', '#3fae6a'], playable: false, speed: 230 },
-    toti: { name: 'توتي', age: 4, sc: .62, L: 38, T: 40, R: 34, hr: 1.0, sw: 21, skin: '#e0a577', skinD: '#c98d5f', shirt: '#ff7fb0', trim: '#ffffff', belt: '#ffd23c', pants: '#e0a577', legC: '#e0a577', legW: 13, shoe: '#e5534b', eye: 1.25, w: 16, wf: 11, a1: 18, a2: 18, top: 'dress', hair: 'pigtails', hairC: '#2b1a12', tie: '#ff4a86', bow: '#ff4a86', lash: true, smile: 'big', fidget: true, abilities: ['naughty', 'tiny'], ability: 'شقية وبتحب نيمو', badge: ['ت', '#ff7fb0'], playable: false, speed: 190 },
-    amani: { name: 'عمتو أماني', age: 42, sc: .96, L: 48, T: 56, R: 29, hr: .97, sw: 22, skin: '#dca878', skinD: '#c6905f', shirt: '#7fb08f', flowers: ['#ffffff', '#f2c14e', '#e07a5f'], pants: '#dca878', legC: '#dca878', legW: 11, shoe: '#8a5a44', eye: .97, w: 20, wf: 11, a1: 22, a2: 22, top: 'floral', hair: 'scarf', scarf: '#e0825e', apron: '#fff7e6', apronTrim: '#e5534b', spoon: true, lash: true, smile: 'big', abilities: ['cook', 'kind'], ability: 'بتحب الطبخ', badge: ['أ', '#e0825e'], playable: false, speed: 170 },
-    nada: { name: 'عمتو ندى', age: 38, sc: 1, L: 54, T: 55, R: 28, hr: .95, sw: 20, skin: '#d9a070', skinD: '#c28858', shirt: '#4b86a8', skirt: '#2f3d5c', keepSkirt: true, pants: '#d9a070', legC: '#d9a070', legW: 11, shoe: '#f2ece4', eye: 1.0, w: 17, wf: 11, a1: 18, a2: 18, top: 'blouse', sleeveLong: true, ruffle: '#3a6f8e', hair: 'scarf', scarf: '#d8c3b0', under: '#4b86a8', lash: true, phone: true, idle: 'phone', abilities: ['phone'], ability: 'دايمًا في الموبايل', badge: ['ن', '#4b86a8'], playable: false, speed: 190 },
-    beno: { name: 'بينو', age: 15, sc: 1.1, L: 55, T: 56, R: 27.5, hr: .93, sw: 21, skin: '#cf935f', skinD: '#b87d4b', shirt: '#4a4f6a', pants: '#2b2f3a', shoe: '#ffffff', eye: .95, w: 20, wf: 12, a1: 22, a2: 22, top: 'hoodie', hair: 'short', hairC: '#1e130c', quiff: true, neckPhones: '#3b3b46', abilities: ['teen'], ability: 'مراهق رياضي', badge: ['ب', '#4a4f6a'], playable: false, speed: 240 },
-    medo: { name: 'ميدو', age: 18, sc: 1.2, L: 60, T: 60, R: 28, hr: .92, sw: 23, skin: '#c98b58', skinD: '#b27546', shirt: '#8a3b3b', pants: '#3d4a5e', shoe: '#2a2320', eye: .93, w: 22, wf: 13, a1: 24, a2: 24, top: 'crew', hair: 'short', hairC: '#17100b', glasses: '#2a2a2f', backpack: '#35507a', abilities: ['teen', 'tall'], ability: 'طويل ودحيح', badge: ['م', '#8a3b3b'], playable: false, speed: 240 },
-    kamal: { name: 'عمو كمال', age: 34, sc: 1.18, L: 58, T: 62, R: 28, hr: .95, sw: 23, skin: '#c98f5f', skinD: '#b17848', shirt: '#6ea0d6', pants: '#bfae8a', shoe: '#5a3c28', eye: .97, w: 22, wf: 13, a1: 24, a2: 24, top: 'polo', hair: 'short', hairC: '#1a120d', part: true, smile: 'big', browW: 4.6, watch: true, ring: true, abilities: ['uncle'], ability: 'عمو مسافر', badge: ['ك', '#6ea0d6'], playable: false, speed: 200 },
-    luka: { name: 'لوكا', age: 4, sc: .56, L: 36, T: 38, R: 34, hr: 1.0, sw: 20, skin: '#e0a272', skinD: '#c98a5c', shirt: '#ff9a3c', pants: '#4f78b8', shoe: '#ffffff', eye: 1.3, w: 17, wf: 11, a1: 18, a2: 18, top: 'crew', hair: 'curly', curl: .3, hairC: '#2b1a12', car: true, curious: true, smile: 'big', abilities: ['tiny', 'curious'], ability: 'فضولي وبيحب العربيات', badge: ['ل', '#ff9a3c'], playable: false, speed: 170 }
+    ofa: { name: 'أوفا', gender: 'm', age: 10, sc: .98, L: 54, T: 56, R: 28, hr: .95, sw: 21, skin: '#d79a68', skinD: '#c0834f', shirt: '#3fae6a', pants: '#4a5f8c', shoe: '#f3eee2', eye: 1.02, w: 19, wf: 12, a1: 24, a2: 24, top: 'crew', hair: 'short', hairC: '#2a1a10', fringe: true, smile: 'big', abilities: ['cousin', 'friendly'], ability: 'ابن عمتهم المرح', badge: ['أ', '#3fae6a'], playable: false, speed: 230 },
+    toti: { name: 'توتي', gender: 'f', age: 4, sc: .62, L: 38, T: 40, R: 34, hr: 1.0, sw: 21, skin: '#e0a577', skinD: '#c98d5f', shirt: '#ff7fb0', trim: '#ffffff', belt: '#ffd23c', pants: '#e0a577', legC: '#e0a577', legW: 13, shoe: '#e5534b', eye: 1.25, w: 16, wf: 11, a1: 18, a2: 18, top: 'dress', hair: 'pigtails', hairC: '#2b1a12', tie: '#ff4a86', bow: '#ff4a86', lash: true, smile: 'big', fidget: true, abilities: ['naughty', 'tiny'], ability: 'شقية وبتحب نيمو', badge: ['ت', '#ff7fb0'], playable: false, speed: 190 },
+    amani: { name: 'عمتو أماني', gender: 'f', age: 42, sc: .96, L: 48, T: 56, R: 29, hr: .97, sw: 22, skin: '#dca878', skinD: '#c6905f', shirt: '#7fb08f', flowers: ['#ffffff', '#f2c14e', '#e07a5f'], pants: '#dca878', legC: '#dca878', legW: 11, shoe: '#8a5a44', eye: .97, w: 20, wf: 11, a1: 22, a2: 22, top: 'floral', hair: 'scarf', scarf: '#e0825e', apron: '#fff7e6', apronTrim: '#e5534b', spoon: true, lash: true, smile: 'big', abilities: ['cook', 'kind'], ability: 'بتحب الطبخ', badge: ['أ', '#e0825e'], playable: false, speed: 170 },
+    nada: { name: 'عمتو ندى', gender: 'f', age: 38, sc: 1, L: 54, T: 55, R: 28, hr: .95, sw: 20, skin: '#d9a070', skinD: '#c28858', shirt: '#4b86a8', skirt: '#2f3d5c', keepSkirt: true, pants: '#d9a070', legC: '#d9a070', legW: 11, shoe: '#f2ece4', eye: 1.0, w: 17, wf: 11, a1: 18, a2: 18, top: 'blouse', sleeveLong: true, ruffle: '#3a6f8e', hair: 'scarf', scarf: '#d8c3b0', under: '#4b86a8', lash: true, phone: true, idle: 'phone', abilities: ['phone'], ability: 'دايمًا في الموبايل', badge: ['ن', '#4b86a8'], playable: false, speed: 190 },
+    beno: { name: 'بينو', gender: 'm', age: 15, sc: 1.1, L: 55, T: 56, R: 27.5, hr: .93, sw: 21, skin: '#cf935f', skinD: '#b87d4b', shirt: '#4a4f6a', pants: '#2b2f3a', shoe: '#ffffff', eye: .95, w: 20, wf: 12, a1: 22, a2: 22, top: 'hoodie', hair: 'short', hairC: '#1e130c', quiff: true, neckPhones: '#3b3b46', abilities: ['teen'], ability: 'مراهق رياضي', badge: ['ب', '#4a4f6a'], playable: false, speed: 240 },
+    medo: { name: 'ميدو', gender: 'm', age: 18, sc: 1.2, L: 60, T: 60, R: 28, hr: .92, sw: 23, skin: '#c98b58', skinD: '#b27546', shirt: '#8a3b3b', pants: '#3d4a5e', shoe: '#2a2320', eye: .93, w: 22, wf: 13, a1: 24, a2: 24, top: 'crew', hair: 'short', hairC: '#17100b', glasses: '#2a2a2f', backpack: '#35507a', abilities: ['teen', 'tall'], ability: 'طويل ودحيح', badge: ['م', '#8a3b3b'], playable: false, speed: 240 },
+    kamal: { name: 'عمو كمال', gender: 'm', age: 34, sc: 1.18, L: 58, T: 62, R: 28, hr: .95, sw: 23, skin: '#c98f5f', skinD: '#b17848', shirt: '#6ea0d6', pants: '#bfae8a', shoe: '#5a3c28', eye: .97, w: 22, wf: 13, a1: 24, a2: 24, top: 'polo', hair: 'short', hairC: '#1a120d', part: true, smile: 'big', browW: 4.6, watch: true, ring: true, abilities: ['uncle'], ability: 'عمو مسافر', badge: ['ك', '#6ea0d6'], playable: false, speed: 200 },
+    luka: { name: 'لوكا', gender: 'm', age: 4, sc: .56, L: 36, T: 38, R: 34, hr: 1.0, sw: 20, skin: '#e0a272', skinD: '#c98a5c', shirt: '#ff9a3c', pants: '#4f78b8', shoe: '#ffffff', eye: 1.3, w: 17, wf: 11, a1: 18, a2: 18, top: 'crew', hair: 'curly', curl: .3, hairC: '#2b1a12', car: true, curious: true, smile: 'big', abilities: ['tiny', 'curious'], ability: 'فضولي وبيحب العربيات', badge: ['ل', '#ff9a3c'], playable: false, speed: 170 }
   };
   /* ---- "v4" polish (cel-3D, same family as the v3 girls): optional fields ONLY, added on top of the rows above (guarded: the family edition strips rows).
      v4:true -> v3 face geometry + round-iris eyes (eyeK: 'boy' lashless | 'man' | 'woman' | 'girl'), tapered limbs with sleeve / pants cuffs, shaped hands with thumbs, sneaker / flat / dress shoes (shoeK),
@@ -56,6 +56,7 @@
   Object.keys(V4P).forEach(k => { const d = DEFS[k]; if (!d) return; d.v4 = true; Object.keys(V4P[k]).forEach(f => { if (d[f] === undefined) d[f] = V4P[k][f]; }); });
 
   const C = M.chars = { defs: DEFS, hats: {}, shirts: {} };
+  C.gender = id => (DEFS[id] && DEFS[id].gender) || 'm';   // 'm' | 'f' - the ONLY thing the dressing rooms / outfit items look at (never a name)
   C.avatar = id => DEFS[id].img;
   C.extras = () => Object.keys(DEFS).filter(k => k !== 'moody' && k !== 'aboody');   // every non-hero character (stage keeps one actor for each)
   C.playable = () => Object.keys(DEFS).filter(k => DEFS[k].playable);
@@ -151,7 +152,7 @@
   /* per-character palette (shading colours derived once) */
   const PALS = {};
   function palette(id, d, shirtC) {
-    const k = id + '|' + shirtC; if (PALS[k]) return PALS[k];
+    const k = id + '|' + shirtC + '|' + (d._ps || ''); if (PALS[k]) return PALS[k];
     const hc = d.hairC || HAIR;
     return (PALS[k] = { skin: d.skin, skinL: mixc(d.skin, '#fff0dc', .36), skinS: mixc(d.skinD || d.skin, '#9a2f2a', .3), skinD: d.skinD || d.skin, hair: hc, hairL: mixc(hc, '#d9aa80', .34), hairD: mixc(hc, '#000', .38), shirt: shirtC, shirtL: lite(shirtC, .22), shirtD: dark(shirtC, .22),
       pants: d.pants, pantsL: lite(d.pants, .2), pantsD: dark(d.pants, .24), legC: d.legC || d.pants, shoe: d.shoe, iris: d.iris || '#5a331c', brow: d.v4 ? (d.eyeK === 'man' ? '#1f140d' : d.eyeK === 'woman' && d.age > 60 ? '#6a5a52' : '#2a190e') : d.hair === 'curly' && d.beard ? '#120d0a' : '#2e1b10', lip: mixc(d.skin, '#b5443f', .55), lipD: mixc(d.skinD || d.skin, '#6e2a2a', .55) });
@@ -161,8 +162,8 @@
   function pickLevel(s) { for (let i = 0; i < LEVELS.length; i++) if (LEVELS[i] >= s * .92) return LEVELS[i]; return 4; }
 
   /* ================= BAKED LAYERS ================= */
-  const isDressy = d => d.top === 'dress' || d.top === 'floral' || d.top === 'blouse' || d.top === 'cardigan' || (d.top === 'hoodie' && !!d.skirt);
-  function skirtGeo(d) { const L = d.L, T = d.T, sw = d.sw; if (d.top === 'cardigan') return { wy: -L - T * .12, hemY: -L * .2, hw0: sw * .92, hw1: sw + 13 }; if (d.top === 'hoodie') return { wy: -L - T * .12, hemY: -L * .46, hw0: sw * .92, hw1: sw + 11 }; return { wy: -L - T * .12, hemY: d.top === 'floral' ? -L * .16 : -L * .5, hw0: sw * .92, hw1: sw + (d.top === 'floral' ? 15 : d.top === 'blouse' ? 8 : 17) }; }
+  const isDressy = d => d.top === 'dress' || d.top === 'floral' || d.top === 'blouse' || d.top === 'cardigan' || (d.top === 'hoodie' && !!d.skirt) || !!d.skOn;   // skOn = outfit system: a skirt / dress / robe is worn
+  function skirtGeo(d) { const L = d.L, T = d.T, sw = d.sw; let r; if (d.top === 'cardigan') r = { wy: -L - T * .12, hemY: -L * .2, hw0: sw * .92, hw1: sw + 13 }; else if (d.top === 'hoodie') r = { wy: -L - T * .12, hemY: -L * .46, hw0: sw * .92, hw1: sw + 11 }; else r = { wy: -L - T * .12, hemY: d.top === 'floral' ? -L * .16 : -L * .5, hw0: sw * .92, hw1: sw + (d.top === 'floral' ? 15 : d.top === 'blouse' ? 8 : 17) }; if (d.skHem != null) r.hemY = -L * d.skHem; if (d.skFlare != null) r.hw1 = sw + d.skFlare; return r; }
   /* face geometry (eye x / y / radius, glasses radius): the v3 girls (toota, nemo) get larger, lower-set eyes */
   const NV = d => d.v3 || d.v4;   // any 'new-look' character (v3 girls, v4 polish)
   const FG = d => { const R = d.R, rx = R * d.hr; if (d.v4) { const er = R * (d.eyeK === 'man' ? .205 : d.eyeK === 'woman' ? .21 : .225) * d.eye; return { ex: rx * .45, ey: R * .21, er, gr: er * 1.5 }; } if (d.v3) { const er = R * .225 * d.eye; return { ex: rx * .45, ey: R * .21, er, gr: er * 1.5 }; } const er = R * .2 * d.eye; return { ex: rx * .42, ey: R * .2, er, gr: er * 1.55 }; };
@@ -188,6 +189,7 @@
         const wy = sk.wy, hemY = sk.hemY, hw0 = sk.hw0, hw1 = sk.hw1, p = new Path2D();
         p.moveTo(-hw0, wy); p.lineTo(hw0, wy); p.quadraticCurveTo(hw1 + 2, (wy + hemY) / 2, hw1, hemY); p.quadraticCurveTo(0, hemY + 7, -hw1, hemY); p.quadraticCurveTo(-hw1 - 2, (wy + hemY) / 2, -hw0, wy); p.closePath();
         part(g, p, (d.keepSkirt || shirtC === d.shirt) ? (d.skirt || shirtC) : shirtC, [-hw1 - 2, wy, hw1 + 2, hemY + 8], { hi: .22, sh: .36, spec: .14, off: 9, blur: 8 }, 3.5, gg => {
+          if (C.deco && d._fit) C.deco.skirt(gg, d, { hw0, hw1, wy, hemY });
           if (d.stripes) { gg.fillStyle = d.stripes; [.28, .62].forEach(k => gg.fillRect(-hw1, wy + (hemY - wy) * k, hw1 * 2, 7)); }
           if (d.flowers) { for (let i = 0; i < 9; i++) { const fx = -hw1 + (i * 37) % (hw1 * 2), fy = wy + 8 + ((i * 53) % Math.max(8, hemY - wy - 12)); dot(gg, fx, fy, 3.4, d.flowers[i % d.flowers.length]); dot(gg, fx, fy, 1.1, '#ffe14d'); dot(gg, fx - 1.2, fy - 1.2, 1, 'rgba(255,255,255,.55)'); } }
           for (let k = 1; k <= 5; k++) { const a = -hw0 + hw0 * 2 * k / 6, b = a * hw1 / hw0; fold(gg, a, wy + 2, a * 1.04, (wy + hemY) / 2, b * 1.06, hemY + 3, 3.2, .14); }
@@ -202,6 +204,7 @@
         if (d.top === 'vneck') { gg.fillStyle = 'rgba(255,255,255,.92)'; for (let yy = 0; yy < th + 6; yy += 8) for (let xx = (yy / 8 % 2) * 4; xx < tw; xx += 8) { gg.beginPath(); gg.arc(tx + xx + 2, ty + yy + 3, 1.5, 0, 6.3); gg.fill(); } }
         if (d.stripes && dressy) { gg.fillStyle = d.stripes; gg.fillRect(tx, ty + th * .34, tw, 7); }
         if (d.flowers && d.top === 'floral') { for (let i = 0; i < 8; i++) { const fx = tx + (i * 29) % tw, fy = ty + 6 + (i * 41) % (th - 20); dot(gg, fx, fy, 3.1, d.flowers[i % 3]); dot(gg, fx - 1, fy - 1, 1, 'rgba(255,255,255,.5)'); } }
+        if (C.deco && d._fit) C.deco.torso(gg, d, { tx, ty, tw, th, thh, sw, L, T, sk, dressy });
         fold(gg, tx + 2, ty + 12, tx + 9, ty + 20, tx + 14, ty + 34, 3.4, .16); fold(gg, tx + tw - 2, ty + 12, tx + tw - 9, ty + 20, tx + tw - 14, ty + 34, 3.4, .2);   // armpit creases
         if (!dressy) { fold(gg, tx + 4, ty + thh * .72, 0, ty + thh * .76, tx + tw - 4, ty + thh * .72, 3, .11); fold(gg, tx + 6, ty + thh - 7, 0, ty + thh - 4, tx + tw - 6, ty + thh - 7, 2.6, .12); }
         else fold(gg, tx + 4, ty + thh - 9, 0, ty + thh - 6, tx + tw - 4, ty + thh - 9, 2.6, .12);
@@ -246,6 +249,7 @@
         else if (d.top === 'floral') { part(g, pEll(0, ty + 3, 12, 6), '#fff', [-12, ty - 3, 12, ty + 9], { hi: .05, sh: .22, crescent: .2, rim: 0, spec: 0 }, 2.8); bead(g, 0, ty + 18, 2.5, '#ffd23c'); bead(g, 0, ty + 30, 2.5, '#ffd23c'); }
         else part(g, pEll(0, ty + 3, 12, 6), d.trim || '#fff', [-12, ty - 3, 12, ty + 9], { hi: .05, sh: .22, crescent: .2, rim: 0, spec: 0 }, 2.8);
       }
+      if (C.deco && d._fit) C.deco.body(g, d, { tx, ty, tw, th, thh, sw, L, T, sk, dressy });
       if (d.backpack && d.v4) {   // padded shoulder straps with stitching + sternum strap and buckle
         const bc = d.backpack;
         [-1, 1].forEach(s2 => { const p = new Path2D(); p.moveTo(s2 * (sw - 11), ty + 1); p.lineTo(s2 * (sw - 2), ty + 1); p.bezierCurveTo(s2 * (sw - 1), ty + 18, s2 * (sw - 1), ty + th * .5, s2 * (sw - 3), ty + th - 11); p.lineTo(s2 * (sw - 11), ty + th - 11); p.bezierCurveTo(s2 * (sw - 9), ty + th * .5, s2 * (sw - 11), ty + 18, s2 * (sw - 11), ty + 1); p.closePath();
@@ -272,6 +276,7 @@
       }
       /* neck (with chin shadow) */
       part(g, pRR(-7, ty - 8, 14, 12, 4), d.skin, [-7, ty - 8, 7, ty + 4], { hi: .12, sh: .34, tint: '120,40,30', rim: 0, spec: 0, crescent: .25, blur: 3, off: 3 }, 3, gg => { const cs = gg.createLinearGradient(0, ty - 8, 0, ty + 1); cs.addColorStop(0, 'rgba(110,40,25,.5)'); cs.addColorStop(1, 'rgba(110,40,25,0)'); gg.fillStyle = cs; gg.fillRect(-8, ty - 9, 16, 12); });
+      if (C.deco && d._fit) C.deco.after(g, d, { tx, ty, tw, th, thh, sw, L, T, sk, dressy });
     });
   }
 
@@ -299,8 +304,16 @@
   }
   /* v4 shoes: shoeK sneaker (sole, toe cap, laces, collar, heel tab) | dress (polished leather, welt) | flat (soft closed flat with a strap) | mary (strap + button) */
   function bakeShoe4(d, pal, id, lvl) {
-    return mkSpr(-19, -13, 19, 13, lvl, g => {
-      const k = d.shoeK || 'sneaker', P = new Path2D(), acc = d.shoeAcc || '#fff', flat = k === 'flat' || k === 'mary';
+    return mkSpr(-19, d.shoeK === 'boot' ? -31 : -13, 19, 13, lvl, g => {
+      const k = d.shoeK || 'sneaker', P = new Path2D(), acc = d.shoeAcc || '#fff', flat = k === 'flat' || k === 'mary' || k === 'sandal';
+      if (k === 'sandal') {   // ankle sock (round cuff) behind the strappy sandal
+        const sc = d.sockC || '#fbf7ee'; part(g, pRR(-9.5, -13, 12.5, 13, 3), sc, [-9.5, -13, 3, 0], { hi: .2, sh: .3, spec: 0, rim: 0, crescent: .2 }, 2.4); g.strokeStyle = 'rgba(0,0,0,.14)'; g.lineWidth = 1; for (let xx = -7; xx < 3; xx += 3) { g.beginPath(); g.moveTo(xx, -12); g.lineTo(xx, -5); g.stroke(); }
+        g.fillStyle = d.sockT || acc; g.fillRect(-9.2, -12.6, 11.8, 2.2);
+      }
+      if (k === 'boot') {   // pants tucked into a boot: shaft with a turned-over cuff
+        const sh = new Path2D(); sh.moveTo(-10.4, -24); sh.lineTo(3.2, -24); sh.lineTo(3.6, -4); sh.lineTo(-10.8, -4); sh.closePath();
+        part(g, sh, pal.shoe, [-10.8, -24, 3.6, -4], { hi: .3, sh: .38, spec: .26, sy: .3, rim: .3, crescent: .3, off: 3, blur: 3 }, 3.1, gg => { gg.fillStyle = acc; gg.fillRect(-12, -24, 17, 5); gg.fillStyle = 'rgba(255,255,255,.4)'; gg.fillRect(-12, -24, 17, 1.2); gg.strokeStyle = 'rgba(0,0,0,.22)'; gg.lineWidth = 1; gg.beginPath(); gg.moveTo(-5, -18); gg.lineTo(-5, -5); gg.stroke(); });
+      }
       P.moveTo(-10.5, flat ? -4.6 : -6.6); P.quadraticCurveTo(-12.6, flat ? -4 : -6, -12.2, 2); P.quadraticCurveTo(-12, 6.8, -8, 6.9); P.lineTo(10.5, 6.9); P.quadraticCurveTo(15.6, 6.6, 14.8, 2.2); P.quadraticCurveTo(13.6, flat ? -.4 : -1.4, 7, flat ? -2 : -2.8); P.quadraticCurveTo(2.5, flat ? -2.6 : -3.6, -1, flat ? -4.8 : -6.8); P.closePath();
       part(g, P, pal.shoe, [-12.6, -6.8, 15.6, 6.9], { hi: .3, sh: .38, spec: .3, sx: .25, sy: .25, crescent: .3, off: 3, blur: 3, rimW: 1.6, rimD: 1.4 }, 3.1, gg => {
         if (k === 'sneaker') {
@@ -309,6 +322,10 @@
           gg.fillStyle = dark(pal.shoe, .45); gg.beginPath(); gg.ellipse(-5.6, -6.3, 5.4, 1.5, 0, 0, TAU); gg.fill();   // dark collar opening
           gg.fillStyle = acc; gg.beginPath(); gg.moveTo(-12.4, -1); gg.quadraticCurveTo(-12.2, 3.6, -10.4, 4.2); gg.lineTo(-8.4, 3.2); gg.quadraticCurveTo(-9.6, 1.4, -9.6, -1.6); gg.closePath(); gg.fill();   // heel tab
           gg.lineCap = 'round'; gg.strokeStyle = 'rgba(255,255,255,.92)'; gg.lineWidth = 1.5; [[-1.4, -5.2, .8, -3.6], [1.6, -4, 3.6, -2.4], [4.4, -3, 6.2, -1.6]].forEach(q => { gg.beginPath(); gg.moveTo(q[0], q[1]); gg.lineTo(q[2], q[3]); gg.stroke(); });
+        } else if (k === 'boot' || k === 'cleat') {
+          gg.fillStyle = k === 'cleat' ? acc : 'rgba(0,0,0,.4)'; gg.fillRect(-14, 4.6, 32, 4.4); gg.fillStyle = 'rgba(255,255,255,.28)'; gg.fillRect(-14, 4.6, 32, .9);
+          if (k === 'cleat') { gg.fillStyle = 'rgba(0,0,0,.45)'; [-7, -1, 5, 11].forEach(xx => gg.fillRect(xx, 7.4, 2.4, 2)); gg.beginPath(); gg.ellipse(11.4, 1.8, 4.9, 5.2, 0, 0, TAU); gg.fillStyle = lite(pal.shoe, .14); gg.fill(); gg.strokeStyle = 'rgba(255,255,255,.9)'; gg.lineWidth = 1.4; [[-1.4, -5.2, .8, -3.6], [1.6, -4, 3.6, -2.4], [4.4, -3, 6.2, -1.6]].forEach(q => { gg.beginPath(); gg.moveTo(q[0], q[1]); gg.lineTo(q[2], q[3]); gg.stroke(); }); }
+          else { gg.beginPath(); gg.ellipse(11, 2, 4.6, 4.8, 0, 0, TAU); gg.fillStyle = lite(pal.shoe, .1); gg.fill(); gg.lineWidth = 1; gg.strokeStyle = 'rgba(0,0,0,.3)'; gg.stroke(); }
         } else if (k === 'dress') {
           gg.fillStyle = 'rgba(0,0,0,.34)'; gg.fillRect(-14, 4.6, 32, 4); gg.fillStyle = 'rgba(255,255,255,.3)'; gg.fillRect(-14, 4.6, 32, .9); gg.beginPath(); gg.moveTo(5, -2.7); gg.quadraticCurveTo(7.5, 1.4, 6.6, 4.6); gg.lineWidth = 1.1; gg.strokeStyle = 'rgba(0,0,0,.3)'; gg.stroke();
         } else {
@@ -369,7 +386,7 @@
       out.push({ px: 0, py: R * .6, k: .6, shear: true, s: mkSpr(-rx * 1.5, -R * 1.4, rx * 1.5, R * 2.9, lvl, g => {
         { const ou = new Path2D(); ou.moveTo(-rx * 1.16, R * .7); ou.bezierCurveTo(-rx * 1.27, -R * .35, -rx * .95, -R * 1.16, 0, -R * 1.14); ou.bezierCurveTo(rx * .95, -R * 1.16, rx * 1.27, -R * .35, rx * 1.16, R * .7); const dm = new Path2D(); dm.addPath(ou); dm.lineTo(rx * .7, R * 1.0); dm.lineTo(-rx * .7, R * 1.0); dm.closePath();
           part(g, dm, sc, [-rx * 1.2, -R * 1.2, rx * 1.2, R * 1.0], { hi: .26, sh: .34, spec: .26, sy: .2, off: 9, blur: 8, rim: .3 }, 0); g.lineCap = 'round'; g.strokeStyle = OL; g.lineWidth = 3.5; g.stroke(ou); }
-        const D = new Path2D(); D.moveTo(-rx * 1.16, R * .6); D.bezierCurveTo(-rx * 1.2, R * .95, -(sw + 6), R * .95, -(sw + 5.5), R * 1.35); D.bezierCurveTo(-(sw + 5.5), R * 1.6, -(sw + 3), R * 1.8, -sw * .5, R * 1.9); D.bezierCurveTo(-sw * .1, R * 1.97, sw * .4, R * 2.08, sw * .9, R * 2.12); D.bezierCurveTo(sw + 4, R * 1.97, sw + 6.5, R * 1.7, sw + 5.5, R * 1.35); D.bezierCurveTo(sw + 6, R * .95, rx * 1.2, R * .95, rx * 1.16, R * .6); D.closePath();
+        const Yh = v => R * (.9 + (v - .9) * (d.hjLen || 1)), D = new Path2D(); D.moveTo(-rx * 1.16, R * .6); D.bezierCurveTo(-rx * 1.2, R * .95, -(sw + 6), R * .95, -(sw + 5.5), Yh(1.35)); D.bezierCurveTo(-(sw + 5.5), Yh(1.6), -(sw + 3), Yh(1.8), -sw * .5, Yh(1.9)); D.bezierCurveTo(-sw * .1, Yh(1.97), sw * .4, Yh(2.08), sw * .9, Yh(2.12)); D.bezierCurveTo(sw + 4, Yh(1.97), sw + 6.5, Yh(1.7), sw + 5.5, Yh(1.35)); D.bezierCurveTo(sw + 6, R * .95, rx * 1.2, R * .95, rx * 1.16, R * .6); D.closePath();
         part(g, D, G.shade(sc, -.05), [-sw - 6, R * .5, sw + 6, R * 2.5], ov, 3.4, gg => {
           scarfPrint(gg, d, -sw - 6, R * .6, sw + 6, R * 2.1);
           fold(gg, -rx * .55, R * 1.2, -sw * 1.0, R * 1.5, -sw * .7, R * 1.85, 3.2, .15); fold(gg, rx * .45, R * 1.25, sw * 1.0, R * 1.55, sw * .8, R * 2.0, 3.2, .17); fold(gg, rx * .05, R * 1.45, rx * .1, R * 1.75, -sw * .05, R * 1.95, 2.6, .1);
@@ -399,6 +416,7 @@
   }
 
   function scarfPrint(gg, d, x0, y0, x1, y1) {   // small polka print for printed headscarves (d.scarfDots)
+    if (d.scarfK && C.deco && C.deco.print) { C.deco.print(gg, d, x0, y0, x1, y1); return; }
     if (!d.scarfDots) return; for (let i = 0; i < 34; i++) { const fx = x0 + ((i * 37.3) % 100) / 100 * (x1 - x0), fy = y0 + ((i * 53.7) % 100) / 100 * (y1 - y0); gg.fillStyle = rgba(d.scarfDots, .55); gg.beginPath(); gg.arc(fx, fy, 2.5, 0, TAU); gg.fill(); gg.fillStyle = 'rgba(255,255,255,.4)'; gg.beginPath(); gg.arc(fx - .8, fy - .8, .8, 0, TAU); gg.fill(); }
   }
 
@@ -448,7 +466,7 @@
   }
   function bakeHairFront(d, pal, hatId, lvl, shirtC) {
     const R = d.R, rx = R * d.hr, hc = pal.hair, scarfy = d.hair === 'scarf', cr = R * (d.curl || .3), hat = hatId && C.hats[hatId];
-    const hx = d.sunhat ? rx * 2.15 + 8 : Math.max(rx * (d.hair === 'curly' ? 1.02 : 1.26) + (d.hair === 'curly' ? cr * 1.3 : 6), hat ? rx * 1.7 : 0) + 8;
+    const hx = d.sunhat ? rx * 2.15 + 8 : Math.max(rx * (d.hair === 'curly' ? 1.02 : 1.26) + (d.hair === 'curly' ? cr * 1.3 : 6), hat ? rx * (hat.wide || 1.7) : 0) + 8;
     const y0 = hat || d.sunhat ? -R * 2.45 - 8 : -(R * 1.05 + cr * 1.3 + 8), y1 = R * .8;
     return mkSpr(-hx, Math.min(y0, -R * 1.5), hx, y1, lvl, g => {
       if (d.hair === 'curly' && d.v4) { curly4(g, d, pal, R, rx, cr, hc); }
@@ -539,7 +557,7 @@
         g.beginPath(); g.ellipse(0, -R * .72, rx * .98, R * .18, 0, 0, Math.PI); g.lineWidth = 7; g.strokeStyle = '#ff8fb1'; g.stroke(); g.lineWidth = 2; g.strokeStyle = 'rgba(255,255,255,.4)'; g.beginPath(); g.ellipse(0, -R * .74, rx * .98, R * .18, 0, .1, Math.PI - .1); g.stroke();
         [-1, 1].forEach(s => { const bx = s * rx * .98, by = -R * .93; g.save(); g.translate(bx, by); g.rotate(s * -.25); [[[0, 0], [s * 11, -7], [s * 11, 7]], [[0, 0], [-s * 10, -6], [-s * 10, 6]]].forEach(pts => part(g, pPoly(pts), '#ff6f9d', [-11, -7, 11, 7], { hi: .26, sh: .34, spec: 0, rim: 0, crescent: .2 }, 2.4)); bead(g, 0, 0, 3.4, '#ff4a86', 2); g.restore(); });
       }
-      if (hat) { g.save(); try { hat.draw(g, R); } catch (e) { } g.restore(); }
+      if (hat) { g.save(); if (scarfy && d._fit) g.translate(0, -R * (hat.hjDy == null ? .16 : hat.hjDy)); try { hat.draw(g, R, d._hatC, d._hatP, d); } catch (e) { } g.restore(); }
     });
   }
 
@@ -582,7 +600,8 @@
         part(g, p, bc, [-rx * .5, y0, rx * .5, y0 + R * .18], { hi: .34, sh: .28, tint: '0,0,0', warm: '255,225,190', spec: .3, sy: .3, rim: .1, crescent: .15 }, 0, gg => { gg.lineCap = 'round'; for (let k = -4; k <= 4; k++) { gg.beginPath(); gg.moveTo(k * rx * .1, y0 + R * .03); gg.quadraticCurveTo(k * rx * .12, y0 + R * .08, k * rx * .14 + Math.sign(k) * 3, y0 + R * .15); gg.lineWidth = 1.1; gg.strokeStyle = k % 2 ? 'rgba(' + parse(d.beardHi || '#7a5c44').slice(0, 3).join(',') + ',.45)' : 'rgba(0,0,0,.2)'; gg.stroke(); } });
         g.lineWidth = 1.3; g.strokeStyle = 'rgba(40,18,8,.55)'; g.stroke(p);
       } else if (d.beard) { const p = new Path2D(); p.moveTo(-rx * .55, R * .6); p.quadraticCurveTo(-rx * .25, R * .4, 0, R * .5); p.quadraticCurveTo(rx * .25, R * .4, rx * .55, R * .6); p.quadraticCurveTo(rx * .25, R * .56, 0, R * .53); p.quadraticCurveTo(-rx * .25, R * .56, -rx * .55, R * .6); p.closePath(); part(g, p, d.beard, [-rx * .55, R * .4, rx * .55, R * .6], { hi: .3, sh: .3, tint: '0,0,0', warm: '255,225,190', spec: .3, rim: 0, crescent: .2 }, 2.6); }
-      if (d.glasses && NV(d)) {   // light cat-eye frames: thin rose-gold rims, faint lens tint, tiny sheen that stays clear of the eyes
+      if (d.glasses && d.glassK && C.deco && C.deco.glasses) { C.deco.glasses(g, d, fg, ex, ey); }
+      else if (d.glasses && NV(d)) {   // light cat-eye frames: thin rose-gold rims, faint lens tint, tiny sheen that stays clear of the eyes
         const gr = fg.gr, gc = d.glasses, gl = lite(gc, .55);
         [-1, 1].forEach(s => {
           g.save(); g.translate(s * ex, ey); g.rotate(-s * .07);
@@ -620,12 +639,12 @@
 
   /* sprite set for one look at one pixel density / light side */
   function getSet(id, d, shirtC, hatId, lvl, flip) {
-    const key = id + '|' + shirtC + '|' + (hatId || '') + '|' + lvl + '|' + (flip ? 1 : 0); let S = SPRS[key]; if (S) return S;
+    const key = id + '|' + shirtC + '|' + (hatId || '') + '|' + lvl + '|' + (flip ? 1 : 0) + (d._osig ? '|' + d._osig : ''); let S = SPRS[key]; if (S) return S;
     LX = flip ? 1 : -1; const pal = palette(id, d, shirtC);
     S = { key, pal };
     S.body = bakeBody(id, d, pal, shirtC, lvl); S.skin = bakeSkin(d, pal, lvl); S.backs = bakeBacks(d, pal, lvl); S.front = bakeFront(d, pal, lvl); S.chin = bakeChin(d, pal, lvl);
-    S.hair = bakeHairFront(d, pal, hatId, lvl, shirtC); S.shoe = d.v4 ? bakeShoe4(d, pal, id, lvl) : bakeShoe(d, pal, id, lvl); S.hand = bakeHand(d, pal, lvl); if (d.v4) { S.handL = bakeHand4(d, pal, lvl, -1); S.handR = bakeHand4(d, pal, lvl, 1); }
-    SPRS[key] = S; SPRN++; if (SPRN > 90) { /* keep memory bounded: drop an old set (not the one in use) */ const ks = Object.keys(SPRS); for (let i = 0; i < ks.length && SPRN > 70; i++) if (ks[i] !== key) { delete SPRS[ks[i]]; SPRN--; } }
+    S.hair = bakeHairFront(d, pal, hatId, lvl, shirtC); S.shoe = (d.v4 || d.shoeK) ? bakeShoe4(d, pal, id, lvl) : bakeShoe(d, pal, id, lvl); S.hand = bakeHand(d, pal, lvl); if (d.v4) { S.handL = bakeHand4(d, pal, lvl, -1); S.handR = bakeHand4(d, pal, lvl, 1); }
+    S.pv = !!d._pv; SPRS[key] = S; SPRN++; if (SPRN > 150) { /* keep memory bounded: drop old sets (preview sets first; never the one in use) */ for (let pass = 0; pass < 2 && SPRN > 110; pass++) for (const k of Object.keys(SPRS)) { if (SPRN <= 110) break; if (k !== key && (pass === 1 || SPRS[k].pv)) { delete SPRS[k]; SPRN--; } } }
     return S;
   }
   let SPRN = 0;
@@ -922,7 +941,7 @@
     g.restore();
     if (d.watch && sd === -1) {   // wrist watch worn on the left wrist: strap band + case + glass (smart: dark glass with a lit face; classic: round steel with a white dial)
       const wx = ex + (A[4] - ex) * .8, wy = ey + (A[5] - ey) * .8; g.save(); g.translate(wx, wy); g.rotate(th);
-      const bw = wf * .5; G.fillRR(g, -bw - 1.2, -3.2, bw * 2 + 2.4, 6.4, 2, d.watchK === 'classic' ? '#7a4a28' : '#2f3238', 1.9); g.fillStyle = 'rgba(255,255,255,.18)'; g.fillRect(-bw, -2.6, bw * 2, 1.2);
+      const bw = wf * .5; G.fillRR(g, -bw - 1.2, -3.2, bw * 2 + 2.4, 6.4, 2, d.watchC || (d.watchK === 'classic' ? '#7a4a28' : '#2f3238'), 1.9); g.fillStyle = 'rgba(255,255,255,.18)'; g.fillRect(-bw, -2.6, bw * 2, 1.2);
       if (d.watchK === 'classic') { G.circ(g, 0, 0, 5.6, '#d9dde3', 1.9); G.circ(g, 0, 0, 4, '#fbfbf7', 0); line(g, 0, 0, 0, -2.8, 1, '#2a2a2a'); line(g, 0, 0, 2, .6, 1, '#2a2a2a'); g.fillStyle = 'rgba(255,255,255,.5)'; g.fillRect(-3.4, -3.8, 3, 1); }
       else { G.fillRR(g, -5.4, -5.4, 10.8, 10.8, 3, '#2a2d36', 2); g.fillStyle = '#0d1b2a'; g.fillRect(-3.6, -3.6, 7.2, 7.2); g.fillStyle = '#6fd0ff'; g.fillRect(-2.7, -1.2, 5.4, 1.5); g.fillStyle = '#bff0ff'; g.fillRect(-2.7, 1, 3, 1); g.fillStyle = 'rgba(255,255,255,.35)'; g.fillRect(-3.6, -3.6, 7.2, 1.3); }
       g.restore();
@@ -933,7 +952,18 @@
   function drawLeg4(g, d, S, hx, hy, fx, fy, legCol, dressy, lxs) {
     const lw = ((d.legW || 17) + 1.5) * .5; LEGA[0] = hx; LEGA[1] = hy; LEGA[2] = (hx + fx) / 2 + (fx - hx) * .0 + 1.2; LEGA[3] = (hy + fy) / 2; LEGA[4] = fx; LEGA[5] = fy;
     const r0 = lw + .6, r1 = lw - (dressy ? 2.6 : 1.1);
+    if (d.shorts && !dressy) {   // knee-length shorts + long socks (outfit system): socks first, then the shorts leg on top
+      const sk = d.shorts, rk = r0 + (r1 - r0) * sk;
+      tsample(LEGA, 0, 1, r0 - 1, r1 - .4, 8, .5); tfill(g, tpath(8), 8, d.sockC || '#f4f1ea', TKC, lxs, 3.3);
+      tband(g, sk + .02, sk + .14, LEGA, rk - 1.1, rk - 1.1, d.sockT || dark(d.sockC || '#f4f1ea', .1), TKC, lxs);
+      tsample(LEGA, 0, sk, r0 + 1.4, rk + 2.6, 6, .5); tfill(g, tpath(6, 1), 6, legCol, TKC, lxs, 3.3);
+      tsample(LEGA, sk - .05, sk, rk + 2.2, rk + 2.8, 3, 0); tfill(g, tpath(3, 2), 3, d.hemC || dark(legCol, .14), TKC, lxs, 2.6, true);
+      if (d.legStripe) { g.beginPath(); g.moveTo(hx + Math.sign(hx || 1) * (r0 + .2), hy + 6); g.lineTo(LEGA[0] + (LEGA[4] - LEGA[0]) * sk + Math.sign(hx || 1) * (rk + 2.2), LEGA[1] + (LEGA[5] - LEGA[1]) * sk - 2); g.lineWidth = 2.6; g.strokeStyle = d.legStripe; g.stroke(); }
+      return;
+    }
     tsample(LEGA, 0, 1, r0, r1, 8, .5); tfill(g, tpath(8), 8, legCol, dressy ? TKS : TKC, lxs, 3.3);
+    if (d.legStripe && !dressy) { const sg = Math.sign(hx || 1); g.beginPath(); g.moveTo(hx + sg * (r0 - .6), hy + 8); g.quadraticCurveTo(LEGA[2] + sg * (lw - .2), LEGA[3], fx + sg * (r1 - .6), fy - 6); g.lineWidth = 2.8; g.strokeStyle = d.legStripe; g.stroke(); }
+    if (d.legSeam && !dressy) { const sg = Math.sign(hx || 1); g.save(); g.setLineDash([2.4, 2]); g.beginPath(); g.moveTo(hx + sg * (r0 - 1.6), hy + 8); g.quadraticCurveTo(LEGA[2] + sg * (lw - 1.4), LEGA[3], fx + sg * (r1 - 1.6), fy - 8); g.lineWidth = 1.1; g.strokeStyle = d.legSeam; g.stroke(); g.restore(); }
     if (!dressy) {
       tsample(LEGA, .0, 1, r0, r1, 8, .5); const P0 = tpath(8); g.save(); g.clip(P0); g.beginPath(); g.moveTo(LEGA[2] - lw, LEGA[3] + 1); g.quadraticCurveTo(LEGA[2], LEGA[3] + 3.4, LEGA[2] + lw, LEGA[3] + 1); g.lineWidth = 1.6; g.strokeStyle = 'rgba(0,0,0,.16)'; g.stroke(); g.restore();   // knee crease
       tband(g, .9, 1.0, LEGA, r1 + .6, r1 + .9, d.hemC || dark(legCol, .12), TKC, lxs);
@@ -971,7 +1001,7 @@
       if (p.th > .3) { G.ell(g, A[4] + sd * 1.5, A[5] - wf * .62 * p.th, wf * .2, wf * .36 * p.th, S.pal.skin, 2.2); }
     }
     g.drawImage(S.hand.c, A[4] + S.hand.x, A[5] + S.hand.y, S.hand.w, S.hand.h);
-    if (d.watch && sd === -1) { const wx = ex + (A[4] - ex) * .78, wy = ey + (A[5] - ey) * .78; G.fillRR(g, wx - 8, wy - 5, 16, 10, 3, '#7a4a28', 2.2); G.fillRR(g, wx - 5, wy - 5, 10, 10, 2, '#17120e', 1.5); G.circ(g, wx, wy, 1.6, '#6fd0ff', 0); g.fillStyle = 'rgba(255,255,255,.3)'; g.fillRect(wx - 4.4, wy - 4.2, 5, 1.4); }
+    if (d.watch && sd === -1) { const wx = ex + (A[4] - ex) * .78, wy = ey + (A[5] - ey) * .78; G.fillRR(g, wx - 8, wy - 5, 16, 10, 3, d.watchC || '#7a4a28', 2.2); G.fillRR(g, wx - 5, wy - 5, 10, 10, 2, '#17120e', 1.5); G.circ(g, wx, wy, 1.6, '#6fd0ff', 0); g.fillStyle = 'rgba(255,255,255,.3)'; g.fillRect(wx - 4.4, wy - 4.2, 5, 1.4); }
     if (d.ring && sd === 1) G.circ(g, A[4] + 1, A[5] + 4, 2.6, '#ffd23c', 1.4);
     if (sd === 1) handProp(g, d, A, anim, t, false);
   }
@@ -1061,7 +1091,7 @@
   }
 
   function drawHead(g, st, d, S, R, rx, o, lxs, anim, t) {
-    const e = st.e, F = st.fl, sp = st.sp, pal = S.pal, fg = FG(d), ex = fg.ex, ey = fg.ey, er = fg.er, fx = st.yaw * R * .3, fy = st.p.pitch * R * .09, hlag = (d.sunhat || o.hat) ? .2 : 1;
+    const e = st.e, F = st.fl, sp = st.sp, pal = S.pal, fg = FG(d), ex = fg.ex, ey = fg.ey, er = fg.er, fx = st.yaw * R * .3, fy = st.p.pitch * R * .09, hlag = (d.sunhat || o.hat || d._hat) ? .2 : 1;
     for (let i = 0; i < S.backs.length; i++) {
       const b = S.backs[i]; g.save(); g.translate(b.px, b.py);
       if (b.shear) g.transform(1, 0, sp.cloth * 2.2, 1, 0, 0); else g.rotate(sp.tail * b.k);
@@ -1097,7 +1127,7 @@
   function levelFor(g, d, o) { const m = g.getTransform(); return pickLevel(Math.hypot(m.a, m.b) * d.sc * (o.sc || 1)); }
 
   C.draw = function (g, id, x, y, o) {
-    o = o || {}; const d = DEFS[id]; if (!d) return; let anim = o.anim || 'idle', talk = o.talk;
+    o = o || {}; const d0 = DEFS[id]; if (!d0) return; const d = C.resolve ? C.resolve(id, d0, o) : d0; let anim = o.anim || 'idle', talk = o.talk;
     if (anim === 'idle' && d.idle && !o.plain) anim = d.idle; if (anim === 'talk') { anim = 'idle'; talk = true; }
     const key = o.key || id, tn = now(); let st = STS[key] || (STS[key] = newState(id, key)), snap = !!o.snap;
     if (st.lastFrame === FRAME && !o.key) { st = TMP[id] || (TMP[id] = newState(id, '~' + id)); snap = true; }   // 2nd draw of the same character in one frame (art props, icons): static snapshot, no side effects
@@ -1110,7 +1140,7 @@
     update(st, d, o, x, y, anim, dt, snap, sc, dirIn);
     if (!o.key && g === M.g && !snap) { st.x = x; st.y = y; st.sc = sc; st.vis = FRAME; st.base = baseAnim; }
     if (!snap) st.lastFrame = FRAME;
-    const shirtC = o.shirt || (C.shirts[o.shirtId] && C.shirts[o.shirtId].color) || d.shirt, flip = st.dirS < 0, S = getSet(id, d, shirtC, o.hat && C.hats[o.hat] ? o.hat : '', levelFor(g, d, o), flip), lxs = flip ? 1 : -1;
+    const shirtC = d._fit ? d.shirt : (o.shirt || (C.shirts[o.shirtId] && C.shirts[o.shirtId].color) || d.shirt), hatId = d._fit ? (d._hat && C.hats[d._hat] ? d._hat : '') : (o.hat && C.hats[o.hat] ? o.hat : ''), flip = st.dirS < 0, S = getSet(id, d, shirtC, hatId, levelFor(g, d, o), flip), lxs = flip ? 1 : -1;
     render(g, st, d, S, x, y, o, sc, anim, lxs);
   };
 
@@ -1127,7 +1157,7 @@
     const FX = [0, 0], FY = [0, 0];
     for (let i = 0; i < 2; i++) {
       const s = i === 0 ? -1 : 1, hx = s * hip, lx_ = i === 0 ? p.llx : p.rlx, ly_ = i === 0 ? p.lly : p.rly, fx = hx + lx_ + (dip ? s * 4 : 0), fy = -ly_ - 3; FX[i] = fx; FY[i] = fy;
-      if (d.v4) drawLeg4(g, d, S, hx, hy, fx, fy, legCol, isDressy(d), lxs); else { PT[0] = hx; PT[1] = hy; PT[2] = fx; PT[3] = fy; limb(g, 2, d.legW || 17, legCol, legK, lxs, true); }
+      if (d.v4) drawLeg4(g, d, S, hx, hy, fx, fy, legCol, isDressy(d), lxs); else { PT[0] = hx; PT[1] = hy; PT[2] = fx; PT[3] = fy; if (d.shorts && !isDressy(d)) { limb(g, 2, (d.legW || 17) - 1.5, d.sockC || '#f4f1ea', legK, lxs, true); PT[2] = hx + (fx - hx) * d.shorts; PT[3] = hy + (fy - hy) * d.shorts; limb(g, 2, (d.legW || 17) + 3, legCol, legK, lxs, true); } else limb(g, 2, d.legW || 17, legCol, legK, lxs, true); if (d.legStripe && !isDressy(d)) { const sg = Math.sign(hx || 1); PT[0] = hx + sg * (d.legW || 17) * .4; PT[1] = hy + 6; PT[2] = fx + sg * (d.legW || 17) * .4; PT[3] = fy - 8; poly(g, 2, 0, 0, 2.6, d.legStripe); } }
       if (!d.v4 && d.top === 'placket') { g.beginPath(); g.moveTo(fx - 8, fy - 6); g.lineTo(fx + 8, fy - 6); g.lineWidth = 3; g.strokeStyle = 'rgba(120,80,0,.35)'; g.stroke(); }
       if (!d.v4 && d.top !== 'placket' && !isDressy(d)) { g.beginPath(); g.moveTo(fx - 7, fy - 5); g.lineTo(fx + 7, fy - 5); g.lineWidth = 2; g.strokeStyle = 'rgba(0,0,0,.14)'; g.stroke(); }
     }
@@ -1157,6 +1187,9 @@
     g.restore();
     if (o.alpha != null) g.restore();
   }
+
+  /* drawing helpers shared with engine/dress.js (outfit decorations are drawn with the same shaded-part toolkit as the base look) */
+  C.kit = { skirtGeo, isDressy, part, fold, line, dot, bead, overlay, pRR, pEll, pCirc, pPoly, lite, dark, mixc, rgba, star5, heart5, mkSpr, tsample, tfill, tpath, tband, TKC, TKS, OL, TAU, get LX() { return LX; }, get LV() { return LV; } };
 
   /* ================= PORTRAITS (HUD avatars, dialogs, video call) ================= */
   C.portrait = function (g, id, cx, cy, r, o) {

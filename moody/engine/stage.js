@@ -136,7 +136,7 @@
     }
     const y = h.y - h.jy;
     if (every <= 1 || this.impMode === 'off') { M.chars.draw(g, h.id, h.x, y, opts); return; }
-    const k = M.cv.width / 960, im = impFor(h.id, M.chars.height(h.id) * h.sc, k), sig = anim + '|' + h.dir + '|' + h.sc + '|' + eq.hat + '|' + eq.shirt + '|' + (h.talk > 0 ? 1 : 0);
+    const k = M.cv.width / 960, im = impFor(h.id, M.chars.height(h.id) * h.sc, k), sig = anim + '|' + h.dir + '|' + h.sc + '|' + eq.hat + '|' + eq.shirt + '|' + (M.dress && M.dress.sig ? M.dress.sig(h.id) : '') + '|' + (h.talk > 0 ? 1 : 0);
     if (im.sig !== sig || DF - im.fr >= every || (DF + idx) % every === 0) {
       const cg = im.g; cg.setTransform(1, 0, 0, 1, 0, 0); cg.clearRect(0, 0, im.c.width, im.c.height); cg.setTransform(k, 0, 0, k, (im.ax - h.x) * k, (im.ay - y) * k); cg.lineJoin = 'round'; cg.lineCap = 'round'; cg.direction = 'rtl';
       const og = M.g; M.g = cg; try { M.chars.draw(cg, h.id, h.x, y, opts); } finally { M.g = og; } im.sig = sig; im.fr = DF;

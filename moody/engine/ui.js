@@ -446,7 +446,7 @@
     const el = h('div', null, hdr('خريطة المغامرات', f.back, [soundBtn(), coinPill()]), cards,
       h('button', { class: 'btn round yellow mapnav', style: 'right:6px', onclick: sc2(1), 'aria-label': 'يمين' }, I('back', 30)),
       h('button', { class: 'btn round yellow mapnav', style: 'left:6px', onclick: sc2(-1), 'aria-label': 'شمال' }, I('arrow', 30)),
-      h('div', { class: 'bar' }, tile('بابا بيتصل', 'phone', ['#26a85a', '#76e0a0', '#13703a'], f.call, M.callPending && M.callPending()), tile('ألبوم الملصقات', 'album', ['#f27a0c', '#ffb24d', '#b84d06'], f.album), tile('يومياتي', 'diary', ['#0fa595', '#5fdccc', '#08766a'], f.diary), tile('تغيير الشكل', 'hanger', ['#8160ea', '#bca6ff', '#522fba'], f.closet), tile('ركن الأهل', 'parent', ['#f0457d', '#ff98b8', '#b92558'], f.parent)));
+      h('div', { class: 'bar' }, tile('بابا بيتصل', 'phone', ['#26a85a', '#76e0a0', '#13703a'], f.call, M.callPending && M.callPending()), tile('ألبوم الملصقات', 'album', ['#f27a0c', '#ffb24d', '#b84d06'], f.album), tile('يومياتي', 'diary', ['#0fa595', '#5fdccc', '#08766a'], f.diary), (() => { const rt = M.dress && M.dress.tile ? M.dress.tile() : null; return tile(rt ? rt.label : 'تغيير الشكل', rt ? rt.icon : 'hanger', rt ? rt.col : ['#8160ea', '#bca6ff', '#522fba'], f.closet); })(), tile('ركن الأهل', 'parent', ['#f0457d', '#ff98b8', '#b92558'], f.parent)));
     UI.show(el, 'clear', 1); M.backdrop.mode = 'map';
     const first = cards.firstChild; if (first) cards.scrollLeft = 0;
   };
@@ -460,7 +460,8 @@
       M.voice.pressSpeak(c, () => m.title, 'narrator');
       grid.append(c);
     });
-    const el = h('div', null, hdr(w.title, f.back, [coinPill()]), grid); UI.show(el, 'clear', 2); M.backdrop.mode = 'map';
+    const en = w.entry && w.entry.go ? h('button', { class: 'btn big yellow shine', 'data-entry': '1', style: 'position:absolute;left:50%;bottom:14px;transform:translateX(-50%);font-size:30px;min-height:74px;padding:6px 36px', 'aria-label': w.entry.label, onclick: tap(w.entry.go) }, I(w.entry.icon || 'home', 40), w.entry.label) : null;   // optional extra entry (the home world's «غرفتي»)
+    const el = h('div', null, hdr(w.title, f.back, [coinPill()]), grid, en); UI.show(el, 'clear', 2); M.backdrop.mode = 'map';
   };
 
   UI.result = function (r, f) {

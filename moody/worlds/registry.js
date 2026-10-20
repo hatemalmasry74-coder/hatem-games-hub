@@ -38,4 +38,5 @@
   M.load.push('content/q_habits.js', 'worlds/habits_kits.js', 'worlds/habits_art.js', 'worlds/habits.js');
   M.load.push('content/q_gathering.js', 'worlds/gathering_kits.js', 'worlds/gathering_art.js', 'worlds/gathering.js');
   M.load.push('content/q_runs.js', 'worlds/runs_art.js', 'worlds/runs.js');
+  M.load.push('content/dress_items.js', 'engine/dress.js', 'engine/dress_ui.js', 'worlds/rooms_art.js', 'worlds/rooms.js');
 })();
