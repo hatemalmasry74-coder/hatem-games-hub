@@ -373,7 +373,7 @@ function genericPatches(P, c) {
   /* --- storage key / caches / hub coupling --- */
   P.rep('engine/core.js', "M.SAVE_KEY = 'hub_moody_v1'", "M.SAVE_KEY = 'fam_" + id + "_v1'", { what: 'save key per edition (several editions on one origin must not share progress)' });
   P.rep('engine/core.js', /\n\s*try \{ const n = localStorage\.getItem\('hubPlayerName'\);[^\n]*\n/, '\n', { what: 'drop hub player-name coupling' });
-  P.rep('sw.js', "const C='moody-v1'", "const C='moody-" + id + "-v1'", { what: 'service worker cache name' });
+  P.rep('sw.js', "const PREFIX = 'moody-', VOICE_CACHE = 'moody-voice', META_CACHE = 'moody-meta',", "const PREFIX = 'moody-" + id + "-', VOICE_CACHE = 'moody-" + id + "-voice', META_CACHE = 'moody-" + id + "-meta',", { what: 'service worker cache names per edition (editions on one origin must not delete each other\'s caches)', exact: 1 });
   P.rep('index.html', '<meta charset="utf-8">', '<meta charset="utf-8">\n<meta name="robots" content="noindex,nofollow,noarchive">\n<meta name="referrer" content="no-referrer">', { what: 'private edition: not for search engines' });
   P.rep('index.html', '<script defer src="../pwa-game.js"></script>', '<script defer src="pwa-game.js"></script>', { what: 'standalone pwa helper (no ../)' });
   P.rep('engine/audio.js', 'cheer(kind) {', 'cheer(kind) { return; /* standalone edition: no cross-game clips */', { what: 'disable cross-game cheer clips' });
