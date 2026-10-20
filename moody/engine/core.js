@@ -3,7 +3,7 @@
 (function () {
   'use strict';
   const M = window.Moody = window.Moody || {};
-  M.W = 960; M.H = 540; M.VERSION = 8; M.SAVE_KEY = 'hub_moody_v1';
+  M.W = 960; M.H = 540; M.VERSION = 9; M.SAVE_KEY = 'hub_moody_v1';
   M.FONT = 'Tahoma, Arial, sans-serif';
   M.OL = '#4a2e1c';           // outline colour (warm dark brown)
   M.pal = { ink: '#3a2a1e', cream: '#fff7e3', orange: '#ff8a2a', teal: '#1fb5a6', pink: '#ff6f91', yellow: '#ffc93c', navy: '#2b3a67', green: '#5cc96b', purple: '#8a6bd6', sky: '#8fd6ff', red: '#ef5350', brown: '#8a5a3a' };
@@ -67,7 +67,7 @@
     prog(wid, mid) { return S.data.progress[wid + '/' + mid] || null; },
     mapStars(w) { return w.missions.reduce((a, m) => a + ((S.prog(w.id, m.id) || {}).stars || 0), 0); },
     done(w) { return w.missions.filter(m => (S.prog(w.id, m.id) || {}).done).length; },
-    unlocked(w, i) { if (M.urlUnlock) return true; return i === 0 || !!(S.prog(w.id, w.missions[i - 1].id) || {}).done; },
+    unlocked(w, i) { if (M.urlUnlock || M.ent.skipChain()) return true; return i === 0 || !!(S.prog(w.id, w.missions[i - 1].id) || {}).done; },
     addCoins(n) { S.data.coins = Math.max(0, S.data.coins + n); S.commit(); }
   };
 
@@ -348,5 +348,5 @@
     const b = document.createElement('div'); b.id = 'fpsbox'; b.style.cssText = 'position:fixed;left:4px;bottom:4px;z-index:150;font:700 12px/1.3 monospace;color:#fff;background:rgba(0,0,0,.6);padding:3px 6px;border-radius:6px;pointer-events:none;direction:ltr';
     document.body.appendChild(b); setInterval(() => { b.textContent = Math.round(Q.perf.fps) + ' fps  ' + Q.level + (Q.auto ? ' (auto)' : '') + '  ' + cv.width + 'x' + cv.height + '  js ' + Q.perf.js.toFixed(1) + 'ms  dpr ' + (window.devicePixelRatio || 1); }, 500);
   }
-  M.urlUnlock = /[?&]unlock=1/.test(location.search);
+  M.urlUnlock = /[?&]unlock=1/.test(location.search) && M.config.edition !== 'play';   // play edition: ?unlock=1 is ignored (dev: ?devunlock=<secret>, see entitle.js)
 })();

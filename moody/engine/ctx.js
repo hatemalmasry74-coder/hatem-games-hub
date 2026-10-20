@@ -179,6 +179,7 @@
 
   F.startMission = function (wid, idx) {
     endMission(); const w = M.getWorld(wid), m = w.missions[idx]; if (!m) return F.toWorld(wid);
+    if (!M.ent.canPlay(wid, m.id)) return M.ent.blocked(wid, idx);   // entitlement guard (play edition): nothing can start a paid mission without a subscription
     const stage = new M.Stage(); if (m.heroes || w.heroes) stage.setCast(m.heroes || w.heroes, m.control || w.control); if (m.abilities) Object.keys(m.abilities).forEach(k => { stage.abil[k] = m.abilities[k]; }); stage.layout('floor'); stage.bg = M.rooms && M.rooms.plain; M.setScene(stage); UI.clearScreen();
     const run = { quit() { F.toWorld(wid); } }, ctx = makeCtx(w, m, stage, run); F.cur = { ctx, stage, wid, idx };
     UI.hud.show(stage, { onPause: () => openPause() });
@@ -204,7 +205,7 @@
       M.save.commit(); const nowDone = M.save.done(w) === w.missions.length, justDone = nowDone && !wasDone && !w.hidden;
       const wisdom = (ctx.endOpts && ctx.endOpts.wisdom) || m.wisdom;
       UI.hud.hide(); endMission(); F.cur = null; M.setScene(M.backdrop); M.audio.sfx('fanfare'); M.audio.cheer(stars >= 3 ? 'big' : 'small');
-      const hasNext = idx + 1 < w.missions.length;
+      const hasNext = idx + 1 < w.missions.length && M.ent.canPlay(wid, w.missions[idx + 1].id);   // never auto-advance into a paid mission (no purchase prompt after play)
       const after = () => { if (justDone) UI.celebrate(w, { map: F.toMap, menu: () => F.toWorld(wid) }); else if (hasNext) F.startMission(wid, idx + 1); else F.toWorld(wid); };
       UI.result({ stars, coins, sticker: newSt, wisdom, diary: dl.length > 0, hasNext, world: w, mission: m }, { next: after, retry: () => F.startMission(wid, idx), menu: () => F.toWorld(wid) });
     }

@@ -428,12 +428,12 @@
   UI.worldMap = function (f) {
     const cards = h('div', { class: 'cards scroll x', id: 'wcards' });
     M.worlds.filter(w => !w.hidden).forEach(w => {
-      const soon = !!w.soon, tot = w.missions.length * 3, got = M.save.mapStars(w), dn = M.save.done(w), th = w.theme, all = !soon && dn === w.missions.length;
+      const soon = !!w.soon, T = M.ent.totals(w), tot = T.tot, got = T.got, dn = T.done, th = w.theme, all = !soon && dn === T.n && !T.locked;
       const top = h('div', { class: 'top', style: 'background:linear-gradient(' + th.c1 + ',' + th.c2 + ')' }, h('div', { class: 'medal' }, soon ? null : RING(got / tot, 46, '#fff7a8'), h('div', { class: 'art' }, ico(w.icon || 'home', soon ? 96 : 104))), soon ? h('div', { class: 'lockmark' }, h('span', null, I('lock', 48))) : null);
       const c = h('button', { class: 'card' + (soon ? ' soon' : ''), 'data-world': w.id, 'aria-label': w.title + (soon ? ': قريبًا' : ': ' + ar(got) + ' من ' + ar(tot) + ' نجمة'), style: '--c1:' + th.c1 + ';--c2:' + th.c2, onclick: () => { if (soon) { M.audio.sfx('wrong'); UI.toast('قريبًا! لسه بنجهّزه'); } else { M.audio.sfx('tap'); f.world(w.id); } } },
         top, all ? h('div', { class: 'badge-done' }, I('check', 24)) : null, h('h3', null, w.title), soon ? h('div', { class: 'sub' }, 'قريبًا') : h('div', { class: 'sub' }, I('star', 26), ar(got) + ' من ' + ar(tot)),
-        soon ? null : h('div', { class: 'cnt' }, ar(dn) + ' من ' + ar(w.missions.length) + ' مهام'));
-      cards.append(c);
+        soon ? null : h('div', { class: 'cnt' }, ar(dn) + ' من ' + ar(T.n) + ' مهام'));
+      M.ent.decorateCard(c, w, T); cards.append(c);
     });
     /* pointer parallax tilt (mouse only) */
     let tiltRaf = 0, tc = null, ev = null;
@@ -454,9 +454,9 @@
   UI.missionList = function (w, f) {
     const grid = h('div', { class: 'grid scroll', style: 'position:absolute;left:26px;right:26px;top:96px;bottom:14px;grid-template-columns:repeat(3,1fr);align-content:start;padding:6px 4px 14px' });
     w.missions.forEach((m, i) => {
-      const open = M.save.unlocked(w, i), p = M.save.prog(w.id, m.id) || {};
-      const c = h('button', { class: 'mcard' + (open ? '' : ' locked') + (p.done ? ' done' : ''), 'data-mission': m.id, 'aria-label': 'المهمة ' + ar(i + 1) + ': ' + m.title + (open ? '' : ' (مقفولة)'), onclick: () => { if (open) { M.audio.sfx('tap'); f.start(i); } else { M.audio.sfx('wrong'); UI.toast('خلّصوا المهمة اللي قبلها الأول'); } } },
-        h('div', { class: 'num' }, p.done ? I('check', 24) : ar(i + 1)), open ? h('div', { class: 'mic' }, ico(m.icon || (m.diary && m.diary.pic) || 'star', 44)) : null, h('h4', null, m.title), open ? starRow(p.stars || 0, 28) : I('lock', 40, { color: '#8a8fa8' }));
+      const paid = !M.ent.canPlay(w.id, m.id), open = !paid && M.save.unlocked(w, i), p = M.save.prog(w.id, m.id) || {};
+      const c = h('button', { class: 'mcard' + (open ? '' : paid ? ' locked paywall' : ' locked') + (p.done ? ' done' : ''), 'data-mission': m.id, 'data-paid': paid ? '1' : null, 'aria-label': 'المهمة ' + ar(i + 1) + ': ' + m.title + (open ? '' : paid ? ' (مع الاشتراك)' : ' (مقفولة)'), onclick: () => { if (paid) { M.ent.promptLocked(w, m, i); } else if (open) { M.audio.sfx('tap'); f.start(i); } else { M.audio.sfx('wrong'); UI.toast('خلّصوا المهمة اللي قبلها الأول'); } } },
+        h('div', { class: 'num' }, p.done ? I('check', 24) : ar(i + 1)), open ? h('div', { class: 'mic' }, ico(m.icon || (m.diary && m.diary.pic) || 'star', 44)) : null, h('h4', null, m.title), open ? starRow(p.stars || 0, 28) : paid ? M.ent.lockBadge() : I('lock', 40, { color: '#8a8fa8' }));
       M.voice.pressSpeak(c, () => m.title, 'narrator');
       grid.append(c);
     });
@@ -550,7 +550,7 @@
     const body = h('div', { class: 'scroll panel', style: 'position:absolute;left:30px;right:30px;top:96px;bottom:16px;padding:14px 22px;text-align:right' },
       h('div', { style: 'font-size:21px;font-weight:800;opacity:.8;margin-bottom:8px;line-height:1.5' }, 'اللعبة بتزرع القيم من خلال مواقف القصة من غير وعظ. هنا ملخص لِما اتدرّب عليه الأطفال. كل البيانات محفوظة على الجهاز فقط ولا تُرسل لأي مكان.'),
       h('div', { class: 'row', style: 'flex-wrap:wrap;gap:8px' }, stat('المهام', ar(tm) + '/' + ar(tw)), stat('النجوم', ar(stars)), stat('العملات', ar(sd.coins)), stat('الملصقات', ar(Object.keys(sd.stickers).length)), stat('صفحات اليوميات', ar(sd.diary.length))),
-      bars(M.values, sd.valuesPracticed, 'القيم والعادات اللي اتمرّنوا عليها'), bars(M.skillsInfo, sd.skills, 'المهارات (عدد الألغاز اللي اتحلّت)'),
+      M.ent.parentSection(), bars(M.values, sd.valuesPracticed, 'القيم والعادات اللي اتمرّنوا عليها'), bars(M.skillsInfo, sd.skills, 'المهارات (عدد الألغاز اللي اتحلّت)'),
       h('div', { style: 'font-size:27px;font-weight:900;margin:12px 0 6px' }, 'مستوى الألغاز'), tierRow,
       h('div', { style: 'font-size:18px;opacity:.7;font-weight:800;margin:6px 0' }, 'تلقائي: عبودي (٦ سنين) بيجاوب ألغاز أسهل ومودي (٩ سنين) ألغاز أصعب.'),
       h('div', { class: 'row', style: 'margin:12px 0;flex-wrap:wrap' }, tog('الصوت', 'sound'), tog('صوت التعليمات', 'narr'), tog('تشجيع بصوت بشري', 'voice'), UI.btn('تغيير الأسماء', 'blue', f.names, 'settings')),
