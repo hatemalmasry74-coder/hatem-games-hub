@@ -1,0 +1,111 @@
+apply plugin: 'com.android.application'
+
+import groovy.json.JsonSlurper
+
+/* ---------- single sources of truth ----------
+ * applicationId : android/capacitor.config.ts (appId: '...')   or  -PappId=...  / env APP_ID
+ * version       : android/version.json                          or  -PversionName / -PversionCode, env VERSION_NAME / VERSION_CODE
+ * signing       : env or -P (never in a file):  KEYSTORE_PATH, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD
+ */
+def capCfg = file('../../capacitor.config.ts').text
+def appIdM = (capCfg =~ /appId:\s*'([^']+)'/)
+def APP_ID = (project.findProperty('appId') ?: System.getenv('APP_ID') ?: (appIdM ? appIdM[0][1] : 'com.example.moodyadventures')).toString()
+def ver = new JsonSlurper().parse(file('../../version.json'))
+def VERSION_NAME = (project.findProperty('versionName') ?: System.getenv('VERSION_NAME') ?: ver.versionName).toString()
+def VERSION_CODE = ((project.findProperty('versionCode') ?: System.getenv('VERSION_CODE') ?: ver.versionCode).toString()) as int
+def KS_PATH = project.findProperty('KEYSTORE_PATH') ?: System.getenv('KEYSTORE_PATH')
+def hasSigning = KS_PATH && file(KS_PATH).exists()
+
+android {
+    namespace = "moody.wrapper"
+    compileSdk = rootProject.ext.compileSdkVersion
+    defaultConfig {
+        applicationId APP_ID
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode VERSION_CODE
+        versionName VERSION_NAME
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        aaptOptions {
+            // keep dot-files out (see Capacitor template); mp3/jpg/png are stored, not re-compressed
+            ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
+        }
+        resValue "string", "package_name", APP_ID
+        resValue "string", "custom_url_scheme", APP_ID
+    }
+    // 64-bit: the app has no native code of its own (pure Java + WebView), so every ABI is "included" implicitly and the
+    // bundle is 64-bit compliant. If a plugin ever adds .so files, ship arm64-v8a (and x86_64) - Play requires 64-bit.
+    androidResources {
+        noCompress += ['mp3', 'ogg', 'm4a', 'jpg', 'png', 'webp']
+    }
+    bundle {
+        language { enableSplit = false }    // the app is Arabic+English in one go; no per-language config splits
+        density  { enableSplit = true }
+        abi      { enableSplit = true }
+    }
+    signingConfigs {
+        if (hasSigning) {
+            release {
+                storeFile file(KS_PATH)
+                storePassword (project.findProperty('KEYSTORE_PASSWORD') ?: System.getenv('KEYSTORE_PASSWORD'))
+                keyAlias (project.findProperty('KEY_ALIAS') ?: System.getenv('KEY_ALIAS'))
+                keyPassword (project.findProperty('KEY_PASSWORD') ?: System.getenv('KEY_PASSWORD'))
+            }
+        }
+    }
+    buildTypes {
+        debug {
+            applicationIdSuffix ".debug"      // installs next to the store build
+            versionNameSuffix "-debug"
+        }
+        release {
+            // R8 is OFF by default: the Java code is tiny (the web assets dominate the size) and the Cordova/Capacitor
+            // plugins are loaded by reflection. Turn on with -PminifyRelease=true AFTER testing on a device (see docs/play/DECISION.md).
+            minifyEnabled project.hasProperty('minifyRelease')
+            shrinkResources project.hasProperty('minifyRelease')
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if (hasSigning) signingConfig signingConfigs.release
+        }
+    }
+    if (rootProject.findProject(':voice_pack')) assetPacks = [':voice_pack']
+}
+
+repositories {
+    flatDir{
+        dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
+    implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
+    implementation project(':capacitor-android')
+    testImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
+    implementation project(':capacitor-cordova-android-plugins')
+}
+
+apply from: 'capacitor.build.gradle'
+
+/* Guard rails for the Play build */
+gradle.taskGraph.whenReady { graph ->
+    def releasing = graph.allTasks.any { it.name == 'bundleRelease' || it.name == 'assembleRelease' || it.name == 'packageReleaseBundle' }
+    if (releasing && APP_ID.startsWith('com.example.') && !project.hasProperty('allowPlaceholderId')) {
+        throw new GradleException("appId '" + APP_ID + "' is the PLACEHOLDER. Set your own id in android/capacitor.config.ts (node scripts/set_app_id.js <id>) - Google Play rejects com.example.* and the id can never change later. (-PallowPlaceholderId to build anyway for local tests)")
+    }
+    if (releasing && !hasSigning) {
+        logger.warn("WARNING: no signing material (KEYSTORE_PATH...). The release artifact will be UNSIGNED: it cannot be uploaded to Play until it is signed with your upload key.")
+    }
+}
+
+try {
+    def servicesJSON = file('google-services.json')
+    if (servicesJSON.text) {
+        apply plugin: 'com.google.gms.google-services'
+    }
+} catch(Exception e) {
+    logger.info("google-services.json not found, google-services plugin not applied (we use no Firebase).")
+}

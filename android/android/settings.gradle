@@ -1,0 +1,11 @@
+include ':app'
+include ':capacitor-cordova-android-plugins'
+project(':capacitor-cordova-android-plugins').projectDir = new File('./capacitor-cordova-android-plugins/')
+
+// Play Asset Delivery: the install-time pack "voice_pack" (assets/voice) is only part of the build when asked for:
+//   ./gradlew bundleRelease -PvoicePack=true      (scripts/build.sh does this for --split-voice)
+if (gradle.startParameter.projectProperties.containsKey('voicePack') || System.getenv('VOICE_PACK') == '1') {
+    include ':voice_pack'
+}
+
+apply from: 'capacitor.settings.gradle'

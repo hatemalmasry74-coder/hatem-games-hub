@@ -1,0 +1,14 @@
+// Play Asset Delivery - INSTALL-TIME asset pack with the voice clips.
+// Install-time packs are delivered together with the app (no extra download step, no Play Core code in the app) and their
+// files appear in the normal AssetManager under the same relative path -> Capacitor serves them from https://localhost/ unchanged.
+// Content: voice_pack/src/main/assets/public/assets/voice/*.mp3   (filled by `node scripts/make_www.js --split-voice`)
+plugins {
+    id 'com.android.asset-pack'
+}
+
+assetPack {
+    packName = "voice_pack"          // must match the name in app/build.gradle -> assetPacks
+    dynamicDelivery {
+        deliveryType = "install-time"
+    }
+}

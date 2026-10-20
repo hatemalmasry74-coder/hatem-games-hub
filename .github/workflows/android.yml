@@ -1,0 +1,154 @@
+# Android build (Capacitor wrapper of the Moody & Aboody PLAY edition).
+#   - manual:  Actions -> "Android (Play)" -> Run workflow
+#   - tags:    git tag android-v1.0.0 && git push origin android-v1.0.0
+# Produces: debug APK (always) + signed release AAB (only when the 4 signing secrets exist and the appId is not the placeholder).
+# Secrets (Settings -> Secrets and variables -> Actions):
+#   ANDROID_KEYSTORE_BASE64  base64 of your UPLOAD keystore (base64 -w0 upload.jks)
+#   KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD
+# Nothing secret is ever written to the repo or printed. Docs: docs/play/RELEASE_CHECKLIST.md
+name: Android (Play)
+
+on:
+  workflow_dispatch:
+    inputs:
+      web_out_dir:
+        description: 'Folder the Play-edition web build is written to (argument of tools/play/build.js)'
+        default: 'play_dist'
+        required: true
+      web_build_args:
+        description: 'Extra arguments passed to tools/play/build.js after the folder (e.g. a family/config option). Optional.'
+        default: ''
+        required: false
+      split_voice:
+        description: 'Put assets/voice in an install-time Play Asset Delivery pack (release AAB)'
+        type: boolean
+        default: false
+      version_code_offset:
+        description: 'versionCode = run number + this offset (raise it if Play already has a higher code)'
+        default: '0'
+        required: true
+  push:
+    tags:
+      - 'android-v*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      WEB_OUT: ${{ inputs.web_out_dir || 'play_dist' }}
+      WEB_ARGS: ${{ inputs.web_build_args || '' }}
+      SPLIT_VOICE: ${{ inputs.split_voice && 'true' || 'false' }}
+      HAS_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' && secrets.KEYSTORE_PASSWORD != '' && secrets.KEY_ALIAS != '' && secrets.KEY_PASSWORD != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: android/package-lock.json
+
+      # Capacitor 8 needs JDK 21 (JDK 17 is enough for Capacitor <= 6/7). Gradle itself runs fine on 21.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build the Play-edition web assets
+        run: |
+          if [ ! -f tools/play/build.js ]; then
+            echo "::error title=Play-edition build tool missing::tools/play/build.js does not exist in this commit. It is created by the 'Play edition' work (family wizard + generic build tool). Merge that first, then re-run."
+            exit 1
+          fi
+          # shellcheck disable=SC2086
+          node tools/play/build.js "$WEB_OUT" $WEB_ARGS
+          test -f "$WEB_OUT/index.html" || { echo "::error::tools/play/build.js did not produce $WEB_OUT/index.html"; exit 1; }
+
+      - name: Install wrapper dependencies
+        working-directory: android
+        run: npm ci --no-audit --no-fund
+
+      - name: Copy web assets into android/www (+ policy lint, size check)
+        working-directory: android
+        run: |
+          EXTRA=""; [ "$SPLIT_VOICE" = "true" ] && EXTRA="--split-voice"
+          node scripts/make_www.js --src "../$WEB_OUT" $EXTRA
+
+      - name: Capacitor sync
+        working-directory: android
+        run: npx cap sync android
+
+      - name: Version
+        id: ver
+        env:
+          OFFSET: ${{ inputs.version_code_offset || '0' }}
+          RUN_NO: ${{ github.run_number }}
+        run: |
+          [[ "$OFFSET" =~ ^[0-9]+$ ]] || { echo "::error::version_code_offset must be a number"; exit 1; }
+          CODE=$(( RUN_NO + OFFSET ))
+          NAME=$(node -p "require('./android/version.json').versionName")
+          if [[ "$GITHUB_REF_NAME" == android-v* ]]; then NAME="${GITHUB_REF_NAME#android-v}"; fi
+          echo "VERSION_CODE=$CODE"  >> "$GITHUB_ENV"
+          echo "VERSION_NAME=$NAME"  >> "$GITHUB_ENV"
+          echo "versionName=$NAME versionCode=$CODE"
+
+      - name: Debug APK
+        working-directory: android/android
+        run: ./gradlew --no-daemon assembleDebug
+
+      - name: Decode upload keystore (only if all 4 secrets exist)
+        if: env.HAS_KEYSTORE == 'true'
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          S_KSP: ${{ secrets.KEYSTORE_PASSWORD }}
+          S_KA: ${{ secrets.KEY_ALIAS }}
+          S_KP: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          echo "$KS_B64" | base64 -d > "$RUNNER_TEMP/upload.jks"
+          echo "::add-mask::$S_KSP"; echo "::add-mask::$S_KP"
+          { echo "KEYSTORE_PATH=$RUNNER_TEMP/upload.jks"; echo "KEYSTORE_PASSWORD=$S_KSP"; echo "KEY_ALIAS=$S_KA"; echo "KEY_PASSWORD=$S_KP"; } >> "$GITHUB_ENV"
+
+      - name: Release AAB (signed)
+        if: env.HAS_KEYSTORE == 'true'
+        working-directory: android/android
+        run: |
+          ARGS=""; [ "$SPLIT_VOICE" = "true" ] && ARGS="-PvoicePack=true"
+          ./gradlew --no-daemon bundleRelease $ARGS
+          jarsigner -verify app/build/outputs/bundle/release/app-release.aab | head -2
+
+      - name: Note - release skipped
+        if: env.HAS_KEYSTORE != 'true'
+        run: echo "::notice title=Release AAB skipped::ANDROID_KEYSTORE_BASE64 / KEYSTORE_PASSWORD / KEY_ALIAS / KEY_PASSWORD secrets are not all set, so only the debug APK was built."
+
+      - name: Sizes
+        run: |
+          ls -l android/android/app/build/outputs/apk/debug/*.apk android/android/app/build/outputs/bundle/release/*.aab 2>/dev/null || true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: moody-debug-apk
+          path: android/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
+
+      - uses: actions/upload-artifact@v4
+        if: env.HAS_KEYSTORE == 'true'
+        with:
+          name: moody-release-aab
+          path: android/android/app/build/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+          retention-days: 30

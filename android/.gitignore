@@ -1,0 +1,16 @@
+node_modules/
+www/
+android/voice_pack/src/main/assets/
+android/app/src/main/assets/public/
+android/app/src/main/assets/capacitor.config.json
+android/app/src/main/assets/capacitor.plugins.json
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+android/capacitor-cordova-android-plugins/build/
+*.jks
+*.keystore
+*.aab
+*.apk
+keystore*.b64
