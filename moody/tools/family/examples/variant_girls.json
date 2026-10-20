@@ -1,0 +1,51 @@
+{
+ "edition": {
+  "id": "variant-girls"
+ },
+ "kids": [
+  {
+   "name": "لينا",
+   "nick": "لينا",
+   "age": 10,
+   "gender": "f",
+   "look": {
+    "hijab": true,
+    "glasses": true
+   }
+  },
+  {
+   "name": "دانة",
+   "nick": "دانة",
+   "age": 7,
+   "gender": "f"
+  },
+  {
+   "name": "حمزة",
+   "nick": "حمزة",
+   "age": 14,
+   "gender": "m"
+  },
+  {
+   "name": "يوسف",
+   "nick": "يوسف",
+   "age": 12,
+   "gender": "m"
+  }
+ ],
+ "friendName": "سامر",
+ "dad": {
+  "status": "home"
+ },
+ "grandparent": {
+  "exists": true,
+  "sameBuilding": true,
+  "gender": "f",
+  "title": "جدتي",
+  "name": "نجاة",
+  "homeFloor": 4,
+  "grandFloor": 1
+ },
+ "school": {
+  "name": "مدرسة الأمل الابتدائية"
+ }
+}

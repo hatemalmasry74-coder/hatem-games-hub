@@ -522,6 +522,7 @@ function applyCharacters(P, c, outDir, report) {
     let props = {};
     const userSkin = (look || {}).skin || unq(row.skin);
     if (g !== baseG) props = Object.assign(props, LK.genderPreset(sl.id, g, userSkin));
+    props.gender = g;   // dressing rooms + outfits derive the room, items and hijab options from DEFS gender (and hair === 'scarf')
     const merged = Object.assign({ top: unq(row.top), hair: unq(row.hair), shirt: unq(row.shirt) }, props);
     props = Object.assign(props, LK.lookProps(look, merged));
     if (sl.kid) {

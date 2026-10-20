@@ -64,6 +64,7 @@ t('runs levels tagged @owner-family are cut (any number of levels), stickers/val
 });
 
 const scratch = process.argv[2] || fs.mkdtempSync(path.join(os.tmpdir(), 'fam_test_'));
+const cfgFile = n => ({ sample: 'family.example.json', 'dad-home-no-grandparent': 'examples/variant_home_dad_no_grandparent.json', 'oman-grandpa-4kids': 'examples/variant_other_country_grandpa.json' })[n];
 for (const [cfg, name] of [['family.example.json', 'sample'], ['examples/variant_home_dad_no_grandparent.json', 'dad-home-no-grandparent'], ['examples/variant_other_country_grandpa.json', 'oman-grandpa-4kids']]) {
   t('build ' + name + ': no old-family text, valid JS', () => {
     const out = path.join(scratch, name); const r = build(path.join(__dirname, cfg), out, new Set(['force', 'quiet', 'no-icons']));
@@ -79,6 +80,12 @@ for (const [cfg, name] of [['family.example.json', 'sample'], ['examples/variant
       assert(!/run_goal_(amani|kamal)|registerTheme\('(kamal|kitchen|dusk)'/.test(art), 'art of cut levels survived');
       assert(!/s_run_(med|kamal|lantern|cook|relay|air)\b/.test(rs), 'stickers of cut levels survived');
     }
+    { const ch = fs.readFileSync(path.join(out, 'engine', 'chars.js'), 'utf8'), cfg = JSON.parse(fs.readFileSync(path.join(__dirname, cfgFile(name)), 'utf8'));
+      const g = id => (new RegExp('^\\s*' + id + ': \\{[^\\n]*gender: \'([mf])\'', 'm').exec(ch) || [])[1];
+      const want = ['moody', 'aboody', 'toota', 'nemo'].map((id, i) => (cfg.kids && cfg.kids[i] && cfg.kids[i].gender) || (cfg.extraChildren && cfg.extraChildren[i - (cfg.kids || []).length] && cfg.extraChildren[i - (cfg.kids || []).length].gender) || { moody: 'm', aboody: 'm', toota: 'f', nemo: 'f' }[id]);
+      assert.deepStrictEqual(['moody', 'aboody', 'toota', 'nemo'].map(g), want, 'DEFS gender must follow the config (dressing rooms derive from it)');
+      assert(g('baba') === 'm' && /^\s*nana: \{[^\n]*gender: '[mf]'/m.test(ch), 'baba/nana gender');
+      assert(!/gender: '[mf]'[^\n]*\n[^\n]*(ofa|toti|amani|nada|beno|medo|kamal|luka): \{/.test(ch) && !/^\s*(ofa|toti|amani|nada|beno|medo|kamal|luka): \{/m.test(ch), 'extended rows survive'); }
     // the owner's extended family never ships
     for (const f of ['worlds/gathering.js', 'worlds/gathering_art.js', 'worlds/gathering_kits.js', 'content/q_gathering.js']) assert(!fs.existsSync(path.join(out, f)), f + ' must not ship');
     const reg = fs.readFileSync(path.join(out, 'worlds', 'registry.js'), 'utf8'); assert(!/gather/.test(reg), 'gathering still in registry');
