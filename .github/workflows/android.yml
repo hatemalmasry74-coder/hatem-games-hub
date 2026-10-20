@@ -70,12 +70,13 @@ jobs:
 
       - name: Build the Play-edition web assets
         run: |
-          if [ ! -f tools/play/build.js ]; then
-            echo "::error title=Play-edition build tool missing::tools/play/build.js does not exist in this commit. It is created by the 'Play edition' work (family wizard + generic build tool). Merge that first, then re-run."
+          if [ ! -f moody/tools/play/build.js ]; then
+            echo "::error title=Play-edition build tool missing::moody/tools/play/build.js does not exist in this commit."
             exit 1
           fi
+          # the package name defaults to android/capacitor.config.ts appId; pass --title "..." / --privacy-url ... through web_build_args
           # shellcheck disable=SC2086
-          node tools/play/build.js "$WEB_OUT" $WEB_ARGS
+          node moody/tools/play/build.js "$WEB_OUT" --force $WEB_ARGS
           test -f "$WEB_OUT/index.html" || { echo "::error::tools/play/build.js did not produce $WEB_OUT/index.html"; exit 1; }
 
       - name: Install wrapper dependencies

@@ -34,13 +34,17 @@ const only = (P, files, fn) => files.forEach(f => { if (P.files.has(f)) fn(f); }
 /* ------------------------------------------------------------------ 1. generic patches (shell, storage, titles, hub coupling) */
 function genericPatches(P, opt) {
   const title = opt.title;
+  if (/['"\\<>{}`$]/.test(title)) throw new Error('--title must not contain quotes, backslashes, braces or < > ($ `): ' + title);
+  /* the subscription layer (paywall, store product names, terms) talks about the APP: it uses the app title, never the kids' names */
+  ['engine/paywall_ui.js', 'engine/billing.js', 'engine/entitle.js'].forEach(f => { if (P.files.has(f)) P.files.set(f, P.get(f).split('مودي وعبودي').join(title)); });
   R(P, 'engine/core.js', "M.SAVE_KEY = 'hub_moody_v1'", "M.SAVE_KEY = '" + PLAY.saveKey + "'", { what: 'save key of the Play edition' });
   R(P, 'engine/core.js', /\n\s*try \{ const n = localStorage\.getItem\('hubPlayerName'\);[^\n]*\n/, '\n', { what: 'drop hub player-name coupling' });
   R(P, 'engine/core.js', "names: { moody: 'مودي', aboody: 'عبودي', me: '', toota: 'توتا', nemo: 'نيمو', nana: 'ننا زوزا', baba: 'بابا' }", "names: { moody: " + jsq(PERSONA.moody) + ", aboody: " + jsq(PERSONA.aboody) + ", me: '', toota: " + jsq(PERSONA.toota) + ", nemo: " + jsq(PERSONA.nemo) + ", nana: 'تيتة', baba: 'بابا' }", { what: 'save defaults: generic persona names' });
   R(P, 'engine/core.js', /\n  M\.fmt = s => \{[^\n]*\n/, "\n  M.fmt = s => String(s == null ? '' : s);   // replaced by engine/family.js (role tokens)\n", { what: 'M.fmt: owner default names removed', exact: 1 });
-  R(P, 'sw.js', "const PREFIX = 'moody-', VOICE_CACHE = 'moody-voice', META_CACHE = 'moody-meta',", "const PREFIX = 'moody-" + PLAY.cache + "-', VOICE_CACHE = 'moody-" + PLAY.cache + "-voice', META_CACHE = 'moody-" + PLAY.cache + "-meta',", { what: 'service worker cache names' });
-  R(P, 'sw.js', /\n\s*\['moody', 'aboody', 'toota', 'nemo', 'baba'\]\.forEach\(n => out\.add\(scopeUrl\('assets\/' \+ n \+ '_cartoon\.jpg'\)\)\);/, '', { what: 'no owner cartoon avatars in the shell cache' });
-  R(P, 'index.html', '<script defer src="../pwa-game.js"></script>', '<script defer src="pwa-game.js"></script>', { what: 'standalone pwa helper (no ../)' });
+  /* the Play edition is a native-app asset bundle: no service worker, no web manifest, no hub pwa helper, no ../ references */
+  ['sw.js', 'manifest.json', 'pwa-game.js'].forEach(f => P.remove(f));
+  R(P, 'index.html', /\n?<script defer src="\.\.\/pwa-game\.js"><\/script>/, '', { what: 'no ../pwa-game.js' });
+  R(P, 'index.html', /\n?<link rel="manifest" href="manifest\.json">/, '', { what: 'no web manifest link' });
   R(P, 'engine/audio.js', 'cheer(kind) {', 'cheer(kind) { return; /* standalone edition: no cross-game clips */', { what: 'disable cross-game cheer clips' });
   R(P, 'engine/audio.js', "'../sonic/assets/v/'", "'assets/v/'", { what: 'dead path of the disabled cheer clips' });
   R(P, 'engine/ui.js', /const hubLink = \(\) => h\('a', \{[^\n]*\n/, 'const hubLink = () => null;\n', { what: 'no link to the games hub' });
@@ -51,10 +55,35 @@ function genericPatches(P, opt) {
   R(P, 'index.html', /<meta name="description" content="[^"]*">/, '<meta name="description" content="' + title + ': ألعاب ومغامرات وألغاز للأطفال بالعربي المصري، بأسماء وشكل عيلتك">', { what: 'html description' });
   R(P, 'index.html', /apple-mobile-web-app-title" content="[^"]*"/, 'apple-mobile-web-app-title" content="' + title + '"', { what: 'ios app title' });
   R(P, 'index.html', '<div id="splash" aria-hidden="true"><b>مودي وعبودي</b>', '<div id="splash" aria-hidden="true"><b>' + title + '</b>', { what: 'splash title' });
-  const mf = JSON.parse(P.get('manifest.json')); mf.name = title; mf.short_name = title; mf.description = title + ': مغامرات وألغاز وقيم للأطفال بالعربي المصري، بأسماء وشكل عيلتك'; mf.id = './?edition=play'; P.files.set('manifest.json', JSON.stringify(mf, null, 1));
   /* the runtime modules */
-  R(P, 'index.html', '<script src="engine/chars.js?v=8"></script>', '<script src="engine/chars.js?v=8"></script>\n<script src="engine/family.js?v=8"></script>', { what: 'wire engine/family.js' });
-  R(P, 'index.html', '<script src="engine/call.js?v=8"></script>', '<script src="engine/call.js?v=8"></script>\n<script src="engine/family_ui.js?v=8"></script>', { what: 'wire engine/family_ui.js' });
+  R(P, 'index.html', /<script src="engine\/chars\.js\?v=(\d+)"><\/script>/, (m, v) => m + '\n<script src="engine/family.js?v=' + v + '"></script>', { what: 'wire engine/family.js (any ?v=)', exact: 1 });
+  R(P, 'index.html', /<script src="engine\/call\.js\?v=(\d+)"><\/script>/, (m, v) => m + '\n<script src="engine/family_ui.js?v=' + v + '"></script>', { what: 'wire engine/family_ui.js (any ?v=)', exact: 1 });
+  R(P, 'index.html', /<script src="engine\/family\.js\?v=(\d+)"><\/script>/, (m, v) => m + '\n<script src="engine/family_flip.js?v=' + v + '"></script>', { what: 'wire engine/family_flip.js (runtime gender agreement of the duo)', exact: 1 });
+  R(P, 'engine/ui.js', "const text = M.fmt(o.text), who = o.who,", "const who = o.who, text = M.fmt(M.family.flip.gx(o.text, who, M.family.flipSet())),", { what: 'dialog text: gender agreement of a girl in the duo', exact: 1 });
+  R(P, 'engine/stage.js', "h.bubble = { text: M.fmt(text), t: dur || 2 };", "h.bubble = { text: M.fmt(M.family.flip.gx(text, id, M.family.flipSet())), t: dur || 2 };", { what: 'bubble text: gender agreement', exact: 1 });
+  R(P, 'content/reactions.js', "  R.idOf = v => V2ID[v] || 'narrator';", "  R.idOf = v => V2ID[v] || 'narrator';\n  R.maps = { V2ID, ID2V, BOYS };   // engine/family.js re-points the duo's voice class / pools when a girl plays a boy slot", { what: 'reactions: expose the hero<->voice maps', exact: 1 });
+  /* edition config BEFORE engine/config.js: a preset edition cannot be changed from the URL (?unlock=1 is ignored, ?edition=web is ignored) */
+  const cfg = { edition: 'play', packageName: opt.packageName, privacyUrl: opt.privacyUrl || '', termsUrl: opt.termsUrl || '', appTitle: title };
+  if (opt.testMock) { cfg.allowMock = true; cfg.billingProvider = 'mock'; }
+  R(P, 'index.html', /<script src="engine\/config\.js\?v=\d+"><\/script>/, m => '<script>window.MOODY_CONFIG = ' + JSON.stringify(cfg) + ';</script>\n' + m, { what: 'MOODY_CONFIG (edition play) before config.js', exact: 1 });
+  /* billing: release builds do not contain the mock store nor the hub activation-code provider at all */
+  if (!opt.testMock) {
+    R(P, 'engine/billing.js', /\n  \/\* -{10} mock :[\s\S]*?\n  \}\)\(\);\n(?=\}\)\(\);)/, '\n', { what: 'RELEASE: mock billing provider removed', exact: 1 });
+    R(P, 'engine/billing.js', /\n  \/\* -{10} hubpay \(web edition only\) -{10} \*\/\n  B\.register\('hubpay', \{[\s\S]*?\n  \}\);\n/, '\n', { what: 'RELEASE: hubpay (activation codes) provider removed', exact: 1 });
+    R(P, 'engine/paywall_ui.js', /\n      \} else if \(B\.name === 'hubpay' && C\.edition !== 'play'\) \{[\s\S]*?\n(?=      \} else if \(B\.name === 'none'\))/, '\n', { what: 'RELEASE: activation-code UI removed from the paywall', exact: 1 });
+    R(P, 'engine/paywall_ui.js', /\n    code_ph: [^\n]*/, '', { what: 'RELEASE: activation-code strings removed', exact: 1 });
+    R(P, 'engine/billing.js', /\n     hubpay        WEB edition only[^\n]*\n[^\n]*\n[^\n]*(?=\n)/, '', { what: 'RELEASE: doc comment of removed providers', exact: 1 });
+    R(P, 'engine/billing.js', "{ provider:'capacitor'|'digitalgoods'|'mock'|'hubpay'|'none' }", "{ provider:'capacitor'|'digitalgoods'|'none' }", { what: 'RELEASE: doc comment', exact: 1 });
+    R(P, 'engine/config.js', "// 'auto' | 'capacitor' | 'digitalgoods' | 'mock' | 'hubpay'(non-play only) | 'none'", "// 'auto' | 'capacitor' | 'digitalgoods' | 'none'", { what: 'RELEASE: doc comment', exact: 1 });
+    R(P, 'engine/config.js', /\n    allowMock: false,[^\n]*/, '', { what: 'RELEASE: no allowMock switch', exact: 1 });
+    R(P, 'engine/config.js', "(uses the HubPay activation-code provider)", "(not used in the Play edition)", { what: 'RELEASE: doc comment', exact: 1 });
+    R(P, 'engine/paywall_ui.js', /mock_banner: '[^']*', /, '', { what: 'RELEASE: test banner string', exact: 1 });
+    R(P, 'engine/paywall_ui.js', /\n  \.pw-mock\{[^\n]*/, '', { what: 'RELEASE: test banner css', exact: 1 });
+    R(P, 'engine/paywall_ui.js', /\n      if \(B\.name === 'mock'\)[^\n]*/, '', { what: 'RELEASE: test banner', exact: 1 });
+    R(P, 'engine/billing.js', /\n     mock          tests[^\n]*/, '', { what: 'RELEASE: doc comment', exact: 1 });
+    R(P, 'engine/billing.js', "['capacitor', 'digitalgoods', 'mock', 'hubpay', 'none']", "['capacitor', 'digitalgoods', 'none']", { what: 'RELEASE: provider order', exact: 1 });
+    R(P, 'engine/billing.js', /\n\s*if \(name === 'hubpay' && C\.edition === 'play'\) return false;[^\n]*\n\s*if \(name === 'mock' && !C\.allowMock\) return false;[^\n]*/, '', { what: 'RELEASE: provider guards (no such providers)', exact: 1 });
+  }
   R(P, 'engine/boot.js', '    M.flow.toTitle();', '    M.family.boot(); M.family.ui.boot(M.flow.toTitle);', { what: 'boot: apply the family, wizard on first launch' });
   /* neutral narration */
   R(P, 'engine/voice.js', 'V.neutral = false;', 'V.neutral = true;', { what: 'NEUTRAL narration (clips cannot say the family\'s names)' });
@@ -70,6 +99,8 @@ function genericPatches(P, opt) {
   R(P, 'engine/ctx.js', "('بدّل لـ' + M.save.data.names[id] + ' من فوق')", "('بدّل لـ' + ({ moody: '{m}', aboody: '{a}', toota: '{t}', nemo: '{n}' }[id] || M.save.data.names[id]) + ' من فوق')", { what: 'switch-hero hint uses role tokens (the narration never says names)', exact: 1 });
   R(P, 'engine/runner.js', "ctx.prompt(M.fmt(o.prompt || 'اجري للهدف!'))", "ctx.prompt(o.prompt || 'اجري للهدف!')", { what: 'runner prompt keeps its role tokens (the HUD formats it; the narration must stay neutral)', exact: 1 });
   R(P, 'worlds/sea.js', "h('img', { class: 'av', src: M.chars.avatar(id) + '?v=1', style: 'width:96px;height:96px;border-width:5px', alt: '' })", "(() => { const a = M.ui.avatar(id, 96, { cls: 'av', size: true }); a.style.borderWidth = '5px'; return a; })()", { what: 'sea: drawn avatar instead of the owner jpg', exact: 1 });
+  R(P, 'engine/runner.js', "wrapLines(x, ans.text, wd - 48)", "wrapLines(x, M.fmt(ans.text), wd - 48)", { what: 'runner gate answers resolve role tokens', exact: 2 });
+  R(P, 'engine/runner.js', "    const key = str + '|' + size + '|' + col + '|' + stroke;", "    str = M.fmt(str); const key = str + '|' + size + '|' + col + '|' + stroke;", { what: 'runner text sprites resolve role tokens', exact: 1 });
   /* title medals = the first two children of the family */
   R(P, 'engine/ui.js', "const el = h('div', null, medal('moody', 'right', 'b'), medal('aboody', 'left', 'o'),", "const tid = M.family.titleIds(), el = h('div', null, medal(tid[0], 'right', 'b'), medal(tid[1], 'left', 'o'),", { what: 'title screen shows the family kids' });
   /* the daily call needs a travelling dad */
@@ -212,19 +243,29 @@ function build(outDir, flags, opt) {
   for (const [f, s] of P.files) { const dst = path.join(outDir, f); fs.mkdirSync(path.dirname(dst), { recursive: true }); fs.writeFileSync(dst, s); }
   if (keepV) { fs.mkdirSync(path.join(outDir, 'assets'), { recursive: true }); fs.renameSync(keepV, path.join(outDir, 'assets', 'voice')); }
   else { fs.mkdirSync(path.join(outDir, 'assets', 'voice'), { recursive: true }); fs.writeFileSync(path.join(outDir, 'assets', 'voice', 'manifest.json'), '{}'); }
+  if (opt.voiceDir) {   // prepared narration (clips + manifest.json made with tools/play/voice.py) -> assets/voice
+    if (!fs.existsSync(path.join(opt.voiceDir, 'manifest.json'))) throw new Error('--voice-dir needs a folder with manifest.json and the <hash>.mp3 clips: ' + opt.voiceDir);
+    const vd = path.join(outDir, 'assets', 'voice'); fs.mkdirSync(vd, { recursive: true }); let n = 0;
+    for (const f of fs.readdirSync(opt.voiceDir)) if (/\.(mp3|json)$/.test(f)) { fs.copyFileSync(path.join(opt.voiceDir, f), path.join(vd, f)); n++; }
+    report.review.push('voice: ' + n + ' files copied from ' + opt.voiceDir);
+  }
   if (!flags.has('no-icons')) { const r = cp.spawnSync(process.execPath, [path.join(__dirname, 'icons.js'), outDir], { encoding: 'utf8' }); if (r.status) report.warnings.push('icons failed: ' + (r.stderr || '').slice(0, 200)); }
   report.syntax = [];
   for (const [f, s] of P.files) if (f.endsWith('.js')) { try { new vm.Script(s, { filename: f }); } catch (e) { report.syntax.push(f + ': ' + e.message); } }
   report.patches = P.log.patches; report.review = P.log.review;
   const meta = outDir + '.meta'; fs.mkdirSync(meta, { recursive: true });
   fs.writeFileSync(path.join(meta, 'build-report.json'), JSON.stringify(report, null, 1));
-  if (!flags.has('quiet')) { console.log('Built the Play edition -> ' + outDir + ' (metadata: ' + meta + ')'); console.log('  patches: ' + report.patches.length + ' | syntax errors: ' + report.syntax.length); report.syntax.forEach(e => console.log('   ' + e)); }
+  if (!flags.has('quiet')) { console.log('Built the Play edition -> ' + outDir + ' (metadata: ' + meta + ')'); console.log('  patches: ' + report.patches.length + ' | syntax errors: ' + report.syntax.length + ' | package: ' + opt.packageName + (opt.testMock ? ' | TEST-MOCK BUILD (do not ship)' : ''));  report.warnings.forEach(w => console.log('  warning: ' + w)); report.syntax.forEach(e => console.log('   ' + e)); }
   return report;
 }
 module.exports = { build, PLAY, PERSONA, ID_RENAME };
 if (require.main === module) {
-  const argv = process.argv.slice(2), flags = new Set(), pos = []; let title = PLAY.title;
-  for (let i = 0; i < argv.length; i++) { if (argv[i] === '--title') title = argv[++i]; else if (argv[i].startsWith('--')) flags.add(argv[i].slice(2)); else pos.push(argv[i]); }
-  if (!pos.length) { console.log('usage: node tools/play/build.js <outdir> [--force] [--title "..."] [--no-icons] [--quiet]'); process.exit(1); }
-  try { const r = build(pos[0], flags, { title }); process.exit(r.syntax.length ? 3 : 0); } catch (e) { console.error('BUILD FAILED: ' + e.message); process.exit(2); }
+  /* default package name = the appId of the Android wrapper (android/capacitor.config.ts), so the web build and the app can never disagree */
+  let defPkg = 'com.example.moodyadventures'; try { const m = /appId:\s*'([^']+)'/.exec(fs.readFileSync(path.join(ROOT, '..', 'android', 'capacitor.config.ts'), 'utf8')); if (m) defPkg = m[1]; } catch (e) { }
+  const argv = process.argv.slice(2), flags = new Set(), pos = [], o = { title: PLAY.title, packageName: defPkg, privacyUrl: '', termsUrl: '', voiceDir: '', testMock: false };
+  const val = { '--title': 'title', '--package-name': 'packageName', '--privacy-url': 'privacyUrl', '--terms-url': 'termsUrl', '--voice-dir': 'voiceDir' };
+  for (let i = 0; i < argv.length; i++) { if (val[argv[i]]) o[val[argv[i]]] = argv[++i]; else if (argv[i] === '--test-mock') o.testMock = true; else if (argv[i].startsWith('--')) flags.add(argv[i].slice(2)); else pos.push(argv[i]); }
+  if (!pos.length) { console.log('usage: node tools/play/build.js <outdir> [--force] [--title "اسم اللعبة"] [--package-name com.your.app] [--privacy-url URL] [--terms-url URL] [--voice-dir DIR] [--keep-voice] [--no-icons] [--quiet]\n       TEST ONLY: --test-mock keeps the simulated store (never ship that output)'); process.exit(1); }
+  if (!/^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+$/i.test(o.packageName)) { console.error('--package-name must look like com.company.app'); process.exit(2); }
+  try { const r = build(pos[0], flags, o); process.exit(r.syntax.length ? 3 : 0); } catch (e) { console.error('BUILD FAILED: ' + e.message); process.exit(2); }
 }

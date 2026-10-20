@@ -69,3 +69,28 @@ node   tools/play/check_neutral.js /path/to/play_out.meta/voice_strings.json
 
 ## 6) الاختبارات
 `e2e.js <url> <one|two|four|nogm> [desk|phone] [worlds|all] [--shots dir]` يلعب كل المهام بالماوس/اللمس، يفحص: لا توكن خام في الصفحة ولا في الكانفاس، لا اسم حقيقي داخل نص الصوت، ثبات التقدّم والعيلة بعد إعادة التحميل، صفر أخطاء كونسول. `wizard_shots.js` يمشي المعالج كوالد ويصوّر كل خطوة. `names_check.js` يتأكد أن الأسماء ظاهرة (بطاقات العوالم/المهام/عنوان المهمة/الحوار/اليوميات/الألبوم/المكالمة/ركن الأهل). `looktest.js` ورقة كل الأشكال. `leakcheck.js` فحص تسرّب مصطلحات المالك (نفس مصطلحات `tools/family/leakcheck.js`؛ الاستثناء الوحيد لقب «ننا» داخل `engine/family*.js` لأنه أحد خيارات الجدة).
+
+
+---
+# الإصدار الكامل لجوجل بلاي (طبقة الاشتراك + الأندرويد) — v2
+
+**الأمر النهائي لإنتاج أصول الويب:**
+```bash
+node tools/play/build.js play_dist --force --title "مغامرات العيلة" --package-name com.yourname.familyadventures \
+     [--privacy-url https://...] [--terms-url https://...] [--voice-dir <مجلد المقاطع+manifest.json>]
+```
+* `--package-name` الافتراضي = `appId` الموجود في `android/capacitor.config.ts` (فلا يختلف التطبيق عن الويب أبدًا). `--title` يظهر في شاشة البداية وفي نص الاشتراك (paywall/terms) — **لا** يظهر اسم أي طفل في نص الاشتراك.
+* يكتب `window.MOODY_CONFIG = {edition:'play', packageName, privacyUrl, termsUrl, appTitle}` **قبل** `engine/config.js` (الإصدار ثابت: `?unlock=1` و`?edition=web` لا يعملان).
+* نسخة الإصدار (بدون `--test-mock`) **لا تحتوي** مزوّد `mock` ولا `hubpay` (شفرة وتعليقات وواجهة كود التفعيل كلها محذوفة): `grep -riE "mock|hubpay|activation" play_dist/engine` = لا شيء. الاشتراك مجاني للمهمة الأولى في كل عالم، والباقي خلف البوابة الأبوية + Google Play Billing (مزودات `capacitor` / `digitalgoods`).
+* لا يوجد `../` في `index.html` (حُذف `pwa-game.js` و`sw.js` و`manifest.json` و`<link rel=manifest>`)، ولا `paywall.js` ولا رابط للهب ولا مقاطع التشجيع من `../sonic`. `android/scripts/make_www.js` يمرّ بدون أخطاء (تحذير واحد مقبول: نص `https://play.google.com/billing` داخل `billing.js`).
+* **المعالج هو أول شاشة** عند أول تشغيل (قبل العنوان وقبل الخريطة)؛ لا روابط خارجية ولا جمع بيانات فيه (كل شيء في `localStorage` على الجهاز).
+* **للاختبار فقط:** `--test-mock` يُبقي المتجر التجريبي (`allowMock`, `billingProvider:'mock'`) ليمكن شراء اختباري. **لا تُسلِّم** ناتجه؛ الاختبارات تتحقق أن بناء الإصدار لا يحتويه.
+
+**كيف يستدعيه `.github/workflows/android.yml`:** خطوة «Build the Play-edition web assets» تشغّل `node tools/play/build.js "$WEB_OUT" $WEB_ARGS` (الافتراضي `play_dist` وبدون وسائط)، ثم `make_www.js --src ../$WEB_OUT`. ما دام `appId` في `capacitor.config.ts` صحيحًا فلا يلزم أي وسيط؛ وإلا مرّر في `web_build_args` مثل: `--title "مغامرات العيلة" --package-name com.yourname.familyadventures --privacy-url https://...` (كل المفاتيح تُكتب في `MOODY_CONFIG`). لتضمين السرد: جهّز المجلد بـ `voice.py gen ... --provider azure` ثم `--voice-dir`.
+
+## البنات فقط (ميزة جديدة: تعديل الصيغة وقت التشغيل)
+`engine/family_flip.js` (+ `Moody.family.assign()`): لو اختار الأهل أقل من ولدين، **الثنائي الأساسي (moody/aboody) يلعبه أول طفلين** (الأولاد أولًا، ثم البنات بالسن)، والبنت في خانة ولد تتحول لبنت (شكل + صوت + صيغة النص). كل سطر **تقوله** تلك الشخصية (ويقول «أنا») أو **يتكلم عنها** بالتوكن `{m}`/`{a}` يمر على جدول المذكر→المؤنث (نفس جدول `tools/family/lib/gender.js`، جملة بجملة): `أنا جاهز`→`أنا جاهزة`، `{m} الطويل`→`{m} الطويلة`، `{a} يزحف`→`{a} تزحف`. مفتاح: «خلّي البنات الأبطال الأساسيين» في خطوة الأطفال (افتراضيًا شغّال؛ لو أُطفئ يرجع السلوك القديم). السرد: نفس التحويل على النص + فئة الصوت (girl_big/girl_small) + كلمات محايدة مؤنثة (الكبيرة/الصغيرة/يا بطلة) + «ملح» `g` في hash المقطع (لأن نفس النص بصوت بنت مقطع مختلف): كل ذلك في JS وPython (`check_neutral.js`: ٤٣٤ ألف مقارنة بلا فرق). `flip_test.js <outdir>` يكتب `flip-review.txt` بكل سطر تغيّر.
+**حدود:** جدول منسّق لا ذكاء اصطناعي: أوامر اللاعب («اضغط») تبقى بالمذكر عمدًا؛ سطر قد يُقلب خطأ لو فيه «أنا» لكن الصفة عن غيرك (نادر)؛ كلمات مثل «ولدين» بلا توكن لا تتحول؛ ٣ بنات أو أكثر: الثالثة والرابعة في خانتي البنات الطبيعيتين (بلا تحويل). ولد + بنت: الأكبر سنًا يأخذ خانة moody.
+
+## الاختبارات (v2)
+`gate_test.js <url> <two|four|nogm|girls> [desk|phone] [shots]` (بناء `--test-mock`): المعالج أول شاشة وتُملأ بالواجهة، ثم `?unlock` معطّل، أول مهمة فقط في كل عالم، كل مهمة مقفولة تفتح البوابة الأبوية (لا المهمة)، شراء اختباري عبر الواجهة (إمساك ٣ ثوانٍ + مسألة + اشتراك شهري)، واستمرار الاشتراك والعيلة بعد إعادة التحميل. `e2e.js ... --wizard --premium` يلعب كل المهام بعد ذلك. `flip_test.js` مراجعة الصيغة.

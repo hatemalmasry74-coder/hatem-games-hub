@@ -11,7 +11,7 @@
   const M = window.Moody, F = M.family, UI = M.ui, h = UI.h, I = UI.i, D0 = F.D;
 
   F.titleIds = function () {
-    const ids = F.KIDS.filter(id => F.on(id)); const rest = F.KIDS.filter(id => ids.indexOf(id) < 0);
+    const ids = F.KIDS.filter(id => F.src(id)); const rest = F.KIDS.filter(id => ids.indexOf(id) < 0);
     return ids.concat(rest).slice(0, 2);
   };
 
@@ -19,14 +19,14 @@
   const T = {
     welcomeH: 'أهلًا بيكم!', welcomeP: 'قولوا لنا على أطفالكم وعيلتكم، ونعمل لهم شخصيات تشبههم، وتلعب بأسمائهم.',
     privacy: 'كل اللي بتكتبوه بيتحفظ على الجهاز ده بس. مفيش إنترنت ولا حساب ولا مشاركة.', start: 'يلا نجهّز العيلة', dflt: 'جرّب بالأسماء الافتراضية',
-    kidsH: 'مين هيلعب معانا؟', kidsP: 'اختاروا من طفل لأربعة أطفال. كل خانة ليها جنس ثابت، والخانات اللي مش اختاروها هيبقوا أصحاب للأبطال.',
+    kidsH: 'مين هيلعب معانا؟', kidsP: 'اختاروا من طفل لأربعة أطفال: ولد أكبر أو أصغر، وبنت كبيرة أو صغيرة. اللي مش اختاروه هيبقى صاحب للأبطال.',
     kidH: 'شكل البطل', kidP: 'اكتبوا اسمه، واختاروا سنّه وشكله.', gmH: 'الجدة والجد', gmP: 'فيه جدة أو جد في العيلة؟ اختاروا اللقب واكتبوا الاسم.',
     auH: 'العمّات والعم', auP: 'اكتبوا أسماء العمّات والعم. اللي مش موجود بنحط له اسم افتراضي.', czH: 'ولاد العم والعمّات', czP: 'كل واحد منهم شكله وسنّه ثابتين، وتقدروا تغيّروا الاسم واللون.',
     dadH: 'بابا والسفر', dadP: 'بابا مسافر؟ لو آه، هيبقى فيه عالم السفر لبابا ومكالمات بابا. واكتبوا اسم المدرسة لو تحبوا.',
-    endH: 'جاهزين!', endP: 'العيلة اتجهّزت. تقدروا تغيّروا أي حاجة بعدين من ركن الأهل.', go: 'يلا نلعب!', save: 'احفظ', next: 'التالي', back: 'رجوع', hear: 'اسمع', cancel: 'إلغاء'
+    endH: 'جاهزين!', endP: 'العيلة اتجهّزت. تقدروا تغيّروا أي حاجة بعدين من ركن الأهل.', go: 'يلا نلعب!', flipOn: 'خلّي البنات الأبطال الأساسيين في الحكايات', flipNote: 'البنات هيبقوا الثنائي الأساسي في البيت والمدرسة والشارع والسوق والحديقة والبحر، والحكايات هتتكلم عنهم بصيغة المؤنث (ميزة تجريبية).', flipOff: 'من غير الميزة: الثنائي الأساسي ولدين افتراضيين والبنات في العوالم اللي بتفتح لهم التحكم.', save: 'احفظ', next: 'التالي', back: 'رجوع', hear: 'اسمع', cancel: 'إلغاء'
   };
   F.ui = F.ui || {};
-  const VOICE = F.ui.VOICE = [T.welcomeH, T.welcomeP, T.privacy, T.start, T.dflt, T.kidsH, T.kidsP, T.kidH, T.kidP, T.gmH, T.gmP, T.auH, T.auP, T.czH, T.czP, T.dadH, T.dadP, T.endH, T.endP, T.go, T.save, T.next, T.back,
+  const VOICE = F.ui.VOICE = [T.flipOn, T.flipNote, T.flipOff, T.welcomeH, T.welcomeP, T.privacy, T.start, T.dflt, T.kidsH, T.kidsP, T.kidH, T.kidP, T.gmH, T.gmP, T.auH, T.auP, T.czH, T.czP, T.dadH, T.dadP, T.endH, T.endP, T.go, T.save, T.next, T.back,
     'اسمه إيه؟', 'عنده كام سنة؟', 'لون البشرة', 'شكل الشعر', 'لون الشعر', 'حجاب', 'نضارة', 'قبعة', 'لونه المفضّل', 'اسمها إيه؟', 'عندها كام سنة؟', 'لونها المفضّل', 'نضارة وقبعة', 'موجود في عيلتنا', 'لقب الجدة', 'لقب الجد', 'بابا مسافر', 'عالم السفر لمدينة بابا', 'اسم المدرسة', 'نكمّل بالأسماء الافتراضية'];
   VOICE.forEach(t => { if (M.voice && M.voice.fixedStrings) M.voice.fixedStrings.push([t, 'narrator']); });
   const say = t => { try { M.voice.speak(t, { speaker: 'narrator', force: false }); } catch (e) { } };
@@ -163,12 +163,12 @@
         UI.show(h('div', { class: 'fw' }, hdrEl(T.welcomeH), body), 'clear', 1); say(T.welcomeH + '. ' + T.welcomeP); return;
       }
       if (s.k === 'kids') {
-        const cards = F.KIDS.map(id => { const on = draft[id].on, c = tabCanvasBig(id); const b = h('button', { class: 'fw-kid', 'data-kid': id, 'aria-pressed': on ? 'true' : 'false', 'aria-label': KID_LAB[id], onclick: tapfn(() => { draft[id].on = !draft[id].on; touch(); render(); }) }, c, h('div', null, KID_LAB[id]), h('div', { class: 'ck' }, on ? I('check', 30) : null)); return b; });
-        body = h('div', { class: 'panel scroll fw-form fw-full' }, ...head(T.kidsH, T.kidsP), h('div', { class: 'fw-kids' }, ...cards), h('div', { class: 'fw-note', style: kidsOn().length ? '' : 'color:#c0392b;opacity:1' }, (kidsOn().length ? '' : 'اختاروا طفل واحد على الأقل.  ') + 'عدد الأطفال: ' + M.util.ar(kidsOn().length) + ' (من ١ لـ ٤). لو عندكم ٣ أولاد: اختاروا الخانتين الأولاد، والتالت هيبقى صاحب.'));
-        UI.show(h('div', { class: 'fw' }, hdrEl(T.kidsH), body, bar(s, i)), 'clear', 1); say(T.kidsH + '. ' + T.kidsP); return;
+        const cards = F.KIDS.map(id => { const on = draft[id].on, c = tabCanvasBig(id, true); const b = h('button', { class: 'fw-kid', 'data-kid': id, 'aria-pressed': on ? 'true' : 'false', 'aria-label': KID_LAB[id], onclick: tapfn(() => { draft[id].on = !draft[id].on; touch(); render(); }) }, c, h('div', null, KID_LAB[id]), h('div', { class: 'ck' }, on ? I('check', 30) : null)); return b; });
+        body = h('div', { class: 'panel scroll fw-form fw-full' }, ...head(T.kidsH, T.kidsP), h('div', { class: 'fw-kids' }, ...cards), girlsDuo(), h('div', { class: 'fw-note', style: kidsOn().length ? '' : 'color:#c0392b;opacity:1' }, (kidsOn().length ? '' : 'اختاروا طفل واحد على الأقل.  ') + 'عدد الأطفال: ' + M.util.ar(kidsOn().length) + ' (من ١ لـ ٤). لو عندكم ٣ أولاد: اختاروا الخانتين الأولاد، والتالت هيبقى صاحب.'));
+        UI.show(h('div', { class: 'fw' }, hdrEl(T.kidsH), body, bar(s, i)), 'clear', 1); try { M.chars.clearCache(); } catch (e) { } say(T.kidsH + '. ' + T.kidsP); return;
       }
       if (s.k === 'kid') {
-        body = [stagePanel(s.id), h('div', { class: 'panel scroll fw-form' }, ...head(T.kidH, T.kidP), personForm(s.id))];
+        body = [stagePanel(F.heroOf(s.id) || s.id), h('div', { class: 'panel scroll fw-form' }, ...head(T.kidH, T.kidP), personForm(s.id))];
         showScr(h('div', { class: 'fw' }, hdrEl(KID_LAB[s.id]), ...body, bar(s, i))); say(T.kidH + '. ' + T.kidP); return;
       }
       if (s.k === 'grp') {
@@ -195,11 +195,22 @@
       }
       if (s.k === 'end') {
         const names = F.KIDS.filter(id => draft[id].on).map(id => draft[id].name);
-        const sum = h('div', { class: 'fw-hero' }, ...head(T.endH, T.endP, true), h('div', { class: 'fw-row2' }, ...F.KIDS.filter(id => draft[id].on).map(id => h('div', { class: 'fw-kid', style: 'min-height:0;cursor:default' }, tabCanvasBig(id), h('div', null, draft[id].name)))));
+        const sum = h('div', { class: 'fw-hero' }, ...head(T.endH, T.endP, true), h('div', { class: 'fw-row2' }, ...F.KIDS.filter(id => draft[id].on).map(id => h('div', { class: 'fw-kid', style: 'min-height:0;cursor:default' }, tabCanvasBig(F.heroOf(id) || id), h('div', null, draft[id].name)))));
         UI.show(h('div', { class: 'fw' }, hdrEl(T.endH), sum, bar(s, i)), 'clear', 1); say(T.endH + '. ' + T.endP); return;
       }
     }
-    function tabCanvasBig(id) { const c = h('canvas', { width: 240, height: 280 }), g = c.getContext('2d'); try { const fit = Math.min(1.5, 130 / M.chars.height(id)); g.setTransform(2, 0, 0, 2, 0, 0); M.chars.draw(g, id, 60, 132, { anim: 'idle', t: 1.2, sc: fit, snap: true, noShadow: true }); } catch (e) { } return c; }
+    /* natural = the slot's own look (the cards of the kids step must not show a flipped hero) */
+    function tabCanvasBig(id, natural) {
+      const c = h('canvas', { width: 240, height: 280 }), g = c.getContext('2d'), defs = M.chars.defs, keep = defs[id];
+      try { if (natural && F.base(id)) { defs[id] = Object.assign({}, F.base(id)); delete defs[id].img; M.chars.clearCache(); } const fit = Math.min(1.5, 130 / M.chars.height(id)); g.setTransform(2, 0, 0, 2, 0, 0); M.chars.draw(g, id, 60, 132, { anim: 'idle', t: 1.2, sc: fit, snap: true, noShadow: true }); } catch (e) { }
+      if (natural) { defs[id] = keep; try { M.chars.clearCache(); } catch (e) { } }
+      return c;
+    }
+    /* girls in the duo: explained + switch (only shown when fewer than two boys are chosen and a girl is) */
+    function girlsDuo() {
+      const on = kidsOn(), boys = on.filter(k => D0[k].g === 'm').length, girls = on.length - boys; if (boys >= 2 || !girls) return null;
+      return h('div', { class: 'fw-row', style: 'margin:8px 0' }, toggle(T.flipOn, draft.flip !== false, v => { draft.flip = v; touch(); render(); }), h('div', { class: 'fw-note', style: 'margin:0;flex:1' }, draft.flip !== false ? T.flipNote : T.flipOff));
+    }
     function hdrEl(t) { return h('div', { class: 'hdr' }, h('h2', null, t)); }
     M.backdrop.mode = 'map';
     render();

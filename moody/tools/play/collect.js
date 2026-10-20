@@ -9,7 +9,7 @@ const { launch, sleep } = require(path.join(__dirname, '..', 'botlib.js'));
 const args = process.argv.slice(2), mi = args.indexOf('--merge'), MERGE = mi >= 0 ? args.splice(mi, 2)[1] : null, STATIC = args.includes('--static'), out = path.resolve(args.find(a => !a.startsWith('--')) || '');
 if (!fs.existsSync(path.join(out, 'index.html'))) { console.error('usage: node tools/play/collect.js <built-outdir> [--static]'); process.exit(1); }
 const PORT = 8790 + Math.floor(Math.random() * 90), all = new Map(); let VOICE_OF = {};
-const add = (raw, speaker, emo) => { if (!raw || typeof raw !== 'string') return; const t = raw.replace(/\s+/g, ' ').trim(); if (!t) return; const sp = speaker || 'narrator', k = t + '|' + sp; if (!all.has(k)) all.set(k, { raw: t, speaker: sp, emo }); };
+const add = (raw, speaker, emo, who) => { if (!raw || typeof raw !== 'string') return; const t = raw.replace(/\s+/g, ' ').trim(); if (!t) return; const sp = speaker || 'narrator', k = t + '|' + sp + '|' + (who || ''); if (!all.has(k)) all.set(k, { raw: t, speaker: sp, emo, who: who || null }); };
 (async () => {
   const srv = cp.spawn('python3', ['-m', 'http.server', String(PORT)], { cwd: out, stdio: 'ignore' }); await sleep(900);
   const url = 'http://localhost:' + PORT + '/index.html?unlock=1&collectvoice=1';
@@ -20,7 +20,7 @@ const add = (raw, speaker, emo) => { if (!raw || typeof raw !== 'string') return
     const ids = Object.keys(VOICE_OF).join('|');
     for (const f of fs.readdirSync(path.join(out, 'worlds')).filter(f => f.endsWith('.js'))) {   // (b) static scan of dialogue lines
       const src = fs.readFileSync(path.join(out, 'worlds', f), 'utf8');
-      for (const m of src.matchAll(new RegExp("(?:say\\(|\\[)\\s*'(" + ids + ")'\\s*,\\s*'((?:[^'\\\\]|\\\\.)*)'", 'g'))) add(m[2].replace(/\\'/g, "'"), VOICE_OF[m[1]]);
+      for (const m of src.matchAll(new RegExp("(?:say\\(|\\[)\\s*'(" + ids + ")'\\s*,\\s*'((?:[^'\\\\]|\\\\.)*)'", 'g'))) add(m[2].replace(/\\'/g, "'"), VOICE_OF[m[1]], null, m[1]);
       for (const m of src.matchAll(/(?:wisdom|intro|prompt)\s*[:(]\s*'((?:[^'\\]|\\.)*)'/g)) add(m[1].replace(/\\'/g, "'"), 'narrator');
     }
     const stat = await p.evaluate(() => {   // (a) banks, call pool, missions, fixed phrases, reactions
@@ -39,17 +39,31 @@ const add = (raw, speaker, emo) => { if (!raw || typeof raw !== 'string') return
       const worlds = await p.evaluate(() => Moody.worlds.filter(w => !w.soon && !w.hidden).map(w => [w.id, w.missions.map(m => m.id)]));
       for (const [wid, ms] of worlds) for (const mid of ms) {
         const r = await bot.playMission(wid, mid, { speakers: true, wrongFirst: true });
-        JSON.parse(await p.evaluate(() => Moody.voice.dump())).forEach(e => add(e.raw || e.text, e.speaker));
+        JSON.parse(await p.evaluate(() => Moody.voice.dump())).forEach(e => add(e.raw || e.text, e.speaker, null, e.who));
         console.log(wid, mid, r.ok ? 'ok' : 'FAILED', 'strings so far:', all.size); await bot.backToMap();
       }
-      if (await p.evaluate(() => !!Moody.flow.toCall)) { await p.evaluate(() => Moody.flow.toCall()); await sleep(800); const r2 = await bot.play({ timeout: 120000 }); console.log('call', r2.ok ? 'ok' : 'FAILED'); JSON.parse(await p.evaluate(() => Moody.voice.dump())).forEach(e => add(e.raw || e.text, e.speaker)); }
-    } else JSON.parse(await p.evaluate(() => Moody.voice.dump())).forEach(e => add(e.raw || e.text, e.speaker));
+      if (await p.evaluate(() => !!Moody.flow.toCall)) { await p.evaluate(() => Moody.flow.toCall()); await sleep(800); const r2 = await bot.play({ timeout: 120000 }); console.log('call', r2.ok ? 'ok' : 'FAILED'); JSON.parse(await p.evaluate(() => Moody.voice.dump())).forEach(e => add(e.raw || e.text, e.speaker, null, e.who)); }
+    } else JSON.parse(await p.evaluate(() => Moody.voice.dump())).forEach(e => add(e.raw || e.text, e.speaker, null, e.who));
     if (MERGE) {   // a play-through log made with an OLDER build may contain formatted names: drop entries that contain any name of the 'four' test preset (word-bounded)
       const nm = await p.evaluate(() => { const F = Moody.family, c = F.preset('four'); return F.IDS.map(id => c[id].name).filter(n => n && n.length > 2); }), L = '\\u0621-\\u063A\\u0641-\\u064A', res = nm.map(n => new RegExp('(?<![' + L + '])[وفبكل]{0,2}' + n + '(?![' + L + '])'));
-      let drop = 0; JSON.parse(fs.readFileSync(MERGE, 'utf8')).forEach(e => { const t = e.raw || e.text; if (res.some(r => r.test(t))) { drop++; return; } add(t, e.speaker); }); console.log('merged', MERGE, '(dropped', drop, 'entries with real names)');
+      let drop = 0; JSON.parse(fs.readFileSync(MERGE, 'utf8')).forEach(e => { const t = e.raw || e.text; if (res.some(r => r.test(t))) { drop++; return; } add(t, e.speaker, null, e.who); }); console.log('merged', MERGE, '(dropped', drop, 'entries with real names)');
     }   // e.g. the --voicelog of tools/play/e2e.js (a play-through already done)
     const items = [...all.values()], neu = await p.evaluate(ts => { Moody.voice.vars.gm = 'تيتة'; Moody.voice.vars.gf = 'جدو'; return ts.map(t => [Moody.voice.resolve(t), Moody.voice.hash(t)]); }, items.map(i => i.raw));   // default titles: voice.py expands the other titles
     const seenH = {}, res = []; items.forEach((i, k) => { const [text, hash] = neu[k]; if (seenH[hash]) { if (seenH[hash] !== i.speaker) console.log('WARN same neutral text, two voices (one clip id!):', text.slice(0, 50)); return; } seenH[hash] = i.speaker; const o = { text, raw: i.raw, speaker: i.speaker, hash }; if (i.emo) o.emo = i.emo; res.push(o); });
+    /* girls-only families (engine/family_flip.js): for every line that CHANGES when moody / aboody are girls (or is spoken by one of them, or names one), emit a variant per flip state */
+    const flips = await p.evaluate(ts => {
+      const V = Moody.voice, F = Moody.family, out = [], ST = { m: ['moody'], a: ['aboody'], ma: ['moody', 'aboody'] }, VC = { moody: 'girl_big', aboody: 'girl_small' };
+      V.vars.gm = 'تيتة'; V.vars.gf = 'جدو';
+      ts.forEach(i => Object.keys(ST).forEach(st => {
+        const set = new Set(ST[st]), raw2 = F.flip.gx(i.raw, i.who, set), fsp = !!(i.who && set.has(i.who)), tok = /\{(m|a|k1|k2)\}/.test(i.raw);
+        if (raw2 === i.raw && !fsp && !tok) return;
+        V.vars.fl = {}; ST[st].forEach(h => { V.vars.fl[h === 'moody' ? 'm' : 'a'] = true; });
+        const text = V.resolve(raw2), salt = fsp ? 'g' : ''; out.push({ text, raw: raw2, who: i.who, speaker: fsp ? VC[i.who] : i.speaker, fs: st, salt, hash: V.hash(text, salt), emo: i.emo });
+      }));
+      V.vars.fl = {}; return out;
+    }, items);
+    const seenF = new Set(res.map(r => r.hash)); flips.forEach(f => { if (seenF.has(f.hash)) return; seenF.add(f.hash); if (!f.emo) delete f.emo; res.push(f); });
+    console.log('flip variants:', flips.length);
     const meta = out + '.meta'; fs.mkdirSync(meta, { recursive: true });
     fs.writeFileSync(path.join(meta, 'voice_strings.json'), JSON.stringify(res, null, 1));
     console.log('wrote', path.join(meta, 'voice_strings.json'), 'with', res.length, 'strings', STATIC ? '(static)' : ''); if (env.errs.length) console.log('console errors:', env.errs.slice(0, 5));

@@ -37,8 +37,9 @@ def variants(item):
         titles = {}
         if g: titles['gm'] = g
         if f: titles['gf'] = f
+        if item.get('fs'): titles['fl'] = item['fs']                  # flip state of a girls-only variant ('m' | 'a' | 'ma')
         say = normalize(raw, True, titles)
-        yield dict(item, say=say, text=say, hash=voice_hash(raw, True, titles), titles=titles)
+        yield dict(item, say=say, text=say, hash=voice_hash(raw, True, titles, item.get('salt', '')), titles=titles)
 
 class Ctx(FV.Ctx):
     def __init__(self, out):
@@ -60,7 +61,7 @@ FV.Ctx = Ctx
 def cmd_check(a):
     """the strings were hashed by the JS engine (collect.js) for the default titles: the Python twin must agree for every string"""
     ctx = Ctx(a.out); raw = json.load(open(os.path.join(ctx.meta, 'voice_strings.json'), encoding='utf-8'))
-    bad = [i for i in raw if voice_hash(i['raw'], True, {}) != i['hash']]
+    bad = [i for i in raw if voice_hash(i['raw'], True, {'fl': i['fs']} if i.get('fs') else {}, i.get('salt', '')) != i['hash']]
     items = ctx.strings()
     print('strings: %d | variants (titles): %d | JS-vs-Python mismatches: %d | clips present: %d | missing: %d' % (len(raw), len(items), len(bad), sum(ctx.have(i['hash']) for i in items), sum(not ctx.have(i['hash']) for i in items)))
     for i in bad[:10]: print('  MISMATCH', i['hash'], voice_hash(i['raw'], True, {}), i['raw'][:60])

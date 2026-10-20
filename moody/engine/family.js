@@ -57,13 +57,13 @@
   F.clean = clean;
   const blankLook = () => ({});
   F.defaults = function () {
-    const c = { v: 1, done: false, kids: {}, dad: { travels: true, dest: 'generic' }, school: '', friend: '' };
+    const c = { v: 1, done: false, flip: true, kids: {}, dad: { travels: true, dest: 'generic' }, school: '', friend: '' };
     F.IDS.forEach(id => { const d = D[id]; c[id] = { on: false, name: d.name, age: d.age, look: blankLook() }; if (d.title) c[id].title = d.title; });
     return c;
   };
   F.normalize = function (raw) {
     const c = F.defaults(); if (!raw || typeof raw !== 'object') return c;
-    c.done = !!raw.done; c.school = clean(raw.school, 22); c.dad.travels = !(raw.dad && raw.dad.travels === false);
+    c.done = !!raw.done; c.flip = raw.flip !== false; c.school = clean(raw.school, 22); c.dad.travels = !(raw.dad && raw.dad.travels === false);
     c.dad.dest = raw.dad && F.DESTS.some(x => x.id === raw.dad.dest) ? raw.dad.dest : 'generic';
     F.IDS.forEach(id => {
       const r = raw[id], d = D[id]; if (!r || typeof r !== 'object') return; const o = c[id];
@@ -86,14 +86,32 @@
     F.apply(); return CFG;
   };
   F.on = id => !!F.cfg()[id] && F.cfg()[id].on;
+  /* ---- DUO ASSIGNMENT (girls-only families): which wizard child plays which hero id ----
+     >= 2 boys chosen (or flip off, or no girls): every child keeps its own slot id (nothing is flipped).
+     otherwise the duo ids moody / aboody are taken by the chosen children (boys first by age, girls after; see below) and a girl in a duo id makes that id FEMALE at run time
+     (look, voice class, and the gender agreement of engine/family_flip.js).  The girl slots toota / nemo keep the remaining girls. */
+  F.assign = function () {
+    const c = F.cfg(), age = k => c[k].age, on = F.KIDS.filter(k => c[k].on), byAge = l => l.slice().sort((a, b) => age(b) - age(a));
+    const boys = byAge(on.filter(k => D[k].g === 'm')), girls = byAge(on.filter(k => D[k].g === 'f')), A = { moody: null, aboody: null, toota: null, nemo: null };
+    if (!on.length) return A;
+    if (!c.flip || boys.length >= 2 || !girls.length) { on.forEach(k => { A[k] = k; }); return A; }
+    let duo; if (boys.length === 1) duo = (age(girls[0]) > age(boys[0])) ? [girls[0], boys[0]] : [boys[0], girls[0]]; else duo = girls.slice(0, 2);
+    A.moody = duo[0]; A.aboody = duo[1] || null; const rest = girls.filter(k => duo.indexOf(k) < 0); A.toota = rest[0] || null; A.nemo = rest[1] || null;
+    return A;
+  };
+  F.src = id => F.assign()[id] || null;                               // the wizard child (slot key) played by hero id
+  F.heroOf = slot => F.KIDS.find(h => F.assign()[h] === slot) || null; // the hero id that plays wizard child `slot`
+  F.g = id => { const s = D[id] && D[id].kind === 'kid' ? F.src(id) : null; return s ? D[s].g : (D[id] ? D[id].g : 'm'); };
+  F.flipSet = () => ['moody', 'aboody'].filter(h => F.src(h) && D[F.src(h)].g === 'f');
+  F.voiceClass = id => id === 'moody' ? (F.g('moody') === 'f' ? 'girl_big' : 'boy_big') : id === 'aboody' ? (F.g('aboody') === 'f' ? 'girl_small' : 'boy_small') : null;
   F.dad = () => F.cfg().dad;
   F.dest = () => F.DESTS.find(x => x.id === F.cfg().dad.dest) || F.DESTS[0];
   F.dadTravels = () => !!F.cfg().dad.travels;
-  F.age = id => (F.cfg()[id] || D[id]).age || D[id].age;
+  F.age = id => { const s = D[id] && D[id].kind === 'kid' ? F.src(id) : id; return (s && F.cfg()[s] ? F.cfg()[s].age : (D[id] || {}).age) || D[id].age; };
   F.tierFor = id => { if (!D[id] || D[id].kind !== 'kid') return 9; return F.age(id) <= 7 ? 6 : 9; };
 
   /* ------------------------------------------------------------------ names + tokens */
-  const nameOf = id => { const o = F.cfg()[id], d = D[id]; return clean(o && o.name ? o.name : d.name, 12) || d.name; };
+  const nameOf = id => { const d = D[id], s = d.kind === 'kid' ? F.src(id) : id, o = s ? F.cfg()[s] : null; return clean(o && o.name ? o.name : d.name, 12) || d.name; };   // kid hero ids: the wizard child that plays them (F.src), else the default friend
   F.nameOf = nameOf;
   F.titleOf = id => { const o = F.cfg()[id], d = D[id]; return d.kind === 'gm' || d.kind === 'gf' ? ((o && o.title) || d.title) : d.title || ''; };
   F.fullName = function (id) {
@@ -116,13 +134,13 @@
   };
   F.invalidate = () => { TOK = null; };
   F.fmt = function (s) {
-    s = String(s == null ? '' : s); if (s.indexOf('{') < 0) return s; const T = F.tokens();
+    s = String(s == null ? '' : s); if (s.indexOf('{') < 0) return s; const T = F.tokens(); if (F.flip && F.flipSet().length) s = F.flip.gx(s, null, F.flipSet());
     return s.replace(/\{([a-z][a-z0-9]*)\}/g, (m, k) => Object.prototype.hasOwnProperty.call(T, k) ? T[k] : m);
   };
   M.fmt = F.fmt;
 
   /* title words used by the NEUTRAL narration (engine/voice.js reads these) */
-  F.voiceTitles = () => ({ gm: F.titleOf('nana'), gf: F.titleOf('gf') });
+  F.voiceTitles = () => { const fl = {}; F.flipSet().forEach(h => { fl[h === 'moody' ? 'm' : 'a'] = true; }); return { gm: F.titleOf('nana'), gf: F.titleOf('gf'), fl }; };
 
   /* ------------------------------------------------------------------ characters */
   const hex = c => { const m = /^#?([0-9a-f]{6})$/i.exec(c || ''); return m ? m[1] : null; };
@@ -131,8 +149,8 @@
   let BASE = null;
   function snapshot() { if (BASE) return; BASE = {}; F.IDS.concat(['baba']).forEach(id => { const d = M.chars.defs[id]; if (d) BASE[id] = JSON.parse(JSON.stringify(d)); }); }
   F.base = id => { snapshot(); return BASE[id]; };
-  F.lookProps = function (id, look, base) {
-    look = look || {}; const p = {}, g = D[id] ? D[id].g : 'm', set = (k, v) => { p[k] = v; };
+  F.lookProps = function (id, look, base, gender) {
+    look = look || {}; const p = {}, g = gender || (D[id] ? D[id].g : 'm'), set = (k, v) => { p[k] = v; };
     if (look.skin) { set('skin', look.skin); set('skinD', shade(look.skin, -.1)); if (base.legC && base.legC === base.skin) set('legC', look.skin); if (base.pants === base.skin) set('pants', look.skin); }
     if (look.hair) { set('hair', look.hair); if (look.hair === 'curly' && !base.curl) set('curl', .3); }
     if (look.hairC) set('hairC', look.hairC);
@@ -143,19 +161,39 @@
     if (look.hat === false) { set('sunhat', null); set('hat', null); } else if (look.hat) { set('sunhat', look.hat); set('hat', look.hat); }
     return p;
   };
+  /* girl look for a duo id (port of tools/family/lib/looks.js genderPreset 'f') */
+  function flipProps(id, skin) {
+    const older = id === 'moody', col = older ? '#8a6bd6' : '#ff86ad';
+    return { eyeK: 'girl', browK: .85, mw: .84, shoeK: 'flat', shoeAcc: '#ffffff', hemC: col, lips: false, soft: false, lines: 0, blush: .28, top: 'dress', hair: older ? 'ponytail' : 'pigtails', hairC: '#3b2417', shirt: col, pants: skin, legC: skin, legW: 11, lash: true, trim: '#fff', belt: '#ffd23c', shoe: '#ffffff', tie: older ? '#ff6f91' : '#ffffff', curl: null, stripes: null };
+  }
+  /* run-time hooks that depend on who is a girl: narration voice class + text agreement + reaction pools */
+  function wireFlip() {
+    const V = M.voice, fs = F.flipSet(), set = new Set(fs);
+    if (V) {
+      if (!V._voiceFor0) V._voiceFor0 = V.voiceFor; V.voiceFor = sp => (sp === 'moody' || sp === 'aboody') ? F.voiceClass(sp) : V._voiceFor0(sp);
+      V.xform = fs.length && F.flip ? (raw, sp) => F.flip.gx(raw, sp, set) : null; V.salt = fs.length ? sp => (set.has(sp) ? 'g' : '') : null;
+    }
+    const R = M.reactions; if (R && R.maps) {
+      const m = R.maps; m.ID2V.moody = F.voiceClass('moody'); m.ID2V.aboody = F.voiceClass('aboody'); m.BOYS.moody = set.has('moody') ? 0 : 1; m.BOYS.aboody = set.has('aboody') ? 0 : 1;
+      m.V2ID.boy_big = set.has('moody') ? 'narrator' : 'moody'; m.V2ID.boy_small = set.has('aboody') ? 'narrator' : 'aboody'; m.V2ID.girl_big = set.has('moody') ? 'moody' : 'toota'; m.V2ID.girl_small = set.has('aboody') ? 'aboody' : 'nemo';
+    }
+  }
   F.apply = function (cfg) {
     cfg = cfg ? F.normalize(cfg) : F.cfg(); const prev = CFG; if (cfg !== CFG) CFG = cfg; snapshot(); const C = M.chars, defs = C.defs, nm = M.save.data.names;
     F.IDS.forEach(id => {
-      const b = BASE[id]; if (!b) return; const o = cfg[id], d = D[id], p = F.lookProps(id, o.look, b), row = Object.assign({}, b);
+      const b = BASE[id]; if (!b) return; const d = D[id], kid = d.kind === 'kid', S = kid ? F.src(id) : id, o = S ? cfg[S] : { name: d.name, age: d.age, look: {} };
+      const gs = kid ? F.g(id) : d.g, base = Object.assign({}, b);
+      if (kid && gs === 'f' && d.g === 'm') { const fp = flipProps(id, (o.look || {}).skin || b.skin); Object.keys(fp).forEach(k => { if (fp[k] === null) delete base[k]; else base[k] = fp[k]; }); }   // a girl plays a boy slot: girl look first, her presets on top
+      const p = F.lookProps(id, o.look, base, gs), row = base;
       Object.keys(p).forEach(k => { if (p[k] === null) delete row[k]; else row[k] = p[k]; });
-      row.name = F.fullName(id); row.age = o.age || d.age; row.gender = d.g; delete row.img; delete row.full;
+      row.name = F.fullName(id); row.age = o.age || d.age; row.gender = gs; delete row.img; delete row.full;
       const lt = (nameOf(id) || F.titleOf(id)).replace(/^ال/, '').charAt(0) || '؟'; row.badge = [lt, (b.badge && b.badge[1]) || '#ffc93c'];
       defs[id] = row; nm[id] = row.name;
     });
     ['moody', 'aboody', 'toota', 'nemo'].forEach(id => { nm[id] = nameOf(id); });
     nm.nana = F.fullName('nana');
     F.invalidate(); try { if (C.clearCache) C.clearCache(); if (M.stageImpostors) M.stageImpostors.clear(); } catch (e) { }
-    F.syncWorlds(); (F.listeners || []).forEach(fn => { try { fn(cfg); } catch (e) { } });
+    wireFlip(); F.syncWorlds(); (F.listeners || []).forEach(fn => { try { fn(cfg); } catch (e) { } });
     try { if (M.voice) M.voice.vars = F.voiceTitles(); } catch (e) { }
     return cfg;
   };
@@ -190,6 +228,8 @@
     else if (name === 'two') { kid('moody', 'ياسين', 10, { skin: F.SKINS[3], hair: 'short', fav: F.FAV[1] }); kid('aboody', 'مالك', 6, { skin: F.SKINS[2], hair: 'curly', hat: F.HATC[2] }); c.nana.on = true; c.nana.title = 'جدتي'; c.aunt1.on = true; c.aunt1.name = 'سوسن'; c.cz1.on = true; c.cz1.name = 'ياسر'; c.dad.travels = false; c.school = 'مدرسة النور'; }
     else if (name === 'four') { kid('moody', 'عمرو', 11, { skin: F.SKINS[4], hair: 'curly', gl: true }); kid('aboody', 'إياد', 5, { skin: F.SKINS[0], hair: 'short' }); kid('toota', 'جنى', 14, { skin: F.SKINS[2], hij: F.HIJ[3], gl: false, fav: F.FAV[3] }); kid('nemo', 'روان', 9, { skin: F.SKINS[1], hair: 'ponytail', hat: F.HATC[1] });
       c.nana.on = true; c.nana.title = 'ستو'; c.nana.name = 'عفاف'; c.gf.on = true; c.gf.title = 'سيدو'; c.gf.name = 'محمود'; c.aunt1.on = true; c.aunt1.name = 'نهى'; c.aunt2.on = true; c.aunt2.name = 'رشا'; c.uncle1.on = true; c.uncle1.name = 'طارق'; c.cz1.on = true; c.cz1.name = 'مازن'; c.cz2.on = true; c.cz2.name = 'تاليا'; c.cz3.on = true; c.cz3.name = 'سليم'; c.dad.travels = true; c.dad.dest = 'salalah'; c.school = 'مدرسة المستقبل'; }
+    else if (name === 'girls') { kid('toota', 'سجى', 12, { skin: F.SKINS[2], hij: F.HIJ[1], gl: true }); kid('nemo', 'روان', 7, { skin: F.SKINS[1], hair: 'pigtails', hat: F.HATC[1] }); c.nana.on = true; c.nana.title = 'جدتي'; c.nana.name = 'نجوى'; c.aunt1.on = true; c.aunt1.name = 'دينا'; c.dad.travels = true; c.dad.dest = 'baha'; }   // girls only: the duo is played by the two girls (runtime gender agreement)
+    else if (name === 'mix') { kid('aboody', 'مالك', 6, { skin: F.SKINS[3] }); kid('toota', 'جنى', 13, { skin: F.SKINS[1], hij: false, hair: 'ponytail' }); c.dad.travels = false; }   // one boy + one girl
     else if (name === 'nogm') { kid('moody', 'باسل', 9, null); kid('nemo', 'هالة', 7, { hij: false }); c.dad.travels = true; c.dad.dest = 'generic'; }   // no grandparent, no aunts, no uncle
     return c;
   };

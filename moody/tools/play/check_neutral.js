@@ -9,12 +9,12 @@ require(path.resolve(engine)); const V = window.Moody.voice; V.neutral = true;
 const GM = ['جدتي', 'تيتة', 'ننا', 'ستو', 'ماما'], GF = ['جدو', 'سيدو', 'جدي'];
 const corpus = ['برافو يا {a}! {m} ولل{t} وب{gm} و{aunt1} لـ{school}', 'يا {gm}، {k2} {me} {gmn} {gft} يا {gf}', 'ل{n} و{cz2} ولل{uncle1n} {fr} يا {cz3} مطار {dcity} في {dcountry}', '{aunt2n} {unknown} {{m}} ب{aunt1}', 'سلّم على {gmt} ولـ{gm}.', 'يا   {m}  ،  وَالـ{a}'];
 let raw = corpus.slice(); if (file && fs.existsSync(file)) raw = raw.concat(JSON.parse(fs.readFileSync(file, 'utf8')).map(i => i.raw || i.text));
-const jobs = []; raw.forEach(r => GM.forEach(g => GF.forEach(f => jobs.push({ raw: r, gm: g, gf: f }))));
-const js = jobs.map(j => { V.vars.gm = j.gm; V.vars.gf = j.gf; return [V.normalize(j.raw), V.hash(j.raw)]; });
-const py = cp.spawnSync('python3', ['-I', '-c', 'import sys,json\nsys.path.insert(0,sys.argv[1])\nfrom voice_hash import normalize,voice_hash,NT\nj=json.load(sys.stdin)\nprint(json.dumps({"nt":NT,"r":[[normalize(x["raw"],True,{"gm":x["gm"],"gf":x["gf"]}),voice_hash(x["raw"],True,{"gm":x["gm"],"gf":x["gf"]})] for x in j]}))', path.join(__dirname, '..')], { input: JSON.stringify(jobs), encoding: 'utf8', maxBuffer: 1 << 28 });
+const FL = ['', 'm', 'a', 'ma'], jobs = []; raw.forEach(r => GM.forEach(g => GF.forEach(f => FL.forEach(fl => jobs.push({ raw: r, gm: g, gf: f, fl, salt: fl ? 'g' : '' })))));
+const js = jobs.map(j => { V.vars.gm = j.gm; V.vars.gf = j.gf; V.vars.fl = {}; for (const c of j.fl) V.vars.fl[c] = true; return [V.normalize(j.raw), V.hash(j.raw, j.salt)]; });
+const py = cp.spawnSync('python3', ['-I', '-c', 'import sys,json\nsys.path.insert(0,sys.argv[1])\nfrom voice_hash import normalize,voice_hash,NT\nj=json.load(sys.stdin)\nprint(json.dumps({"nt":NT,"r":[[normalize(x["raw"],True,{"gm":x["gm"],"gf":x["gf"],"fl":x["fl"]}),voice_hash(x["raw"],True,{"gm":x["gm"],"gf":x["gf"],"fl":x["fl"]},x["salt"])] for x in j]}))', path.join(__dirname, '..')], { input: JSON.stringify(jobs), encoding: 'utf8', maxBuffer: 1 << 28 });
 if (py.status) { console.error(py.stderr); process.exit(2); }
 const P = JSON.parse(py.stdout); let bad = 0;
 if (JSON.stringify(P.nt) !== JSON.stringify(V.NT)) { bad++; console.log('NT TABLES DIFFER'); }
 js.forEach((x, i) => { if (x[0] !== P.r[i][0] || x[1] !== P.r[i][1]) { if (bad++ < 8) console.log('MISMATCH', jobs[i].raw, '\n  js', x, '\n  py', P.r[i]); } });
-console.log('strings', raw.length, 'x titles', GM.length * GF.length, '=', jobs.length, 'hash comparisons | tables equal:', JSON.stringify(P.nt) === JSON.stringify(V.NT), '| differences:', bad);
+console.log('strings', raw.length, 'x titles x flip states', GM.length * GF.length * FL.length, '=', jobs.length, 'hash comparisons | tables equal:', JSON.stringify(P.nt) === JSON.stringify(V.NT), '| differences:', bad);
 process.exit(bad ? 1 : 0);

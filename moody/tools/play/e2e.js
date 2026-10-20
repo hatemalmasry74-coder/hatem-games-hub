@@ -9,7 +9,7 @@
 const path = require('path'), fs = require('fs');
 const { launch, sleep } = require(path.join(__dirname, '..', 'botlib.js'));
 const args = process.argv.slice(2), flag = n => { const i = args.indexOf(n); return i >= 0 ? (args.splice(i, 1), true) : false; }, opt = n => { const i = args.indexOf(n); return i >= 0 ? args.splice(i, 2)[1] : null; };
-const wrong = flag('--wrong'), shots = opt('--shots'), vlog = opt('--voicelog');
+const wrong = flag('--wrong'), viaWizard = flag('--wizard'), premium = flag('--premium'), shots = opt('--shots'), vlog = opt('--voicelog');
 const url = args[0], cfgArg = args[1] || 'two', kind = args[2] || 'desk', only = (args[3] && args[3] !== 'all' ? args[3] : '').split(',').filter(Boolean);
 if (!url) { console.log('usage: node tools/play/e2e.js <url> <config> [desk|phone] [worlds|all] [--wrong] [--shots dir] [--voicelog file]'); process.exit(1); }
 const INIT = `(() => { window.__tokHits = []; const chk = (s) => { if (typeof s === 'string' && /\\{[a-z][a-z0-9]*\\}/.test(s)) window.__tokHits.push(s.slice(0, 80)); };
@@ -17,7 +17,11 @@ const INIT = `(() => { window.__tokHits = []; const chk = (s) => { if (typeof s 
 (async () => {
   const env = await launch({ kind, url: url + (url.includes('?') ? '&' : '?') + 'unlock=1&collectvoice=1', init: INIT, shots: null }), p = env.p, bot = env.bot;
   const cfgJson = fs.existsSync(cfgArg) ? JSON.parse(fs.readFileSync(cfgArg, 'utf8')) : null;
-  await p.evaluate(([c, j]) => { const F = Moody.family; F.save(j || F.preset(c)); }, [cfgArg, cfgJson]); await p.reload(); await sleep(1500);
+  if (viaWizard) { const { driveWizard } = require('./wizard_drive'); const cfg = cfgJson || await p.evaluate(n => Moody.family.preset(n), cfgArg); await driveWizard(p, bot, cfg, { shots, prefix: cfgArg + '_' + kind + '_wiz' }); }
+  else await p.evaluate(([c, j]) => { const F = Moody.family; F.save(j || F.preset(c)); }, [cfgArg, cfgJson]);
+  if (premium) { await p.evaluate(async () => { const m = Moody.billing && Moody.billing.providers.mock; if (!m) throw new Error('--premium needs a --test-mock build'); await m.ctl.grant(Moody.config.productIds.monthly, 30); await Moody.ent.refresh(); }); }
+  await p.reload(); await sleep(1500);
+  if (premium) console.log('PREMIUM after reload:', await p.evaluate(() => Moody.ent.isPremium()));
   const info = await p.evaluate(() => { const F = Moody.family, c = F.cfg(); return { done: F.done(), names: Moody.save.data.names, gm: c.nana.on, dad: c.dad.travels, worlds: Moody.worlds.filter(w => !w.soon && !w.hidden).map(w => w.id) }; });
   console.log('CONFIG', cfgArg, JSON.stringify({ done: info.done, gm: info.gm, dadTravels: info.dad, kids: [info.names.moody, info.names.aboody, info.names.toota, info.names.nemo], worlds: info.worlds }));
   if (shots) { fs.mkdirSync(shots, { recursive: true }); await p.screenshot({ path: path.join(shots, cfgArg + '_' + kind + '_title.png') }); }
@@ -43,6 +47,7 @@ const INIT = `(() => { window.__tokHits = []; const chk = (s) => { if (typeof s 
   const before = await p.evaluate(() => JSON.stringify(Moody.save.data.progress)); await p.reload(); await sleep(1500);
   const after = await p.evaluate(() => JSON.stringify(Moody.save.data.progress)), kept = await p.evaluate(() => JSON.stringify(Moody.family.cfg()).length > 200 && Moody.family.done());
   console.log('PERSIST', before === after ? 'OK' : 'MISMATCH', '| family kept after reload', kept ? 'OK' : 'LOST', '| missions', n, '| fails', fails);
+  const aborted = env.errs.filter(e => /^REQFAIL .*assets\/voice\/[0-9a-f]{12}\.mp3$/.test(e)); if (aborted.length) { console.log('note: ' + aborted.length + ' narration clip request(s) aborted by the player when a line was cut off (benign, no console error)'); aborted.forEach(e => env.errs.splice(env.errs.indexOf(e), 1)); }
   if (problems.length) console.log('PROBLEMS', JSON.stringify(problems)); console.log('ERRORS', JSON.stringify(env.errs.slice(0, 12)));
   await env.b.close(); process.exit(fails || before !== after || !kept || env.errs.length ? 1 : 0);
 })();

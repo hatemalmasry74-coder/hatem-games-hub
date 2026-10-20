@@ -23,16 +23,17 @@ NT = {"k": {"m": ["الكبير", "يا بطل"], "a": ["الصغير", "يا ب
             "aunt1n": ["عمتو", "يا عمتو"], "aunt2n": ["عمتو", "يا عمتو"], "uncle1n": ["عمو", "يا عمو"], "cz1": ["ابن عمك", "يا صاحبي"], "cz2": ["بنت عمك", "يا حبيبتي"],
             "cz3": ["ابن عمك الصغير", "يا حبيبي"], "cz4": ["ابن عمك الكبير", "يا صاحبي"], "cz5": ["ابن عمك الأكبر", "يا صاحبي"], "fr": ["صاحبك", "يا صاحبي"],
             "school": ["المدرسة", "المدرسة"], "dcity": ["مدينة بابا", "مدينة بابا"], "dcountry": ["بلد بابا", "بلد بابا"]},
+      "kf": {"m": ["الكبيرة", "يا بطلة"], "a": ["الصغيرة", "يا بطلة"]},
       "t": {"gm": "gm", "gmt": "gm", "gmn": "gm", "gf": "gf", "gft": "gf"}}
 _NAMES = list(NT['k']) + list(NT['f']) + list(NT['t'])
 _RE_VOC = re.compile(r'يا\s+\{(' + '|'.join(_NAMES) + r')\}')
 _RE_BARE = re.compile('([وفبكل]{0,2}\u0640?)\\{(' + '|'.join(_NAMES) + r')\}')
-DEFAULT_TITLES = {'gm': 'تيتة', 'gf': 'جدو'}
+DEFAULT_TITLES = {'gm': 'تيتة', 'gf': 'جدو'}      # titles may also carry 'fl': a string of flipped duo letters, e.g. 'ma' (moody and aboody are girls)
 
 def neutralize(s, titles=None):
     t = dict(DEFAULT_TITLES); t.update(titles or {})
     def word(k, voc):
-        if k in NT['k']: return NT['k'][k][1 if voc else 0]
+        if k in NT['k']: return (NT['kf'][k] if k in NT['kf'] and k in (t.get('fl') or '') else NT['k'][k])[1 if voc else 0]
         if k in NT['f']: return NT['f'][k][1 if voc else 0]
         w = t[NT['t'][k]]
         return 'يا ' + w if voc else w
@@ -62,8 +63,8 @@ def _fnv(b, h):
         h = (h * 0x01000193) & 0xFFFFFFFF
     return h
 
-def voice_hash(text, neutral=False, titles=None):
-    b = normalize(text, neutral, titles).encode('utf-8')
+def voice_hash(text, neutral=False, titles=None, salt=''):
+    b = (normalize(text, neutral, titles) + ('\u0001' + salt if salt else '')).encode('utf-8')
     return ('%08x%08x' % (_fnv(b, 0x811c9dc5), _fnv(b, 0x9747b28c)))[:12]
 
 if __name__ == '__main__':
