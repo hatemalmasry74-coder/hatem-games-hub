@@ -1,0 +1,555 @@
+{
+ "edition": "play",
+ "built": "2026-10-21T10:01:57.383Z",
+ "warnings": [],
+ "review": [],
+ "patches": [
+  {
+   "file": "engine/core.js",
+   "what": "save key of the Play edition",
+   "n": 1
+  },
+  {
+   "file": "engine/core.js",
+   "what": "drop hub player-name coupling",
+   "n": 1
+  },
+  {
+   "file": "engine/core.js",
+   "what": "save defaults: generic persona names",
+   "n": 1
+  },
+  {
+   "file": "engine/core.js",
+   "what": "M.fmt: owner default names removed",
+   "n": 1
+  },
+  {
+   "file": "engine/audio.js",
+   "what": "disable cross-game cheer clips",
+   "n": 1
+  },
+  {
+   "file": "engine/audio.js",
+   "what": "dead path of the disabled cheer clips",
+   "n": 1
+  },
+  {
+   "file": "engine/ui.js",
+   "what": "no link to the games hub",
+   "n": 1
+  },
+  {
+   "file": "engine/ui.js",
+   "what": "title screen",
+   "n": 1
+  },
+  {
+   "file": "engine/ui.js",
+   "what": "title screen subtitle",
+   "n": 1
+  },
+  {
+   "file": "index.html",
+   "what": "html title",
+   "n": 1
+  },
+  {
+   "file": "index.html",
+   "what": "html description",
+   "n": 1
+  },
+  {
+   "file": "index.html",
+   "what": "ios app title",
+   "n": 1
+  },
+  {
+   "file": "index.html",
+   "what": "splash title",
+   "n": 1
+  },
+  {
+   "file": "index.html",
+   "what": "wire engine/family.js (any ?v=)",
+   "n": 1
+  },
+  {
+   "file": "index.html",
+   "what": "wire engine/family_ui.js (any ?v=)",
+   "n": 1
+  },
+  {
+   "file": "index.html",
+   "what": "wire engine/family_flip.js (runtime gender agreement of the duo)",
+   "n": 1
+  },
+  {
+   "file": "engine/ui.js",
+   "what": "dialog text: gender agreement of a girl in the duo",
+   "n": 1
+  },
+  {
+   "file": "engine/stage.js",
+   "what": "bubble text: gender agreement",
+   "n": 1
+  },
+  {
+   "file": "content/reactions.js",
+   "what": "reactions: expose the hero<->voice maps",
+   "n": 1
+  },
+  {
+   "file": "index.html",
+   "what": "MOODY_CONFIG (edition play) before config.js",
+   "n": 1
+  },
+  {
+   "file": "engine/billing.js",
+   "what": "RELEASE: mock billing provider removed",
+   "n": 1
+  },
+  {
+   "file": "engine/billing.js",
+   "what": "RELEASE: hubpay (activation codes) provider removed",
+   "n": 1
+  },
+  {
+   "file": "engine/paywall_ui.js",
+   "what": "RELEASE: activation-code UI removed from the paywall",
+   "n": 1
+  },
+  {
+   "file": "engine/paywall_ui.js",
+   "what": "RELEASE: activation-code strings removed",
+   "n": 1
+  },
+  {
+   "file": "engine/billing.js",
+   "what": "RELEASE: doc comment of removed providers",
+   "n": 1
+  },
+  {
+   "file": "engine/billing.js",
+   "what": "RELEASE: doc comment",
+   "n": 1
+  },
+  {
+   "file": "engine/config.js",
+   "what": "RELEASE: doc comment",
+   "n": 1
+  },
+  {
+   "file": "engine/config.js",
+   "what": "RELEASE: no allowMock switch",
+   "n": 1
+  },
+  {
+   "file": "engine/config.js",
+   "what": "RELEASE: doc comment",
+   "n": 1
+  },
+  {
+   "file": "engine/paywall_ui.js",
+   "what": "RELEASE: test banner string",
+   "n": 1
+  },
+  {
+   "file": "engine/paywall_ui.js",
+   "what": "RELEASE: test banner css",
+   "n": 1
+  },
+  {
+   "file": "engine/paywall_ui.js",
+   "what": "RELEASE: test banner",
+   "n": 1
+  },
+  {
+   "file": "engine/billing.js",
+   "what": "RELEASE: doc comment",
+   "n": 1
+  },
+  {
+   "file": "engine/billing.js",
+   "what": "RELEASE: provider order",
+   "n": 1
+  },
+  {
+   "file": "engine/billing.js",
+   "what": "RELEASE: provider guards (no such providers)",
+   "n": 1
+  },
+  {
+   "file": "index.html",
+   "what": "DIRECT: wire the codes provider + code screens",
+   "n": 1
+  },
+  {
+   "file": "engine/entitle.js",
+   "what": "DIRECT: own entitlement storage keys",
+   "n": 1
+  },
+  {
+   "file": "engine/entitle.js",
+   "what": "ENTITLEMENT MODEL for the Google Play edition",
+   "n": 0
+  },
+  {
+   "file": "index.html",
+   "what": "DIRECT: noindex + own pwa helper (no ../)",
+   "n": 1
+  },
+  {
+   "file": "sw.js",
+   "what": "DIRECT sw: own cache names",
+   "n": 1
+  },
+  {
+   "file": "sw.js",
+   "what": "DIRECT sw: no cross-game clips",
+   "n": 1
+  },
+  {
+   "file": "sw.js",
+   "what": "DIRECT sw: no avatar jpgs in this edition",
+   "n": 1
+  },
+  {
+   "file": "sw.js",
+   "what": "DIRECT sw: comment",
+   "n": 1
+  },
+  {
+   "file": "sw.js",
+   "what": "DIRECT sw: no foreign cache names",
+   "n": 1
+  },
+  {
+   "file": "engine/audio.js",
+   "what": "optional owner cheer clips from the sonic game;",
+   "n": 1
+  },
+  {
+   "file": "sw.js",
+   "what": "DIRECT sw: only our own scope",
+   "n": 1
+  },
+  {
+   "file": "sw.js",
+   "what": "DIRECT sw: header",
+   "n": 1
+  },
+  {
+   "file": "engine/boot.js",
+   "what": "boot: apply the family, wizard on first launch",
+   "n": 1
+  },
+  {
+   "file": "engine/voice.js",
+   "what": "NEUTRAL narration (clips cannot say the family's names)",
+   "n": 1
+  },
+  {
+   "file": "engine/voice.js",
+   "what": "voice: default persona names",
+   "n": 1
+  },
+  {
+   "file": "engine/ui.js",
+   "what": "UI text nodes resolve role tokens",
+   "n": 1
+  },
+  {
+   "file": "engine/gfx.js",
+   "what": "canvas text resolves role tokens",
+   "n": 1
+  },
+  {
+   "file": "engine/ui.js",
+   "what": "names screen -> family editor",
+   "n": 1
+  },
+  {
+   "file": "engine/ui.js",
+   "what": "parents corner button",
+   "n": 1
+  },
+  {
+   "file": "engine/ui.js",
+   "what": "parents corner age text",
+   "n": 1
+  },
+  {
+   "file": "engine/ctx.js",
+   "what": "question tier from the ages the parents entered",
+   "n": 1
+  },
+  {
+   "file": "engine/ctx.js",
+   "what": "switch-hero hint uses role tokens (the narration never says names)",
+   "n": 1
+  },
+  {
+   "file": "engine/runner.js",
+   "what": "runner prompt keeps its role tokens (the HUD formats it; the narration must stay neutral)",
+   "n": 1
+  },
+  {
+   "file": "worlds/sea.js",
+   "what": "sea: drawn avatar instead of the owner jpg",
+   "n": 1
+  },
+  {
+   "file": "engine/runner.js",
+   "what": "runner gate answers resolve role tokens",
+   "n": 2
+  },
+  {
+   "file": "engine/runner.js",
+   "what": "runner text sprites resolve role tokens",
+   "n": 1
+  },
+  {
+   "file": "engine/ui.js",
+   "what": "title screen shows the family kids",
+   "n": 1
+  },
+  {
+   "file": "engine/ui.js",
+   "what": "daily call only when dad travels",
+   "n": 1
+  },
+  {
+   "file": "engine/ctx.js",
+   "what": "cameo lines of roles that are not enabled are skipped",
+   "n": 1
+  },
+  {
+   "file": "engine/stage.js",
+   "what": "muted roles leave the cast",
+   "n": 1
+  },
+  {
+   "file": "engine/stage.js",
+   "what": "muted roles are not shown",
+   "n": 1
+  },
+  {
+   "file": "worlds/runs2.js",
+   "what": "runs: stage requirement flows into the mission object",
+   "n": 1
+  },
+  {
+   "file": "worlds/saudi.js",
+   "what": "trip world title",
+   "n": 1
+  },
+  {
+   "file": "worlds/registry.js",
+   "what": "trip world card title",
+   "n": 1
+  },
+  {
+   "file": "worlds/saudi.js",
+   "what": "'بكرة هنسافر لبابا في السعودية.. يلا نجهّز الشنطة!'",
+   "n": 1
+  },
+  {
+   "file": "worlds/saudi.js",
+   "what": "نسافر لبابا في أبها!",
+   "n": 1
+  },
+  {
+   "file": "worlds/saudi.js",
+   "what": "'الله! إحنا فوق السحاب! القاهرة بقت صغيرة أوي!'",
+   "n": 1
+  },
+  {
+   "file": "worlds/saudi.js",
+   "what": "'الحمد لله على السلامة. أبها في منطقة عسير، في جبال عالية وج",
+   "n": 1
+  },
+  {
+   "file": "worlds/saudi.js",
+   "what": "ده الطراز العسيري يا {m}. والجبال هنا من أعلى جبال المملكة.",
+   "n": 1
+  },
+  {
+   "file": "worlds/saudi.js",
+   "what": "'وصلنا السودة! من أعلى القمم في المملكة. بصّوا السحاب تحتنا!",
+   "n": 1
+  },
+  {
+   "file": "worlds/saudi.js",
+   "what": "أبرد بكتير من القاهرة.",
+   "n": 1
+  },
+  {
+   "file": "content/baba_calls.js",
+   "what": "بابا بيكلمكم من السعودية.",
+   "n": 1
+  },
+  {
+   "file": "worlds/saudi.js",
+   "what": "st.hero('baba').visible = true; st.hero('kamal').visible = t",
+   "n": 1
+  },
+  {
+   "file": "worlds/saudi.js",
+   "what": "'بابا!!! ده بابا! ومعاه عمو كمال!'",
+   "n": 1
+  },
+  {
+   "file": "worlds/saudi.js",
+   "what": "await ctx.say('baba', 'بطّل فضايح يا كمال!');",
+   "n": 1
+  },
+  {
+   "file": "worlds/saudi.js",
+   "what": "gift for the uncle's son only when the uncle is enabled",
+   "n": 1
+  },
+  {
+   "file": "worlds/gathering.js",
+   "what": "جبت لكم هدايا من أبها.",
+   "n": 1
+  },
+  {
+   "file": "worlds/gathering.js",
+   "what": "وسمعنا حكايات بابا وعمو كمال من أبها",
+   "n": 1
+  },
+  {
+   "file": "worlds/gathering.js",
+   "what": "وبين الجولات هقول لكم حكايات من أبها!",
+   "n": 1
+  },
+  {
+   "file": "worlds/gathering.js",
+   "what": "حكاية من أبها! أول مرة ركبت التلفريك",
+   "n": 1
+  },
+  {
+   "file": "worlds/gathering.js",
+   "what": "مرة الضباب نزل فجأة في أبها وأنا ماشي.",
+   "n": 1
+  },
+  {
+   "file": "worlds/gathering.js",
+   "what": "في أبها بيوت من الحجر بشبابيك بيضا زي الكحل في العين. جميلة ",
+   "n": 1
+  },
+  {
+   "file": "worlds/gathering.js",
+   "what": "ولسه لسه في هدايا أبها!",
+   "n": 1
+  },
+  {
+   "file": "content/q_gathering.js",
+   "what": "/Q\\(9, 'gt_quiz', 'abha',[^\\n]*/",
+   "n": 1
+  },
+  {
+   "file": "content/q_gathering.js",
+   "what": "وصلوا من السعودية.",
+   "n": 1
+  },
+  {
+   "file": "worlds/nana.js",
+   "what": "          await ctx.say('narrator', 'ننا فتحت الباب. يلا نسل",
+   "n": 1
+  },
+  {
+   "file": "worlds/gathering.js",
+   "what": "          await ctx.say('nana', 'وبابا وعمو كمال، ولادي الغا",
+   "n": 1
+  },
+  {
+   "file": "content/q_saudi.js",
+   "what": "trip question f4 made neutral",
+   "n": 1
+  },
+  {
+   "file": "content/q_saudi.js",
+   "what": "trip question b3 made neutral",
+   "n": 1
+  },
+  {
+   "file": "content/q_saudi.js",
+   "what": "trip question d3 made neutral",
+   "n": 1
+  },
+  {
+   "file": "content/q_saudi.js",
+   "what": "trip question c4 made neutral",
+   "n": 1
+  },
+  {
+   "file": "content/q_saudi.js",
+   "what": "trip question c6 made neutral",
+   "n": 1
+  },
+  {
+   "file": "content/q_runs.js",
+   "what": "/^[ \\t]*q\\('b1', 9, 'geography', \\['runs_abha'\\].*$/m",
+   "n": 1
+  },
+  {
+   "file": "content/q_runs.js",
+   "what": "/^[ \\t]*q\\('b2', 9, 'geography', \\['runs_abha'\\].*$/m",
+   "n": 1
+  },
+  {
+   "file": "content/q_runs.js",
+   "what": "/^[ \\t]*q\\('b4', 9, 'geography', \\['runs_abha'\\].*$/m",
+   "n": 1
+  },
+  {
+   "file": "content/q_runs2.js",
+   "what": "runs gate question that named the trip city",
+   "n": 1
+  },
+  {
+   "file": "worlds/runs.js",
+   "what": "runner levels: @owner-family tag -> req",
+   "n": 2
+  },
+  {
+   "file": "worlds/runs2.js",
+   "what": "runner levels: @owner-family tag -> req",
+   "n": 6
+  },
+  {
+   "file": "worlds/runs.js",
+   "what": "/* the cousin NPC exists only in the owner's edition (the fa",
+   "n": 1
+  },
+  {
+   "file": "engine/chars.js",
+   "what": "role ids, no avatars, persona names, grandfather row",
+   "n": 1
+  },
+  {
+   "file": "engine/voice.js",
+   "what": "voice of the grandfather",
+   "n": 1
+  },
+  {
+   "file": "engine/voice.js",
+   "what": "/\\/\\/ extended family \\(owner edition; stripped by tools\\/fa",
+   "n": 1
+  },
+  {
+   "file": "engine/stage.js",
+   "what": "stage slots: grandfather",
+   "n": 1
+  },
+  {
+   "file": "engine/stage.js",
+   "what": "stage corner slots: grandfather",
+   "n": 1
+  }
+ ],
+ "leaks": [],
+ "syntax": []
+}
