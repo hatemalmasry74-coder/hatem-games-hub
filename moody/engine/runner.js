@@ -203,7 +203,7 @@
   function startMusic(S, getName) {
     let n = 0, iv = null, cur = null; const P = () => MUS[getName()] || MUS.bounce, rate = () => 60000 / (P().bpm * (S.boost > 0 ? 1.18 : 1 + Math.min(.12, S.t / 700)));
     function tick() {
-      if (M.paused || S.phase === 'pick' || S.phase === 'done' || !M.audio.on()) return; const T = M.audio.tone, m = P(), w = m.w;
+      if (M.paused || S.phase === 'pick' || S.phase === 'done' || !M.audio.musicOn()) return; const T = M.audio.tone, m = P(), w = m.w;
       T(m.bass[n % 8] * (n % 2 ? 1 : .5) * 2, .2, 'triangle', .07);
       if (n % 2 === 1) T(m.mel[(n * 3 + (n >> 3)) % 8], .16, w, w === 'sine' ? .05 : .028, 0, 0);
       if (n % 4 === 2) T(m.mel[(n + 2) % 8] * 1.5, .22, 'sine', .035, 0, .1);

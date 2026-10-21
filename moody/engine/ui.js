@@ -48,6 +48,8 @@
     pause: gl('<rect x="12" y="10" width="8" height="28" rx="3"/><rect x="28" y="10" width="8" height="28" rx="3"/>'),
     play: gl('<path d="M16 11 37 24 16 37z"/>'),
     sound: gl(SPK + '<path d="M30 18a9 9 0 0 1 0 12M35 13a16 16 0 0 1 0 22" fill="none"/>'),
+    music: gl('<path d="M18 36V12l18-5v24" fill="none"/><ellipse cx="13" cy="37" rx="6" ry="5"/><ellipse cx="31" cy="32" rx="6" ry="5"/>'),
+    'music-off': gl('<path d="M18 36V12l18-5v24" fill="none"/><ellipse cx="13" cy="37" rx="6" ry="5"/><ellipse cx="31" cy="32" rx="6" ry="5"/>') + '<path d="M7 41 41 7" fill="none" stroke="#ff4b4b" stroke-width="5" stroke-linecap="round"/>',
     'sound-off': gl(SPK + '<path d="M31 18l11 12M42 18 31 30" fill="none"/>'),
     replay: gl('<path d="M38 25a14 14 0 1 1-4.500-10.300" fill="none" stroke-width="5"/><path d="M41 7v13H28z"/>'),
     home: gl('<path d="M24 8 6 24h6v16h10V30h4v10h10V24h6z"/>'),
@@ -91,7 +93,7 @@
   };
   const I = UI.i;
   /* art icons for game content; the few names that are pure chrome map to the SVG set so every world matches */
-  const CHROME = { sound: 1, pause: 1, swap: 1, whatnow: 1, narr: 1, coin: 1, star: 1 };
+  const CHROME = { sound: 1, music: 1, pause: 1, swap: 1, whatnow: 1, narr: 1, coin: 1, star: 1 };
   const ico = (n, px, o) => CHROME[n] ? I(n, px || 36, o) : A.el(n, px || 36, o);
   UI.ico = ico;
 
@@ -179,7 +181,7 @@
   let curLevel = 0;
   /* UI.show(el, cls, level): level orders the screens (title 0, map 1, world 2, sub-screens/result 3) so we know whether we slide forward or back */
   UI.show = function (el, cls, level) {
-    UI.previews = []; if (el && hud) UI.hud.hide();
+    UI.previews = []; if (el && hud) UI.hud.hide(); if (el && M.sound) M.sound.swish();
     Array.from(scr.children).forEach(o => { if (o.classList.contains('leave') || !el || reduced()) { o.remove(); return; } o.classList.add('leave'); o.setAttribute('inert', ''); o.setAttribute('aria-hidden', 'true'); o.querySelectorAll('[data-world],[data-mission],[data-i],[data-item],[data-who]').forEach(n => { ['data-world', 'data-mission', 'data-i', 'data-item', 'data-who'].forEach(a => n.removeAttribute(a)); }); setTimeout(() => o.remove(), 190); });
     if (el) { el.classList.add('screen'); if (cls) el.classList.add(cls); if (level != null) { if (level < curLevel) el.classList.add('back'); curLevel = level; } scr.append(el); }
   };
@@ -398,7 +400,9 @@
   /* ============ screens ============ */
   function hdr(title, back, extra) { return h('div', { class: 'hdr' }, h('h2', null, title), back ? h('button', { class: 'btn round yellow', 'aria-label': 'رجوع', onclick: tap(back) }, I('back', 34)) : null, extra ? h('div', { class: 'side' }, extra) : null); }
   const coinPill = () => h('div', { class: 'pill', 'data-ctr': 'coin', role: 'status', 'aria-label': 'العملات' }, I('coin', 30), h('span', { class: 'v' }, ar(M.save.data.coins)));
-  const soundBtn = () => { const b = h('button', { class: 'btn round teal', 'aria-label': 'الصوت' }); const set = () => { b.textContent = ''; b.append(I('sound', 34, { off: !M.audio.on() })); b.setAttribute('aria-pressed', M.audio.on() ? 'true' : 'false'); }; b.onclick = () => { M.save.data.settings.sound = !M.audio.on(); M.save.commit(); set(); M.audio.sfx('tap'); }; set(); return b; };
+  const soundBtn = () => { const b = h('button', { class: 'btn round teal', 'aria-label': 'الصوت' }); const set = () => { b.textContent = ''; b.append(I('sound', 34, { off: !M.audio.on() })); b.setAttribute('aria-pressed', M.audio.on() ? 'true' : 'false'); }; b.onclick = () => { M.save.data.settings.sound = !M.audio.on(); M.save.commit(); if (M.sound) M.sound.sync(); set(); M.audio.sfx('tap'); }; set(); return b; };
+  /* music toggle (separate from sound effects): same look as the sound button with a note icon */
+  UI.musicBtn = () => { const b = h('button', { class: 'btn round orange', 'aria-label': 'الموسيقى' }); const set = () => { const on = M.audio.musicOn(); b.textContent = ''; b.append(I('music', 34, { off: !on })); b.style.opacity = on ? 1 : .6; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }; b.onclick = () => { M.audio.setMusic(M.save.data.settings.music === false); set(); M.audio.sfx('tap'); }; set(); return b; };
   UI.soundBtn = soundBtn;
   UI.narrBtn = () => { const b = h('button', { class: 'btn round pink', 'aria-label': 'صوت التعليمات' }); const set = () => { b.textContent = ''; b.append(I('narr', 36, { off: M.save.data.settings.narr === false })); b.style.opacity = M.save.data.settings.narr === false ? .6 : 1; b.setAttribute('aria-pressed', M.save.data.settings.narr === false ? 'false' : 'true'); }; b.onclick = () => { M.voice.setEnabled(M.save.data.settings.narr === false); set(); M.audio.sfx('tap'); if (M.save.data.settings.narr !== false) M.voice.speak('صوت التعليمات شغّال', { speaker: 'narrator' }); }; set(); return b; };
   const hubLink = () => h('a', { class: 'btn sm green', href: '../', 'aria-label': 'الصفحة الرئيسية للألعاب' }, I('home', 28), 'الصفحة الرئيسية للألعاب');
@@ -408,7 +412,7 @@
     const el = h('div', null, medal('moody', 'right', 'b'), medal('aboody', 'left', 'o'),
       h('div', { class: 'ttl-logo' }, h('div', { class: 'title' }, 'مودي وعبودي'), h('div', { class: 'ttl-tag' }, 'يوميات ومغامرات')),
       h('div', { class: 'ttl-play' }, h('div', { class: 'halo' }), h('button', { class: 'btn big green shine', 'aria-label': 'ابدأ اللعب', onclick: tap(f.start) }, I('play', 58), 'ابدأ')),
-      h('div', { class: 'row ttl-row' }, soundBtn(), UI.narrBtn(), UI.fsBtn(), h('button', { class: 'btn round purple', 'aria-label': 'ركن الأهل', onclick: tap(f.parent) }, I('parent', 38)), hubLink()),
+      h('div', { class: 'row ttl-row' }, soundBtn(), UI.musicBtn(), UI.narrBtn(), UI.fsBtn(), h('button', { class: 'btn round purple', 'aria-label': 'ركن الأهل', onclick: tap(f.parent) }, I('parent', 38)), hubLink()),
       h('div', { class: 'ttl-ver' }, 'الإصدار ١'));
     UI.show(el, 'clear', 0); M.backdrop.mode = 'title'; UI.hideSplash();
   };
@@ -546,14 +550,15 @@
     const bars = (info, data, title) => { const box = h('div', { style: 'margin:10px 0' }, h('div', { style: 'font-size:27px;font-weight:900;margin-bottom:6px' }, title)); const keys = Object.keys(info), mx = Math.max(3, ...keys.map(k => data[k] || 0)); keys.forEach(k => { const v = data[k] || 0; box.append(h('div', { style: 'display:flex;align-items:center;gap:10px;margin:5px 0;text-align:right' }, h('div', { style: 'flex:0 0 190px;font-size:21px;font-weight:900' }, info[k].label), h('div', { style: 'flex:1' }, h('div', { class: 'pbar', style: 'height:20px' }, h('i', { style: 'width:' + Math.round(100 * v / mx) + '%' })), h('div', { style: 'font-size:17px;opacity:.75;font-weight:800;margin-top:2px' }, info[k].desc)), h('div', { style: 'flex:0 0 40px;font-size:24px;font-weight:900' }, ar(v)))); }); return box; };
     const tiers = [['auto', 'تلقائي (حسب البطل)'], ['6', 'مستوى ٦ سنين'], ['9', 'مستوى ٩ سنين']];
     const tierRow = h('div', { class: 'row', style: 'flex-wrap:wrap;gap:10px' }); const drawTier = () => { tierRow.textContent = ''; tiers.forEach(t => tierRow.append(h('button', { class: 'btn sm ' + (String(sd.settings.tier) === t[0] ? 'green' : 'gray'), 'aria-pressed': String(sd.settings.tier) === t[0] ? 'true' : 'false', onclick: tap(() => { sd.settings.tier = t[0]; M.save.commit(); drawTier(); }) }, t[1]))); }; drawTier();
-    const tog = (label, key) => { const b = h('button', { class: 'btn sm', onclick: tap(() => { sd.settings[key] = !(sd.settings[key] !== false); M.save.commit(); up(); }) }); const up = () => { const on = sd.settings[key] !== false; b.className = 'btn sm ' + (on ? 'green' : 'gray'); b.setAttribute('aria-pressed', on ? 'true' : 'false'); b.textContent = label + (on ? ': شغّال' : ': مقفول'); }; up(); return b; };
+    const tog = (label, key) => { const b = h('button', { class: 'btn sm', onclick: tap(() => { sd.settings[key] = !(sd.settings[key] !== false); M.save.commit(); if (M.sound) M.sound.sync(); up(); }) }); const up = () => { const on = sd.settings[key] !== false; b.className = 'btn sm ' + (on ? 'green' : 'gray'); b.setAttribute('aria-pressed', on ? 'true' : 'false'); b.textContent = label + (on ? ': شغّال' : ': مقفول'); }; up(); return b; };
+    const volRow = () => { const w = h('span', { class: 'row', style: 'gap:6px;align-items:center' }), steps = [['هادي', .4], ['وسط', .7], ['عالي', 1]]; const dr = () => { w.textContent = ''; w.append(h('b', { style: 'font-size:20px' }, 'مستوى الصوت:')); steps.forEach(s => w.append(h('button', { class: 'btn sm ' + (Math.abs(M.audio.vol() - s[1]) < .05 ? 'green' : 'gray'), 'aria-pressed': Math.abs(M.audio.vol() - s[1]) < .05 ? 'true' : 'false', onclick: tap(() => { M.audio.setVol(s[1]); dr(); }) }, s[0]))); }; dr(); return w; };
     const body = h('div', { class: 'scroll panel', style: 'position:absolute;left:30px;right:30px;top:96px;bottom:16px;padding:14px 22px;text-align:right' },
       h('div', { style: 'font-size:21px;font-weight:800;opacity:.8;margin-bottom:8px;line-height:1.5' }, 'اللعبة بتزرع القيم من خلال مواقف القصة من غير وعظ. هنا ملخص لِما اتدرّب عليه الأطفال. كل البيانات محفوظة على الجهاز فقط ولا تُرسل لأي مكان.'),
       h('div', { class: 'row', style: 'flex-wrap:wrap;gap:8px' }, stat('المهام', ar(tm) + '/' + ar(tw)), stat('النجوم', ar(stars)), stat('العملات', ar(sd.coins)), stat('الملصقات', ar(Object.keys(sd.stickers).length)), stat('صفحات اليوميات', ar(sd.diary.length))),
       M.ent.parentSection(), bars(M.values, sd.valuesPracticed, 'القيم والعادات اللي اتمرّنوا عليها'), bars(M.skillsInfo, sd.skills, 'المهارات (عدد الألغاز اللي اتحلّت)'),
       h('div', { style: 'font-size:27px;font-weight:900;margin:12px 0 6px' }, 'مستوى الألغاز'), tierRow,
       h('div', { style: 'font-size:18px;opacity:.7;font-weight:800;margin:6px 0' }, 'تلقائي: عبودي (٦ سنين) بيجاوب ألغاز أسهل ومودي (٩ سنين) ألغاز أصعب.'),
-      h('div', { class: 'row', style: 'margin:12px 0;flex-wrap:wrap' }, tog('الصوت', 'sound'), tog('صوت التعليمات', 'narr'), tog('تشجيع بصوت بشري', 'voice'), UI.btn('تغيير الأسماء', 'blue', f.names, 'settings')),
+      h('div', { class: 'row', style: 'margin:12px 0;flex-wrap:wrap' }, tog('الصوت', 'sound'), tog('الموسيقى', 'music'), volRow(), tog('صوت التعليمات', 'narr'), tog('تشجيع بصوت بشري', 'voice'), UI.btn('تغيير الأسماء', 'blue', f.names, 'settings')),
       h('div', { style: 'font-size:27px;font-weight:900;margin:12px 0 6px' }, 'الأداء والرسوم'), UI.settingsPanel(),
       h('div', { style: 'font-size:17px;opacity:.7;font-weight:800;margin:6px 0' }, 'لو اللعبة بتهنّج على الموبايل جرّبوا «منخفضة». التلقائي بيختار لوحده.'),
       h('div', { class: 'row', style: 'margin:18px 0 8px' }, UI.btn('مسح كل التقدّم', 'red', () => { UI.confirm('متأكد إنك عايز تمسح كل النجوم والملصقات واليوميات؟', 'أيوه، امسح', 'لأ').then(ok => { if (ok) { M.save.reset(); M.save.load(); UI.toast('اتمسح كل حاجة'); f.reset(); } }); })));
@@ -563,7 +568,7 @@
   UI.pause = function (f) {
     const mo = UI.modal([h('h2', null, 'استراحة'), h('div', { class: 'pause2' }, h('div', { class: 'col' },
       UI.btn('كمّل اللعب', 'green big', () => { mo.close(); f.resume(); }, 'play'), UI.btn('نبدأ المهمة من جديد', 'yellow', () => { mo.close(); f.restart(); }, 'replay'), UI.btn('قائمة المهام', 'blue', () => { mo.close(); f.quit(); }, 'home'),
-      f.canSkip ? UI.btn('تخطّي المهمة', 'gray sm', () => { mo.close(); f.skip(); }) : null, h('div', { class: 'row' }, soundBtn(), UI.narrBtn())),
+      f.canSkip ? UI.btn('تخطّي المهمة', 'gray sm', () => { mo.close(); f.skip(); }) : null, h('div', { class: 'row' }, soundBtn(), UI.musicBtn(), UI.narrBtn())),
       h('div', { class: 'col side' }, UI.settingsPanel({ compact: true }), hubLink()))], { label: 'استراحة', onEsc: () => { mo.close(); f.resume(); } });
     return mo;
   };

@@ -65,7 +65,7 @@
         const sd = M.save.data, again = sd.callDay === today(), ch = pickCall(again), st = ctx.stage, pk = a => U.pick(a);
         ctx.mission.wisdom = ch.wisdom;
         await ctx.scene('callroom', { state: { phase: 'ring' }, heroes: 'corner' });
-        const stop = ctx.every(1.5, () => M.audio.sfx('bell'));
+        M.audio.sfx('ring'); const stop = ctx.every(1.6, () => M.audio.sfx('ring'));
         ctx.speak('بابا بيتصل بيكم! اضغطوا عشان تردّوا.');
         await ctx.games.ritual({ text: 'ردّوا على بابا', sub: 'اضغط', bottom: 18, icon: 'phone', tone: 'call' });
         stop(); st.state.phase = 'live'; ctx.sfx('unlock');

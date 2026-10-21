@@ -41,9 +41,9 @@
     bW.onclick = () => {
       sk.poke(); if (walking || finished) return;
       if (!hand) { say('aboody', 'مسّك إيدي يا {m}!', 2.2); pulse(bH); return; }
-      if (phase !== 'ped') { mistakes++; sk.fail(); ctx.sfx('boing'); say('moody', want ? 'الإشارة لسه حمرا للمشاة.. نستنى' : 'لسه.. اضغط الزرار الأول', 2.4); pulse(want ? bW : bBtn); return; }
+      if (phase !== 'ped') { mistakes++; sk.fail(); ctx.sfx('boing'); ctx.sfx('honk'); say('moody', want ? 'الإشارة لسه حمرا للمشاة.. نستنى' : 'لسه.. اضغط الزرار الأول', 2.4); pulse(want ? bW : bBtn); return; }
       if (!(looked.l && looked.r)) { say('moody', 'حتى والإشارة خضرا.. بص شمال ويمين الأول', 2.6); pulse(looked.l ? bR : bL); return; }
-      if (lateOn()) { mistakes++; sk.fail(); ctx.sfx('boing'); say('aboody', 'استنى! في عربية لسه جاية!', 2.2); return; }
+      if (lateOn()) { mistakes++; sk.fail(); ctx.sfx('boing'); ctx.sfx('honk'); say('aboody', 'استنى! في عربية لسه جاية!', 2.2); return; }
       go();
     };
     function pulse(b) { b.style.animation = 'none'; void b.offsetWidth; b.style.animation = 'pulse .6s 3'; }
@@ -147,7 +147,7 @@
       update(dt) {
         walkT += dt; bumpCool -= dt;
         shop.forEach(s => { const len = Math.abs(s.b - s.a); s.p += s.dir * s.sp * dt / len; if (s.p > 1) { s.p = 1; s.dir = -1; } if (s.p < 0) { s.p = 0; s.dir = 1; } s.x = cx(s.a + (s.b - s.a) * s.p); s.y = cy(s.r); });
-        let slow = 1; shop.forEach(s => { if (U.dist(pos.x, pos.y, s.x, s.y) < 40) slow = .45; }); if (slow < 1 && bumpCool <= 0) { bumps++; bumpCool = 2; bumpT = 1; ctx.sfx('drip'); st.float('عفوًا!', pos.x, pos.y - 60, '#fff'); }
+        let slow = 1; shop.forEach(s => { if (U.dist(pos.x, pos.y, s.x, s.y) < 40) slow = .45; }); if (slow < 1 && bumpCool <= 0) { bumps++; bumpCool = 2; bumpT = 1; ctx.sfx('bump'); st.float('عفوًا!', pos.x, pos.y - 60, '#fff'); }
         if (path.length) { const p = path[0], d = U.dist(pos.x, pos.y, p.x, p.y), step = spd * slow * dt; if (p.x !== pos.x) face = p.x > pos.x ? 1 : -1; if (d <= step) { pos.x = p.x; pos.y = p.y; path.shift(); } else { pos.x += (p.x - pos.x) / d * step; pos.y += (p.y - pos.y) / d * step; } }
         stars.forEach(s => { if (!s.got && U.dist(pos.x, pos.y, cx(s.c), cy(s.r)) < 34) { s.got = true; ctx.sfx('coin'); st.burst(cx(s.c), cy(s.r), { n: 8, kind: 'star' }); st.float('+١', cx(s.c), cy(s.r) - 30, '#ffc93c'); } });
         if (!finished && U.dist(pos.x, pos.y, cx(goal.c), cy(goal.r)) < 14 && !path.length) { finished = true; ctx.sfx('fanfare'); st.confetti(); ctx.react('good', 'both'); M.wait(1.5).then(() => done({ stars: stars.filter(s => s.got).length, bumps })); }

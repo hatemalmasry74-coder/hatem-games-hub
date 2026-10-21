@@ -265,7 +265,7 @@
   };
   /* cinematic scene change: closes an iris on the old scene, runs apply(), opens on the new one with a slight zoom. skippable (tap) */
   P.transition = function (apply, o) {
-    o = o || {}; const me = this;
+    o = o || {}; const me = this; if (!o.instant && M.sound) M.sound.swish();
     return new Promise(res => {
       if (me.tr) { const old = me.tr; me.tr = null; try { if (old.ph === 0) old.apply(); } catch (e) { } old.res(); }
       if (o.instant || !FX.motion && o.instant !== false && false) { apply(); res(); return; }

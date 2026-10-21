@@ -3,7 +3,7 @@
 (function () {
   'use strict';
   const M = window.Moody = window.Moody || {};
-  M.W = 960; M.H = 540; M.VERSION = 10; M.SAVE_KEY = 'play_moody_v1';
+  M.W = 960; M.H = 540; M.VERSION = 11; M.SAVE_KEY = 'play_moody_v1';
   M.FONT = 'Tahoma, Arial, sans-serif';
   M.OL = '#4a2e1c';           // outline colour (warm dark brown)
   M.pal = { ink: '#3a2a1e', cream: '#fff7e3', orange: '#ff8a2a', teal: '#1fb5a6', pink: '#ff6f91', yellow: '#ffc93c', navy: '#2b3a67', green: '#5cc96b', purple: '#8a6bd6', sky: '#8fd6ff', red: '#ef5350', brown: '#8a5a3a' };
@@ -50,7 +50,7 @@
   /* ---------- save ---------- */
   function defaults() {
     return { v: 1, names: { moody: 'يوسف', aboody: 'آدم', me: '', toota: 'مريم', nemo: 'ليلى', nana: 'تيتة', baba: 'بابا' }, named: false, hero: 'moody', progress: {}, coins: 0, stickers: {}, diary: [],
-      cosm: { owned: [], eq: { moody: {}, aboody: {}, toota: {}, nemo: {} } }, settings: { sound: true, voice: true, narr: true, tier: 'auto', quality: 'auto', reduceMotion: null }, skills: {}, valuesPracticed: {}, seen: {}, lastQ: '', callDay: '', callId: '', callCount: 0 };
+      cosm: { owned: [], eq: { moody: {}, aboody: {}, toota: {}, nemo: {} } }, settings: { sound: true, music: true, vol: 1, voice: true, narr: true, tier: 'auto', quality: 'auto', reduceMotion: null }, skills: {}, valuesPracticed: {}, seen: {}, lastQ: '', callDay: '', callId: '', callCount: 0 };
   }
   const S = M.save = {
     data: defaults(), ok: true,   // ok = false when localStorage is unavailable (private mode, blocked site data): the game keeps working in memory only

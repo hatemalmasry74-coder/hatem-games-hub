@@ -13,7 +13,8 @@ Heroes: **مودي** (Moody, 9, tall/strong: lifts heavy things, reaches high pl
 index.html            shell (viewport-fit=cover, no-cache meta, ?v=1 cache busters, #app > canvas#c + #ui, #rot overlay)
 engine/core.js        namespace Moody, utils, save (localStorage 'hub_moody_v1'), fixed-step loop, pointer input, tweens, registries
 engine/gfx.js         drawing helpers (Moody.gfx) + ART registry (Moody.art) + UI icons
-engine/audio.js       WebAudio sfx (lazy), mute, optional cheer clips from ../sonic/assets/v/ (max 1 per 5 s, errors ignored)
+engine/audio.js       WebAudio sfx library (lazy, buses, limiter, master volume), mute, optional cheer clips from ../sonic/assets/v/ (max 1 per 5 s, errors ignored)
+engine/soundscape.js  global tap sound, footsteps/hop/land, per-world ambience bed + sparse nature sounds, procedural music loop, ducking (see "Sound design")
 engine/chars.js       the two heroes (Moody.chars.draw), cosmetics registry (hats/shirts), people icons (mama, baba, friend)
 engine/stage.js       Stage = canvas scene of a mission: bg, layers, heroes, particles, bubbles
 engine/ui.js          HTML overlay UI: screens (title/map/missions/result/album/diary/closet/parent/pause), HUD, dialog, quiz card
@@ -377,3 +378,27 @@ Gate: press-and-hold a big button 3 s (a tap does nothing), then an adult-level 
 
 ## Tests
 `node tools/entitle_test.js logic|worker|play|all [desk|phone]` (MOODY_BASE env for the URL). `logic` ~ 100 checks incl. every locked mission, gate, purchase/cancel/pending/failure/restore/expiry/grace/hold/refund/offline grace/clock rollback/tampering/`?unlock`/`?devunlock`, stubbed Digital Goods + Capacitor contract, web edition untouched; `play` = the kid-bot plays the free mission of every world, mock-purchases, then plays all missions.
+
+---
+# Sound design (engine/audio.js + engine/soundscape.js)
+
+Everything is synthesized with WebAudio (oscillators + filtered noise); no samples, no files, nothing to license. Voice (`voice.js`) is untouched: the soundscape only *reads* `Moody.voice.busy` / `Moody.audio.cheering`.
+
+## Settings (save.data.settings, all shown in the parents' corner; sound + music buttons are also on the title and pause screens)
+`sound` (effects + ambience, default on), `music` (separate toggle, default on, only has an effect while `sound` is on), `vol` (0.1..1 master volume, steps هادي/وسط/عالي in ركن الأهل; default 1). API: `Moody.audio.on()`, `.musicOn()`, `.vol()`, `.setVol(v)`, `.setMusic(bool)`; after changing settings call `Moody.sound.sync()`.
+
+## Graph
+`sfxBus` and `bed (ducking gain)` -> `master (0.5 * vol)` -> DynamicsCompressor (limiter) -> speakers. `ambBus` (0.25) and `musBus` (0.3) feed `bed`. `bed` drops to 0.32 while narration or a cheer clip plays (and 0.6 while paused) and recovers by itself. The AudioContext is only created after a real user gesture (no autoplay warning).
+
+## Sound names
+`Moody.audio.sfx(name)` (sfx bus) and `Moody.audio.amb(name)` (ambience bus, ducked). Existing: tap pop pick drop good star coin wrong whoosh splash drip alarm boing flip bell click sleepy fanfare unlock. New: swish (soft transition) start (mission begins) bump thud ball step(surface: hard|tile|grass|sand) hop land doorbell knock ring (phone) hangup clink cash schoolbell liftding honk bird gull chime creak owl car surf. Add one in the `play()` switch of audio.js; keep `tone(...)` volumes <= 0.3 and use `Moody.audio.tone(f, dur, wave, vol, slideTo, delay, bus)` / `noise(dur, vol, f0, f1, delay, bus)` / `puff(...)`. Same-name repeats within 40 ms are dropped and at most 90 one-shot nodes (40 for background layers) are alive at once.
+Do not double up: a global capture-phase click listener plays `tap` for any `button, [role=button], a[href], .card, .mcard, .opt, .choicecard, ...` **only if the element's own handler made no sound** (it compares `Moody.audio.stamp`); put `data-nosound` on an element (or ancestor) to opt out. Scene changes (`stage.transition`, `UI.show`) play `swish`; heroes get footsteps (surface by world/scene), hop and land from `stage.heroes[*].tx/fa/jy` automatically (no per-world code).
+
+## Ambience + music per world
+`Moody.sound.enter(worldId)` is called by `flow.startMission` (and `'menu'` by `endMission`), `Moody.sound.scene(bgName)` by `ctx.scene`. Tables at the top of soundscape.js: `WORLD[id]` = noise bed (`room wind waves crowd street night`: 1 looping buffer + filter + gain + slow LFO = 5 nodes), sparse events `[name, minGap s, maxGap s]`, music mood, walking surface; `SCENE` = regexp on the backdrop name that adds events (kitchen -> dish clinks, bath -> drips, yard -> birds, street -> cars/horn ...); `ENTER` = one-shot on entering a scene (door -> doorbell + knock, lift -> ding, class -> school bell); `MOOD[name]` = pentatonic scale, root, bpm, wave, note volume, density, note length (calm home 72 bpm, nana lullaby 64, mystery minor + low drone 58, runs/street/market bouncy 108-124 ...). A new world with no entry falls back to `menu`. The music is a 16-step phrase that mutates every other bar (no repeats of a fixed tune), scheduled 1.2 s ahead by one 250 ms timer; music notes are quiet (voice-over friendly, `musBus` 0.3, notes <= 0.13) and the 3D runner keeps its own themed loop (`runner.js` MUS) which now obeys the music toggle (the soundscape music pauses while a runner kit is on screen). Hidden tab / rotate overlay (`M.suspended`): every layer is stopped and the context suspended; it rebuilds with a 2 s fade on return. Scene/world changes crossfade (bed 2.2 s in, 0.5 s time-constant out; music dips 0.7 s then switches mood).
+
+## Where world scripts call sounds themselves
+school: `schoolbell` at the start of the recess mission and when the class ends; nana: `knock` before the door opens, `ring` when Baba calls; call.js: repeating `ring` while it rings; mystery: `clink` when the jar falls; street kit: `honk` on a wrong crossing, `bump` on shop collisions; 2D runner/lanes: `bump` + gentle `wrong` on hits (3D runner has its own `oops/smash/land`).
+
+## Tests
+`node tools/sound_test.js [URL]` counts AudioContext nodes in a real browser (wizard/menu clicks, mission start, answers, stars, runner jump + collision, ringing call, every world's ambience, node growth over `SOUND_IDLE` seconds, toggles, hidden tab, ducking, console errors). `node tools/sound_render.js OUT_DIR [URL]` renders every sfx, beds and music moods offline to WAV and fails on a peak >= 0.9. Neither can judge taste: listen to the WAVs.

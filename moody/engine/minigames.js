@@ -250,7 +250,7 @@
       update(dt) {
         started += dt; const sp = base * (slow > 0 ? .45 : 1) * (hits >= 3 ? .8 : 1); if (slow > 0) slow -= dt; scroll += sp * dt;
         ['moody', 'aboody'].forEach(k => { const hh = st.heroes[k]; if (jumps[k]) { hh.jy += vy[k] * dt; vy[k] -= 1700 * dt; if (hh.jy <= 0) { hh.jy = 0; jumps[k] = 0; } hh.fa = 'jump'; hh.fat = .1; } else if (slow <= 0) { hh.fa = 'run'; hh.fat = .1; } hh.t += dt; });
-        obs.forEach(ob => { const sx = 340 + (ob.x - scroll); if (!ob.hit && sx < 340 + 30 && sx > 200 - 30) { const mj = st.heroes.moody.jy, aj = st.heroes.aboody.jy; if ((sx > 310 && mj < ob.h) || (sx < 270 && aj < ob.h)) { ob.hit = true; hits++; slow = .8; ctx.sfx('wrong'); st.shake(5); st.play('moody', 'oops', .8); st.play('aboody', 'oops', .8); sk.fail(); } } });
+        obs.forEach(ob => { const sx = 340 + (ob.x - scroll); if (!ob.hit && sx < 340 + 30 && sx > 200 - 30) { const mj = st.heroes.moody.jy, aj = st.heroes.aboody.jy; if ((sx > 310 && mj < ob.h) || (sx < 270 && aj < ob.h)) { ob.hit = true; hits++; slow = .8; ctx.sfx('bump'); ctx.sfx('wrong'); st.shake(5); st.play('moody', 'oops', .8); st.play('aboody', 'oops', .8); sk.fail(); } } });
         cols.forEach(c => { const sx = 340 + (c.x - scroll); if (!c.got && sx < 380 && sx > 190 && Math.abs((470 - st.heroes.moody.jy - 40) - c.y) < 90) { c.got = true; stars++; ctx.sfx('coin'); st.burst(sx, c.y, { n: 6, kind: 'spark' }); } });
         if (scroll >= L && !finished) { finished = true; ctx.sfx('fanfare'); st.confetti(); ctx.react('good', 'both'); M.wait(1.6).then(() => done({ hits, stars })); }
         st.dbg = { kit: 'runner', scroll, L, hits };
@@ -278,7 +278,7 @@
     cl(st.addLayer({
       z: 5, update(dt) {
         tm += dt; px += (laneX(lane) - px) * Math.min(1, dt * 10); if (tm > (o.every || .9) && !finished) { tm = 0; const good = Math.random() < .6; things.push({ lane: U.rndi(0, nl - 1), y: 80, good, art: U.pick(good ? o.good : o.bad) }); }
-        things.forEach(t => { t.y += (o.speed || 230) * dt; if (!t.done && t.y > 440 && t.y < 500 && t.lane === lane) { t.done = true; if (t.good) { caught++; ctx.sfx('coin'); st.burst(px, 440, { n: 8, kind: 'star' }); st.float('+١', px, 400); } else { hits++; ctx.sfx('wrong'); st.play(who, 'oops', .6); } } });
+        things.forEach(t => { t.y += (o.speed || 230) * dt; if (!t.done && t.y > 440 && t.y < 500 && t.lane === lane) { t.done = true; if (t.good) { caught++; ctx.sfx('coin'); st.burst(px, 440, { n: 8, kind: 'star' }); st.float('+١', px, 400); } else { hits++; ctx.sfx('bump'); ctx.sfx('wrong'); st.play(who, 'oops', .6); } } });
         for (let i = things.length - 1; i >= 0; i--) if (things[i].y > 580 || things[i].done) things.splice(i, 1);
         if (caught >= goal && !finished) { finished = true; ctx.react('good', 'both'); M.wait(1).then(() => done({ caught, hits })); }
         st.dbg = { kit: 'lanes', caught };

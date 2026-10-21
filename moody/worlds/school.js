@@ -121,7 +121,7 @@
           if (pc.firstTry) ctx.reward.star(1);
           ctx.value('kindness'); ctx.sticker.give('s_class');
           await ctx.say('mama', 'أنتم تلاميذ ممتازين! الجرس هيرن.. الفسحة!', TEACHER);
-          ctx.sfx('bell');
+          ctx.sfx('schoolbell');
           return ctx.nav.complete();
         }
       },
@@ -132,7 +132,7 @@
         async run(ctx) {
           const st = ctx.stage;
           await ctx.scene('sc_yard', { state: { canteen: false }, heroes: { moody: { x: 330, y: 484, dir: 1 }, aboody: { x: 430, y: 494, dir: 1 } } });
-          ctx.sfx('bell');
+          ctx.sfx('schoolbell');
           await ctx.say('aboody', 'الجرس رن! الفسحة! أنا جعان أوي.');
           await ctx.say('moody', 'استنى يا {a}.. إيدينا مليانة طباشير وتراب. لازم نغسلها الأول.');
           const hw = await ctx.games.sequence({ prompt: 'رتّب خطوات غسل الإيدين', steps: [{ art: 'water', label: 'بلّل إيدك' }, { art: 'soap', label: 'ضع الصابون' }, { art: 'sparkles', label: 'افرك كويس' }, { art: 'tap', label: 'اشطف' }, { art: 'towel', label: 'نشّف' }] });

@@ -81,7 +81,7 @@
           if (sq.mistakes <= 1) ctx.reward.star(1);
           ctx.heroes(place()); st.state.bell = true; ctx.sfx('bell'); await ctx.wait(.9); st.state.bell = false;
           await ctx.say('nana', 'مين بيرنّ بالأدب ده؟ لحظة يا حبايبي، جاية!');
-          ctx.sfx('click'); await M.tw(st.state, { open: 1 }, .9, 'inOut'); ctx.cast(ALL5, ALL4); ctx.heroes(place({ nana: { x: 450, y: 446, dir: 1, visible: true } }));
+          ctx.sfx('click'); ctx.sfx('knock'); await M.tw(st.state, { open: 1 }, .9, 'inOut'); ctx.cast(ALL5, ALL4); ctx.heroes(place({ nana: { x: 450, y: 446, dir: 1, visible: true } }));
           await ctx.say('narrator', 'ننا فتحت الباب. يلا نسلّم عليها!');
           await ctx.games.ritual({ text: 'السلام عليكم', sub: 'نسلّم على ننا', bottom: 120 });
           await ctx.say('nana', 'وعليكم السلام ورحمة الله وبركاته! حبايبي وصلوا!', { anim: 'wave' });
@@ -280,7 +280,7 @@
           await ctx.say('nana', 'وده كحك بالتمر. خدوا لماما وبابا، وسلّموا عليهم.', { anim: 'wave' });
           ctx.fx.float('هدية من ننا!', 480, 300);
           ctx.sfx('bell');
-          await ctx.say('narrator', 'تليفون بيرنّ.. بابا بيتصل!');
+          ctx.sfx('ring'); await ctx.say('narrator', 'تليفون بيرنّ.. بابا بيتصل!');
           await ctx.say('baba', 'السلام عليكم! وحشتوني أوي يا أحلى ولاد! عاملين إيه عند ننا؟');
           const ch = await ctx.games.choice({
             prompt: 'نحكي لبابا إيه؟', options: [

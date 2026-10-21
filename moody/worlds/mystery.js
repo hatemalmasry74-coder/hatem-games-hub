@@ -279,7 +279,7 @@
           b = bobo(ctx, { x: 700, y: 430, emo: 'happy', sc: 1, a: 1 });
           await b.say('لقيتوني! أنا خرجت.. هههه!', { emote: 'happy' });
           await ctx.say('aboody', 'أنا هقفز من الفرحة!', { anim: 'jumpcheer' });
-          ctx.sfx('drop'); st.state.jar = 1; st.dirty();
+          ctx.sfx('drop'); ctx.sfx('clink'); st.state.jar = 1; st.dirty();
           await ctx.say('narrator', 'أوه! {a} خبط برطمان بالغلط ووقع وبيتدحرج على الأرض.');
           await ctx.say('mama', 'سمعت صوت في المخزن. مين وقّع البرطمان؟');
           const hn = await choiceQ(ctx, {

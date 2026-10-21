@@ -59,7 +59,7 @@
     ctx.scene = function (bg, o) {
       o = o || {};
       return mk(done => {
-        const apply = () => { stage.bg = typeof bg === 'string' ? M.rooms[bg] : bg; stage.state = o.state || {}; stage.layout(o.heroes || 'floor'); stage.floorY = o.floorY || 480; stage.layers.length = 0; stage.input = null; stage.parts.length = 0; UI.hud.setPrompt(null); };
+        const apply = () => { stage.bg = typeof bg === 'string' ? M.rooms[bg] : bg; if (M.sound) M.sound.scene(bg); stage.state = o.state || {}; stage.layout(o.heroes || 'floor'); stage.floorY = o.floorY || 480; stage.layers.length = 0; stage.input = null; stage.parts.length = 0; UI.hud.setPrompt(null); };
         if (o.instant) { apply(); done(); return; }
         stage.transition(() => { if (!aborted) apply(); }, { style: o.transition }).then(() => done());   // iris + zoom, skippable (engine/stage.js)
       });
@@ -175,13 +175,13 @@
     UI.missionList(w, { back: F.toMap, start: i => F.startMission(id, i) });
   };
 
-  function endMission() { const c = F.cur; if (c) { F.cur = null; if (c.kh) { const i = M.keys.indexOf(c.kh); if (i >= 0) M.keys.splice(i, 1); } c.ctx.abort(); c.stage.input = null; UI.skip.hide(); const f = document.getElementById('fadeov'); if (f) f.remove(); UI.over.textContent = ''; M.paused = false; } }
+  function endMission() { if (M.sound) M.sound.enter('menu'); const c = F.cur; if (c) { F.cur = null; if (c.kh) { const i = M.keys.indexOf(c.kh); if (i >= 0) M.keys.splice(i, 1); } c.ctx.abort(); c.stage.input = null; UI.skip.hide(); const f = document.getElementById('fadeov'); if (f) f.remove(); UI.over.textContent = ''; M.paused = false; } }
 
   F.startMission = function (wid, idx) {
     endMission(); const w = M.getWorld(wid), m = w.missions[idx]; if (!m) return F.toWorld(wid);
     if (!M.ent.canPlay(wid, m.id)) return M.ent.blocked(wid, idx);   // entitlement guard (play edition): nothing can start a paid mission without a subscription
     const stage = new M.Stage(); if (m.heroes || w.heroes) stage.setCast(m.heroes || w.heroes, m.control || w.control); if (m.abilities) Object.keys(m.abilities).forEach(k => { stage.abil[k] = m.abilities[k]; }); stage.layout('floor'); stage.bg = M.rooms && M.rooms.plain; M.setScene(stage); UI.clearScreen();
-    const run = { quit() { F.toWorld(wid); } }, ctx = makeCtx(w, m, stage, run); F.cur = { ctx, stage, wid, idx };
+    const run = { quit() { F.toWorld(wid); } }, ctx = makeCtx(w, m, stage, run); F.cur = { ctx, stage, wid, idx }; if (M.sound) { M.sound.enter(wid); M.audio.sfx('start'); }
     UI.hud.show(stage, { onPause: () => openPause() });
     UI.hud.update(0);
     function openPause() {
