@@ -3821,7 +3821,7 @@ function resetWorldState(){
 const DEV_CH=(location.search.match(/[?&]ch=(\d)/)||[])[1]|0;
 function getProg(){try{return JSON.parse(LS.get('h3d_prog_v1')||'{}')||{};}catch(e){return {};}}
 function setProg(o){const p=Object.assign(getProg(),o);LS.set('h3d_prog_v1',JSON.stringify(p));return p;}
-function ch2Unlocked(){return !!getProg().ch2||DEV_CH===2;}
+function ch2Unlocked(){return true;}
 function applyChapterEnv(n){
   R3.ambBase=n===2?1.0:1.45;
   R3.fog.color.setHex(n===2?0x050a08:0x06080c);R3.scene.background.setHex(n===2?0x040706:0x05070a);
